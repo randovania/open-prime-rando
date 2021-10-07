@@ -129,4 +129,4 @@ dmypy.json
 .pyre/
 
 # Project
-gcii_delta/version.py
+open_prime_rando/version.py
