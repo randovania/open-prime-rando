@@ -1,2 +1,2 @@
-# gcii-delta
-A delta encoding library and application for GameCube and Wii games
+# Open Prime Rando
+Open Source randomizer patcher for Prime 2 and eventually 3.
