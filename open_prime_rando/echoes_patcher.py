@@ -15,7 +15,7 @@ def patch_paks(paks_path: Path, output_path: Path, configuration: dict):
 
     editor = PatcherEditor(PathFileProvider(paks_path))
 
-    specific_patches(editor, output_path)
+    specific_patches(editor)
     access_tunnel = editor.get_mrea(HIVE_ACCESS_TUNNEL_MREA)
 
     docks = {}

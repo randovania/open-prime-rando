@@ -1,8 +1,6 @@
 import logging
-from pathlib import Path
 
 from construct import Container
-from retro_data_structures.formats.mrea import Mrea
 from retro_data_structures.formats.script_object import ScriptInstanceHelper
 from retro_data_structures.game_check import Game
 
@@ -13,26 +11,18 @@ from open_prime_rando.patcher_editor import PatcherEditor
 LOG = logging.getLogger("echoes_patcher")
 
 
-def specific_patches(tree_editor: PatcherEditor, output_path: Path):
-    def get_mrea(asset_id) -> Mrea:
-        return tree_editor.get_parsed_asset(asset_id, type_hint=Mrea)
-
-    def write_file(area: Mrea, path):
-        LOG.info(f"Writing MREA: {path}...")
-        output_path.joinpath(path).write_bytes(area.build())
-
-    write_file(*sand_mining(get_mrea(MINING_STATION_B_MREA)))
-    write_file(*torvus_generator(get_mrea(TORVUS_ENERGY_CONTROLLER_MREA)))
+def specific_patches(editor: PatcherEditor):
+    sand_mining(editor)
+    torvus_generator(editor)
 
 
-def sand_mining(area: Mrea):
+def sand_mining(editor: PatcherEditor):
+    area = editor.get_mrea(MINING_STATION_B_MREA)
     post_pickup_relay = area.get_instance(0x80121)
 
     properties = post_pickup_relay.get_properties()
     properties.EditorProperties.Active = True
     post_pickup_relay.set_properties(properties)
-
-    return area, "04_sand_mining.MREA"
 
 
 def create_layer_controller(area_id: int, layer: int, dynamic: bool = False) -> ScriptInstanceHelper:
@@ -52,7 +42,8 @@ def create_layer_controller(area_id: int, layer: int, dynamic: bool = False) -> 
     return layer_controller
 
 
-def torvus_generator(area: Mrea):
+def torvus_generator(editor: PatcherEditor):
+    area = editor.get_mrea(TORVUS_ENERGY_CONTROLLER_MREA)
     layer_controller_ids = [2687307, 2687027, 2687028, 2687029]
 
     for _id in layer_controller_ids:
@@ -71,5 +62,3 @@ def torvus_generator(area: Mrea):
     obj = area.get_instance(2686994)
     obj.add_connection("Zero", "Increment", layer_cont1)
     obj.add_connection("Zero", "Increment", layer_cont2)
-
-    return area, "00_swamp_generator.MREA"
