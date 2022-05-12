@@ -1,25 +1,29 @@
 import logging
 from pathlib import Path
-from typing import Container
 
-from retro_data_structures.asset_provider import AssetProvider
+from construct import Container
 from retro_data_structures.formats.mrea import Mrea
 from retro_data_structures.formats.script_object import ScriptInstanceHelper
 from retro_data_structures.game_check import Game
 
+from open_prime_rando.echoes.asset_ids.agon_wastes import MINING_STATION_B_MREA
+from open_prime_rando.echoes.asset_ids.torvus_bog import TORVUS_ENERGY_CONTROLLER_MREA
+from open_prime_rando.patcher_editor import PatcherEditor
+
 LOG = logging.getLogger("echoes_patcher")
 
-def specific_patches(asset_provider: AssetProvider, output_path: Path):
+
+def specific_patches(tree_editor: PatcherEditor, output_path: Path):
     def get_mrea(asset_id) -> Mrea:
-        with asset_provider:
-            return asset_provider.get_asset(asset_id)
-    
+        return tree_editor.get_parsed_asset(asset_id, type_hint=Mrea)
+
     def write_file(area: Mrea, path):
         LOG.info(f"Writing MREA: {path}...")
         output_path.joinpath(path).write_bytes(area.build())
-    
-    write_file(*sand_mining(get_mrea(0xDB7B2CED)))
-    write_file(*torvus_generator(get_mrea(0x133BF5B8)))
+
+    write_file(*sand_mining(get_mrea(MINING_STATION_B_MREA)))
+    write_file(*torvus_generator(get_mrea(TORVUS_ENERGY_CONTROLLER_MREA)))
+
 
 def sand_mining(area: Mrea):
     post_pickup_relay = area.get_instance(0x80121)
@@ -29,6 +33,7 @@ def sand_mining(area: Mrea):
     post_pickup_relay.set_properties(properties)
 
     return area, "04_sand_mining.MREA"
+
 
 def create_layer_controller(area_id: int, layer: int, dynamic: bool = False) -> ScriptInstanceHelper:
     layer_controller = ScriptInstanceHelper.new_instance(Game.ECHOES, "SLCT")
@@ -46,6 +51,7 @@ def create_layer_controller(area_id: int, layer: int, dynamic: bool = False) -> 
     layer_controller.set_properties(props)
     return layer_controller
 
+
 def torvus_generator(area: Mrea):
     layer_controller_ids = [2687307, 2687027, 2687028, 2687029]
 
@@ -54,7 +60,7 @@ def torvus_generator(area: Mrea):
         props = layer_controller.get_properties()
         props.EditorProperties.Active = True
         layer_controller.set_properties(props)
-    
+
     # TODO: generate new instance IDs
     layer_cont1 = create_layer_controller(0x9A2ACAFD, 3)
     layer_cont2 = create_layer_controller(0x9A2ACAFD, 3)
