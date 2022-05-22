@@ -3,6 +3,7 @@ from pathlib import Path
 
 from retro_data_structures.file_tree_editor import PathFileProvider, FileProvider
 
+from open_prime_rando.echoes import custom_assets
 from open_prime_rando.echoes.asset_ids.temple_grounds import HIVE_ACCESS_TUNNEL_MREA
 from open_prime_rando.echoes.specific_area_patches import specific_patches
 from open_prime_rando.patcher_editor import PatcherEditor
@@ -15,6 +16,7 @@ def patch_paks(file_provider: FileProvider, output_path: Path, configuration: di
 
     editor = PatcherEditor(file_provider)
 
+    custom_assets.create_custom_assets(editor)
     specific_patches(editor)
     access_tunnel = editor.get_mrea(HIVE_ACCESS_TUNNEL_MREA)
 
