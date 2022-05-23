@@ -1,7 +1,7 @@
 import logging
 from pathlib import Path
 
-from retro_data_structures.file_tree_editor import PathFileProvider, FileProvider
+from retro_data_structures.asset_manager import FileProvider
 
 from open_prime_rando.echoes import custom_assets
 from open_prime_rando.echoes.asset_ids.temple_grounds import HIVE_ACCESS_TUNNEL_MREA
