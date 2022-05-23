@@ -1,7 +1,7 @@
 import typing
 
 from retro_data_structures.base_resource import BaseResource, NameOrAssetId
-from retro_data_structures.file_tree_editor import FileTreeEditor, FileProvider
+from retro_data_structures.asset_manager import AssetManager, FileProvider
 from retro_data_structures.formats import Mlvl
 from retro_data_structures.formats.mrea import Mrea
 from retro_data_structures.game_check import Game
@@ -9,7 +9,7 @@ from retro_data_structures.game_check import Game
 T = typing.TypeVar("T")
 
 
-class PatcherEditor(FileTreeEditor):
+class PatcherEditor(AssetManager):
     memory_files: dict[NameOrAssetId, BaseResource]
 
     def __init__(self, provider: FileProvider):

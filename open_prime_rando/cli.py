@@ -3,7 +3,7 @@ import logging
 import logging.config
 from pathlib import Path
 
-from retro_data_structures.file_tree_editor import PathFileProvider, IsoFileProvider
+from retro_data_structures.asset_manager import PathFileProvider, IsoFileProvider
 
 from open_prime_rando import echoes_patcher
 
