@@ -1,8 +1,7 @@
 import dataclasses
 
+from retro_data_structures.asset_manager import AssetManager
 from retro_data_structures.formats import Ancs, Cmdl
-
-from open_prime_rando.patcher_editor import PatcherEditor
 
 
 @dataclasses.dataclass
@@ -47,7 +46,7 @@ COBALT_TRANSLATOR = TranslatorAssets(
 )
 
 
-def _create_visor_derivatives(editor: PatcherEditor):
+def _create_visor_derivatives(editor: AssetManager):
     for translator in [VIOLET_TRANSLATOR, AMBER_TRANSLATOR, EMERALD_TRANSLATOR, COBALT_TRANSLATOR]:
         editor.register_custom_asset_name(f"{translator.name}_cmdl", translator.new_cmdl)
         editor.register_custom_asset_name(f"{translator.name}_ancs", translator.new_ancs)
@@ -98,7 +97,7 @@ LIGHT_AMMO = BeamAmmoAssets(
 )
 
 
-def _create_split_ammo(editor: PatcherEditor):
+def _create_split_ammo(editor: AssetManager):
     for ammo in [DARK_AMMO, LIGHT_AMMO]:
         editor.register_custom_asset_name(f"{ammo.name}_cmdl", ammo.new_cmdl)
         editor.register_custom_asset_name(f"{ammo.name}_ancs", ammo.new_ancs)
@@ -117,6 +116,6 @@ def _create_split_ammo(editor: PatcherEditor):
         editor.add_new_asset(f"{ammo.name}_ancs", ancs, editor.find_paks(BEAM_AMMO_EXPANSION_ANCS))
 
 
-def create_custom_assets(editor: PatcherEditor):
+def create_custom_assets(editor: AssetManager):
     _create_visor_derivatives(editor)
     _create_split_ammo(editor)
