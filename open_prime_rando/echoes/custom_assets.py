@@ -111,6 +111,10 @@ def _create_split_ammo(editor: AssetManager):
 
         ancs = editor.get_parsed_asset(BEAM_AMMO_EXPANSION_ANCS, type_hint=Ancs)
         ancs.raw.character_set.characters[0].model_id = ammo.new_cmdl
+        ancs.raw.character_set.characters[0].particle_resource_data.generic_particles = [
+            0x89C2F268,
+            ammo.particle,
+        ]
         ancs.raw.animation_set.event_sets[0].particle_poi_nodes[0].particle.id = ammo.particle
         ancs.raw.animation_set.event_sets[0].particle_poi_nodes[1].particle.id = ammo.particle
         editor.add_new_asset(f"{ammo.name}_ancs", ancs, editor.find_paks(BEAM_AMMO_EXPANSION_ANCS))
