@@ -3,6 +3,8 @@ import logging
 from construct import Container
 from retro_data_structures.formats.script_object import ScriptInstanceHelper
 from retro_data_structures.game_check import Game
+from retro_data_structures.properties.echoes.objects.Relay import Relay
+from retro_data_structures.properties.echoes.objects.ScriptLayerController import ScriptLayerController
 
 from open_prime_rando.echoes.asset_ids.agon_wastes import MINING_STATION_B_MREA
 from open_prime_rando.echoes.asset_ids.torvus_bog import TORVUS_ENERGY_CONTROLLER_MREA
@@ -21,21 +23,23 @@ def sand_mining(editor: PatcherEditor):
     post_pickup_relay = area.get_instance(0x80121)
 
     properties = post_pickup_relay.get_properties()
-    properties.EditorProperties.Active = True
+    assert isinstance(properties, Relay)
+    properties.editor_properties.active = True
     post_pickup_relay.set_properties(properties)
 
 
 def create_layer_controller(area_id: int, layer: int, dynamic: bool = False) -> ScriptInstanceHelper:
     layer_controller = ScriptInstanceHelper.new_instance(Game.ECHOES, "SLCT")
     props = layer_controller.get_properties()
+    assert isinstance(props, ScriptLayerController)
 
-    props.EditorProperties.Name = "Layer Controller"
-    props.EditorProperties.Transform.Scale = Container({"X": 1.0, "Y": 1.0, "Z": 1.0})
-    props.EditorProperties.Active = True
-    props.EditorProperties.Unknown = 3
+    props.editor_properties.name = "Layer Controller"
+    props.editor_properties.transform.Scale = Container({"X": 1.0, "Y": 1.0, "Z": 1.0})
+    props.editor_properties.active = True
+    props.editor_properties.unknown = 3
 
-    props.Layer["Area ID"] = area_id
-    props.Layer["Layer #"] = layer
+    props.layer.area_id = area_id
+    props.layer.layer_number = layer
     props.IsDynamic = dynamic
 
     layer_controller.set_properties(props)
@@ -49,7 +53,8 @@ def torvus_generator(editor: PatcherEditor):
     for _id in layer_controller_ids:
         layer_controller = area.get_instance(_id)
         props = layer_controller.get_properties()
-        props.EditorProperties.Active = True
+        assert isinstance(props, ScriptLayerController)
+        props.editor_properties.active = True
         layer_controller.set_properties(props)
 
     # TODO: generate new instance IDs
