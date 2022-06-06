@@ -4,6 +4,8 @@ from pathlib import Path
 from retro_data_structures.asset_manager import FileProvider
 from retro_data_structures.enums import echoes
 from retro_data_structures.formats.script_object import ScriptInstanceHelper
+from retro_data_structures.properties.echoes.archetypes.DamageVulnerability import DamageVulnerability
+from retro_data_structures.properties.echoes.archetypes.WeaponVulnerability import WeaponVulnerability
 from retro_data_structures.properties.echoes.objects.Door import Door
 
 from open_prime_rando.echoes import custom_assets
@@ -66,8 +68,8 @@ def patch_paks(file_provider: FileProvider, output_path: Path, configuration: di
 
     editor = PatcherEditor(file_provider)
 
-    custom_assets.create_custom_assets(editor)
-    specific_patches(editor)
+    # custom_assets.create_custom_assets(editor)
+    # specific_patches(editor)
     apply_door_rando(editor, [])
 
     # Save our changes
