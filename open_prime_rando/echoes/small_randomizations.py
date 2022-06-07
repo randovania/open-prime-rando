@@ -1,8 +1,10 @@
+from enum import Enum
 import random
 
 from retro_data_structures.formats.strg import Strg
 from retro_data_structures.properties.echoes.objects.Sound import Sound
 from retro_data_structures.properties.echoes.objects.Switch import Switch
+from retro_data_structures.properties.echoes.objects.Actor import Actor
 
 from open_prime_rando.patcher_editor import PatcherEditor
 
@@ -59,3 +61,52 @@ def randomize_minigyro_chamber(editor: PatcherEditor):
     strings = scan.strings
     strings[1] = f"Safety lockdown code is as follows:\n\n\n{solution_text}"
     scan.strings = strings
+
+
+RUBIKS_CUBES = {
+    "Puzzle 1": [
+        0x240013, 0x2401A4, 0x240145,
+        0x24010A, 0x24000E, 0x240192,
+        0x240139, 0x24013A, 0x240148,
+    ],
+    "Puzzle 2": [
+        0x2402BA, 0x2402AD, 0x2402A6,
+        0x2401C6, 0x2401BE, 0x2401C0,
+        0x24028B, 0x2401C3, 0x240290,
+    ]
+}
+
+class RubiksColor(Enum):
+    RED = "IS00"
+    GREEN = "IS01"
+    BLUE = "IS02"
+
+    @property
+    def cmdl(self) -> int:
+        if self == RubiksColor.RED:
+            return 0xF21AB8BF
+        if self == RubiksColor.GREEN:
+            return 0x5F2ADFC3
+        if self == RubiksColor.BLUE:
+            return 0x8F25F715
+
+def randomize_rubiks_puzzles(editor: PatcherEditor):
+    mrea = editor.get_mrea(0x73342A54)
+    for puzzle_name, cubes in RUBIKS_CUBES.items():
+        solution = [
+            RubiksColor.RED, RubiksColor.RED, RubiksColor.RED,
+            RubiksColor.GREEN, RubiksColor.GREEN, RubiksColor.GREEN,
+            RubiksColor.BLUE, RubiksColor.BLUE, RubiksColor.BLUE,
+        ]
+        random.shuffle(solution)
+
+        puzzle = mrea.get_instance_by_name(puzzle_name)
+        for color, cube_id in zip(solution, cubes):
+            cube = mrea.get_instance(cube_id)
+
+            puzzle.remove_connections(cube)
+            puzzle.add_connection(color.value, "ATCH", cube)
+
+            props: Actor = cube.get_properties()
+            props.model = color.cmdl
+            cube.set_properties(props)
