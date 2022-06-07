@@ -10,6 +10,7 @@ from retro_data_structures.properties.echoes.objects.Door import Door
 
 from open_prime_rando.echoes import custom_assets
 from open_prime_rando.echoes.asset_ids.temple_grounds import HIVE_ACCESS_TUNNEL_MREA
+from open_prime_rando.echoes.small_randomizations import randomize_echo_locks, randomize_minigyro_chamber
 from open_prime_rando.echoes.specific_area_patches import specific_patches
 from open_prime_rando.patcher_editor import PatcherEditor
 
