@@ -10,7 +10,7 @@ from retro_data_structures.properties.echoes.objects.Door import Door
 
 from open_prime_rando.echoes import custom_assets
 from open_prime_rando.echoes.asset_ids.temple_grounds import HIVE_ACCESS_TUNNEL_MREA
-from open_prime_rando.echoes.small_randomizations import randomize_echo_locks, randomize_minigyro_chamber, randomize_rubiks_puzzles
+from open_prime_rando.echoes.small_randomizations import apply_small_randomizations
 from open_prime_rando.echoes.specific_area_patches import specific_patches
 from open_prime_rando.patcher_editor import PatcherEditor
 
@@ -71,6 +71,7 @@ def patch_paks(file_provider: FileProvider, output_path: Path, configuration: di
 
     # custom_assets.create_custom_assets(editor)
     # specific_patches(editor)
+    apply_small_randomizations(editor, configuration["small_randomizations"])
     apply_door_rando(editor, [])
 
     # Save our changes
