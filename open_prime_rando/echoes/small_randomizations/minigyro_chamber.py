@@ -44,6 +44,13 @@ def randomize_minigyro_chamber(editor: PatcherEditor, rng: random.Random):
             message = "ACTV" if i == gyro.value else "DCTV"
             counter.add_connection(GYRO_STATES[j], message, gate)
     
+    # play jingle on the final gyro
+    stop_gyros = [mrea.get_instance_by_name(f"[IN/OUT] Stop gyroscope {i+1}") for i in range(4)]
+    jingle = mrea.get_instance_by_name(f"StreamedAudio - Event Jingle")
+
+    stop_gyros[3].remove_connections(jingle)
+    stop_gyros[solution[3].value].add_connection("ZERO", "PLAY", jingle)
+    
     # print([f"{mrea.get_instance(c.target).name} - {c.state}: {c.message}" for c in counter.connections])
     
     scan = editor.get_file(0xFBFF349D, Strg)
