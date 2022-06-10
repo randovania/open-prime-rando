@@ -30,23 +30,14 @@ def randomize_echo_locks(editor: PatcherEditor, rng: random.Random):
     
     key_scans = []
     for pitch in ["low", "medium", "high"]:
-        strings = key_strg.strings
-        strings[1] = f"Sonic detection gear needed to interface with this system. Shoot the Echo Key Beam emitter with a sonic pulse to activate it. It will then fire a blast of &push;&main-color=#FF3333;{pitch}-pitched&pop; sound at an Echo Gate lock."
-        key_strg.strings = strings
+        key_strg.set_string(1, f"Sonic detection gear needed to interface with this system. Shoot the Echo Key Beam emitter with a sonic pulse to activate it. It will then fire a blast of &push;&main-color=#FF3333;{pitch}-pitched&pop; sound at an Echo Gate lock.")
+        strg_id = editor.add_file(f"accessible_echo_lock_{pitch}.STRG", key_strg, all_paks)
 
-        name = f"accessible_echo_lock_{pitch}.STRG"
-        asset_id = crc32(name)
-        editor.register_custom_asset_name(name, asset_id)
-        editor.add_new_asset(name, key_strg, all_paks)
-
-        scan_info.string = asset_id
+        scan_info.string = strg_id
         key_scan.scannable_object_info.set_properties(scan_info)
-        name = f"accessible_echo_lock_{pitch}.SCAN"
-        asset_id = crc32(name)
-        editor.register_custom_asset_name(name, asset_id)
-        editor.add_new_asset(name, key_scan, all_paks)
+        scan_id = editor.add_file(f"accessible_echo_lock_{pitch}.SCAN", key_scan, all_paks)
 
-        key_scans.append(asset_id)
+        key_scans.append(scan_id)
     
     gate_scan = editor.get_parsed_asset(0x80A987AA, type_hint=Scan)
     gate_scan_info: ScannableObjectInfo = gate_scan.scannable_object_info.get_properties()
@@ -84,23 +75,14 @@ def randomize_echo_locks(editor: PatcherEditor, rng: random.Random):
             switch.set_properties(props)
         
         # edit scan to indicate the solution
-        strings = gate_strg.strings
-        strings[1] = "Sonic detection gear needed to interface with this system. The combination of its sonic locks is:\n"
-        pitches = ["Low", "Medium", "High"]
-        strings[1] += ", ".join((pitches[key] for key in solution))
-        gate_strg.strings = strings
-
-        strg_name = f"accessible_echo_gate_{asset_id}.STRG"
-        strg_id = crc32(strg_name)
-        editor.register_custom_asset_name(strg_name, strg_id)
-        editor.add_new_asset(strg_name, gate_strg, all_paks)
+        solution_text = "Sonic detection gear needed to interface with this system. The combination of its sonic locks is:\n"
+        solution_text += ", ".join((["Low", "Medium", "High"][key] for key in solution))
+        gate_strg.set_string(1, solution_text)
+        strg_id = editor.add_file(f"accessible_echo_gate_{asset_id}.STRG", gate_strg, all_paks)
 
         gate_scan_info.string = strg_id
         gate_scan.scannable_object_info.set_properties(gate_scan_info)
-        scan_name = f"accessible_echo_gate_{asset_id}.SCAN"
-        scan_id = crc32(scan_name)
-        editor.register_custom_asset_name(scan_name, scan_id)
-        editor.add_new_asset(scan_name, gate_scan, all_paks)
+        scan_id = editor.add_file(f"accessible_echo_gate_{asset_id}.SCAN", gate_scan, all_paks)
 
         poi: PointOfInterest = gate_poi.get_properties()
         poi.scan_info.scannable_info0 = scan_id

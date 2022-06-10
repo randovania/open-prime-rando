@@ -35,10 +35,6 @@ class RubiksColor:
     @property
     def txtr_name(self) -> Path:
         return f"rubiks_{self.name.lower()}.TXTR"
-    
-    @property
-    def txtr_id(self) -> int:
-        return crc32(self.txtr_name)
 
     @property
     def txtr(self) -> RawResource:
@@ -46,6 +42,7 @@ class RubiksColor:
             type="TXTR",
             data=Path(__file__).parent.parent.joinpath("custom_assets", "rubiks", self.txtr_name).read_bytes()
         )
+
 COLORS = {
     "RED": RubiksColor(
         name="red",
@@ -72,8 +69,7 @@ def randomize_rubiks_puzzles(editor: PatcherEditor, rng: random.Random):
     
     # Add custom textures so colorblind players can distinguish the cubes
     for color in COLORS.values():
-        editor.register_custom_asset_name(color.txtr_name, color.txtr_id)
-        editor.add_new_asset(color.txtr_name, color.txtr, editor.find_paks(MAIN_GYRO_CHAMBER_MREA))
+        editor.add_file(color.txtr_name, color.txtr, editor.find_paks(MAIN_GYRO_CHAMBER_MREA))
 
         cmdl = editor.get_file(color.cmdl, Cmdl)
         file_ids = cmdl.raw.material_sets[0].texture_file_ids

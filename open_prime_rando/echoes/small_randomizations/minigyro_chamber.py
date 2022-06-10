@@ -44,10 +44,8 @@ def randomize_minigyro_chamber(editor: PatcherEditor, rng: random.Random):
             message = "ACTV" if i == gyro.value else "DCTV"
             counter.add_connection(GYRO_STATES[j], message, gate)
     
-    print([f"{mrea.get_instance(c.target).name} - {c.state}: {c.message}" for c in counter.connections])
+    # print([f"{mrea.get_instance(c.target).name} - {c.state}: {c.message}" for c in counter.connections])
     
     scan = editor.get_file(0xFBFF349D, Strg)
     solution_text = '\n'.join((gyro.text for gyro in solution))
-    strings = scan.strings
-    strings[1] = f"Safety lockdown code is as follows:\n\n\n{solution_text}"
-    scan.strings = strings
+    scan.set_string(1, f"Safety lockdown code is as follows:\n\n\n{solution_text}")
