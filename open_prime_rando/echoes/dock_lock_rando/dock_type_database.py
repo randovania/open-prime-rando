@@ -5,7 +5,7 @@ from retro_data_structures.properties.echoes.archetypes.DamageVulnerability impo
 from retro_data_structures.properties.echoes.archetypes.WeaponVulnerability import WeaponVulnerability
 from retro_data_structures.properties.echoes.core.Color import Color
 
-from open_prime_rando.echoes.dock_type import DockType
+from open_prime_rando.echoes.dock_lock_rando.dock_type import DockType
 
 reflect = WeaponVulnerability(damage_multiplier=0, effect=echoes.Effect.Reflect)
 vulnerable = WeaponVulnerability(damage_multiplier=100, effect=echoes.Effect.Normal)
