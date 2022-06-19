@@ -3,14 +3,10 @@ import dataclasses
 import construct
 from retro_data_structures.base_resource import Dependency
 from retro_data_structures.dependencies import recursive_dependencies_for_editor
-from retro_data_structures.enums import echoes
 from retro_data_structures.formats import Mlvl
-from retro_data_structures.properties.echoes.archetypes.EditorProperties import EditorProperties
 from retro_data_structures.properties.echoes.objects.AreaAttributes import AreaAttributes
 from retro_data_structures.properties.echoes.objects.SafeZone import SafeZone
 from retro_data_structures.properties.echoes.objects.SafeZoneCrystal import SafeZoneCrystal
-from retro_data_structures.properties.echoes.objects.SpecialFunction import SpecialFunction
-from retro_data_structures.properties.echoes.objects.Timer import Timer
 
 from open_prime_rando.echoes.asset_ids import world as world_ids
 from open_prime_rando.echoes.inverted.area_pairs import TG_PAIRS, AGON_PAIRS
@@ -139,10 +135,11 @@ def _move_safe_zones(world: Mlvl, pairs: list[tuple[int, int]]):
 
         # Add Safe Zone's module dep
         module_dependencies = light._raw.module_dependencies
-        if "ScriptSafeZone.rel" not in module_dependencies.rel_module:
-            module_dependencies.rel_module.insert(0, "ScriptSafeZone.rel")
-            for i in range(1, len(module_dependencies.rel_offset)):
-                module_dependencies.rel_offset[i] += 1
+        for module_dep in set(SafeZone.modules() + SafeZoneCrystal.modules()):
+            if module_dep not in module_dependencies.rel_module:
+                module_dependencies.rel_module.insert(0, module_dep)
+                for i in range(1, len(module_dependencies.rel_offset)):
+                    module_dependencies.rel_offset[i] += 1
 
 
 def apply_inverted(editor: PatcherEditor):
