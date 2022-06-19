@@ -16,6 +16,20 @@ from open_prime_rando.echoes.asset_ids import world as world_ids
 from open_prime_rando.echoes.inverted.area_pairs import TG_PAIRS, AGON_PAIRS
 from open_prime_rando.patcher_editor import PatcherEditor
 
+_WORLDS = [
+    world_ids.TEMPLE_GROUNDS_MLVL, world_ids.AGON_WASTES_MLVL, world_ids.TORVUS_BOG_MLVL,
+    world_ids.SANCTUARY_FORTRESS_MLVL, world_ids.GREAT_TEMPLE_MLVL,
+]
+_AREAS_TO_SKIP = {
+    0x775664a5,  # 00_scandummy
+    0x752b2850,  # game_end_part1
+    0x9d221f4a,  # game_end_part2
+    0xc5250dbc,  # game_end_part3
+    0x9641773f,  # game_end_part4
+    0xce4665c9,  # game_end_part5
+    0x4d4e5400,  # Menu
+}
+
 
 def collect_dependencies(obj):
     for field in dataclasses.fields(obj):
@@ -26,7 +40,27 @@ def collect_dependencies(obj):
 _all_deps_cache: dict[frozenset[int], set[Dependency]] = {}
 
 
-def _modify_world(world: Mlvl, pairs: list[tuple[int, int]]):
+def _swap_dark_world(editor: PatcherEditor):
+    for world_id in _WORLDS:
+        world = editor.get_mlvl(world_id)
+        for area in world.areas:
+            if area.id in _AREAS_TO_SKIP:
+                continue
+
+            is_dark_world = area.internal_name.endswith("_dark")
+
+            for layer in area.layers:
+                for instance in layer.instances:
+                    if instance.type == AreaAttributes:
+                        prop = instance.get_properties()
+                        assert isinstance(prop, AreaAttributes)
+                        if prop.dark_world != is_dark_world:
+                            print(area.name, is_dark_world, "found", prop.dark_world)
+                        prop.dark_world = not is_dark_world
+                        instance.set_properties(prop)
+
+
+def _move_safe_zones(world: Mlvl, pairs: list[tuple[int, int]]):
     for pair in pairs:
         light = world.get_area(pair[0])
         dark = world.get_area(pair[1])
@@ -73,7 +107,8 @@ def _modify_world(world: Mlvl, pairs: list[tuple[int, int]]):
                     else:
                         targets_special = True
                         weird_target = dark.get_instance(conn.target)
-                        print(f"Crystal {instance.name} at {dark.name} has unexpected connections to {weird_target} ({weird_target.name})")
+                        print(
+                            f"Crystal {instance.name} at {dark.name} has unexpected connections to {weird_target} ({weird_target.name})")
                         continue
                     copied_crystal.add_connection(conn.state, conn.message, target)
 
@@ -81,35 +116,6 @@ def _modify_world(world: Mlvl, pairs: list[tuple[int, int]]):
                     dark_layer.remove_instance(instance)
 
         assert 0xffffffff not in new_dependencies
-
-        # Area Attributes
-        for a, new_value in zip([light, dark], [True, False]):
-            for layer in a.layers:
-                for instance in layer.instances:
-                    if instance.type == AreaAttributes:
-                        prop = instance.get_properties()
-                        assert isinstance(prop, AreaAttributes)
-                        prop.dark_world = new_value
-                        instance.set_properties(prop)
-
-        # Timer Stuff
-        try:
-            dark_layer.remove_instance("Timer_Start Dark")
-            dark_layer.remove_instance("SpecialFunction_Darkworld")
-        except KeyError:
-            pass
-
-        light_timer = light_layer.add_instance_with(Timer(
-            editor_properties=EditorProperties(name="Timer_Start InvertedDark"),
-            time=0.001,
-            auto_start=True,
-        ))
-        light_function = light_layer.add_instance_with(SpecialFunction(
-            editor_properties=EditorProperties(name="SpecialFunction_Darkworld Inverted"),
-            function=echoes.Function.Darkworld,
-        ))
-        light_timer.add_connection('ZERO', 'ACTN', light_function)
-        light_timer.add_connection('ZERO', 'DECR', light_function)
 
         # Update dependencies
 
@@ -140,8 +146,10 @@ def _modify_world(world: Mlvl, pairs: list[tuple[int, int]]):
 
 
 def apply_inverted(editor: PatcherEditor):
-    _modify_world(editor.get_mlvl(world_ids.TEMPLE_GROUNDS_MLVL), area_pairs.TG_PAIRS)
-    _modify_world(editor.get_mlvl(world_ids.AGON_WASTES_MLVL), area_pairs.AGON_PAIRS)
-    _modify_world(editor.get_mlvl(world_ids.TORVUS_BOG_MLVL), area_pairs.TORVUS_PAIRS)
-    _modify_world(editor.get_mlvl(world_ids.SANCTUARY_FORTRESS_MLVL), area_pairs.SANCTUARY_PAIRS)
-    _modify_world(editor.get_mlvl(world_ids.GREAT_TEMPLE_MLVL), area_pairs.GREAT_TEMPLE_PAIRS)
+    _swap_dark_world(editor)
+
+    _move_safe_zones(editor.get_mlvl(world_ids.TEMPLE_GROUNDS_MLVL), area_pairs.TG_PAIRS)
+    _move_safe_zones(editor.get_mlvl(world_ids.AGON_WASTES_MLVL), area_pairs.AGON_PAIRS)
+    _move_safe_zones(editor.get_mlvl(world_ids.TORVUS_BOG_MLVL), area_pairs.TORVUS_PAIRS)
+    _move_safe_zones(editor.get_mlvl(world_ids.SANCTUARY_FORTRESS_MLVL), area_pairs.SANCTUARY_PAIRS)
+    _move_safe_zones(editor.get_mlvl(world_ids.GREAT_TEMPLE_MLVL), area_pairs.GREAT_TEMPLE_PAIRS)
