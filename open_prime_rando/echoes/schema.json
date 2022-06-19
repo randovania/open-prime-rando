@@ -32,6 +32,11 @@
             "required": [
                 "seed"
             ]
+        },
+        "inverted": {
+            "type": "boolean",
+            "description": "Inverts Light and Dark Aether",
+            "default": false
         }
     },
     "required": [
