@@ -1,7 +1,7 @@
 import dataclasses
 
 import construct
-from retro_data_structures.base_resource import Dependency
+from retro_data_structures.base_resource import Dependency, RawResource
 from retro_data_structures.dependencies import recursive_dependencies_for_editor
 from retro_data_structures.formats import Mlvl
 from retro_data_structures.properties.echoes.objects.AreaAttributes import AreaAttributes
@@ -39,6 +39,7 @@ _all_deps_cache: dict[frozenset[int], set[Dependency]] = {}
 def _swap_dark_world(editor: PatcherEditor):
     for world_id in _WORLDS:
         world = editor.get_mlvl(world_id)
+
         for area in world.areas:
             if area.id in _AREAS_TO_SKIP:
                 continue
@@ -54,6 +55,14 @@ def _swap_dark_world(editor: PatcherEditor):
                             print(area.name, is_dark_world, "found", prop.dark_world)
                         prop.dark_world = not is_dark_world
                         instance.set_properties(prop)
+
+            mapa_id = world.mapw.get_mapa_id(area.index)
+            mapa = bytearray(editor.get_raw_asset(mapa_id).data)
+            mapa[8:12] = construct.Int32ub.build(not is_dark_world)
+            editor.replace_asset(
+                mapa_id,
+                RawResource("MAPA", bytes(mapa))
+            )
 
 
 def _move_safe_zones(world: Mlvl, pairs: list[tuple[int, int]]):
