@@ -1,0 +1,43 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "type": "object",
+    "properties": {
+        "$schema": {
+            "type": "string",
+            "format": "uri"
+        },
+        "small_randomizations": {
+            "properties": {
+                "seed": {
+                    "type": "number",
+                    "description": "Number to use as seed for the small randomizations"
+                },
+                "echo_locks": {
+                    "type": "boolean",
+                    "description": "Randomize the solution of the Annihilator+Echo Visor puzzles sound puzzles.",
+                    "default": true
+                },
+                "minigyro_chamber": {
+                    "type": "boolean",
+                    "description": "Randomize the solution of the puzzle in Minigyro Chamber.",
+                    "default": true
+                },
+                "rubiks": {
+                    "type": "boolean",
+                    "description": "Randomize the solution of the color puzzles in Main Gyro Chamber.",
+                    "default": true
+                }
+            },
+            "additionalProperties": false,
+            "required": [
+                "seed"
+            ]
+        }
+    },
+    "required": [
+        "small_randomizations"
+    ],
+    "additionalProperties": false,
+    "$defs": {
+    }
+}

@@ -1,4 +1,5 @@
 import argparse
+import json
 import logging
 import logging.config
 from pathlib import Path
@@ -18,7 +19,7 @@ def create_parser():
                              help="Path to a ISO to randomize")
     parser.add_argument("--output-paks", required=True, type=Path,
                         help="Path to where the modified paks will be written to.")
-    parser.add_argument("--input-json", type=Path,
+    parser.add_argument("--input-json", type=Path, required=True,
                         help="Path to the configuration json. If missing, it's read from standard input")
     return parser
 
@@ -60,6 +61,9 @@ def main():
     args = parser.parse_args()
     print(args)
 
+    with args.input_json.open() as f:
+        configuration = json.load(f)
+
     if args.input_paks is not None:
         file_provider = PathFileProvider(args.input_paks)
     else:
@@ -68,5 +72,5 @@ def main():
     echoes_patcher.patch_paks(
         file_provider,
         args.output_paks,
-        {},
+        configuration,
     )

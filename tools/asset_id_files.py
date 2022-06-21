@@ -2,7 +2,7 @@ import argparse
 import os.path
 from pathlib import Path
 
-from retro_data_structures.file_tree_editor import IsoFileProvider
+from retro_data_structures.asset_manager import IsoFileProvider
 from retro_data_structures.formats import Strg
 from retro_data_structures.game_check import Game
 
