@@ -1,0 +1,1314 @@
+Load Stage 2
+<ScriptInstance SLCT 0x000b0005>
+3 Emperor Ing Battle Music 2
+<ScriptInstance STAU 0x000b0133>
+Meteorite Spawn Point 001
+<ScriptInstance WAYP 0x000b0137>
+Waypoint 005
+<ScriptInstance WAYP 0x000b015c>
+Phazon Damage Subvolumes
+<ScriptInstance TRGO 0x000b02bc>
+Increment - 12_Temple_FinalGate_Dark - Escape Music
+<ScriptInstance SLCT 0x000b02c9>
+Waypoint 008
+<ScriptInstance WAYP 0x000b015e>
+Sound - Hole Blow Up
+<ScriptInstance SOND 0x000b00d6>
+Unload Stage 3 (nondynamic, for pushed game state)
+<ScriptInstance SLCT 0x000b02e4>
+Begin Stage 2
+<ScriptInstance SWTC 0x000b0006>
+Platform Rise
+<ScriptInstance SOND 0x000b0312>
+Meteorite Spawn Point 006
+<ScriptInstance WAYP 0x000b01de>
+Restore Player Health
+<ScriptInstance SPFN 0x000b02e6>
+Load Phazon Hit Sound
+<ScriptInstance SOND 0x000b0087>
+Keep Meteor Shower On
+<ScriptInstance MRLY 0x000b02ca>
+Increment - 08_Temple_SunGenerator_Dark - Escape Music
+<ScriptInstance SLCT 0x000b02cb>
+Sound - Hole Blow Up
+<ScriptInstance SOND 0x000b00d9>
+Sound - Hole Blow Up
+<ScriptInstance SOND 0x000b00de>
+Death Fog L
+<ScriptInstance SOND 0x000b008a>
+Phazon Damage Subvolumes
+<ScriptInstance TRGR 0x000b02bd>
+Sound - Hole Blow Up
+<ScriptInstance SOND 0x000b00df>
+Keep Trying
+<ScriptInstance TIMR 0x000b0144>
+[IN] Turn Meteor Shower OFF
+<ScriptInstance SRLY 0x000b01e8>
+Sound - Dark Ammo Large
+<ScriptInstance SOND 0x000b0103>
+Beam Ammo
+<ScriptInstance PKGN 0x000b0022>
+Sound - 100 Health
+<ScriptInstance SOND 0x000b0025>
+Sound - Small Health
+<ScriptInstance SOND 0x000b0026>
+Sound - Light Ammo
+<ScriptInstance SOND 0x000b0028>
+Pickup Generator Low
+<ScriptInstance PKGN 0x000b0029>
+Sound - Light Ammo Small
+<ScriptInstance SOND 0x000b00d5>
+Sound - Missile
+<ScriptInstance SOND 0x000b002c>
+Sound - Missile
+<ScriptInstance SOND 0x000b0106>
+Sound - Light Ammo Large
+<ScriptInstance SOND 0x000b0108>
+Sound - Large Health
+<ScriptInstance SOND 0x000b0031>
+Sound - Dark Ammo Small
+<ScriptInstance SOND 0x000b00f7>
+Sound - Powerbomb
+<ScriptInstance SOND 0x000b0032>
+Sound - Dark Ammo
+<ScriptInstance SOND 0x000b0033>
+Pickup Generator High
+<ScriptInstance PKGN 0x000b0034>
+Sound - Health 50
+<ScriptInstance SOND 0x000b0109>
+Meteorite Spawn Point 004
+<ScriptInstance WAYP 0x000b01ea>
+Sound - Light Ammo
+<ScriptInstance SOND 0x000b010f>
+Sound - Light Ammo Large
+<ScriptInstance SOND 0x000b0110>
+Sound - Dark Ammo Small
+<ScriptInstance SOND 0x000b0111>
+Sound - Dark Ammo Large
+<ScriptInstance SOND 0x000b0113>
+Sound - Small Health
+<ScriptInstance SOND 0x000b011a>
+Sound - Health 50
+<ScriptInstance SOND 0x000b011b>
+Pickup Generator Low
+<ScriptInstance PKGN 0x000b011d>
+Sound - Missile
+<ScriptInstance SOND 0x000b011f>
+Sound - Dark Ammo
+<ScriptInstance SOND 0x000b0121>
+Sound - Missile
+<ScriptInstance SOND 0x000b0124>
+Sound - Large Health
+<ScriptInstance SOND 0x000b0126>
+Sound - Powerbomb
+<ScriptInstance SOND 0x000b0127>
+Pickup Generator High
+<ScriptInstance PKGN 0x000b0128>
+Sound - 100 Health
+<ScriptInstance SOND 0x000b0129>
+Sound - Light Ammo Small
+<ScriptInstance SOND 0x000b012b>
+Beam Ammo
+<ScriptInstance PKGN 0x000b012d>
+Phazon Damage Subvolumes
+<ScriptInstance TRGO 0x000b00fd>
+Begin Stage 3 Death cine
+<ScriptInstance SWTC 0x000b016f>
+Push Gamestate
+<ScriptInstance SPFN 0x000b02e5>
+Phazon Puddle East West
+<ScriptInstance SOND 0x000b02d4>
+Meteorite Spawn Point 005
+<ScriptInstance WAYP 0x000b01f3>
+Begin Stage 3
+<ScriptInstance SWTC 0x000b014a>
+Meteorite Spawn Point 003
+<ScriptInstance WAYP 0x000b01fa>
+Phazon Damage Subvolumes
+<ScriptInstance TRGR 0x000b00f9>
+[IN] Turn Meteor Shower ON
+<ScriptInstance SRLY 0x000b01fd>
+Sound - Hole Blow Up
+<ScriptInstance SOND 0x000b00e2>
+Begin Stage 2 To 3 cine
+<ScriptInstance SWTC 0x000b014c>
+Energy Sphere
+<ScriptInstance SOND 0x000b029d>
+Phazon Damage Subvolumes
+<ScriptInstance TRGR 0x000b00fa>
+Meteorite Spawn Point 002
+<ScriptInstance WAYP 0x000b01ff>
+Timer_Start Dark
+<ScriptInstance TIMR 0x000b0002>
+SpecialFunction_Darkworld
+<ScriptInstance SPFN 0x000b0004>
+
+<ScriptInstance REAA 0x000b0007>
+Decrement RHS 44
+<ScriptInstance SPFN 0x000b02a3>
+Shell Crack Keep Loaded
+<ScriptInstance SOND 0x000b0311>
+Meteorite Generator
+<ScriptInstance GENR 0x000b0201>
+Keep Trying
+<ScriptInstance TIMR 0x000b014d>
+Phazon Volumetric S
+<ScriptInstance TRGR 0x000b02d5>
+Load Stage 3
+<ScriptInstance SLCT 0x000b014e>
+Phazon Volumetric N
+<ScriptInstance TRGR 0x000b02d6>
+Keep Trying
+<ScriptInstance TIMR 0x000b014f>
+Decrement - 08_Temple_SunGenerator_Dark - Pre Escape Music
+<ScriptInstance SLCT 0x000b02cc>
+Spawn point 001
+<ScriptInstance SPWN 0x000b0001>
+Decrement - 12_Temple_FinalGate_Dark - Pre-Escape Music
+<ScriptInstance SLCT 0x000b02cd>
+1 Dark World Temple
+<ScriptInstance STAU 0x000b00f1>
+Music Player For Area (Dark Temple)
+<ScriptInstance SPFN 0x000b00f6>
+Swap Ambient Music To Escape Music
+<ScriptInstance MRLY 0x000b02d0>
+Waypoint 001
+<ScriptInstance WAYP 0x000b0161>
+Phazon Damage Subvolumes
+<ScriptInstance TRGO 0x000b00fe>
+Keep Trying
+<ScriptInstance TIMR 0x000b000b>
+Generator - 5 Meteorite Bits
+<ScriptInstance GENR 0x000b020a>
+Phazon Puddle North South
+<ScriptInstance SOND 0x000b02d7>
+Raising Platforms
+<ScriptInstance ACTR 0x000b02a4>
+Cinematic Bars (Inc at Start, Dec at End)
+<ScriptInstance FILT 0x000b01d0>
+Music Player For Area (Escape Music)
+<ScriptInstance SPFN 0x000b02d1>
+5 Escape
+<ScriptInstance STAU 0x000b02d2>
+Phazon Damage Subvolumes
+<ScriptInstance TRGR 0x000b02be>
+Platform Stay Up
+<ScriptInstance MRLY 0x000b02a1>
+Display Escape Message
+<ScriptInstance MEMO 0x000b02dd>
+4 Sun Generator Light
+<ScriptInstance STAU 0x000b0308>
+Load Stage 3 Death Cine
+<ScriptInstance SLCT 0x000b0170>
+Waypoint 002
+<ScriptInstance WAYP 0x000b0165>
+Phazon Damage Subvolumes
+<ScriptInstance TRGO 0x000b02bf>
+CameraWaypoint 015
+<ScriptInstance CAMW 0x000b02a9>
+Start Escape Sequence Timer
+<ScriptInstance SPFN 0x000b02de>
+Sound - Hole Blow Up
+<ScriptInstance SOND 0x000b00e6>
+Load Stage 1 To 2 Cine
+<ScriptInstance SLCT 0x000b0145>
+CameraWaypoint 014
+<ScriptInstance CAMW 0x000b02aa>
+Phazon Damage Master Volume
+<ScriptInstance TRGR 0x000b02c0>
+[IN] Raise Platforms
+<ScriptInstance SQTR 0x000b029f>
+Waypoint 004
+<ScriptInstance WAYP 0x000b0167>
+Decrement - 08_Temple_SunGenerator_Dark - Save Station In
+<ScriptInstance SLCT 0x000b02a8>
+CameraWaypoint 013
+<ScriptInstance CAMW 0x000b02ab>
+Raised Platforms
+<ScriptInstance PLAT 0x000b02a5>
+Waypoint 007
+<ScriptInstance WAYP 0x000b0168>
+taget
+<ScriptInstance WAYP 0x000b02ac>
+Phazon Damage Subvolumes
+<ScriptInstance TRGR 0x000b02c1>
+Waypoint 006
+<ScriptInstance WAYP 0x000b0169>
+Explosion Fog
+<ScriptInstance FOGO 0x000b02ef>
+Sound - Hole Blow Up
+<ScriptInstance SOND 0x000b00e8>
+Begin Stage 1 To 2 cine
+<ScriptInstance SWTC 0x000b0146>
+Camera Shaker - Meteorite Impact
+<ScriptInstance CAMS 0x000b0220>
+Phazon Damage Subvolumes
+<ScriptInstance TRGO 0x000b02c2>
+Unload Stage 2
+<ScriptInstance SLCT 0x000b0151>
+Sound - Hole Blow Up
+<ScriptInstance SOND 0x000b00ed>
+Sound - Hole Blow Up
+<ScriptInstance SOND 0x000b00ee>
+Phazon Damage Subvolumes
+<ScriptInstance TRGO 0x000b00ff>
+Phazon Damage Subvolumes
+<ScriptInstance TRGO 0x000b0100>
+Keep Trying
+<ScriptInstance TIMR 0x000b0171>
+Phazon Volumetric E
+<ScriptInstance TRGR 0x000b02d8>
+Decrement -12_Temple_FinalGate_Dark - Teleport Active
+<ScriptInstance SLCT 0x000b02e3>
+[IN] Start Escape Sequence
+<ScriptInstance SQTR 0x000b02df>
+Sound - Hole Blow Up
+<ScriptInstance SOND 0x000b00f3>
+CameraWaypoint 012
+<ScriptInstance CAMW 0x000b02ad>
+Sound - Light Ammo Small
+<ScriptInstance SOND 0x000b013b>
+Sound - Missile
+<ScriptInstance SOND 0x000b013c>
+Sound - Powerbomb
+<ScriptInstance SOND 0x000b0150>
+Sound - Light Ammo
+<ScriptInstance SOND 0x000b0175>
+Sound - 100 Health
+<ScriptInstance SOND 0x000b0178>
+Pickup Generator Low
+<ScriptInstance PKGN 0x000b017a>
+Sound - Dark Ammo Small
+<ScriptInstance SOND 0x000b017b>
+Sound - Large Health
+<ScriptInstance SOND 0x000b017d>
+Beam Ammo
+<ScriptInstance PKGN 0x000b0180>
+Sound - Light Ammo Large
+<ScriptInstance SOND 0x000b0185>
+Pickup Generator High
+<ScriptInstance PKGN 0x000b0187>
+Sound - Missile
+<ScriptInstance SOND 0x000b018a>
+Sound - Small Health
+<ScriptInstance SOND 0x000b018e>
+Sound - Health 50
+<ScriptInstance SOND 0x000b018f>
+Sound - Dark Ammo
+<ScriptInstance SOND 0x000b0191>
+Sound - Dark Ammo Large
+<ScriptInstance SOND 0x000b0192>
+LayerController 001
+<ScriptInstance SLCT 0x000b0089>
+Effect 001
+<ScriptInstance EFCT 0x000b016c>
+Start Loading Stage 2
+<ScriptInstance SRLY 0x000b000d>
+Door Hit
+<ScriptInstance SOND 0x000b0316>
+Open Door
+<ScriptInstance TRGR 0x000b0317>
+Door
+<ScriptInstance DOOR 0x000b0318>
+Door Lock
+<ScriptInstance ACTR 0x000b0319>
+Increment - 08_Temple_SunGenerator_Dark - Save Station Disabled
+<ScriptInstance SLCT 0x000b02fc>
+Load Stage 2 To 3 Cine
+<ScriptInstance SLCT 0x000b0153>
+Delay Between Meteorites
+<ScriptInstance TIMR 0x000b0236>
+Boss Stage 3 - cutscene
+<ScriptInstance ACTR 0x000b0077>
+Platform Stop
+<ScriptInstance SOND 0x000b0313>
+Timer White Flash Duration
+<ScriptInstance TIMR 0x000b0287>
+Camera Blur
+<ScriptInstance BLUR 0x000b0288>
+White Flash
+<ScriptInstance SRLY 0x000b0289>
+White Flash
+<ScriptInstance FILT 0x000b028a>
+SouthDark
+<ScriptInstance DOCK 0x000b0012>
+Phazon Damage Subvolumes
+<ScriptInstance TRGR 0x000b00fb>
+2 Emperor Ing Battle Music 1
+<ScriptInstance STAU 0x000b0134>
+RHS Control
+<ScriptInstance SRLY 0x000b02a7>
+Phazon Damage Subvolumes
+<ScriptInstance TRGR 0x000b02c3>
+Unload Stage 1
+<ScriptInstance SLCT 0x000b0014>
+Phazon Damage Subvolumes
+<ScriptInstance TRGO 0x000b02c4>
+Waypoint 003
+<ScriptInstance WAYP 0x000b016e>
+Sound - Hole Blow Up
+<ScriptInstance SOND 0x000b00f4>
+Phazon Damage Subvolumes
+<ScriptInstance TRGR 0x000b00fc>
+Raise Platforms
+<ScriptInstance CAMR 0x000b02a6>
+Increment -12_Temple_FinalGate_Dark - Dark Samus Battle3 Intro
+<ScriptInstance SLCT 0x000b02a2>
+Swap Escape Layers
+<ScriptInstance SRLY 0x000b02cf>
+Death Fog R
+<ScriptInstance SOND 0x000b008b>
+RoomAcoustics - Moth Large
+<ScriptInstance RMAC 0x000b01be>
+Phazon Volumetric W
+<ScriptInstance TRGR 0x000b02d9>
+Unload Stage 3
+<ScriptInstance SLCT 0x000b0173>
+Rotate Shield Substage 1
+<ScriptInstance AROT 0x080b00e3>
+Shield
+<ScriptInstance ACTR 0x080b008c>
+Rotate Shield Substage 2
+<ScriptInstance AROT 0x080b00e7>
+Idle
+<ScriptInstance ACKF 0x080b0194>
+Sound - Large Health
+<ScriptInstance SOND 0x080b019b>
+Sound - 100 Health
+<ScriptInstance SOND 0x080b019c>
+Sound - Health 50
+<ScriptInstance SOND 0x080b019d>
+Sound - Dark Ammo Large
+<ScriptInstance SOND 0x080b01a0>
+Sound - Small Health
+<ScriptInstance SOND 0x080b01a1>
+Sound - Missile
+<ScriptInstance SOND 0x080b01a2>
+Sound - Dark Ammo
+<ScriptInstance SOND 0x080b01a6>
+Pickup Generator Low
+<ScriptInstance PKGN 0x080b01a8>
+Beam Ammo
+<ScriptInstance PKGN 0x080b01ac>
+Sound - Missile
+<ScriptInstance SOND 0x080b01af>
+Pickup Generator High
+<ScriptInstance PKGN 0x080b01b0>
+Sound - Light Ammo
+<ScriptInstance SOND 0x080b01b1>
+Sound - Light Ammo Large
+<ScriptInstance SOND 0x080b01b3>
+Sound - Light Ammo Small
+<ScriptInstance SOND 0x080b01b4>
+Sound - Dark Ammo Small
+<ScriptInstance SOND 0x080b01b5>
+Sound - Powerbomb
+<ScriptInstance SOND 0x080b01bb>
+RedHeart
+<ScriptInstance EFCT 0x080b0096>
+Base
+<ScriptInstance ACTR 0x080b0015>
+Activate Shield
+<ScriptInstance ACKF 0x080b00dc>
+Stage 1 Player Hint
+<ScriptInstance HINT 0x080b001b>
+SequenceTimer 002
+<ScriptInstance SQTR 0x080b0197>
+Base Collision
+<ScriptInstance PLAT 0x080b001a>
+Timer 002
+<ScriptInstance TIMR 0x080b0132>
+Warp Attack
+<ScriptInstance ACKF 0x080b0195>
+Pickup Destination
+<ScriptInstance WAYP 0x080b01bc>
+Ready
+<ScriptInstance ACKF 0x080b0196>
+Deactivate Shield
+<ScriptInstance ACKF 0x080b00e0>
+Emperor Ing
+<ScriptInstance EMS1 0x080b0003>
+Rotate Shield Substage 3
+<ScriptInstance AROT 0x080b00e9>
+Begin Stage 1
+<ScriptInstance SRLY 0x080b0011>
+TriggerEllipsoid 001
+<ScriptInstance TRGE 0x080b0131>
+Activate Shield
+<ScriptInstance SQTR 0x080b00eb>
+Sphere
+<ScriptInstance ACTR 0x080b0016>
+Stage 2 Player Hint
+<ScriptInstance HINT 0x0c0b009b>
+Generate one Minor Ing
+<ScriptInstance TIMR 0x0c0b00a0>
+Acid Damage_GAS
+<ScriptInstance TRGR 0x0c0b009d>
+Tentacle
+<ScriptInstance EM2T 0x0c0b0042>
+Enemy Generator
+<ScriptInstance GENR 0x0c0b00a1>
+Generate Position
+<ScriptInstance WAYP 0x0c0b00a3>
+Destroyed
+<ScriptInstance EFCT 0x0c0b00b5>
+Destroy
+<ScriptInstance ACKF 0x0c0b0044>
+[IN] Generate Enemy
+<ScriptInstance SRLY 0x0c0b003b>
+Hole
+<ScriptInstance ACTR 0x0c0b0045>
+Sound - Hole On Fire
+<ScriptInstance SOND 0x0c0b00d8>
+Hole Sorting Bounds
+<ScriptInstance TRGR 0x0c0b02fd>
+Total Enemy Counter
+<ScriptInstance CNTR 0x0c0b00cd>
+Fog Overlay_Final
+<ScriptInstance FOGO 0x0c0b02f4>
+Tentacle
+<ScriptInstance EM2T 0x0c0b0048>
+Generate Position
+<ScriptInstance WAYP 0x0c0b00a5>
+Hole
+<ScriptInstance ACTR 0x0c0b004a>
+[IN] Generate Enemy
+<ScriptInstance SRLY 0x0c0b003c>
+Sound - Hole On Fire
+<ScriptInstance SOND 0x0c0b00da>
+Destroyed
+<ScriptInstance EFCT 0x0c0b00b6>
+Hole Sorting Bounds
+<ScriptInstance TRGR 0x0c0b02fe>
+Enemy Generator
+<ScriptInstance GENR 0x0c0b00a6>
+Destroy
+<ScriptInstance ACKF 0x0c0b004d>
+Hole
+<ScriptInstance ACTR 0x0c0b004f>
+Tentacle
+<ScriptInstance EM2T 0x0c0b0050>
+Sound - Hole On Fire
+<ScriptInstance SOND 0x0c0b00dd>
+Destroyed
+<ScriptInstance EFCT 0x0c0b00b7>
+Generate Position
+<ScriptInstance WAYP 0x0c0b00a8>
+Enemy Generator
+<ScriptInstance GENR 0x0c0b00a9>
+Hole Sorting Bounds
+<ScriptInstance TRGR 0x0c0b02ff>
+[IN] Generate Enemy
+<ScriptInstance SRLY 0x0c0b003d>
+Destroy
+<ScriptInstance ACKF 0x0c0b0053>
+CENTRAL GAS_Final
+<ScriptInstance EFCT 0x0c0b02f5>
+Generate Position
+<ScriptInstance WAYP 0x0c0b00aa>
+Tentacle
+<ScriptInstance EM2T 0x0c0b0054>
+Hole
+<ScriptInstance ACTR 0x0c0b0055>
+Destroyed
+<ScriptInstance EFCT 0x0c0b00b8>
+Sound - Hole On Fire
+<ScriptInstance SOND 0x0c0b00e1>
+Destroy
+<ScriptInstance ACKF 0x0c0b0057>
+[IN] Generate Enemy
+<ScriptInstance SRLY 0x0c0b003e>
+Hole Sorting Bounds
+<ScriptInstance TRGR 0x0c0b0300>
+Enemy Generator
+<ScriptInstance GENR 0x0c0b00ac>
+CENTRAL GAS
+<ScriptInstance EFCT 0x0c0b009e>
+Platform 001
+<ScriptInstance PLAT 0x0c0b0036>
+Pick Random Minor Ing
+<ScriptInstance RRLY 0x0c0b00ad>
+Enemy Generator
+<ScriptInstance GENR 0x0c0b00ae>
+Generate Position
+<ScriptInstance WAYP 0x0c0b00af>
+Hole
+<ScriptInstance ACTR 0x0c0b005b>
+Destroyed
+<ScriptInstance EFCT 0x0c0b00ba>
+Hole Sorting Bounds
+<ScriptInstance TRGR 0x0c0b0301>
+[IN] Generate Enemy
+<ScriptInstance SRLY 0x0c0b003f>
+Destroy
+<ScriptInstance ACKF 0x0c0b005e>
+Tentacle
+<ScriptInstance EM2T 0x0c0b005f>
+Sound - Hole On Fire
+<ScriptInstance SOND 0x0c0b00e4>
+Waypoint_Final2
+<ScriptInstance WAYP 0x0c0b02f6>
+Raise The Fog_Final
+<ScriptInstance PLAT 0x0c0b02f7>
+Waypoint_Final
+<ScriptInstance WAYP 0x0c0b02f8>
+A New Camera Hint 001
+<ScriptInstance CAMH 0x0c0b0038>
+Waypoint
+<ScriptInstance WAYP 0x0c0b00b1>
+Ing Died
+<ScriptInstance SRLY 0x0c0b00ce>
+Stop Old Gas, Start Final Gas
+<ScriptInstance TIMR 0x0c0b02f9>
+Raise The Fog
+<ScriptInstance PLAT 0x0c0b00b4>
+All Holes Destroyed
+<ScriptInstance CNTR 0x0c0b0084>
+OcclusionRelay
+<ScriptInstance SPFN 0x0c0b0157>
+Sound - Hole On Fire
+<ScriptInstance SOND 0x0c0b00e5>
+Enemy Generator
+<ScriptInstance GENR 0x0c0b00bc>
+Destroy
+<ScriptInstance ACKF 0x0c0b0060>
+Destroyed
+<ScriptInstance EFCT 0x0c0b00cf>
+Hole
+<ScriptInstance ACTR 0x0c0b0061>
+Tentacle
+<ScriptInstance EM2T 0x0c0b0062>
+[IN] Generate Enemy
+<ScriptInstance SRLY 0x0c0b0040>
+Hole Sorting Bounds
+<ScriptInstance TRGR 0x0c0b0302>
+Generate Position
+<ScriptInstance WAYP 0x0c0b00bd>
+Fog Overlay
+<ScriptInstance FOGO 0x0c0b02c7>
+Waypoint
+<ScriptInstance WAYP 0x0c0b00b9>
+Destroy
+<ScriptInstance ACKF 0x0c0b0066>
+Enemy Generator
+<ScriptInstance GENR 0x0c0b00be>
+Tentacle
+<ScriptInstance EM2T 0x0c0b0068>
+[IN] Generate Enemy
+<ScriptInstance SRLY 0x0c0b0041>
+Hole Sorting Bounds
+<ScriptInstance TRGR 0x0c0b0303>
+Sound - Hole On Fire
+<ScriptInstance SOND 0x0c0b00ea>
+Generate Position
+<ScriptInstance WAYP 0x0c0b00c0>
+Destroyed
+<ScriptInstance EFCT 0x0c0b00d0>
+Hole
+<ScriptInstance ACTR 0x0c0b006b>
+Generate Position
+<ScriptInstance WAYP 0x0c0b00c1>
+[IN] Generate Enemy
+<ScriptInstance SRLY 0x0c0b0090>
+Hole
+<ScriptInstance ACTR 0x0c0b006c>
+Sound - Hole On Fire
+<ScriptInstance SOND 0x0c0b00ec>
+Enemy Generator
+<ScriptInstance GENR 0x0c0b00c2>
+Destroyed
+<ScriptInstance EFCT 0x0c0b00d1>
+Destroy
+<ScriptInstance ACKF 0x0c0b0070>
+Tentacle
+<ScriptInstance EM2T 0x0c0b0071>
+Hole Sorting Bounds
+<ScriptInstance TRGR 0x0c0b0304>
+Generate Position
+<ScriptInstance WAYP 0x0c0b00c4>
+Hole
+<ScriptInstance ACTR 0x0c0b0072>
+Tentacle
+<ScriptInstance EM2T 0x0c0b0073>
+[IN] Generate Enemy
+<ScriptInstance SRLY 0x0c0b0091>
+Enemy Generator
+<ScriptInstance GENR 0x0c0b00c5>
+Hole Sorting Bounds
+<ScriptInstance TRGR 0x0c0b0305>
+Destroyed
+<ScriptInstance EFCT 0x0c0b00d2>
+Sound - Hole On Fire
+<ScriptInstance SOND 0x0c0b00f0>
+Destroy
+<ScriptInstance ACKF 0x0c0b0076>
+Trigger 001
+<ScriptInstance TRGR 0x0c0b0039>
+Surface Camera 001
+<ScriptInstance SURC 0x0c0b003a>
+Enemy Generator
+<ScriptInstance GENR 0x0c0b00c7>
+Destroyed
+<ScriptInstance EFCT 0x0c0b00d3>
+[IN] Generate Enemy
+<ScriptInstance SRLY 0x0c0b0092>
+Generate Position
+<ScriptInstance WAYP 0x0c0b00c9>
+Sound - Hole On Fire
+<ScriptInstance SOND 0x0c0b00f2>
+Tentacle
+<ScriptInstance EM2T 0x0c0b007a>
+Hole Sorting Bounds
+<ScriptInstance TRGR 0x0c0b0306>
+Destroy
+<ScriptInstance ACKF 0x0c0b007c>
+Hole
+<ScriptInstance ACTR 0x0c0b007d>
+HUD EFFECT
+<ScriptInstance TRGR 0x0c0b02c8>
+HUD EFFECT_Final
+<ScriptInstance TRGR 0x0c0b02fa>
+Acid Damage_GAS_FINAL
+<ScriptInstance TRGR 0x0c0b02fb>
+Fog Volume 001
+<ScriptInstance FOGV 0x0c0b009f>
+[IN] Generate Enemy
+<ScriptInstance SRLY 0x0c0b0093>
+Tentacle
+<ScriptInstance EM2T 0x0c0b007e>
+Destroy
+<ScriptInstance ACKF 0x0c0b007f>
+Destroyed
+<ScriptInstance EFCT 0x0c0b00d4>
+Hole Sorting Bounds
+<ScriptInstance TRGR 0x0c0b0307>
+Hole
+<ScriptInstance ACTR 0x0c0b0081>
+Sound - Hole On Fire
+<ScriptInstance SOND 0x0c0b00f5>
+Enemy Generator
+<ScriptInstance GENR 0x0c0b00cb>
+Generate Position
+<ScriptInstance WAYP 0x0c0b00cc>
+Shadow Projector 001
+<ScriptInstance SHDW 0x100b0020>
+Swarm Heart Death
+<ScriptInstance WAYP 0x100b01bf>
+Swarm Spawnpoint
+<ScriptInstance WAYP 0x100b001e>
+Spawn point 001
+<ScriptInstance SPWN 0x100b0136>
+Block Door Collision
+<ScriptInstance ACTR 0x100b02c5>
+Swarm Orbit
+<ScriptInstance WAYP 0x100b001f>
+OcclusionRelay
+<ScriptInstance SPFN 0x100b0198>
+Generator 001
+<ScriptInstance GENR 0x100b0139>
+Bat Swarm 001
+<ScriptInstance FSWM 0x100b013a>
+EmperorIngStage3 001
+<ScriptInstance EMS3 0x100b0094>
+Stage 3 Player Hint
+<ScriptInstance HINT 0x100b0102>
+Camera Shaker 001
+<ScriptInstance CAMS 0x100b02c6>
+OcclusionRelay
+<ScriptInstance SPFN 0x100b0172>
+Swarm Orbit
+<ScriptInstance WAYP 0x100b000c>
+Swarm Orbit
+<ScriptInstance WAYP 0x100b001d>
+Spawn Flyers effect
+<ScriptInstance EFCT 0x100b0193>
+Swarm Orbit
+<ScriptInstance WAYP 0x100b0021>
+4_tentacles
+<ScriptInstance ACTR 0x140b000e>
+Start Cinematic
+<ScriptInstance SRLY 0x140b013d>
+C1_path_1
+<ScriptInstance CAMW 0x140b000f>
+Ing Puddle Pre Cinema
+<ScriptInstance EFCT 0x140b0010>
+EnergyBall_Path_2
+<ScriptInstance WAYP 0x140b0254>
+Sphere
+<ScriptInstance ACTR 0x140b0255>
+C1_path_4
+<ScriptInstance CAMW 0x140b0257>
+C2_target_1
+<ScriptInstance CAMW 0x140b0258>
+Camera_4
+<ScriptInstance CAMR 0x140b0259>
+Tentacles Spin Swoosh
+<ScriptInstance SOND 0x140b0295>
+Samus
+<ScriptInstance PLAC 0x140b0261>
+Boss
+<ScriptInstance ACTR 0x140b0262>
+Shot_5_base
+<ScriptInstance ACKF 0x140b0263>
+Start Intro Cinematic
+<ScriptInstance TRGR 0x140b0008>
+C1_path_2
+<ScriptInstance CAMW 0x140b0264>
+C1_path_1
+<ScriptInstance CAMW 0x140b0265>
+Emperor Ing Vox - Tentacles Spawn
+<ScriptInstance SOND 0x140b02ae>
+EnergyBall Pre Cinema
+<ScriptInstance EFCT 0x140b0266>
+End Cinematic
+<ScriptInstance SRLY 0x140b013e>
+shot_2_tentacles
+<ScriptInstance ACTR 0x140b0267>
+Emperor Ing Vox - Appear
+<ScriptInstance SOND 0x140b02af>
+Tentacle Whoosh 3
+<ScriptInstance SOND 0x140b02ba>
+shot_2_tentacle
+<ScriptInstance ACKF 0x140b0268>
+C2_target_2
+<ScriptInstance CAMW 0x140b0269>
+Emp Ing Intro
+<ScriptInstance SQTR 0x140b026a>
+C4_target_2
+<ScriptInstance CAMW 0x140b026b>
+tentacles_shot_3
+<ScriptInstance ACTR 0x140b026c>
+C2_path_1
+<ScriptInstance CAMW 0x140b026d>
+C6_target_1
+<ScriptInstance CAMW 0x140b026e>
+EnergyBall_Path_1
+<ScriptInstance WAYP 0x140b026f>
+Emperor Ing Vox - Tentacles Swing
+<ScriptInstance SOND 0x140b02b0>
+Ing Puddle
+<ScriptInstance EFCT 0x140b0270>
+C1_target_1
+<ScriptInstance CAMW 0x140b0271>
+Tentacle Whoosh 2
+<ScriptInstance SOND 0x140b02b1>
+shot_4B_sphere
+<ScriptInstance ACKF 0x140b0272>
+Emperor Ing Vox - Taunt
+<ScriptInstance SOND 0x140b02b2>
+Unload Stage 1 Intro
+<ScriptInstance SLCT 0x140b0140>
+Tentacle Whoosh 1
+<ScriptInstance SOND 0x140b02b3>
+Shot_6_tentacles
+<ScriptInstance ACTR 0x140b0273>
+C3_target_1
+<ScriptInstance CAMW 0x140b0274>
+Emperor Ing Vox - Taunt Control
+<ScriptInstance SNDM 0x140b02b4>
+C6_path_3
+<ScriptInstance CAMW 0x140b0275>
+Emperor Ing Body Movement Control
+<ScriptInstance SNDM 0x140b0296>
+Sound - Into Hud
+<ScriptInstance SOND 0x140b02b5>
+shot_3_tentacles
+<ScriptInstance ACKF 0x140b0276>
+C6_path_2
+<ScriptInstance CAMW 0x140b0277>
+Tentacle Hit Ground
+<ScriptInstance SOND 0x140b02b6>
+Tentacle Whoosh 4
+<ScriptInstance SOND 0x140b02bb>
+Stage1 Intro Cine Sounds
+<ScriptInstance SQTR 0x140b0297>
+Shot_6A_tentacles
+<ScriptInstance ACKF 0x140b0278>
+Camera_2
+<ScriptInstance CAMR 0x140b0279>
+EnergyBall
+<ScriptInstance EFCT 0x140b027a>
+Spawn Return After Boss Intro
+<ScriptInstance SPWN 0x140b027b>
+Camera_3
+<ScriptInstance CAMR 0x140b027c>
+Emperor Ing Vox - Angry
+<ScriptInstance SOND 0x140b02b7>
+Energy Sphere Control
+<ScriptInstance SNDM 0x140b0298>
+Camera Flash
+<ScriptInstance SOND 0x140b0299>
+C3_path_1
+<ScriptInstance CAMW 0x140b027d>
+Tentacles Move Down
+<ScriptInstance SOND 0x140b029a>
+C1_target_2
+<ScriptInstance CAMW 0x140b027e>
+Samus_shot_5
+<ScriptInstance ACKF 0x140b027f>
+Generator Core Scan Model
+<ScriptInstance ACTR 0x140b02d3>
+Camera_6
+<ScriptInstance CAMR 0x140b0280>
+C5_target_1
+<ScriptInstance CAMW 0x140b0281>
+Camera_1
+<ScriptInstance CAMR 0x140b0282>
+Tentacles Move Up
+<ScriptInstance SOND 0x140b029b>
+Shot_4_sphere
+<ScriptInstance ACKF 0x140b0283>
+Samus_shot_3
+<ScriptInstance PLAC 0x140b0284>
+Emperor Ing Vox - Tentacles Up
+<ScriptInstance SOND 0x140b029c>
+Samus_shot_6
+<ScriptInstance ACKF 0x140b0285>
+shot_4_base
+<ScriptInstance ACKF 0x140b0286>
+Cinematic Bars
+<ScriptInstance FILT 0x140b028b>
+C4_target_1
+<ScriptInstance CAMW 0x140b028c>
+Tentacle Movement Loop Control
+<ScriptInstance SNDM 0x140b02b8>
+C6_path_1
+<ScriptInstance CAMW 0x140b028d>
+C6_path_4
+<ScriptInstance CAMW 0x140b028e>
+C1_path_3
+<ScriptInstance CAMW 0x140b028f>
+Tentacle Movement Loop
+<ScriptInstance SOND 0x140b02b9>
+C5_path_1
+<ScriptInstance CAMW 0x140b0290>
+C6_target_2
+<ScriptInstance CAMW 0x140b0291>
+Camera_5
+<ScriptInstance CAMR 0x140b0292>
+shot_5B_4_tentacles
+<ScriptInstance ACKF 0x140b0293>
+Camera Shaker
+<ScriptInstance CAMS 0x140b0294>
+Emperor Ing Body Movement
+<ScriptInstance SOND 0x140b029e>
+Hole - cutscene
+<ScriptInstance ACTR 0x180b0037>
+Hole - cutscene
+<ScriptInstance ACTR 0x180b0095>
+Camera_1
+<ScriptInstance CAMR 0x180b01c0>
+CameraWaypoint 001
+<ScriptInstance CAMW 0x180b01c1>
+Hole - cutscene
+<ScriptInstance ACTR 0x180b01c2>
+target
+<ScriptInstance CAMW 0x180b01c3>
+RedHeart
+<ScriptInstance EFCT 0x180b01c4>
+Unload Stage 1 To 2 Cine
+<ScriptInstance SLCT 0x180b0147>
+Hole - cutscene
+<ScriptInstance ACTR 0x180b01c5>
+CameraWaypoint 003
+<ScriptInstance CAMW 0x180b01c6>
+Hole - cutscene
+<ScriptInstance ACTR 0x180b01c7>
+End Cinematic 1 to 2
+<ScriptInstance SRLY 0x180b013f>
+Camera_2
+<ScriptInstance CAMR 0x180b01c8>
+Henshin
+<ScriptInstance SOND 0x180b0088>
+PlayerActor Samus Interstage Close up 
+<ScriptInstance PLAC 0x180b01c9>
+Hole - cutscene
+<ScriptInstance ACTR 0x180b01ca>
+Scream
+<ScriptInstance SOND 0x180b02a0>
+Hole - cutscene
+<ScriptInstance ACTR 0x180b01cb>
+Camera_3
+<ScriptInstance CAMR 0x180b01cc>
+Turn Crust on
+<ScriptInstance SQTR 0x180b01cd>
+OcclusionRelay
+<ScriptInstance SPFN 0x180b0148>
+Hole - cutscene
+<ScriptInstance ACTR 0x180b01ce>
+Hole - cutscene
+<ScriptInstance ACTR 0x180b01cf>
+target
+<ScriptInstance CAMW 0x180b01d1>
+Fog Overlay
+<ScriptInstance FOGO 0x180b01d2>
+Hole - cutscene
+<ScriptInstance ACTR 0x180b01d3>
+Base - cutscene
+<ScriptInstance ACTR 0x180b01d4>
+Head - cutscene
+<ScriptInstance ACTR 0x180b01d5>
+Hole - cutscene
+<ScriptInstance ACTR 0x180b01d6>
+target
+<ScriptInstance CAMW 0x180b01d7>
+After Cinema
+<ScriptInstance SPWN 0x180b01d8>
+CENTRAL GAS
+<ScriptInstance EFCT 0x180b01d9>
+CameraWaypoint 002
+<ScriptInstance CAMW 0x180b01da>
+Start Cinematic 1 to 2
+<ScriptInstance SRLY 0x180b0141>
+Start_Interstage_cutscene_1_2
+<ScriptInstance SQTR 0x180b01db>
+Crust - Cutscene
+<ScriptInstance PLAT 0x180b01dc>
+c4 path2
+<ScriptInstance CAMW 0x1c0b0043>
+Interstage 2_3 Effects
+<ScriptInstance SQTR 0x1c0b02e9>
+Interstage 2_3 timer
+<ScriptInstance SQTR 0x1c0b0046>
+c1 path2
+<ScriptInstance CAMW 0x1c0b0047>
+Hole - cutscene
+<ScriptInstance ACTR 0x1c0b0049>
+Hole - cutscene
+<ScriptInstance ACTR 0x1c0b004b>
+Stage2 Yellow
+<ScriptInstance CLRM 0x1c0b02ea>
+c4 target1
+<ScriptInstance CAMW 0x1c0b004c>
+Unload Stage 2 To 3 Cine
+<ScriptInstance SLCT 0x1c0b0149>
+Turn on crust
+<ScriptInstance SRLY 0x1c0b004e>
+Hole - cutscene
+<ScriptInstance ACTR 0x1c0b0051>
+Camera 003
+<ScriptInstance CAMR 0x1c0b0052>
+Zoom
+<ScriptInstance SOND 0x1c0b0309>
+Hole - cutscene
+<ScriptInstance ACTR 0x1c0b0056>
+c2 target1
+<ScriptInstance CAMW 0x1c0b02eb>
+After Cinema
+<ScriptInstance SPWN 0x1c0b0058>
+Vox Appear 2
+<ScriptInstance SOND 0x1c0b030a>
+Camera 002
+<ScriptInstance CAMR 0x1c0b0059>
+Boss Beams
+<ScriptInstance SOND 0x1c0b030b>
+c4 path1
+<ScriptInstance CAMW 0x1c0b005a>
+Hole - cutscene
+<ScriptInstance ACTR 0x1c0b005c>
+Hole - cutscene
+<ScriptInstance ACTR 0x1c0b005d>
+c3 target2
+<ScriptInstance CAMW 0x1c0b0063>
+Sound Interstage 2 Cine
+<ScriptInstance SQTR 0x1c0b030c>
+Hole - cutscene
+<ScriptInstance ACTR 0x1c0b0064>
+stage2Explosion
+<ScriptInstance EFCT 0x1c0b02ec>
+c3 path2
+<ScriptInstance CAMW 0x1c0b0065>
+c1 target1
+<ScriptInstance CAMW 0x1c0b0067>
+Hole - cutscene
+<ScriptInstance ACTR 0x1c0b0069>
+Camera 001
+<ScriptInstance CAMR 0x1c0b006a>
+Explode
+<ScriptInstance SNDM 0x1c0b030d>
+Stage2 Holes Yellow
+<ScriptInstance CLRM 0x1c0b02ed>
+stage2LightCracks
+<ScriptInstance EFCT 0x1c0b02ee>
+post Cloud 
+<ScriptInstance EFCT 0x1c0b02f0>
+Crust - Cutscene
+<ScriptInstance PLAT 0x1c0b006d>
+Vox Appear
+<ScriptInstance SOND 0x1c0b030e>
+Camera Blur Keyframe 001
+<ScriptInstance BLUR 0x1c0b02f1>
+c3 path1
+<ScriptInstance CAMW 0x1c0b006e>
+c3 target1
+<ScriptInstance CAMW 0x1c0b006f>
+Hole - cutscene
+<ScriptInstance ACTR 0x1c0b0074>
+Camera Shaker
+<ScriptInstance CAMS 0x1c0b02f2>
+Hole - cutscene
+<ScriptInstance ACTR 0x1c0b0075>
+OcclusionRelay
+<ScriptInstance SPFN 0x1c0b0154>
+Start Cinematic 2 to 3
+<ScriptInstance SRLY 0x1c0b0155>
+End Cinematic 2 to 3
+<ScriptInstance SRLY 0x1c0b0156>
+Boss Stab into ground
+<ScriptInstance ACKF 0x1c0b0078>
+Boss Explode
+<ScriptInstance SOND 0x1c0b030f>
+c2 path1
+<ScriptInstance CAMW 0x1c0b02f3>
+Cinematic Bars (Inc at Start, Dec at End)
+<ScriptInstance FILT 0x1c0b0079>
+Explode
+<ScriptInstance SOND 0x1c0b0310>
+Camera 004
+<ScriptInstance CAMR 0x1c0b007b>
+Turn off Crust
+<ScriptInstance SRLY 0x1c0b0080>
+c1 path1
+<ScriptInstance CAMW 0x1c0b0082>
+c1 path3
+<ScriptInstance CAMW 0x1c0b0083>
+PlayerActor Samus Interstage Close up 
+<ScriptInstance PLAC 0x1c0b0085>
+Hole - cutscene
+<ScriptInstance ACTR 0x1c0b0086>
+Floating Parts Suck In
+<ScriptInstance EFCT 0x200b001c>
+C13
+<ScriptInstance CAMR 0x200b002e>
+s_14
+<ScriptInstance ACKF 0x200b0030>
+s_09
+<ScriptInstance ACKF 0x200b0101>
+Samus Sucking Sphere
+<ScriptInstance SOND 0x200b0164>
+C4 Target 02
+<ScriptInstance CAMW 0x200b0135>
+C10 Target 02
+<ScriptInstance CAMW 0x200b014b>
+Twinkle R
+<ScriptInstance SOND 0x200b0166>
+Samus Glow
+<ScriptInstance CLRM 0x200b0152>
+C1 Target 02
+<ScriptInstance CAMW 0x200b01e0>
+C2 Path 01
+<ScriptInstance CAMW 0x200b01e1>
+Emperor Ing Death Scream
+<ScriptInstance SOND 0x200b0143>
+WP LandDust 01
+<ScriptInstance WAYP 0x200b01e3>
+EnergyBall
+<ScriptInstance EFCT 0x200b01e4>
+Samus Thrust
+<ScriptInstance SOND 0x200b016a>
+C2
+<ScriptInstance CAMR 0x200b01e5>
+C8
+<ScriptInstance CAMR 0x200b01e7>
+WP BallShrinkOffset 01
+<ScriptInstance WAYP 0x200b01e9>
+Samus Electric Arcs
+<ScriptInstance SOND 0x200b0251>
+C8 Target 02
+<ScriptInstance CAMW 0x200b01eb>
+White Flash
+<ScriptInstance FILT 0x200b01ec>
+Timer White Flash Duration
+<ScriptInstance TIMR 0x200b01ed>
+Camera Blur
+<ScriptInstance BLUR 0x200b01ee>
+White Flash
+<ScriptInstance SRLY 0x200b01ef>
+BossLandDust
+<ScriptInstance EFCT 0x200b01f0>
+AbsorbBeams
+<ScriptInstance EFCT 0x200b01f1>
+C11 Target 01
+<ScriptInstance CAMW 0x200b01f4>
+s_13
+<ScriptInstance ACKF 0x200b01f6>
+C4 Path 01
+<ScriptInstance CAMW 0x200b01f7>
+C3
+<ScriptInstance CAMR 0x200b01f8>
+C3 Path 01
+<ScriptInstance CAMW 0x200b01f9>
+C8 Path 01
+<ScriptInstance CAMW 0x200b01fb>
+Floating Parts
+<ScriptInstance EFCT 0x200b01fc>
+Unload Final Death Cinematic
+<ScriptInstance SLCT 0x200b002a>
+Twinkle Control
+<ScriptInstance SNDM 0x200b016b>
+C4 Target 01
+<ScriptInstance CAMW 0x200b01fe>
+Twinkle L
+<ScriptInstance SOND 0x200b016d>
+Energy Sphere Loop
+<ScriptInstance SOND 0x200b0158>
+Energy Sphere Shrinking Control
+<ScriptInstance SNDM 0x200b024d>
+C7 Path 02
+<ScriptInstance CAMW 0x200b0202>
+Samus_04
+<ScriptInstance PLAC 0x200b0203>
+Shaker Earthquake
+<ScriptInstance CAMS 0x200b0205>
+C13 Target 01
+<ScriptInstance CAMW 0x200b0206>
+C14
+<ScriptInstance CAMR 0x200b0207>
+C14 Target 01
+<ScriptInstance CAMW 0x200b0208>
+DynamicLight 001
+<ScriptInstance DLHT 0x200b02e7>
+C12 Path 03
+<ScriptInstance CAMW 0x200b0209>
+C5 Path 01
+<ScriptInstance CAMW 0x200b020b>
+Emperor Ing Explode
+<ScriptInstance SOND 0x200b015b>
+C6
+<ScriptInstance CAMR 0x200b020c>
+EnergyBall_Shrink
+<ScriptInstance EFCT 0x200b020d>
+DynamicLight S_11
+<ScriptInstance DLHT 0x200b02e8>
+C8 Target 01
+<ScriptInstance CAMW 0x200b020e>
+C7 Target 02
+<ScriptInstance CAMW 0x200b020f>
+Samus Electric Arcs Control
+<ScriptInstance SNDM 0x200b0253>
+C12 Path 02
+<ScriptInstance CAMW 0x200b0210>
+C12 Target 01
+<ScriptInstance CAMW 0x200b0211>
+WP BallShrinkOffset 02
+<ScriptInstance WAYP 0x200b0212>
+OcclusionRelay
+<ScriptInstance SPFN 0x200b002f>
+C12 Target 02
+<ScriptInstance CAMW 0x200b0213>
+C7 Target 01
+<ScriptInstance CAMW 0x200b0214>
+C6 Path 01
+<ScriptInstance CAMW 0x200b0219>
+s_08
+<ScriptInstance ACKF 0x200b021a>
+Final Boss Death
+<ScriptInstance SQTR 0x200b021b>
+C1 Target 01
+<ScriptInstance CAMW 0x200b021c>
+Shaker Into Sphere
+<ScriptInstance CAMS 0x200b021d>
+C14 Path 01
+<ScriptInstance CAMW 0x200b021e>
+Samus_02.5
+<ScriptInstance PLAC 0x200b021f>
+Final Boss 01
+<ScriptInstance ACTR 0x200b0221>
+Cinematic Bars (Inc at Start, Dec at End)
+<ScriptInstance FILT 0x200b0222>
+Final Boss 02
+<ScriptInstance ACTR 0x200b0223>
+Samus_02
+<ScriptInstance PLAC 0x200b0224>
+WP LandDust 02
+<ScriptInstance WAYP 0x200b0225>
+C10
+<ScriptInstance CAMR 0x200b0226>
+C12 Path 01
+<ScriptInstance CAMW 0x200b0227>
+C9 Path 01
+<ScriptInstance CAMW 0x200b0229>
+C6 Target 01
+<ScriptInstance CAMW 0x200b022a>
+C9
+<ScriptInstance CAMR 0x200b022b>
+Spawn point 002
+<ScriptInstance SPWN 0x200b022c>
+Boss_Beams
+<ScriptInstance EFCT 0x200b022d>
+C11
+<ScriptInstance CAMR 0x200b022e>
+Energy Sphere Shrinking
+<ScriptInstance SOND 0x200b024e>
+C5 Target 01
+<ScriptInstance CAMW 0x200b022f>
+C5
+<ScriptInstance CAMR 0x200b0230>
+Energy Sphere Control
+<ScriptInstance SNDM 0x200b024f>
+C9 Target 02
+<ScriptInstance CAMW 0x200b0231>
+C12
+<ScriptInstance CAMR 0x200b0232>
+C7
+<ScriptInstance CAMR 0x200b0233>
+C7 Path 01
+<ScriptInstance CAMW 0x200b0234>
+Boss_Explode
+<ScriptInstance EFCT 0x200b0235>
+C1 Path 01
+<ScriptInstance CAMW 0x200b0237>
+Samus_03
+<ScriptInstance PLAC 0x200b0238>
+Shaker Boss Explode
+<ScriptInstance CAMS 0x200b0239>
+C10 Path 01
+<ScriptInstance CAMW 0x200b023a>
+Earthquake
+<ScriptInstance SOND 0x200b0250>
+C2 Target 01
+<ScriptInstance CAMW 0x200b023b>
+C4
+<ScriptInstance CAMR 0x200b023c>
+C10 Target 01
+<ScriptInstance CAMW 0x200b023d>
+C13 Path 01
+<ScriptInstance CAMW 0x200b023e>
+C2 Target 02
+<ScriptInstance CAMW 0x200b023f>
+C1
+<ScriptInstance CAMR 0x200b0240>
+Shaker Boss Land
+<ScriptInstance CAMS 0x200b0241>
+Death Cinema End
+<ScriptInstance SRLY 0x200b0244>
+Death Cinema Start
+<ScriptInstance SRLY 0x200b0245>
+Final Death Cine Sounds
+<ScriptInstance SQTR 0x200b015d>
+C11 Path 01
+<ScriptInstance CAMW 0x200b0246>
+C1 Target 03
+<ScriptInstance CAMW 0x200b0247>
+C9 Target 01
+<ScriptInstance CAMW 0x200b0248>
+C3 Target 01
+<ScriptInstance CAMW 0x200b0249>
+C1 Path 02
+<ScriptInstance CAMW 0x200b024a>
+Samus_01
+<ScriptInstance PLAC 0x200b024b>
+Boss Brighten
+<ScriptInstance CLRM 0x200b024c>
+[IN] EXITED Safezone
+<ScriptInstance SRLY 0x240b008d>
+RoomAcoustics - Inside Safe Zone
+<ScriptInstance RMAC 0x240b00ef>
+
+<ScriptInstance REAA 0x240b008e>
+(BEFORE) Distance Fog (Inside Bubble)
+<ScriptInstance DFOG 0x240b008f>
+[IN] ENTERED Safezone
+<ScriptInstance SRLY 0x240b0097>
+(BEFORE) Distance Fog (Outside Bubble)
+<ScriptInstance DFOG 0x240b00d7>
