@@ -338,6 +338,14 @@ def Make_Changes(editor: PatcherEditor):
 
     else:
 
+        for world_id in _WORLDS:
+            world = editor.get_mlvl(world_id)
+            for area in world.areas:
+                if area.id in _AREAS_TO_SKIP:
+                    continue
+                for layer in area.layers:
+                    pass
+
         #pkl.dump( Enemy_Property_List, open( "C:/Users/nevin/AppData/Roaming/Python/Python310/site-packages/open_prime_rando/echoes/enemy_attribute_randomizer/Vanilla_Instance_Properties.p", "wb" ) )
 
         Enemy_Property_List = pkl.load( open ("C:/Users/nevin/AppData/Roaming/Python/Python310/site-packages/open_prime_rando/echoes/enemy_attribute_randomizer/Vanilla_Instance_Properties.p", "rb") )
@@ -348,5 +356,5 @@ def Make_Changes(editor: PatcherEditor):
         for i in Enemy_Property_List:
             iteration += 1
             for R in i.values():
-                print(R.name)
+                #print(R.name)
                 globals()[Function_Names[iteration]](R, editor, rng, Range_Dict)
