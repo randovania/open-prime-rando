@@ -5,7 +5,7 @@ from open_prime_rando.patcher_editor import PatcherEditor
 
 def EDITOR_PROPERTIES(self, ID, Rand_Scale, Rand_Health, Rand_Speed, Rand_Damage, Rand_KnockBack, Range: dict, rng: random.Random, MIN=0.01, MAX=9999.0):
 
-    if ID in [0x08200074, 0x08200040, 0x082e00b8, 0x08200075, 0x0820003f, 0x082e00b7, 0x08180082, 0x0818001e]:
+    if ID in [0x08200074, 0x08200040, 0x082e00b8, 0x08200075, 0x0820003f, 0x082e00b7]:
         return
     if ID in [0x081e0049, 0x0c03001c]:
         while all(i > 1.5 for i in Rand_Scale.values()):
@@ -136,10 +136,10 @@ def BASIC_SWARM_PROPERTIES(self, ID, Rand_Scale, Rand_Health, Rand_Speed, Rand_D
 
 def SANDWORM_STRUCT(self, ID, Rand_Scale, Rand_Health, Rand_Speed, Rand_Damage, Rand_KnockBack, Range: dict, rng: random.Random):
 
+    self.unknown_0x98106ee2 *= Rand_Health #Health intervals for breaking his bomb throwing charge after you damage his tail.
     self.unknown_0x95081226 /= Rand_Speed #Delay between attacks
     self.unknown_0xc2064265 /= Rand_Speed #Delay between attacks
     self.move_speed_multiplier *= Rand_Speed
-    self.unknown_0x98106ee2 *= Rand_Health #Health intervals for breaking his bomb throwing charge after you damage his tail.
     if all(i > 1.0 for i in Rand_Scale.values()):
         Rand_Speed /= (Rand_Scale['x'] + Rand_Scale['y'] + Rand_Scale['z']) / 3
     self.move_speed_multiplier *= Rand_Speed
@@ -171,7 +171,7 @@ def ING_SPIDER_BALL_GUARDIAN_STRUCT(self, Rand_Scale, Rand_Health, Rand_Speed, R
     self.angular_speed *= Rand_Speed
     self.stunned_speed *= Rand_Speed
     #self.stunned_time /= Rand_Speed - bit to much
-    self.max_charge_time /= Rand_Speed
+    #self.max_charge_time /= Rand_Speed - same as above
 
 def POWER_BOMB_GUARDIAN_STAGE_PROPERTIES(self, Rand_Scale, Rand_Health, Rand_Speed, Rand_Damage, Rand_KnockBack, Range: dict, rng: random.Random):
 
