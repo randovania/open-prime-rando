@@ -53,7 +53,7 @@ def enemy_attribute_randomizer(editor: PatcherEditor, configuration: dict):
     Damage_High = configuration["damage_high"]
     KnockBack_Low = configuration["knockback_low"]
     KnockBack_High = configuration["knockback_high"]
-    diff_xyz_scale = "scale_randomize_xyz_seperately"
+    diff_xyz_scale = configuration["scale_randomize_xyz_seperately"]
     Range_Dict = {"SC_Low": Scale_Low, "SC_High": Scale_High, "H_Low": Health_Low, "H_High": Health_High,
                   "SP_Low": Speed_Low, "SP_High": Speed_High, "D_Low": Damage_Low, "D_High": Damage_High,
                   "K_Low": KnockBack_Low, "K_High": KnockBack_High, "DIFF_XYZ": diff_xyz_scale}
