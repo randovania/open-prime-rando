@@ -1,5 +1,6 @@
 from retro_data_structures.formats.script_object import ScriptInstanceHelper
 from retro_data_structures.formats.script_layer import ScriptLayerHelper
+from retro_data_structures.game_check import Game
 from open_prime_rando.echoes.enemy_attribute_randomizer.CommonStructs import *
 from open_prime_rando.echoes.enemy_attribute_randomizer.__init__ import Randomize_Values
 from open_prime_rando.echoes.asset_ids.agon_wastes import *
@@ -34,11 +35,11 @@ def Enemy_Blogg(Enemy: ScriptInstanceHelper, editor: PatcherEditor, rng: random.
     Data_Range = copy.deepcopy(Range)
     if Data_Range["SC_Low"] < 0.1:
         Data_Range["SC_Low"] = 0.1
-    elif Data_Range["SC_High"] > 2.0:
+    if Data_Range["SC_High"] > 2.0:
         Data_Range["SC_High"] = 2.0
     if Data_Range["SC_Low"] > Data_Range["SC_High"]:
         Data_Range["SC_Low"] = Data_Range["SC_High"]
-    elif Data_Range["SC_High"] < Data_Range["SC_Low"]:
+    if Data_Range["SC_High"] < Data_Range["SC_Low"]:
         Data_Range["SC_High"] = Data_Range["SC_Low"]
     Rand_Scale, Rand_Health, Rand_Speed, Rand_Damage, Rand_KnockBack = Randomize_Values(rng, Data_Range)
     Rand_Speed = 1/((Rand_Scale['x'] + Rand_Scale['y'] + Rand_Scale['z']) / 3)
@@ -202,6 +203,7 @@ def Enemy_Kralee(Enemy: ScriptInstanceHelper, editor: PatcherEditor, rng: random
     Enemy_props.warp_attack_knockback *= Rand_KnockBack
     Enemy_props.warp_attack_damage *= Rand_Damage
     Enemy_props.anim_speed_scalar *= (Rand_Scale['x'] + Rand_Scale['y'] + Rand_Scale['z']) / 3
+
     Enemy.set_properties(Enemy_props)
 
 def Enemy_Plant_Scarab_Swarm(Enemy: ScriptInstanceHelper, editor: PatcherEditor, rng: random.Random, Range: dict):
@@ -249,14 +251,14 @@ def Enemy_Sandworm(Enemy: ScriptInstanceHelper, editor: PatcherEditor, rng: rand
     Data_Range = copy.deepcopy(Range)
     if Data_Range["SC_Low"] < 0.05:
         Data_Range["SC_Low"] = 0.05
-    elif Data_Range["SC_High"] > 2.5:
-        Data_Range["SC_High"] = 2.5
+    if Data_Range["SC_High"] > 2.0:
+        Data_Range["SC_High"] = 2.0
     if Data_Range["SC_Low"] > Data_Range["SC_High"]:
         Data_Range["SC_Low"] = Data_Range["SC_High"]
-    elif Data_Range["SC_High"] < Data_Range["SC_Low"]:
+    if Data_Range["SC_High"] < Data_Range["SC_Low"]:
         Data_Range["SC_High"] = Data_Range["SC_Low"]
     Rand_Scale, Rand_Health, Rand_Speed, Rand_Damage, Rand_KnockBack = Randomize_Values(rng, Data_Range)
-    if Enemy.id == 0x081a009c:
+    if Enemy.id == 0x081a009c and ((Rand_Scale['x'] + Rand_Scale['y'] + Rand_Scale['z']) / 3) > 1.0:
         Rand_Speed = 1/((Rand_Scale['x'] + Rand_Scale['y'] + Rand_Scale['z']) / 3)
     Enemy_props: Enemy = Enemy.get_properties()
     EDITOR_PROPERTIES(Enemy_props.editor_properties, Enemy.id, Rand_Scale, Rand_Health, Rand_Speed, Rand_Damage, Rand_KnockBack, Range, rng)
@@ -280,11 +282,11 @@ def Enemy_Grenchler(Enemy: ScriptInstanceHelper, editor: PatcherEditor, rng: ran
     Data_Range = copy.deepcopy(Range)
     if Data_Range["SC_Low"] < 0.2:
         Data_Range["SC_Low"] = 0.2
-    elif Data_Range["SC_High"] > 2.0:
+    if Data_Range["SC_High"] > 2.0:
         Data_Range["SC_High"] = 2.0
     if Data_Range["SC_Low"] > Data_Range["SC_High"]:
         Data_Range["SC_Low"] = Data_Range["SC_High"]
-    elif Data_Range["SC_High"] < Data_Range["SC_Low"]:
+    if Data_Range["SC_High"] < Data_Range["SC_Low"]:
         Data_Range["SC_High"] = Data_Range["SC_Low"]
     Rand_Scale, Rand_Health, Rand_Speed, Rand_Damage, Rand_KnockBack = Randomize_Values(rng, Data_Range)
     if Enemy.id == 0x0c3b003d:
@@ -315,11 +317,11 @@ def Enemy_Sporb_Base(Enemy: ScriptInstanceHelper, editor: PatcherEditor, rng: ra
     Data_Range = copy.deepcopy(Range)
     if Data_Range["SC_Low"] < 0.05:
         Data_Range["SC_Low"] = 0.05
-    elif Data_Range["SC_High"] > 2.0:
+    if Data_Range["SC_High"] > 2.0:
         Data_Range["SC_High"] = 2.0
     if Data_Range["SC_Low"] > Data_Range["SC_High"]:
         Data_Range["SC_Low"] = Data_Range["SC_High"]
-    elif Data_Range["SC_High"] < Data_Range["SC_Low"]:
+    if Data_Range["SC_High"] < Data_Range["SC_Low"]:
         Data_Range["SC_High"] = Data_Range["SC_Low"]
     Rand_Scale, Rand_Health, Rand_Speed, Rand_Damage, Rand_KnockBack = Randomize_Values(rng, Data_Range)
     Enemy_props: Enemy = Enemy.get_properties()
@@ -347,11 +349,11 @@ def Enemy_Splinter(Enemy: ScriptInstanceHelper, editor: PatcherEditor, rng: rand
     if Enemy.id == 0x080200ff:
         if Data_Range["SC_Low"] < 0.05:
             Data_Range["SC_Low"] = 0.05
-        elif Data_Range["SC_High"] > 2.5:
+        if Data_Range["SC_High"] > 2.5:
             Data_Range["SC_High"] = 2.5
         if Data_Range["SC_Low"] > Data_Range["SC_High"]:
             Data_Range["SC_Low"] = Data_Range["SC_High"]
-        elif Data_Range["SC_High"] < Data_Range["SC_Low"]:
+        if Data_Range["SC_High"] < Data_Range["SC_Low"]:
             Data_Range["SC_High"] = Data_Range["SC_Low"]
     Rand_Scale, Rand_Health, Rand_Speed, Rand_Damage, Rand_KnockBack = Randomize_Values(rng, Data_Range)
     Enemy_props: Enemy = Enemy.get_properties()
@@ -429,7 +431,7 @@ def Enemy_Atomic_Beta(Enemy: ScriptInstanceHelper, editor: PatcherEditor, rng: r
     Data_Range = copy.deepcopy(Range)
     if Data_Range["SC_Low"] > 1.75:
         Data_Range["SC_Low"] = 1.75
-    elif Data_Range["SC_High"] > 1.75:
+    if Data_Range["SC_High"] > 1.75:
         Data_Range["SC_High"] = 1.75
     Rand_Scale, Rand_Health, Rand_Speed, Rand_Damage, Rand_KnockBack = Randomize_Values(rng, Data_Range)
     Enemy_props: Enemy = Enemy.get_properties()
@@ -643,7 +645,7 @@ def Enemy_Splitter_Main_Chassis(Enemy: ScriptInstanceHelper, editor: PatcherEdit
     Enemy_props.splitter_main_chassis_data.deployment_speed *= Rand_Speed
     Enemy_props.splitter_main_chassis_data.scan_duration /= Rand_Speed
     Enemy_props.splitter_main_chassis_data.laser_sweep_interval /= Rand_Speed
-    Enemy_props.splitter_main_chassis_data.unknown_0x14ded881 *= Rand_Speed # Speed of spin attack
+    Enemy_props.splitter_main_chassis_data.unknown_0x35eedd1c *= Rand_Speed # Speed of spin attack
     Enemy_props.splitter_main_chassis_data.spin_attack_interval /= Rand_Speed
     Enemy_props.splitter_main_chassis_data.unknown_0x43722555 /= Rand_Speed # Delay to move toward you right after getting into spinning mode
     Enemy_props.splitter_main_chassis_data.unknown_0x21296bdc /= Rand_Speed # time spent in spinning mode
@@ -773,11 +775,11 @@ def Enemy_Digital_Guardian(Enemy: ScriptInstanceHelper, editor: PatcherEditor, r
     Data_Range = copy.deepcopy(Range)
     if Data_Range["SC_Low"] < 0.01:
         Data_Range["SC_Low"] = 0.01
-    elif Data_Range["SC_High"] > 4.0:
+    if Data_Range["SC_High"] > 4.0:
         Data_Range["SC_High"] = 4.0
     if Data_Range["SC_Low"] > Data_Range["SC_High"]:
         Data_Range["SC_Low"] = Data_Range["SC_High"]
-    elif Data_Range["SC_High"] < Data_Range["SC_Low"]:
+    if Data_Range["SC_High"] < Data_Range["SC_Low"]:
         Data_Range["SC_High"] = Data_Range["SC_Low"]
     Rand_Scale, Rand_Health, Rand_Speed, Rand_Damage, Rand_KnockBack = Randomize_Values(rng, Data_Range)
     Enemy_props: Enemy = Enemy.get_properties()
@@ -811,11 +813,11 @@ def Enemy_Digital_Guardian_Head(Enemy: ScriptInstanceHelper, editor: PatcherEdit
     Data_Range = copy.deepcopy(Range)
     if Data_Range["SC_Low"] < 0.05:
         Data_Range["SC_Low"] = 0.05
-    elif Data_Range["SC_High"] > 1.4:
+    if Data_Range["SC_High"] > 1.4:
         Data_Range["SC_High"] = 1.4
     if Data_Range["SC_Low"] > Data_Range["SC_High"]:
         Data_Range["SC_Low"] = Data_Range["SC_High"]
-    elif Data_Range["SC_High"] < Data_Range["SC_Low"]:
+    if Data_Range["SC_High"] < Data_Range["SC_Low"]:
         Data_Range["SC_High"] = Data_Range["SC_Low"]
     Rand_Scale, Rand_Health, Rand_Speed, Rand_Damage, Rand_KnockBack = Randomize_Values(rng, Data_Range)
     Enemy_props: Enemy = Enemy.get_properties()
@@ -843,11 +845,11 @@ def Enemy_Ing_Space_Jump_Guardian(Enemy: ScriptInstanceHelper, editor: PatcherEd
     Data_Range = copy.deepcopy(Range)
     if Data_Range["SC_Low"] < 0.01:
         Data_Range["SC_Low"] = 0.01
-    elif Data_Range["SC_High"] > 2.5:
+    if Data_Range["SC_High"] > 2.5:
         Data_Range["SC_High"] = 2.5
     if Data_Range["SC_Low"] > Data_Range["SC_High"]:
         Data_Range["SC_Low"] = Data_Range["SC_High"]
-    elif Data_Range["SC_High"] < Data_Range["SC_Low"]:
+    if Data_Range["SC_High"] < Data_Range["SC_Low"]:
         Data_Range["SC_High"] = Data_Range["SC_Low"]
     Rand_Scale, Rand_Health, Rand_Speed, Rand_Damage, Rand_KnockBack = Randomize_Values(rng, Data_Range)
     Enemy_props: Enemy = Enemy.get_properties()
@@ -868,11 +870,11 @@ def Enemy_Ing_Boost_Ball_Guardian(Enemy: ScriptInstanceHelper, editor: PatcherEd
     Data_Range = copy.deepcopy(Range)
     if Data_Range["SC_Low"] < 0.05:
         Data_Range["SC_Low"] = 0.05
-    elif Data_Range["SC_High"] > 1.8:
+    if Data_Range["SC_High"] > 1.8:
         Data_Range["SC_High"] = 1.8
     if Data_Range["SC_Low"] > Data_Range["SC_High"]:
         Data_Range["SC_Low"] = Data_Range["SC_High"]
-    elif Data_Range["SC_High"] < Data_Range["SC_Low"]:
+    if Data_Range["SC_High"] < Data_Range["SC_Low"]:
         Data_Range["SC_High"] = Data_Range["SC_Low"]
     if Data_Range["SP_Low"] > 2.0:
         Data_Range["SP_Low"] = 2.0
@@ -914,15 +916,16 @@ def Enemy_Ing_Boost_Ball_Guardian(Enemy: ScriptInstanceHelper, editor: PatcherEd
 def Enemy_Ing_Spider_ball_Guardian(Enemy: ScriptInstanceHelper, editor: PatcherEditor, rng: random.Random, Range: dict):
 
     Data_Range = copy.deepcopy(Range)
-    if Data_Range["SC_Low"] < 0.5:
-        Data_Range["SC_Low"] = 0.5
-    elif Data_Range["SC_High"] > 1.5:
+    if Data_Range["SC_Low"] < 0.05:
+        Data_Range["SC_Low"] = 0.05
+    if Data_Range["SC_High"] > 1.5:
         Data_Range["SC_High"] = 1.5
     if Data_Range["SC_Low"] > Data_Range["SC_High"]:
         Data_Range["SC_Low"] = Data_Range["SC_High"]
-    elif Data_Range["SC_High"] < Data_Range["SC_Low"]:
+    if Data_Range["SC_High"] < Data_Range["SC_Low"]:
         Data_Range["SC_High"] = Data_Range["SC_Low"]
     Rand_Scale, Rand_Health, Rand_Speed, Rand_Damage, Rand_KnockBack = Randomize_Values(rng, Data_Range)
+    Rand_Health = 1.0 # yeaaaa that was a mistake changing his health
     Rand_Scale['y'] = Rand_Scale['x']
     Rand_Scale['z'] = Rand_Scale['x'] # First time I tested him with different XYZ's after the first electric node got him, he went offscreen and... triggered a node in the 3rd section and I couldn't get past the 2nd.
     Enemy_props: Enemy = Enemy.get_properties()
@@ -937,20 +940,29 @@ def Enemy_Ing_Spider_ball_Guardian(Enemy: ScriptInstanceHelper, editor: PatcherE
     Enemy_props.unknown_struct31.damage_radius *= (Rand_Scale['x'] + Rand_Scale['y'] + Rand_Scale['z']) / 3
     DAMAGE_INFO(Enemy_props.unknown_struct31.proximity_damage, Enemy.id, Rand_Scale, Rand_Health, Rand_Speed, Rand_Damage, Rand_KnockBack, Range, rng)
     Enemy.set_properties(Enemy_props)
+    TRIGGER = [0x34140096, 0x3414009c, 0x34140097, 0x34140099, 0x34140098, 0x3414009e]
     if Enemy.id == 0x3414007a:
         TEMP(editor, 'PLATFORM', DYNAMO_WORKS_MREA, 0x0c1400f7, Range, rng, Rand_Scale, Rand_Health, Rand_Speed, Rand_Damage, Rand_KnockBack)
         TEMP(editor, 'PLATFORM', DYNAMO_WORKS_MREA, 0x28140404, Range, rng, Rand_Scale, Rand_Health, Rand_Speed, Rand_Damage, Rand_KnockBack)
+        for i in TRIGGER:
+            Temp = (editor.get_mrea(DYNAMO_WORKS_MREA)).get_instance(i)
+            Temp_props: Temp = Temp.get_properties()
+            if Temp.name == 'Electric Coil 1 Damage' or Temp.name == 'Electric Coil 4 Damage' or Temp.name == 'Electric Coil 5 Damage' or Temp.name == 'Electric Coil 6 Damage':
+                Temp_props.editor_properties.transform.scale.x = 5.0 # If Spider Guardian is to small he can sneak past the electric coil triggers so this stops that
+            else:
+                Temp_props.editor_properties.transform.scale.y = 5.0
+            Temp.set_properties(Temp_props)
 
 def Enemy_Sand_Boss(Enemy: ScriptInstanceHelper, editor: PatcherEditor, rng: random.Random, Range: dict):
 
     Data_Range = copy.deepcopy(Range)
     if Data_Range["SC_Low"] < 0.4:
         Data_Range["SC_Low"] = 0.4
-    elif Data_Range["SC_High"] > 1.78:
+    if Data_Range["SC_High"] > 1.78:
         Data_Range["SC_High"] = 1.78
     if Data_Range["SC_Low"] > Data_Range["SC_High"]:
         Data_Range["SC_Low"] = Data_Range["SC_High"]
-    elif Data_Range["SC_High"] < Data_Range["SC_Low"]:
+    if Data_Range["SC_High"] < Data_Range["SC_Low"]:
         Data_Range["SC_High"] = Data_Range["SC_Low"]
     Rand_Scale, Rand_Health, Rand_Speed, Rand_Damage, Rand_KnockBack = Randomize_Values(rng, Data_Range)
     Enemy_props: Enemy = Enemy.get_properties()
@@ -978,6 +990,7 @@ def Enemy_Sand_Boss(Enemy: ScriptInstanceHelper, editor: PatcherEditor, rng: ran
     DAMAGE_VULNERABILITY(Enemy_props.sand_boss_data.stampede_vulnerability, Enemy.id, Rand_Scale, Rand_Health, Rand_Speed, Rand_Damage, Rand_KnockBack, Range, rng)
     DAMAGE_VULNERABILITY(Enemy_props.sand_boss_data.suck_air_vulnerability, Enemy.id, Rand_Scale, Rand_Health, Rand_Speed, Rand_Damage, Rand_KnockBack, Range, rng)
     Enemy.set_properties(Enemy_props)
+    #print(Enemy_props.editor_properties.transform.scale)
     Temp = (editor.get_mrea(DARK_AGON_TEMPLE_MREA)).get_instance(0x14240007)
     Temp_props: temp = Temp.get_properties()
     if Temp_props.editor_properties.transform.scale.x > Rand_Scale['x']:
@@ -1011,11 +1024,11 @@ def Enemy_Swamp_Boss_Stage_1(Enemy: ScriptInstanceHelper, editor: PatcherEditor,
     Data_Range = copy.deepcopy(Range)
     if Data_Range["SC_Low"] < 0.05:
         Data_Range["SC_Low"] = 0.05
-    elif Data_Range["SC_High"] > 1.5:
+    if Data_Range["SC_High"] > 1.5:
         Data_Range["SC_High"] = 1.5
     if Data_Range["SC_Low"] > Data_Range["SC_High"]:
         Data_Range["SC_Low"] = Data_Range["SC_High"]
-    elif Data_Range["SC_High"] < Data_Range["SC_Low"]:
+    if Data_Range["SC_High"] < Data_Range["SC_Low"]:
         Data_Range["SC_High"] = Data_Range["SC_Low"]
     if Data_Range["SP_Low"] > 2.0:
         Data_Range["SP_Low"] = 2.0
@@ -1048,11 +1061,11 @@ def Enemy_Swamp_Boss_Stage_2(Enemy: ScriptInstanceHelper, editor: PatcherEditor,
     Data_Range = copy.deepcopy(Range)
     if Data_Range["SC_Low"] < 0.05:
         Data_Range["SC_Low"] = 0.05
-    elif Data_Range["SC_High"] > 2.5:
+    if Data_Range["SC_High"] > 2.5:
         Data_Range["SC_High"] = 2.5
     if Data_Range["SC_Low"] > Data_Range["SC_High"]:
         Data_Range["SC_Low"] = Data_Range["SC_High"]
-    elif Data_Range["SC_High"] < Data_Range["SC_Low"]:
+    if Data_Range["SC_High"] < Data_Range["SC_Low"]:
         Data_Range["SC_High"] = Data_Range["SC_Low"]
     Rand_Scale, Rand_Health, Rand_Speed, Rand_Damage, Rand_KnockBack = Randomize_Values(rng, Data_Range)
     Rand_Scale['y'] = Rand_Scale['x']
@@ -1087,11 +1100,11 @@ def Enemy_Emperor_Ing_Stage_1(Enemy: ScriptInstanceHelper, editor: PatcherEditor
     Data_Range = copy.deepcopy(Range)
     if Data_Range["SC_Low"] < 0.05:
         Data_Range["SC_Low"] = 0.05
-    elif Data_Range["SC_High"] > 1.3:
+    if Data_Range["SC_High"] > 1.3:
         Data_Range["SC_High"] = 1.3
     if Data_Range["SC_Low"] > Data_Range["SC_High"]:
         Data_Range["SC_Low"] = Data_Range["SC_High"]
-    elif Data_Range["SC_High"] < Data_Range["SC_Low"]:
+    if Data_Range["SC_High"] < Data_Range["SC_Low"]:
         Data_Range["SC_High"] = Data_Range["SC_Low"]
     Rand_Scale, Rand_Health, Rand_Speed, Rand_Damage, Rand_KnockBack = Randomize_Values(rng, Data_Range)
     Enemy_props: Enemy = Enemy.get_properties()
@@ -1155,15 +1168,15 @@ def Enemy_Emperor_Ing_Stage_2(Enemy: ScriptInstanceHelper, editor: PatcherEditor
     Data_Range = copy.deepcopy(Range)
     if Data_Range["SC_Low"] < 0.2:
         Data_Range["SC_Low"] = 0.2
-    elif Data_Range["SC_High"] > 3.0:
+    if Data_Range["SC_High"] > 3.0:
         Data_Range["SC_High"] = 3.0
     if Data_Range["SC_Low"] > Data_Range["SC_High"]:
         Data_Range["SC_Low"] = Data_Range["SC_High"]
-    elif Data_Range["SC_High"] < Data_Range["SC_Low"]:
+    if Data_Range["SC_High"] < Data_Range["SC_Low"]:
         Data_Range["SC_High"] = Data_Range["SC_Low"]
     if Data_Range["SP_Low"] < 0.25:
         Data_Range["SP_Low"] = 0.25
-    elif Data_Range["SP_High"] < 0.25:
+    if Data_Range["SP_High"] < 0.25:
         Data_Range["SP_High"] = 0.25
     Rand_Scale, Rand_Health, Rand_Speed, Rand_Damage, Rand_KnockBack = Randomize_Values(rng, Data_Range)
     Enemy_props: Enemy = Enemy.get_properties()
@@ -1178,11 +1191,11 @@ def Enemy_Emperor_Ing_Stage_3(Enemy: ScriptInstanceHelper, editor: PatcherEditor
     Data_Range = copy.deepcopy(Range)
     if Data_Range["SC_Low"] < 0.1:
         Data_Range["SC_Low"] = 0.1
-    elif Data_Range["SC_High"] > 1.5:
+    if Data_Range["SC_High"] > 1.5:
         Data_Range["SC_High"] = 1.5
     if Data_Range["SC_Low"] > Data_Range["SC_High"]:
         Data_Range["SC_Low"] = Data_Range["SC_High"]
-    elif Data_Range["SC_High"] < Data_Range["SC_Low"]:
+    if Data_Range["SC_High"] < Data_Range["SC_Low"]:
         Data_Range["SC_High"] = Data_Range["SC_Low"]
     Rand_Scale, Rand_Health, Rand_Speed, Rand_Damage, Rand_KnockBack = Randomize_Values(rng, Data_Range)
     Enemy_props: Enemy = Enemy.get_properties()
@@ -1255,20 +1268,9 @@ def Enemy_Dark_Trooper(Enemy: ScriptInstanceHelper, editor: PatcherEditor, rng: 
     PATTERNED(Enemy_props.patterned, Enemy.id, Rand_Scale, Rand_Health, Rand_Speed, Rand_Damage, Rand_KnockBack, Range, rng)
     ING_POSSESSION_DATA(Enemy_props.ing_possession_data, Enemy.id, Rand_Scale, Rand_Health, Rand_Speed, Rand_Damage, Rand_KnockBack, Range, rng)
     DAMAGE_INFO(Enemy_props.melee_attack_damage, Enemy.id, Rand_Scale, Rand_Health, Rand_Speed, Rand_Damage, Rand_KnockBack, Range, rng)
-    Enemy_props.unknown /= Rand_Speed #time until they starts shooting
+    Enemy_props.unknown /= Rand_Speed #time until they starts shooting (only for the first attack...)
     DAMAGE_INFO(Enemy_props.ranged_attack_damage, Enemy.id, Rand_Scale, Rand_Health, Rand_Speed, Rand_Damage, Rand_KnockBack, Range, rng)
     DAMAGE_INFO(Enemy_props.missile_damage, Enemy.id, Rand_Scale, Rand_Health, Rand_Speed, Rand_Damage, Rand_KnockBack, Range, rng)
-    if Enemy.id == 0x080b000e:
-        #Temp = (editor.get_mrea(COMMUNICATION_AREA_MREA)).get_instance(0x082700c4)
-        #Enemy = Temp
-        #Enemy.set_properties(Enemy_props)
-        #Temp_props: Temp = Temp.get_properties()
-        #Enemy.set_properties(Temp_props)
-        #print(Temp_props.editor_properties.active)
-        #Temp_props.editor_properties.active = True
-        print(Enemy.connections)
-        #print(Temp_props.editor_properties.active)
-        #Enemy_props = Temp_props
     Enemy.set_properties(Enemy_props)
 
 def Enemy_Puffer(Enemy: ScriptInstanceHelper, editor: PatcherEditor, rng: random.Random, Range: dict):
@@ -1288,7 +1290,7 @@ def Enemy_Space_Pirate(Enemy: ScriptInstanceHelper, editor: PatcherEditor, rng: 
     Data_Range = copy.deepcopy(Range)
     Rand_Scale, Rand_Health, Rand_Speed, Rand_Damage, Rand_KnockBack = Randomize_Values(rng, Data_Range)
     Enemy_props: Enemy = Enemy.get_properties()
-    if Enemy.id in (0x081D000F, 0x081b020e, 0x081b0209, 0x081b0202, 0x081b01f8):
+    if Enemy.id in [0x081D000F, 0x081b020e, 0x081b0209, 0x081b0202, 0x081b01f8]:
         return
     EDITOR_PROPERTIES(Enemy_props.editor_properties, Enemy.id, Rand_Scale, Rand_Health, Rand_Speed, Rand_Damage, Rand_KnockBack, Range, rng)
     PATTERNED(Enemy_props.patterned, Enemy.id, Rand_Scale, Rand_Health, Rand_Speed, Rand_Damage, Rand_KnockBack, Range, rng)
@@ -1305,6 +1307,17 @@ def Enemy_Space_Pirate(Enemy: ScriptInstanceHelper, editor: PatcherEditor, rng: 
 def Enemy_Commando_Pirate(Enemy: ScriptInstanceHelper, editor: PatcherEditor, rng: random.Random, Range: dict):
 
     Data_Range = copy.deepcopy(Range)
+    if Enemy.id in [0x08180082, 0x0818001e]:
+        Data_Range["SC_Low"] = 1.0
+        Data_Range["SC_High"] = 1.0
+        if Data_Range["SP_Low"] < 0.05:
+            Data_Range["SP_Low"] = 0.05
+        if Data_Range["SP_High"] < 2.0:
+            Data_Range["SP_High"] = 2.0
+        if Data_Range["SP_Low"] > Data_Range["SP_High"]:
+            Data_Range["SP_Low"] = Data_Range["SP_High"]
+        if Data_Range["SP_High"] < Data_Range["SP_Low"]:
+            Data_Range["SP_High"] = Data_Range["SP_Low"]
     Rand_Scale, Rand_Health, Rand_Speed, Rand_Damage, Rand_KnockBack = Randomize_Values(rng, Data_Range)
     Enemy_props: Enemy = Enemy.get_properties()
     EDITOR_PROPERTIES(Enemy_props.editor_properties, Enemy.id, Rand_Scale, Rand_Health, Rand_Speed, Rand_Damage, Rand_KnockBack, Range, rng)
@@ -1358,11 +1371,11 @@ def Enemy_Dark_Samus(Enemy: ScriptInstanceHelper, editor: PatcherEditor, rng: ra
     Data_Range = copy.deepcopy(Range)
     if Data_Range["SC_Low"] < 0.05:
         Data_Range["SC_Low"] = 0.05
-    elif Data_Range["SC_High"] > 3.0:
+    if Data_Range["SC_High"] > 3.0:
         Data_Range["SC_High"] = 3.0
     if Data_Range["SC_Low"] > Data_Range["SC_High"]:
         Data_Range["SC_Low"] = Data_Range["SC_High"]
-    elif Data_Range["SC_High"] < Data_Range["SC_Low"]:
+    if Data_Range["SC_High"] < Data_Range["SC_Low"]:
         Data_Range["SC_High"] = Data_Range["SC_Low"]
     if Data_Range["SP_Low"] > 2.0:
         Data_Range["SP_Low"] = 2.0
@@ -1391,6 +1404,7 @@ def Enemy_Dark_Samus(Enemy: ScriptInstanceHelper, editor: PatcherEditor, rng: ra
         TEMP(editor, 'UNKNOWN_STRUCT17', MAIN_REACTOR_MREA, 0x182e019f, Range, rng, Rand_Scale, Rand_Health, Rand_Speed, Rand_Damage, Rand_KnockBack)
         TEMP(editor, 'UNKNOWN_STRUCT17', MAIN_REACTOR_MREA, 0x182e009e, Range, rng, Rand_Scale, Rand_Health, Rand_Speed, Rand_Damage, Rand_KnockBack)
         TEMP(editor, 'ACTOR', SECURITY_STATION_B_MREA, 0x083100a4, Range, rng, Rand_Scale, Rand_Health, Rand_Speed, Rand_Damage, Rand_KnockBack)
+        TEMP(editor, 'ACTOR', SECURITY_STATION_B_MREA, 0x0831009f, Range, rng, Rand_Scale, Rand_Health, Rand_Speed, Rand_Damage, Rand_KnockBack)
     elif Enemy.id == 0x083d0054:
         
         TEMP(editor, 'UNKNOWN_STRUCT17', AERIE_ACCESS_MREA, 0x083d0043, Range, rng, Rand_Scale, Rand_Health, Rand_Speed, Rand_Damage, Rand_KnockBack)
