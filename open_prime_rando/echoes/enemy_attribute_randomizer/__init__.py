@@ -42,6 +42,8 @@ def Randomize_Values(rng: random.Random, Range: dict):
     return Rand_Scale, Rand_Health, Rand_Speed, Rand_Damage, Rand_KnockBack
 
 def enemy_attribute_randomizer(editor: PatcherEditor, configuration: dict):
+    if not attribute_randomizer:
+        return
     rng = Random(configuration["seed"])
     Scale_Low = configuration["scale_low"]
     Scale_High = configuration["scale_high"]
