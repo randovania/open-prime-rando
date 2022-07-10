@@ -5,7 +5,7 @@ from pathlib import Path
 from retro_data_structures.asset_manager import FileProvider
 
 from open_prime_rando.echoes.small_randomizations import apply_small_randomizations
-from open_prime_rando.echoes.enemy_attribute_randomizer import Make_Changes
+from open_prime_rando.echoes.enemy_attribute_randomizer import enemy_attribute_randomizer
 from open_prime_rando.patcher_editor import PatcherEditor
 from open_prime_rando.validator_with_default import DefaultValidatingDraft7Validator
 
@@ -27,7 +27,7 @@ def patch_paks(file_provider: FileProvider, output_path: Path, configuration: di
     # custom_assets.create_custom_assets(editor)
     # specific_patches(editor)
     apply_small_randomizations(editor, configuration["small_randomizations"])
-    Make_Changes(editor)
+    enemy_attribute_randomizer(editor, configuration["enemy_attribute_randomizer"])
     # apply_door_rando(editor, [])
 
     # Save our changes
