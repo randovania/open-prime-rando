@@ -32,12 +32,97 @@
             "required": [
                 "seed"
             ]
+        },
+        "enemy_attribute_randomizer": {
+            "properties": {
+                "seed": {
+                    "type": "number",
+                    "description": "Number to use as seed for the enemy_attribute_randomizer"
+                },
+				"attribute_randomizer": {
+                    "type": "boolean",
+                    "description": "Run the enemy_attribute_randomizer",
+                    "default": true
+                },
+				"scale_randomize_xyz_seperately": {
+                    "type": "boolean",
+                    "description": "Randomize the enemy Scale XYZ values seperatly as opposed to together.",
+                    "default": false
+                },
+                "scale_low": {
+                    "type": "number",
+                    "description": "Smallest value that enemy Scale can be randomized to.",
+                    "default": 1.0
+                },
+                "scale_high": {
+                    "type": "number",
+                    "description": "Largest value that enemy Scale can be randomized to.",
+                    "default": 1.0
+				},
+                "health_low": {
+                    "type": "number",
+                    "description": "Smallest value that enemy Health can be randomized to.",
+                    "default": 1.0
+                },
+                "health_high": {
+                    "type": "number",
+                    "description": "Largest value that enemy Health can be randomized to.",
+                    "default": 1.0
+				},
+                "speed_low": {
+                    "type": "number",
+                    "description": "Smallest value that enemy Speed can be randomized to.",
+                    "default": 1.0
+                },
+                "speed_high": {
+                    "type": "number",
+                    "description": "Largest value that enemy Speed can be randomized to.",
+                    "default": 1.0
+				},
+                "damage_low": {
+                    "type": "number",
+                    "description": "Smallest value that enemy Damage can be randomized to.",
+                    "default": 1.0
+                },
+                "damage_high": {
+                    "type": "number",
+                    "description": "Largest value that enemy Damage can be randomized to.",
+                    "default": 1.0
+                },
+                "knockback_low": {
+                    "type": "number",
+                    "description": "Smallest value that enemy KnockBack can be randomized to.",
+                    "default": 1.0
+                },
+				"knockback_high": {
+                    "type": "number",
+                    "description": "Largest value that enemy KnockBack can be randomized to.",
+                    "default": 1.0
+                }
+            },
+            "additionalProperties": false,
+            "required": [
+                "seed",
+				"attribute_randomizer",
+				"scale_randomize_xyz_seperately",
+				"scale_low",
+				"scale_high",
+				"health_low",
+				"health_high",
+				"speed_low",
+				"speed_high",
+				"damage_low",
+				"damage_high",
+				"knockback_low",
+				"knockback_high"
+            ]
         }
     },
     "required": [
-        "small_randomizations"
+        "small_randomizations",
+		"enemy_attribute_randomizer"
     ],
     "additionalProperties": false,
-    "$defs": {
+	"$defs": {
     }
 }
