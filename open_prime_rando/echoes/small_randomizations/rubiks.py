@@ -25,6 +25,7 @@ RUBIKS_CUBES = {
     ]
 }
 
+
 @dataclass(frozen=True)
 class RubiksColor:
     name: str
@@ -33,7 +34,7 @@ class RubiksColor:
     old_txtr: int
 
     @property
-    def txtr_name(self) -> Path:
+    def txtr_name(self) -> str:
         return f"rubiks_{self.name.lower()}.TXTR"
 
     @property
@@ -42,6 +43,7 @@ class RubiksColor:
             type="TXTR",
             data=Path(__file__).parent.parent.joinpath("custom_assets", "rubiks", self.txtr_name).read_bytes()
         )
+
 
 COLORS = {
     "RED": RubiksColor(
@@ -64,19 +66,19 @@ COLORS = {
     )
 }
 
+
 def randomize_rubiks_puzzles(editor: PatcherEditor, rng: random.Random):
     mrea = editor.get_mrea(MAIN_GYRO_CHAMBER_MREA)
     
     # Add custom textures so colorblind players can distinguish the cubes
     for color in COLORS.values():
-        editor.add_file(color.txtr_name, color.txtr, editor.find_paks(MAIN_GYRO_CHAMBER_MREA))
+        txtr_id = editor.add_file(color.txtr_name, color.txtr, editor.find_paks(MAIN_GYRO_CHAMBER_MREA))
 
         cmdl = editor.get_file(color.cmdl, Cmdl)
         file_ids = cmdl.raw.material_sets[0].texture_file_ids
         old_txtr = file_ids.index(color.old_txtr)
-        file_ids[old_txtr] = color.txtr_id
+        file_ids[old_txtr] = txtr_id
 
-    
     for puzzle_name, cubes in RUBIKS_CUBES.items():
         solution = [
             COLORS["RED"], COLORS["RED"], COLORS["RED"],
@@ -88,10 +90,11 @@ def randomize_rubiks_puzzles(editor: PatcherEditor, rng: random.Random):
         puzzle = mrea.get_instance_by_name(puzzle_name)
         for color, cube_id in zip(solution, cubes):
             cube = mrea.get_instance(cube_id)
+            assert cube is not None
 
             puzzle.remove_connections(cube)
             puzzle.add_connection(color.state, "ATCH", cube)
 
-            props: Actor = cube.get_properties()
+            props = cube.get_properties_as(Actor)
             props.model = color.cmdl
             cube.set_properties(props)
