@@ -1,5 +1,6 @@
 import io
 import typing
+from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 
 from ppc_asm.dol_file import DolEditor, DolHeader
@@ -50,8 +51,9 @@ class PatcherEditor(AssetManager):
         return self.get_mlvl(mlvl).get_area(mrea)
 
     def flush_modified_assets(self):
-        for name, resource in self.memory_files.items():
-            self.replace_asset(name, resource)
+        with ThreadPoolExecutor() as executor:
+            for name, resource in self.memory_files.items():
+                executor.submit(self.replace_asset, name, resource)
         self.memory_files = {}
 
     def add_file(self,
