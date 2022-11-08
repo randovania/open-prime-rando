@@ -18,6 +18,7 @@ ECHO_LOCK_MREAS = [MAIN_GYRO_CHAMBER_MREA, SENTINELS_PATH_MREA, PROFANE_PATH_MRE
 ECHO_LOCK_STATES = ["ZERO", "IS00", "IS01", "IS02"]
 ECHO_LOCK_SOUNDS = [1005, 1006, 1007]
 
+
 def randomize_echo_locks(editor: PatcherEditor, rng: random.Random):
     # create key scan assets
     key_scan = editor.get_parsed_asset(0x2E7C4349, type_hint=Scan)
