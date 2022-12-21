@@ -6,6 +6,19 @@
             "type": "string",
             "format": "uri"
         },
+        "worlds": {
+            "type": "object",
+            "properties": {
+                "Great Temple": { "$ref": "#/$defs/world" },
+                "Temple Grounds": { "$ref": "#/$defs/world" },
+                "Agon Wastes": { "$ref": "#/$defs/world" },
+                "Torvus Bog": { "$ref": "#/$defs/world" },
+                "Sanctuary Fortress": { "$ref": "#/$defs/world" }
+            },
+            "default": {},
+            "additionalProperties": false,
+            "$comment": "The list of properties is replaced in runtime with all worlds in the provided ISO."
+        },
         "small_randomizations": {
             "properties": {
                 "seed": {
@@ -44,5 +57,37 @@
     ],
     "additionalProperties": false,
     "$defs": {
+        "world": {
+            "type": "object",
+            "properties": {
+                "areas": {
+                    "type": "object",
+                    "patternProperties": {
+                        ".*": {
+                            "$ref": "#/$defs/area"
+                        }
+                    }
+                }
+            },
+            "required": ["areas"],
+            "additionalProperties": false,
+            "$comment": "The list of areas is replaced in runtime with the existing areas of each specific world."
+        },
+        "area": {
+            "type": "object",
+            "properties": {
+                "layers": {
+                    "type": "object",
+                    "patternProperties": {
+                        ".*": {
+                            "type": "boolean"
+                        }
+                    },
+                    "default": {},
+                    "$comment": "The list of layers is replaced in runtime with the existing layers of each specific area."
+                }
+            },
+            "additionalProperties": false
+        }
     }
 }
