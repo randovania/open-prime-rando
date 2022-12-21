@@ -34,7 +34,7 @@ class PatcherEditor(AssetManager):
     def __init__(self, provider: FileProvider):
         super().__init__(provider, Game.ECHOES)
         self.memory_files = {}
-        self.dol = MemoryDol(provider.open_binary("sys/main.dol").read())
+        self.dol = MemoryDol(provider.get_dol())
 
     def get_file(self, path: NameOrAssetId, type_hint: typing.Type[T] = BaseResource) -> T:
         if path not in self.memory_files:
@@ -68,4 +68,7 @@ class PatcherEditor(AssetManager):
 
     def save_modifications(self, output_path: Path):
         super().save_modifications(output_path)
-        output_path.joinpath("sys/main.dol").write_bytes(self.dol.dol_file.getvalue())
+
+        target_dol = output_path.joinpath("sys/main.dol")
+        target_dol.parent.mkdir(exist_ok=True, parents=True)
+        target_dol.write_bytes(self.dol.dol_file.getvalue())
