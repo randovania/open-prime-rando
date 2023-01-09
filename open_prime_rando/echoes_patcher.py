@@ -2,6 +2,7 @@ import json
 import logging
 from pathlib import Path
 
+from open_prime_rando.echoes import specific_area_patches
 from retro_data_structures.asset_manager import FileProvider
 from retro_data_structures.formats.mlvl import AreaWrapper
 from retro_data_structures.game_check import Game
@@ -64,7 +65,7 @@ def patch_paks(file_provider: FileProvider, output_path: Path, configuration: di
     DefaultValidatingDraft7Validator(schema).validate(configuration)
 
     # custom_assets.create_custom_assets(editor)
-    # specific_patches(editor)
+    specific_area_patches.specific_patches(editor, configuration["area_patches"])
     apply_area_modifications(editor, configuration["worlds"])
     apply_small_randomizations(editor, configuration["small_randomizations"])
     # apply_door_rando(editor, [])
