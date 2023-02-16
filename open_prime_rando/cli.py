@@ -6,12 +6,17 @@ from pathlib import Path
 
 from retro_data_structures.asset_manager import PathFileProvider, IsoFileProvider
 
-from open_prime_rando import echoes_patcher
+from open_prime_rando import echoes_patcher, p1r_patcher
+
+_game_to_patcher = {
+    "echoes": echoes_patcher,
+    "prime_remastered": p1r_patcher,
+}
 
 
 def create_parser():
     parser = argparse.ArgumentParser()
-    parser.add_argument("--game", required=True, choices=["echoes"])
+    parser.add_argument("--game", required=True, choices=sorted(_game_to_patcher.keys()))
     input_group = parser.add_mutually_exclusive_group(required=True)
     input_group.add_argument("--input-paks", type=Path,
                              help="Path to where the paks to randomize")
@@ -20,7 +25,7 @@ def create_parser():
     parser.add_argument("--output-paks", required=True, type=Path,
                         help="Path to where the modified paks will be written to.")
     parser.add_argument("--input-json", type=Path, required=True,
-                        help="Path to the configuration json. If missing, it's read from standard input")
+                        help="Path to the configuration json.")
     return parser
 
 
@@ -69,7 +74,7 @@ def main():
     else:
         file_provider = IsoFileProvider(args.input_iso)
 
-    echoes_patcher.patch_paks(
+    _game_to_patcher[args.game].patch_paks(
         file_provider,
         args.output_paks,
         configuration,

@@ -31,10 +31,14 @@ class MemoryDol(DolEditor):
 class PatcherEditor(AssetManager):
     memory_files: dict[NameOrAssetId, BaseResource]
 
-    def __init__(self, provider: FileProvider):
-        super().__init__(provider, Game.ECHOES)
+    def __init__(self, provider: FileProvider, game: Game):
+        super().__init__(provider, game)
         self.memory_files = {}
-        self.dol = MemoryDol(provider.get_dol())
+
+        if game in [Game.PRIME, Game.ECHOES]:
+            self.dol = MemoryDol(provider.get_dol())
+        else:
+            self.dol = None
 
     def get_file(self, path: NameOrAssetId, type_hint: typing.Type[T] = BaseResource) -> T:
         if path not in self.memory_files:
@@ -69,6 +73,7 @@ class PatcherEditor(AssetManager):
     def save_modifications(self, output_path: Path):
         super().save_modifications(output_path)
 
-        target_dol = output_path.joinpath("sys/main.dol")
-        target_dol.parent.mkdir(exist_ok=True, parents=True)
-        target_dol.write_bytes(self.dol.dol_file.getvalue())
+        if self.dol is not None:
+            target_dol = output_path.joinpath("sys/main.dol")
+            target_dol.parent.mkdir(exist_ok=True, parents=True)
+            target_dol.write_bytes(self.dol.dol_file.getvalue())

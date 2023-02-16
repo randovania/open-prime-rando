@@ -92,7 +92,7 @@ def main():
     args = parser.parse_args()
 
     create_asset_id_files(
-        PatcherEditor(IsoFileProvider(args.iso)),
+        PatcherEditor(IsoFileProvider(args.iso), Game.ECHOES),
         Path(__file__).parents[1].joinpath("open_prime_rando", args.game, "asset_ids"),
     )
 

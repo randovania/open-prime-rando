@@ -10,6 +10,7 @@ from open_prime_rando.echoes.small_randomizations import apply_small_randomizati
 from open_prime_rando.patcher_editor import PatcherEditor
 from open_prime_rando.validator_with_default import DefaultValidatingDraft7Validator
 import open_prime_rando.echoes.asset_ids.world
+from retro_data_structures.game_check import Game
 
 LOG = logging.getLogger("echoes_patcher")
 
@@ -37,7 +38,7 @@ def apply_area_modifications(editor: PatcherEditor, configuration: dict[str, dic
 def patch_paks(file_provider: FileProvider, output_path: Path, configuration: dict):
     LOG.info("Will patch files at %s", file_provider)
 
-    editor = PatcherEditor(file_provider)
+    editor = PatcherEditor(file_provider, Game.ECHOES)
 
     LOG.info("Preparing schema")
     schema = dynamic_schema.expand_schema(_read_schema(), editor)
