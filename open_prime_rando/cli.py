@@ -1,4 +1,5 @@
 import argparse
+import importlib
 import json
 import logging
 import logging.config
@@ -6,11 +7,9 @@ from pathlib import Path
 
 from retro_data_structures.asset_manager import PathFileProvider, IsoFileProvider
 
-from open_prime_rando import echoes_patcher, p1r_patcher
-
 _game_to_patcher = {
-    "echoes": echoes_patcher,
-    "prime_remastered": p1r_patcher,
+    "echoes": "open_prime_rando.echoes_patcher",
+    "prime_remastered": "open_prime_rando.p1r_patcher",
 }
 
 
@@ -74,7 +73,8 @@ def main():
     else:
         file_provider = IsoFileProvider(args.input_iso)
 
-    _game_to_patcher[args.game].patch_paks(
+    patcher_module = importlib.import_module(_game_to_patcher[args.game])
+    patcher_module.patch_paks(
         file_provider,
         args.output_paks,
         configuration,
