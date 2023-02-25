@@ -2,7 +2,11 @@
 
 CROSSFIRECHAOS_MREA = 0x44D34A2E
 
-
 NAME_TO_ID = {
     "03_CrossfireChaos": 0x44D34A2E,
+}
+
+DOCK_NAMES = {
+    "03_CrossfireChaos": {
+    },
 }

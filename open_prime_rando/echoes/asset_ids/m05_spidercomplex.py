@@ -2,7 +2,11 @@
 
 MULTI_SPIDERCOMPLEX_MREA = 0xE7095052
 
-
 NAME_TO_ID = {
     "05_Multi_spiderComplex": 0xE7095052,
+}
+
+DOCK_NAMES = {
+    "05_Multi_spiderComplex": {
+    },
 }

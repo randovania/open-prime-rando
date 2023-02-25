@@ -68,7 +68,6 @@ WATCH_STATION_MREA = 0xA2406387
 WATCH_STATION_ACCESS_MREA = 0x5076F9CB
 WORKERS_PATH_MREA = 0x03ECA24F
 
-
 NAME_TO_ID = {
     "Aerial Training Site": 0x40F7447E,
     "Aerie": 0x5D3A0001,
@@ -137,4 +136,317 @@ NAME_TO_ID = {
     "Watch Station": 0xA2406387,
     "Watch Station Access": 0x5076F9CB,
     "Workers Path": 0x03ECA24F,
+}
+
+DOCK_NAMES = {
+    "Aerial Training Site": {
+        "South": 0,
+        "West_0L": 1,
+        "East": 2,
+        "West_0O": 3,
+        "VirtualNorth1": 4,
+    },
+    "Aerie": {
+        "Docks_Floor": 0,
+        "VirtualArenaDock": 1,
+        "VirtualUnderStatueDock": 2,
+    },
+    "Aerie Access": {
+        "Floor": 0,
+        "Ceiling": 1,
+    },
+    "Aerie Transport Station": {
+        "South": 0,
+        "Ceiling": 1,
+    },
+    "Agon Transport Access": {
+        "East": 0,
+        "West": 1,
+    },
+    "Central Area Transport East": {
+        "group1_West_04 (Top)": 0,
+        "group1_West_07 (Bottom)": 1,
+    },
+    "Central Area Transport West": {
+        "East_Top": 0,
+        "East_Bottom": 1,
+    },
+    "Central Hive East Transport": {
+        "group1_West_04 (Top)": 0,
+        "group1_West_07 (Bottom)": 1,
+    },
+    "Central Hive West Transport": {
+        "East_Top": 0,
+        "East_Bottom": 1,
+    },
+    "Checkpoint Station": {
+        "North": 0,
+        "South": 1,
+    },
+    "Controller Access": {
+        "North": 0,
+        "South1": 1,
+    },
+    "Culling Chamber": {
+        "EastHall": 0,
+        "EastElevator": 1,
+        "West": 2,
+        "VirtualNorth": 3,
+    },
+    "Dynamo Access": {
+        "West": 0,
+        "East": 1,
+    },
+    "Dynamo Storage": {
+        "group1_West": 0,
+        "VirtualWest": 1,
+    },
+    "Dynamo Works": {
+        "East 0E": 0,
+        "West1 0F": 1,
+        "South2 0H": 2,
+        "East2 00_Pickup C": 3,
+        "VirtualNorth": 4,
+    },
+    "Entrance Defense Hall": {
+        "North2": 0,
+        "South": 1,
+    },
+    "Grand Abyss": {
+        "East": 0,
+        "VirtualNorth": 1,
+        "Ceiling": 2,
+    },
+    "Hall of Combat Mastery": {
+        "EastHall": 0,
+        "EastElevator": 1,
+        "West": 2,
+        "VirtualNorth": 3,
+    },
+    "Hazing Cliff": {
+        "East": 0,
+        "West": 1,
+    },
+    "Hive Ammo Station": {
+        "South": 0,
+        "Ceiling": 1,
+    },
+    "Hive Cache 1": {
+        "South": 0,
+    },
+    "Hive Cache 3": {
+        "group1_West": 0,
+        "VirtualWest": 1,
+    },
+    "Hive Controller Access": {
+        "North": 0,
+        "South1": 1,
+    },
+    "Hive Dynamo Access": {
+        "West": 0,
+        "East": 1,
+    },
+    "Hive Dynamo Works": {
+        "East": 0,
+        "West1": 1,
+        "South2 (Disabled)": 2,
+        "East2": 3,
+        "VirtualNorth": 4,
+    },
+    "Hive Energy Controller": {
+        "North": 0,
+    },
+    "Hive Entrance": {
+        "North": 0,
+        "South": 1,
+    },
+    "Hive Gyro Access": {
+        "North": 0,
+        "South": 1,
+    },
+    "Hive Gyro Chamber": {
+        "South": 0,
+        "North1": 1,
+        "West_Save": 2,
+        "East1": 3,
+        "West21": 4,
+    },
+    "Hive Portal Chamber": {
+        "West": 0,
+        "VirtualDock_South": 1,
+        "VirtualDock_North_Right": 2,
+        "VirtualDock_North_Left": 3,
+        "VirtualDock_North_Middle": 4,
+    },
+    "Hive Reactor": {
+        "North": 0,
+        "East": 1,
+        "South": 2,
+        "North2": 3,
+    },
+    "Hive Reactor Access": {
+        "North": 0,
+        "South": 1,
+    },
+    "Hive Save Station 1": {
+        "South": 0,
+    },
+    "Hive Save Station 2": {
+        "East": 0,
+    },
+    "Hive Summit": {
+        "Docks_Floor": 0,
+        "VirtualArenaDock": 1,
+        "VirtualUnderStatueDock": 2,
+    },
+    "Hive Temple": {
+        "South": 0,
+        "West": 1,
+        "East": 2,
+        "North": 3,
+    },
+    "Hive Temple Access": {
+        "South": 0,
+        "North": 1,
+    },
+    "Judgment Drop": {
+        "East": 0,
+        "VirtualNorth": 1,
+    },
+    "Main Energy Controller": {
+        "SouthLight1": 0,
+        "VirtualNorth": 1,
+        "North1": 2,
+    },
+    "Main Gyro Chamber": {
+        "South": 0,
+        "North1": 1,
+        "West_Save": 2,
+        "East1": 3,
+        "West21": 4,
+    },
+    "Main Research": {
+        "West to 0l_cliff_hall": 0,
+        "West1 to 0p_cliff_hall": 1,
+        "East2 to 0m_cliff_hall": 2,
+        "VirtualNorth": 3,
+        "VirtualNorth1": 4,
+        "North": 5,
+    },
+    "Minigyro Chamber": {
+        "West": 0,
+        "East": 1,
+    },
+    "Power Junction": {
+        "North2": 0,
+        "South": 1,
+    },
+    "Reactor Access": {
+        "North": 0,
+        "South": 1,
+    },
+    "Reactor Core": {
+        "North": 0,
+        "East": 1,
+        "West": 2,
+        "South": 3,
+        "North2": 4,
+    },
+    "Sanctuary Energy Controller": {
+        "North": 0,
+        "North1 (to 08)": 1,
+    },
+    "Sanctuary Entrance": {
+        "North": 0,
+        "South": 1,
+    },
+    "Sanctuary Map Station": {
+        "South": 0,
+    },
+    "Sanctuary Temple": {
+        "South": 0,
+        "West": 1,
+        "East": 2,
+        "North": 3,
+    },
+    "Save Station A": {
+        "South": 0,
+    },
+    "Save Station B": {
+        "East": 0,
+    },
+    "Sentinel's Path": {
+        "East": 0,
+        "North": 1,
+    },
+    "Staging Area": {
+        "West": 0,
+        "West1": 1,
+        "East2": 2,
+        "VirtualNorth": 3,
+        "VirtualNorth1": 4,
+        "North": 5,
+    },
+    "Temple Access": {
+        "South": 0,
+        "North": 1,
+    },
+    "Temple Security Access": {
+        "East": 0,
+        "North": 1,
+    },
+    "Temple Transport Access": {
+        "South1": 0,
+        "North1": 1,
+    },
+    "Torvus Transport Access": {
+        "East": 0,
+        "West": 1,
+    },
+    "Transit Station": {
+        "West": 0,
+        "East": 1,
+        "VirtualDock_South": 2,
+        "VirtualDock_North_Right": 3,
+        "VirtualDock_North_Left": 4,
+        "VirtualDock_North_Middle": 5,
+    },
+    "Transport to Agon Wastes": {
+        "West": 0,
+    },
+    "Transport to Temple Grounds": {
+        "North": 0,
+    },
+    "Transport to Torvus Bog": {
+        "East": 0,
+    },
+    "Unseen Way": {
+        "West": 0,
+        "East": 1,
+    },
+    "Vault": {
+        "East": 0,
+        "VirtualWest": 1,
+        "VirtualEast": 2,
+    },
+    "Vault Attack Portal": {
+        "East": 0,
+        "VirtualWest": 1,
+        "VirtualEast": 2,
+    },
+    "Watch Station": {
+        "South": 0,
+        "WestDown": 1,
+        "East": 2,
+        "WestUp": 3,
+        "VirtualNorth1": 4,
+    },
+    "Watch Station Access": {
+        "East": 0,
+        "West": 1,
+    },
+    "Workers Path": {
+        "West": 0,
+        "North": 1,
+    },
 }

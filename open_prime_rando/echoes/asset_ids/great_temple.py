@@ -13,7 +13,6 @@ TRANSPORT_A_ACCESS_MREA = 0xE79AAFAE
 TRANSPORT_B_ACCESS_MREA = 0xFEB7BD27
 TRANSPORT_C_ACCESS_MREA = 0x1A4DDCC0
 
-
 NAME_TO_ID = {
     "Controller Transport": 0x11E50BC6,
     "Main Energy Controller": 0x02A01334,
@@ -27,4 +26,54 @@ NAME_TO_ID = {
     "Transport A Access": 0xE79AAFAE,
     "Transport B Access": 0xFEB7BD27,
     "Transport C Access": 0x1A4DDCC0,
+}
+
+DOCK_NAMES = {
+    "Controller Transport": {
+        "NorthBottom": 0,
+        "NorthTop": 1,
+    },
+    "Main Energy Controller": {
+        "SouthLight": 0,
+        "VirtualNorth": 1,
+        "North1": 2,
+    },
+    "Sanctum": {
+        "SouthDark": 0,
+    },
+    "Sanctum Access": {
+        "DarkTop": 0,
+        "Darkbottom": 1,
+    },
+    "Sky Temple Energy Controller": {
+        "SouthLight": 0,
+        "VirtualNorth": 1,
+    },
+    "Temple Sanctuary": {
+        "North": 0,
+        "West": 1,
+        "South": 2,
+        "East": 3,
+    },
+    "Temple Transport A": {
+        "South": 0,
+    },
+    "Temple Transport B": {
+        "West": 0,
+    },
+    "Temple Transport C": {
+        "East": 0,
+    },
+    "Transport A Access": {
+        "North": 0,
+        "South": 1,
+    },
+    "Transport B Access": {
+        "West": 0,
+        "East": 1,
+    },
+    "Transport C Access": {
+        "East": 0,
+        "West": 1,
+    },
 }

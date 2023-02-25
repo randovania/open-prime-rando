@@ -16,9 +16,21 @@ def expand_schema(base_schema: dict, editor: PatcherEditor) -> dict:
         area_props = {}
         world_def["properties"]["areas"] = {"type": "object", "additionalProperties": False, "properties": area_props}
 
+        world_details = open_prime_rando.echoes.asset_ids.world.load_dedicated_file(world)
+
         for area in mlvl.areas:
             area_def = copy.deepcopy(schema["$defs"]["area"])
             area_props[area.name] = area_def
+
+            area_def["properties"]["docks"] = {
+                "type": "docks",
+                "properties": {
+                    dock_name: {"$ref": "#/$defs/dock"}
+                    for dock_name in world_details.DOCK_NAMES.get(area.name, {}).keys()
+                },
+                "default": {},
+                "additionalProperties": False,
+            }
 
             area_def["properties"]["layers"] = {
                 "type": "object",

@@ -13,7 +13,6 @@ SANCTUARY_FORTRESS_MLVL = 0x1BAA96C2
 TEMPLE_GROUNDS_MLVL = 0x3BFA3EFF
 TORVUS_BOG_MLVL = 0x3DFD2249
 
-
 NAME_TO_ID = {
     "Agon Wastes": 0x42B935E4,
     "FrontEnd": 0x69802220,
@@ -28,3 +27,26 @@ NAME_TO_ID = {
     "Temple Grounds": 0x3BFA3EFF,
     "Torvus Bog": 0x3DFD2249,
 }
+
+_DEDICATED_FILES = {
+    "Agon Wastes": ".agon_wastes",
+    "FrontEnd": ".frontend",
+    "Great Temple": ".great_temple",
+    "M01_SidehopperStation": ".m01_sidehopperstation",
+    "M02_Spires": ".m02_spires",
+    "M03_CrossfireChaos": ".m03_crossfirechaos",
+    "M04_Pipeline": ".m04_pipeline",
+    "M05_SpiderComplex": ".m05_spidercomplex",
+    "M06_ShootingGallery": ".m06_shootinggallery",
+    "Sanctuary Fortress": ".sanctuary_fortress",
+    "Temple Grounds": ".temple_grounds",
+    "Torvus Bog": ".torvus_bog",
+}
+
+
+def load_dedicated_file(world_name: str):
+    import importlib
+    return importlib.import_module(
+        _DEDICATED_FILES[world_name],
+        ".".join(__name__.split(".")[:-1]),
+    )

@@ -64,7 +64,6 @@ GAME_END_PART3_MREA = 0x531079BA
 GAME_END_PART4_MREA = 0x4E154902
 GAME_END_PART5_MREA = 0x85499AA7
 
-
 NAME_TO_ID = {
     "00_scandummy": 0x131C3388,
     "Abandoned Base": 0xC6F4E0C2,
@@ -129,4 +128,298 @@ NAME_TO_ID = {
     "game_end_part3": 0x531079BA,
     "game_end_part4": 0x4E154902,
     "game_end_part5": 0x85499AA7,
+}
+
+DOCK_NAMES = {
+    "00_scandummy": {
+        "VirtualNorth": 0,
+    },
+    "Abandoned Base": {
+        "East": 0,
+        "North": 1,
+        "South": 2,
+        "VirtualNorth": 3,
+    },
+    "Accursed Lake": {
+        "East": 0,
+        "North": 1,
+        "West": 2,
+    },
+    "Agon Transport Access": {
+        "West": 0,
+        "South": 1,
+    },
+    "Base Access": {
+        "Docks_VirtualNorth": 0,
+        "South": 1,
+        "West": 2,
+    },
+    "Collapsed Tunnel": {
+        "A__South": 0,
+        "A__North1": 1,
+    },
+    "Command Chamber": {
+        "West2": 0,
+        "East": 1,
+    },
+    "Communication Area": {
+        "South1": 0,
+        "North": 1,
+        "South11": 2,
+    },
+    "Defiled Shrine": {
+        "North": 0,
+        "East1": 1,
+        "VirtualWest": 2,
+    },
+    "Dynamo Chamber": {
+        "North": 0,
+        "South": 1,
+    },
+    "Fortress Transport Access": {
+        "West": 0,
+        "South": 1,
+    },
+    "GFMC Compound": {
+        "East": 0,
+        "North": 1,
+        "WestTop": 2,
+        "West": 3,
+    },
+    "Gateway Access": {
+        "West": 0,
+        "WestUpper": 1,
+        "NorthUpper": 2,
+        "North": 3,
+    },
+    "Grand Windchamber": {
+        "North": 0,
+        "West": 1,
+        "VirtualNorth1": 2,
+    },
+    "Hall of Eyes": {
+        "Docks_VirtualNorth": 0,
+        "South": 1,
+        "West": 2,
+    },
+    "Hall of Honored Dead": {
+        "South_Morphball": 0,
+        "South": 1,
+        "VirtualNorth": 2,
+    },
+    "Hive Access Tunnel": {
+        "East": 0,
+        "West": 1,
+        "Floor": 2,
+    },
+    "Hive Chamber A": {
+        "Ceiling": 0,
+        "East": 1,
+    },
+    "Hive Chamber B": {
+        "South": 0,
+        "North": 1,
+        "VirtualDock": 2,
+    },
+    "Hive Chamber C": {
+        "blue_01_Temple_Hive_1_4_West_BigDoor": 0,
+        "South": 1,
+        "North1": 2,
+    },
+    "Hive Save Station": {
+        "South": 0,
+    },
+    "Hive Storage": {
+        "West": 0,
+        "North1": 1,
+    },
+    "Hive Transport Area": {
+        "East_Upper": 0,
+        "group35_blue_01_Temple_Hive_1_4_East_BigDoor": 1,
+        "West": 2,
+    },
+    "Hive Tunnel": {
+        "West": 0,
+        "East1": 1,
+    },
+    "Industrial Site": {
+        "East": 0,
+        "North": 1,
+        "West": 2,
+    },
+    "Ing Reliquary": {
+        "North_Top": 0,
+    },
+    "Ing Windchamber": {
+        "North": 0,
+        "West": 1,
+        "VirtualNorth1": 2,
+    },
+    "Lake Access": {
+        "A__South": 0,
+        "A__North1": 1,
+    },
+    "Landing Site": {
+        "North": 0,
+        "East1": 1,
+    },
+    "Meeting Grounds": {
+        "North": 0,
+        "East1": 1,
+        "EastTop": 2,
+        "EastBottom": 3,
+    },
+    "Path of Eyes": {
+        "East": 0,
+        "North": 1,
+        "South": 2,
+        "VirtualNorth": 3,
+    },
+    "Path of Honor": {
+        "West": 0,
+        "WestUpper": 1,
+        "NorthUpper": 2,
+        "North": 3,
+    },
+    "Phazon Grounds": {
+        "East": 0,
+        "North": 1,
+        "WestTop": 2,
+        "West": 3,
+    },
+    "Phazon Pit": {
+        "East": 0,
+        "South": 1,
+    },
+    "Plain of Dark Worship": {
+        "South": 0,
+        "North": 1,
+        "South1": 2,
+        "VirtualNorth": 3,
+    },
+    "Portal Site": {
+        "South": 0,
+        "North": 1,
+        "VirtualDock": 2,
+    },
+    "Profane Path": {
+        "North": 0,
+        "VirtualNorth1": 1,
+    },
+    "Reliquary Access": {
+        "South": 0,
+        "West": 1,
+    },
+    "Reliquary Grounds": {
+        "South_Top": 0,
+        "North": 1,
+        "South_Bottom": 2,
+    },
+    "Sacred Bridge": {
+        "East": 0,
+        "South": 1,
+    },
+    "Sacred Path": {
+        "South1": 0,
+        "North": 1,
+        "VirtualNorth1": 2,
+    },
+    "Service Access": {
+        "South": 0,
+        "East": 1,
+        "West": 2,
+        "East1": 3,
+        "West11": 4,
+    },
+    "Shrine Access": {
+        "South": 0,
+        "East": 1,
+        "West": 2,
+        "East1": 3,
+        "West11": 4,
+    },
+    "Sky Temple Gateway": {
+        "South": 0,
+        "VirtualNorth": 1,
+        "Cinema_Dock": 2,
+    },
+    "Storage Cavern A": {
+        "North_Top": 0,
+    },
+    "Storage Cavern B": {
+        "North": 0,
+    },
+    "Temple Assembly Site": {
+        "South": 0,
+        "North": 1,
+        "West": 2,
+        "South1": 3,
+        "VirtualNorth": 4,
+    },
+    "Temple Transport A": {
+        "North": 0,
+    },
+    "Temple Transport B": {
+        "East": 0,
+    },
+    "Temple Transport C": {
+        "blue_0M_Temple_hall_West": 0,
+    },
+    "Torvus Transport Access": {
+        "North": 0,
+        "South": 1,
+    },
+    "Transport to Agon Wastes": {
+        "Dock - North": 0,
+    },
+    "Transport to Sanctuary Fortress": {
+        "East": 0,
+    },
+    "Transport to Torvus Bog": {
+        "North": 0,
+    },
+    "Trooper Security Station": {
+        "blue_0D_Temple_hall_South": 0,
+        "blue_0D_Temple_hall_West": 1,
+    },
+    "War Ritual Grounds": {
+        "North": 0,
+        "EastTop": 1,
+        "EastBottom": 2,
+    },
+    "Windchamber Gateway": {
+        "East": 0,
+        "South": 1,
+    },
+    "Windchamber Tunnel": {
+        "South": 0,
+        "East": 1,
+    },
+    "game_end_part1": {
+        "South_Morphball": 0,
+        "South": 1,
+        "VirtualNorth": 2,
+        "cinema_light2": 3,
+        "cinema_light1": 4,
+    },
+    "game_end_part2": {
+        "SouthLight1": 0,
+        "VirtualNorth": 1,
+        "North1": 2,
+        "cinema_dock1": 3,
+        "cinema_dock2": 4,
+    },
+    "game_end_part3": {
+        "North": 0,
+        "East1": 1,
+        "cinema_dock": 2,
+        "SPACEROOM": 3,
+    },
+    "game_end_part4": {
+        "cinema_dock": 0,
+        "North": 1,
+    },
+    "game_end_part5": {
+        "cinema_dock": 0,
+    },
 }
