@@ -3,14 +3,14 @@ import logging
 from pathlib import Path
 
 from retro_data_structures.asset_manager import FileProvider
+from retro_data_structures.game_check import Game
 
 from open_prime_rando import dynamic_schema
+from open_prime_rando.echoes import specific_area_patches, asset_ids
 from open_prime_rando.echoes.inverted import apply_inverted
 from open_prime_rando.echoes.small_randomizations import apply_small_randomizations
 from open_prime_rando.patcher_editor import PatcherEditor
 from open_prime_rando.validator_with_default import DefaultValidatingDraft7Validator
-import open_prime_rando.echoes.asset_ids.world
-from retro_data_structures.game_check import Game
 
 LOG = logging.getLogger("echoes_patcher")
 
@@ -22,7 +22,7 @@ def _read_schema():
 
 def apply_area_modifications(editor: PatcherEditor, configuration: dict[str, dict]):
     for world_name, world_config in configuration.items():
-        mlvl = editor.get_mlvl(open_prime_rando.echoes.asset_ids.world.NAME_TO_ID[world_name])
+        mlvl = editor.get_mlvl(asset_ids.world.NAME_TO_ID[world_name])
 
         for area in mlvl.areas:
             area_name = area.name
