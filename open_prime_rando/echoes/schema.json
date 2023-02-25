@@ -101,6 +101,22 @@
         },
         "dock": {
             "type": "object",
+            "properties": {
+                "connect_to": {
+                    "type": "object",
+                    "properties": {
+                        "area": {
+                            "type": "string"
+                        },
+                        "dock": {
+                            "type": "string"
+                        }
+                    },
+                    "required": ["area", "dock"],
+                    "additionalProperties": false
+                }
+            },
+            "default": {},
             "additionalProperties": false
         }
     }

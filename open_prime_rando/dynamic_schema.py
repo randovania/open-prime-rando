@@ -23,7 +23,7 @@ def expand_schema(base_schema: dict, editor: PatcherEditor) -> dict:
             area_props[area.name] = area_def
 
             area_def["properties"]["docks"] = {
-                "type": "docks",
+                "type": "object",
                 "properties": {
                     dock_name: {"$ref": "#/$defs/dock"}
                     for dock_name in world_details.DOCK_NAMES.get(area.name, {}).keys()
