@@ -2,7 +2,11 @@
 
 SIDEHOPPERSTATION_MREA = 0x02690DE1
 
-
 NAME_TO_ID = {
     "01_SidehopperStation": 0x02690DE1,
+}
+
+DOCK_NAMES = {
+    "01_SidehopperStation": {
+    },
 }

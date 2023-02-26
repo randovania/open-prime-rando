@@ -73,7 +73,6 @@ VENTILATION_AREA_B_MREA = 0x594B330B
 WARRIORS_WALK_MREA = 0x33FACC15
 WATERING_HOLE_MREA = 0x9B2B4246
 
-
 NAME_TO_ID = {
     "Agon Energy Controller": 0x02FC3717,
     "Agon Map Station": 0x845C85A7,
@@ -147,4 +146,339 @@ NAME_TO_ID = {
     "Ventilation Area B": 0x594B330B,
     "Warrior's Walk": 0x33FACC15,
     "Watering Hole": 0x9B2B4246,
+}
+
+DOCK_NAMES = {
+    "Agon Energy Controller": {
+        "South": 0,
+        "North1 (to 08 Copy)": 1,
+    },
+    "Agon Map Station": {
+        "South": 0,
+    },
+    "Agon Temple": {
+        "West": 0,
+        "North": 1,
+        "East": 2,
+        "South": 3,
+    },
+    "Battleground": {
+        "East_Lower": 0,
+        "East_Upper": 1,
+        "West": 2,
+    },
+    "Bioenergy Production": {
+        "South": 0,
+        "North": 1,
+        "East": 2,
+    },
+    "Biostorage Access": {
+        "South": 0,
+        "North": 1,
+    },
+    "Biostorage Station": {
+        "East": 0,
+        "North": 1,
+        "West": 2,
+    },
+    "Bitter Well": {
+        "South": 0,
+        "North": 1,
+    },
+    "Central Mining Station": {
+        "East_Lower": 0,
+        "East_Upper": 1,
+        "West": 2,
+    },
+    "Central Station Access": {
+        "West": 0,
+        "East": 1,
+    },
+    "Command Center": {
+        "WestLowerDoor": 0,
+        "South": 1,
+        "North": 2,
+        "NorthObservation": 3,
+        "WestUpperDoor": 4,
+        "WestMorphballTunnel": 5,
+        "VirtualNorth": 6,
+    },
+    "Command Center Access": {
+        "EastLowerDoor": 0,
+        "EastUpperDoor": 1,
+        "EastMorphballTunnel": 2,
+        "West_Upper": 3,
+        "West_Lower": 4,
+    },
+    "Controller Access": {
+        "North": 0,
+        "South1": 1,
+    },
+    "Crossroads": {
+        "West": 0,
+        "East": 1,
+        "South": 2,
+        "VirtualNorth": 3,
+    },
+    "Dark Agon Energy Controller": {
+        "South": 0,
+        "North1": 1,
+    },
+    "Dark Agon Temple": {
+        "West": 0,
+        "North": 1,
+        "East": 2,
+        "South": 3,
+    },
+    "Dark Agon Temple Access": {
+        "North": 0,
+        "South": 1,
+    },
+    "Dark Controller Access": {
+        "North": 0,
+        "South1": 1,
+    },
+    "Dark Oasis": {
+        "East_TopSouth": 0,
+        "West_TopSouth": 1,
+        "West_TopNorth": 2,
+        "South1": 3,
+        "VirtualEast": 4,
+    },
+    "Dark Transit Station": {
+        "East": 0,
+        "South": 1,
+    },
+    "Doomed Entry": {
+        "WestLowerDoor": 0,
+        "South": 1,
+        "NorthObservation": 2,
+        "WestUpperDoor": 3,
+        "VirtualNorth": 4,
+    },
+    "Double Path": {
+        "EastLowerDoor": 0,
+        "EastUpperDoor": 1,
+        "EastMorphballTunnel": 2,
+        "West_Upper": 3,
+        "West_Lower": 4,
+    },
+    "Duelling Range": {
+        "North": 0,
+        "South": 1,
+        "West": 2,
+        "East": 3,
+        "VirtualDock": 4,
+    },
+    "Feeding Pit": {
+        "East": 0,
+        "North": 1,
+        "West": 2,
+    },
+    "Feeding Pit Access": {
+        "South": 0,
+        "North": 1,
+    },
+    "Hall of Stairs": {
+        "East": 0,
+        "West": 1,
+    },
+    "Ing Cache 1": {
+        "East": 0,
+    },
+    "Ing Cache 2": {
+        "West": 0,
+    },
+    "Ing Cache 3": {
+        "East": 0,
+    },
+    "Ing Cache 4": {
+        "West": 0,
+        "East": 1,
+    },
+    "Judgment Pit": {
+        "North": 0,
+        "East1": 1,
+        "South_save": 2,
+        "West1": 3,
+        "South1": 4,
+    },
+    "Junction Site": {
+        "East": 0,
+        "West": 1,
+    },
+    "Main Energy Controller": {
+        "SouthLight1": 0,
+        "VirtualNorth": 1,
+        "North1 (to 00 Sand Generator)": 2,
+    },
+    "Main Reactor": {
+        "East_TopSouth": 0,
+        "West_TopSouth": 1,
+        "West_TopNorth": 2,
+        "Docks_Docks_Docks_South": 3,
+        "VirtualEast": 4,
+    },
+    "Mine Shaft": {
+        "West": 0,
+        "East": 1,
+    },
+    "Mining Plaza": {
+        "NorthMap": 0,
+        "North": 1,
+        "South": 2,
+        "West": 3,
+        "East1": 4,
+        "VirtualDock": 5,
+    },
+    "Mining Station A": {
+        "North": 0,
+        "East1": 1,
+        "South_save": 2,
+        "West1": 3,
+        "South1": 4,
+    },
+    "Mining Station Access": {
+        "East": 0,
+        "West": 1,
+    },
+    "Mining Station B": {
+        "Docks_SouthLower": 0,
+        "East": 1,
+        "West": 2,
+        "VirtualNorth": 3,
+    },
+    "Oasis Access": {
+        "South": 0,
+        "South_Observation": 1,
+        "North": 2,
+    },
+    "Phazon Site": {
+        "South": 0,
+        "North": 1,
+        "East": 2,
+    },
+    "Plaza Access": {
+        "West": 0,
+        "East": 1,
+    },
+    "Portal Access": {
+        "South": 0,
+        "North": 1,
+    },
+    "Portal Access A": {
+        "South": 0,
+        "North": 1,
+    },
+    "Portal Site": {
+        "North": 0,
+        "West": 1,
+        "VirtualNorth1": 2,
+    },
+    "Portal Terminal": {
+        "North": 0,
+        "West": 1,
+        "VirtualNorth1": 2,
+    },
+    "Sand Cache": {
+        "North": 0,
+    },
+    "Sand Processing": {
+        "East": 0,
+        "West": 1,
+    },
+    "Sandcanyon": {
+        "West": 0,
+        "East": 1,
+    },
+    "Save Station 1": {
+        "North": 0,
+    },
+    "Save Station 2": {
+        "North": 0,
+        "East": 1,
+    },
+    "Save Station 3": {
+        "South": 0,
+        "West": 1,
+    },
+    "Save Station A": {
+        "North": 0,
+        "East": 1,
+    },
+    "Save Station C": {
+        "South": 0,
+        "West": 1,
+    },
+    "Security Station A": {
+        "West": 0,
+        "North": 1,
+    },
+    "Security Station B": {
+        "South": 0,
+        "South_Observation": 1,
+        "North": 2,
+    },
+    "Storage A": {
+        "North": 0,
+    },
+    "Storage B": {
+        "East": 0,
+    },
+    "Storage C": {
+        "West": 0,
+    },
+    "Storage D": {
+        "East": 0,
+    },
+    "Temple Access": {
+        "North": 0,
+        "South": 1,
+    },
+    "Transit Station": {
+        "East": 0,
+        "South": 1,
+    },
+    "Transport Center": {
+        "West": 0,
+        "East": 1,
+        "South": 2,
+        "VirtualNorth": 3,
+    },
+    "Transport to Sanctuary Fortress": {
+        "Dock - South": 0,
+    },
+    "Transport to Temple Grounds": {
+        "East": 0,
+    },
+    "Transport to Torvus Bog": {
+        "Dock - North": 0,
+    },
+    "Trial Grounds": {
+        "Docks_SouthLower": 0,
+        "East": 1,
+        "West": 2,
+        "VirtualNorth": 3,
+    },
+    "Trial Tunnel": {
+        "West": 0,
+        "East": 1,
+    },
+    "Ventilation Area A": {
+        "docks_North": 0,
+        "docks_docks_East": 1,
+        "docks_West": 2,
+    },
+    "Ventilation Area B": {
+        "South": 0,
+        "North": 1,
+    },
+    "Warrior's Walk": {
+        "West": 0,
+        "East": 1,
+    },
+    "Watering Hole": {
+        "West": 0,
+        "North": 1,
+    },
 }

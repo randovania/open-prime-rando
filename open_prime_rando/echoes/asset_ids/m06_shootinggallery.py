@@ -2,7 +2,11 @@
 
 SHOOTINGGALLERY_MREA = 0xD97A600B
 
-
 NAME_TO_ID = {
     "06_ShootingGallery": 0xD97A600B,
+}
+
+DOCK_NAMES = {
+    "06_ShootingGallery": {
+    },
 }

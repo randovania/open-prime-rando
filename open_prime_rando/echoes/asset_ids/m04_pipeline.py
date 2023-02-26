@@ -2,7 +2,11 @@
 
 MULTI_PIPELINE_MREA = 0x845DCF93
 
-
 NAME_TO_ID = {
     "04_Multi_Pipeline": 0x845DCF93,
+}
+
+DOCK_NAMES = {
+    "04_Multi_Pipeline": {
+    },
 }

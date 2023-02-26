@@ -2,7 +2,11 @@
 
 FRONTEND04_MREA = 0xCEE3AF0D
 
-
 NAME_TO_ID = {
     "FrontEnd04": 0xCEE3AF0D,
+}
+
+DOCK_NAMES = {
+    "FrontEnd04": {
+    },
 }

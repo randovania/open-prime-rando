@@ -36,7 +36,8 @@ PATH_OF_ROOTS_MREA = 0x7448931C
 PLAZA_ACCESS_MREA = 0xC1C28706
 POISONED_BOG_MREA = 0x14E2C3A6
 POLLUTED_MIRE_MREA = 0x839DC4F6
-PORTAL_CHAMBER_MREA = 0xAE1E1339
+PORTAL_CHAMBER_DARK_MREA = 0xAE1E1339
+PORTAL_CHAMBER_LIGHT_MREA = 0xF3EE585F
 PUTRID_ALCOVE_MREA = 0xCBC72D79
 RUINED_ALCOVE_MREA = 0xD37C2414
 SACRIFICIAL_CHAMBER_MREA = 0x629790F4
@@ -69,7 +70,6 @@ UNDERTEMPLE_SHAFT_MREA = 0xB2D3E26C
 UNDERTRANSIT_ONE_MREA = 0x5CD4C2F9
 UNDERTRANSIT_TWO_MREA = 0x4BFCA639
 VENOMOUS_POND_MREA = 0x858EECD3
-
 
 NAME_TO_ID = {
     "Abandoned Worksite": 0x54DAEF57,
@@ -108,7 +108,8 @@ NAME_TO_ID = {
     "Plaza Access": 0xC1C28706,
     "Poisoned Bog": 0x14E2C3A6,
     "Polluted Mire": 0x839DC4F6,
-    "Portal Chamber": 0xAE1E1339,
+    "Portal Chamber (Dark)": 0xAE1E1339,
+    "Portal Chamber (Light)": 0xF3EE585F,
     "Putrid Alcove": 0xCBC72D79,
     "Ruined Alcove": 0xD37C2414,
     "Sacrificial Chamber": 0x629790F4,
@@ -141,4 +142,341 @@ NAME_TO_ID = {
     "Undertransit One": 0x5CD4C2F9,
     "Undertransit Two": 0x4BFCA639,
     "Venomous Pond": 0x858EECD3,
+}
+
+DOCK_NAMES = {
+    "Abandoned Worksite": {
+        "North": 0,
+        "South": 1,
+    },
+    "Ammo Station": {
+        "North": 0,
+    },
+    "Brooding Ground": {
+        "North": 0,
+        "South": 1,
+    },
+    "Cache A": {
+        "North": 0,
+        "VirtualNorth1": 1,
+    },
+    "Cache B": {
+        "East_04": 0,
+        "East_07": 1,
+    },
+    "Catacombs": {
+        "North": 0,
+        "West": 1,
+        "West (West)": 2,
+        "VirtualSouth": 3,
+        "VirtualNorth1": 4,
+    },
+    "Catacombs Access": {
+        "East": 0,
+        "West": 1,
+    },
+    "Controller Access": {
+        "docks_docks_West": 0,
+        "East1": 1,
+    },
+    "Crypt": {
+        "East_A": 0,
+        "East_B": 1,
+        "VirtualNorth": 2,
+        "North": 3,
+    },
+    "Crypt Tunnel": {
+        "East": 0,
+        "West": 1,
+    },
+    "Dark Arena Tunnel": {
+        "North": 0,
+        "South": 1,
+    },
+    "Dark Controller Access": {
+        "docks_docks_West": 0,
+        "East1": 1,
+    },
+    "Dark Falls": {
+        "West": 0,
+        "East": 1,
+    },
+    "Dark Forgotten Bridge": {
+        "North": 0,
+        "East": 1,
+        "South": 2,
+        "VirtualNorth": 3,
+        "West": 4,
+    },
+    "Dark Torvus Arena": {
+        "South": 0,
+    },
+    "Dark Torvus Energy Controller": {
+        "group6_East": 0,
+        "North1": 1,
+    },
+    "Dark Torvus Temple": {
+        "NorthDoor": 0,
+        "South": 1,
+        "West": 2,
+        "WestGenerator": 3,
+        "EastTop": 4,
+        "East": 5,
+    },
+    "Dark Torvus Temple Access": {
+        "Easttop": 0,
+        "Eastbottom": 1,
+        "Westtop": 2,
+        "West": 3,
+    },
+    "Dungeon": {
+        "North": 0,
+        "West (mid)": 1,
+        "West (West)": 2,
+        "VirtualSouth": 3,
+        "VirtualNorth1": 4,
+    },
+    "Forgotten Bridge": {
+        "North": 0,
+        "East": 1,
+        "South": 2,
+        "VirtualNorth": 3,
+        "West": 4,
+    },
+    "Fortress Transport Access": {
+        "South": 0,
+        "North": 1,
+    },
+    "Gathering Access": {
+        "East": 0,
+        "West": 1,
+    },
+    "Gathering Hall": {
+        "East_0L": 0,
+        "East_0P": 1,
+        "VirtualNorth": 2,
+        "North": 3,
+    },
+    "Gloom Vista": {
+        "Docks_South": 0,
+        "VirtualNorth": 1,
+    },
+    "Great Bridge": {
+        "WestUpper": 0,
+        "WestLower": 1,
+        "North": 2,
+        "EastC": 3,
+        "EastB": 4,
+        "Docks_SouthUpper1": 5,
+    },
+    "Grove Access": {
+        "West": 0,
+        "East": 1,
+    },
+    "Hydrochamber Storage": {
+        "North": 0,
+    },
+    "Hydrodynamo Shaft": {
+        "Docks_VirtualNorth": 0,
+        "Docks_North": 1,
+        "West": 2,
+    },
+    "Hydrodynamo Station": {
+        "West_0J": 0,
+        "West_0L": 1,
+        "North_OK": 2,
+        "East_0M": 3,
+        "East_Save": 4,
+        "VirtualNorth": 5,
+        "East (floor to 0q)": 6,
+    },
+    "Main Energy Controller": {
+        "SouthLight1": 0,
+        "VirtualNorth": 1,
+        "North1": 2,
+    },
+    "Main Hydrochamber": {
+        "South": 0,
+        "VirtualNorth": 1,
+        "South2": 2,
+    },
+    "Meditation Vista": {
+        "Docks_South": 0,
+        "VirtualNorth": 1,
+    },
+    "Path of Roots": {
+        "West": 0,
+        "North": 1,
+    },
+    "Plaza Access": {
+        "North": 0,
+        "South": 1,
+    },
+    "Poisoned Bog": {
+        "NorthUpper": 0,
+        "West": 1,
+        "SouthLower": 2,
+        "South": 3,
+        "East": 4,
+    },
+    "Polluted Mire": {
+        "East": 0,
+        "South": 1,
+        "North": 2,
+    },
+    "Portal Chamber (Dark)": {
+        "East": 0,
+        "VirtualNorth": 1,
+        "West": 2,
+    },
+    "Portal Chamber (Light)": {
+        "East": 0,
+        "VirtualNorth": 1,
+        "West": 2,
+    },
+    "Putrid Alcove": {
+        "West": 0,
+        "South": 1,
+    },
+    "Ruined Alcove": {
+        "West": 0,
+        "South": 1,
+    },
+    "Sacrificial Chamber": {
+        "South": 0,
+        "East": 1,
+        "West1": 2,
+        "North": 3,
+    },
+    "Sacrificial Chamber Tunnel": {
+        "North": 0,
+        "South": 1,
+    },
+    "Save Station 1": {
+        "Docks_Docks_North": 0,
+    },
+    "Save Station 2": {
+        "Docks_Docks_Docks_West": 0,
+    },
+    "Save Station A": {
+        "North": 0,
+        "VirtualNorth1": 1,
+    },
+    "Save Station B": {
+        "Docks_Docks_Docks_West": 0,
+    },
+    "Temple Access": {
+        "Easttop": 0,
+        "Eastbottom": 1,
+        "Westtop": 2,
+        "West": 3,
+    },
+    "Temple Transport Access": {
+        "East": 0,
+        "West": 1,
+    },
+    "Torvus Energy Controller": {
+        "group6_East": 0,
+        "North1": 1,
+    },
+    "Torvus Grove": {
+        "East": 0,
+        "South": 1,
+        "North": 2,
+    },
+    "Torvus Lagoon": {
+        "NorthUpper (0D_Hall)": 0,
+        "West (0C_Hall)": 1,
+        "SouthLower (0B_Hall)": 2,
+        "South (00_Pickup)": 3,
+        "East (0A_Hall)": 4,
+    },
+    "Torvus Map Station": {
+        "Docks_Docks_North": 0,
+    },
+    "Torvus Plaza": {
+        "South": 0,
+    },
+    "Torvus Temple": {
+        "NorthDoor": 0,
+        "South": 1,
+        "West": 2,
+        "WestGenerator": 3,
+        "EastTop": 4,
+        "East": 5,
+    },
+    "Training Access": {
+        "North": 0,
+        "South": 1,
+    },
+    "Training Chamber": {
+        "South": 0,
+        "East": 1,
+        "West1": 2,
+        "North": 3,
+    },
+    "Transit Tunnel East": {
+        "West": 0,
+        "South": 1,
+    },
+    "Transit Tunnel South": {
+        "East": 0,
+        "West": 1,
+    },
+    "Transit Tunnel West": {
+        "South": 0,
+        "East": 1,
+    },
+    "Transport to Agon Wastes": {
+        "North": 0,
+    },
+    "Transport to Sanctuary Fortress": {
+        "South": 0,
+    },
+    "Transport to Temple Grounds": {
+        "West": 0,
+    },
+    "Underground Transport": {
+        "East_04 (Top)": 0,
+        "East_07 (Bottom)": 1,
+    },
+    "Underground Tunnel": {
+        "South": 0,
+        "North": 1,
+    },
+    "Undertemple": {
+        "South": 0,
+        "VirtualNorth": 1,
+        "South2": 2,
+    },
+    "Undertemple Access": {
+        "Docks_VirtualNorth": 0,
+        "Docks_North": 1,
+        "West": 2,
+    },
+    "Undertemple Shaft": {
+        "West_0J": 0,
+        "West_0L": 1,
+        "North_OK": 2,
+        "East_0M": 3,
+        "Docks_Docks_East_Save": 4,
+        "VirtualNorth": 5,
+        "East_0M1 (Floor to 0q)": 6,
+    },
+    "Undertransit One": {
+        "South": 0,
+        "East": 1,
+    },
+    "Undertransit Two": {
+        "West": 0,
+        "South": 1,
+    },
+    "Venomous Pond": {
+        "WestUpper": 0,
+        "WestLower": 1,
+        "North": 2,
+        "EastC": 3,
+        "EastB": 4,
+        "Docks_SouthUpper1": 5,
+    },
 }

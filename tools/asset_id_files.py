@@ -3,11 +3,12 @@ import os.path
 from pathlib import Path
 
 from retro_data_structures.asset_manager import IsoFileProvider
-from retro_data_structures.formats import Strg
+from retro_data_structures.formats import Strg, Mrea
 from retro_data_structures.game_check import Game
 import retro_data_structures.exceptions
 
 from open_prime_rando.patcher_editor import PatcherEditor
+from retro_data_structures.properties.shared_objects import Dock
 
 _CUSTOM_WORLD_NAMES = {
     Game.ECHOES: {
@@ -20,13 +21,32 @@ _CUSTOM_WORLD_NAMES = {
         0x7E19ED26: "M06_ShootingGallery",
     }
 }
+_CUSTOM_AREA_NAMES = {
+    Game.ECHOES: {
+        0xF3EE585F: "Portal Chamber (Light)",
+        0xAE1E1339: "Portal Chamber (Dark)",
+    }
+}
 
 
 def filter_name(s: str) -> str:
-    result = s.replace("!", "").replace(" ", "_").replace("'", "").replace('"', "").upper()
+    result = s.replace("!", "").replace(" ", "_").replace("'", "").replace(
+        '"', "").replace("(", "").replace(")", "").upper()
     while result and not result[0].isalpha():
         result = result[1:]
     return result
+
+
+def dock_name_templates(dock_names: dict[str, dict[str, int]]) -> str:
+    template = "\nDOCK_NAMES = {\n"
+    for name in sorted(dock_names.keys()):
+        template += f"    \"{name}\": {{\n"
+        for dock_name, dock_number in sorted(dock_names[name].items(), key=lambda it: it[1]):
+            template += f"        \"{dock_name}\": {dock_number},\n"
+        template += "    },\n"
+    template += "}\n"
+
+    return template
 
 
 def generate_template(items: dict[str, int], suffix: str) -> str:
@@ -37,7 +57,7 @@ def generate_template(items: dict[str, int], suffix: str) -> str:
     )
     template += "\n"
 
-    template += "\n\nNAME_TO_ID = {\n"
+    template += "\nNAME_TO_ID = {\n"
     for name in sorted(items):
         template += f"    \"{name}\": 0x{items[name]:08X},\n"
     template += "}\n"
@@ -68,7 +88,8 @@ def create_asset_id_files(editor: PatcherEditor, output_path: Path):
 
         world_names[world_name] = value
 
-        names = {}
+        area_names = {}
+        dock_names = {}
 
         for area in mlvl.raw.areas:
             try:
@@ -76,12 +97,47 @@ def create_asset_id_files(editor: PatcherEditor, output_path: Path):
                 area_name = strg.raw.string_tables[0].strings[0].string
             except retro_data_structures.exceptions.UnknownAssetId:
                 area_name = area.internal_area_name
+            area_name = _CUSTOM_AREA_NAMES[editor.target_game].get(area.area_mrea_id, area_name)
 
-            names[area_name] = area.area_mrea_id
+            assert area_name not in area_names, area_name
+            area_names[area_name] = area.area_mrea_id
+            mrea = editor.get_parsed_asset(area_names[area_name], type_hint=Mrea)
 
-        output_path.joinpath(f"{filter_name(world_name)}.py").write_text(generate_template(names, "_MREA"))
+            docks = {}
+            for layer in mrea.script_layers:
+                for obj in layer.instances:
+                    if obj.type_name == "DOCK":
+                        dock: Dock = obj.get_properties_as(Dock)
+                        assert dock.get_name() not in docks
+                        docks[dock.get_name()] = dock.dock_number
 
-    output_path.joinpath("world.py").write_text(generate_template(world_names, "_MLVL"))
+                # Docks are in the default layer, ignore the rest
+                break
+
+            assert max(docks.values(), default=-1) == len(docks) - 1
+            dock_names[area_name] = docks
+
+        world_file_body = generate_template(area_names, "_MREA")
+        world_file_body += dock_name_templates(dock_names)
+        output_path.joinpath(f"{filter_name(world_name).lower()}.py").write_text(world_file_body)
+
+    global_file_body = generate_template(world_names, "_MLVL")
+
+    global_file_body += "\n_DEDICATED_FILES = {\n"
+    for name in sorted(world_names.keys()):
+        global_file_body += f"    \"{name}\": \".{filter_name(name).lower()}\",\n"
+    global_file_body += """}
+
+
+def load_dedicated_file(world_name: str):
+    import importlib
+    return importlib.import_module(
+        _DEDICATED_FILES[world_name],
+        ".".join(__name__.split(".")[:-1]),
+    )
+"""
+
+    output_path.joinpath("world.py").write_text(global_file_body)
 
 
 def main():

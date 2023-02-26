@@ -76,6 +76,16 @@
         "area": {
             "type": "object",
             "properties": {
+                "docks": {
+                    "type": "object",
+                    "patternProperties": {
+                        ".*": {
+                            "$ref": "#/$defs/dock"
+                        }
+                    },
+                    "default": {},
+                    "$comment": "The list of docks is replaced in runtime with the existing docks of each specific area."
+                },
                 "layers": {
                     "type": "object",
                     "patternProperties": {
@@ -87,6 +97,26 @@
                     "$comment": "The list of layers is replaced in runtime with the existing layers of each specific area."
                 }
             },
+            "additionalProperties": false
+        },
+        "dock": {
+            "type": "object",
+            "properties": {
+                "connect_to": {
+                    "type": "object",
+                    "properties": {
+                        "area": {
+                            "type": "string"
+                        },
+                        "dock": {
+                            "type": "string"
+                        }
+                    },
+                    "required": ["area", "dock"],
+                    "additionalProperties": false
+                }
+            },
+            "default": {},
             "additionalProperties": false
         }
     }
