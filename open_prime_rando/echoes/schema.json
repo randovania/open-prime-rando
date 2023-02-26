@@ -46,6 +46,18 @@
                 "seed"
             ]
         },
+        "area_patches": {
+            "type": "object",
+            "properties": {
+                "torvus_temple": {
+                    "type": "boolean",
+                    "description": "Remove objects to minimize the chance of alloc failure",
+                    "default": false
+                }
+            },
+            "description": "Pre-written patches for specific areas",
+            "default": {}
+        },
         "inverted": {
             "type": "boolean",
             "description": "Inverts Light and Dark Aether",
