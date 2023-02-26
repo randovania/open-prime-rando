@@ -36,7 +36,8 @@ PATH_OF_ROOTS_MREA = 0x7448931C
 PLAZA_ACCESS_MREA = 0xC1C28706
 POISONED_BOG_MREA = 0x14E2C3A6
 POLLUTED_MIRE_MREA = 0x839DC4F6
-PORTAL_CHAMBER_MREA = 0xAE1E1339
+PORTAL_CHAMBER_DARK_MREA = 0xAE1E1339
+PORTAL_CHAMBER_LIGHT_MREA = 0xF3EE585F
 PUTRID_ALCOVE_MREA = 0xCBC72D79
 RUINED_ALCOVE_MREA = 0xD37C2414
 SACRIFICIAL_CHAMBER_MREA = 0x629790F4
@@ -107,7 +108,8 @@ NAME_TO_ID = {
     "Plaza Access": 0xC1C28706,
     "Poisoned Bog": 0x14E2C3A6,
     "Polluted Mire": 0x839DC4F6,
-    "Portal Chamber": 0xAE1E1339,
+    "Portal Chamber (Dark)": 0xAE1E1339,
+    "Portal Chamber (Light)": 0xF3EE585F,
     "Putrid Alcove": 0xCBC72D79,
     "Ruined Alcove": 0xD37C2414,
     "Sacrificial Chamber": 0x629790F4,
@@ -322,7 +324,12 @@ DOCK_NAMES = {
         "South": 1,
         "North": 2,
     },
-    "Portal Chamber": {
+    "Portal Chamber (Dark)": {
+        "East": 0,
+        "VirtualNorth": 1,
+        "West": 2,
+    },
+    "Portal Chamber (Light)": {
         "East": 0,
         "VirtualNorth": 1,
         "West": 2,

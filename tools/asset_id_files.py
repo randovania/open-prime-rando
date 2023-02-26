@@ -21,10 +21,17 @@ _CUSTOM_WORLD_NAMES = {
         0x7E19ED26: "M06_ShootingGallery",
     }
 }
+_CUSTOM_AREA_NAMES = {
+    Game.ECHOES: {
+        0xF3EE585F: "Portal Chamber (Light)",
+        0xAE1E1339: "Portal Chamber (Dark)",
+    }
+}
 
 
 def filter_name(s: str) -> str:
-    result = s.replace("!", "").replace(" ", "_").replace("'", "").replace('"', "").upper()
+    result = s.replace("!", "").replace(" ", "_").replace("'", "").replace(
+        '"', "").replace("(", "").replace(")", "").upper()
     while result and not result[0].isalpha():
         result = result[1:]
     return result
@@ -90,7 +97,9 @@ def create_asset_id_files(editor: PatcherEditor, output_path: Path):
                 area_name = strg.raw.string_tables[0].strings[0].string
             except retro_data_structures.exceptions.UnknownAssetId:
                 area_name = area.internal_area_name
+            area_name = _CUSTOM_AREA_NAMES[editor.target_game].get(area.area_mrea_id, area_name)
 
+            assert area_name not in area_names, area_name
             area_names[area_name] = area.area_mrea_id
             mrea = editor.get_parsed_asset(area_names[area_name], type_hint=Mrea)
 

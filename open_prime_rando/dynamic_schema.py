@@ -1,7 +1,14 @@
 import copy
 
+from retro_data_structures.game_check import Game
+
 from open_prime_rando.patcher_editor import PatcherEditor
 import open_prime_rando.echoes.asset_ids.world
+
+CUSTOM_AREA_NAMES = {
+    0xF3EE585F: "Portal Chamber (Light)",
+    0xAE1E1339: "Portal Chamber (Dark)",
+}
 
 
 def expand_schema(base_schema: dict, editor: PatcherEditor) -> dict:
@@ -19,14 +26,15 @@ def expand_schema(base_schema: dict, editor: PatcherEditor) -> dict:
         world_details = open_prime_rando.echoes.asset_ids.world.load_dedicated_file(world)
 
         for area in mlvl.areas:
+            area_name = CUSTOM_AREA_NAMES.get(area.mrea_asset_id, area.name)
             area_def = copy.deepcopy(schema["$defs"]["area"])
-            area_props[area.name] = area_def
+            area_props[area_name] = area_def
 
             area_def["properties"]["docks"] = {
                 "type": "object",
                 "properties": {
                     dock_name: {"$ref": "#/$defs/dock"}
-                    for dock_name in world_details.DOCK_NAMES.get(area.name, {}).keys()
+                    for dock_name in world_details.DOCK_NAMES.get(area_name, {}).keys()
                 },
                 "default": {},
                 "additionalProperties": False,
