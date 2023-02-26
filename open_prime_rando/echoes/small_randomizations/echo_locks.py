@@ -28,8 +28,12 @@ def randomize_echo_locks(editor: PatcherEditor, rng: random.Random):
 
     key_scans = []
     for pitch in ["low", "medium", "high"]:
-        key_strg.set_string(1,
-                            f"Sonic detection gear needed to interface with this system. Shoot the Echo Key Beam emitter with a sonic pulse to activate it. It will then fire a blast of &push;&main-color=#FF3333;{pitch}-pitched&pop; sound at an Echo Gate lock.")
+        key_strg.set_string(
+            1,
+            "Sonic detection gear needed to interface with this system."
+            " Shoot the Echo Key Beam emitter with a sonic pulse to activate it."
+            f" It will then fire a blast of &push;&main-color=#FF3333;{pitch}-pitched&pop; sound at an Echo Gate lock."
+        )
         strg_id = editor.add_file(f"accessible_echo_lock_{pitch}.STRG", key_strg, all_paks)
 
         scan_info.string = strg_id
@@ -57,16 +61,18 @@ def randomize_echo_locks(editor: PatcherEditor, rng: random.Random):
         for relay in correct_key_relays:
             counter.remove_connections(relay)
 
+        # Update all scan posts to have the updated scan text
+        for scan_point, key_scan in zip(key_scan_points, key_scans):
+            scan = scan_point.get_properties_as(PointOfInterest)
+            scan.scan_info.scannable_info0 = key_scan
+            scan_point.set_properties(scan)
+
         for i, key in enumerate(solution):
             counter.add_connection(ECHO_LOCK_STATES[i], "ZERO", correct_key_relays[key])
 
             tone = lock_tone_players[i].get_properties_as(Sound)
             tone.sound = ECHO_LOCK_SOUNDS[key]
             lock_tone_players[i].set_properties(tone)
-
-            scan = key_scan_points[key].get_properties_as(PointOfInterest)
-            scan.scan_info.scannable_info0 = key_scans[key]
-            key_scan_points[key].set_properties(scan)
 
         for i, switch in enumerate(key_switches):
             props = switch.get_properties_as(Switch)
