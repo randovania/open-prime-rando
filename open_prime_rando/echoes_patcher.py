@@ -2,18 +2,16 @@ import json
 import logging
 from pathlib import Path
 
-from open_prime_rando.echoes import specific_area_patches
-from retro_data_structures.asset_manager import FileProvider
-from retro_data_structures.formats.mlvl import AreaWrapper
-from retro_data_structures.game_check import Game
-
 from open_prime_rando import dynamic_schema
 from open_prime_rando.echoes import specific_area_patches, asset_ids
 from open_prime_rando.echoes.inverted import apply_inverted
 from open_prime_rando.echoes.small_randomizations import apply_small_randomizations
 from open_prime_rando.patcher_editor import PatcherEditor
+from open_prime_rando.unique_area_name import get_name_for_area
 from open_prime_rando.validator_with_default import DefaultValidatingDraft7Validator
-from retro_data_structures.properties.shared_objects import Dock
+from retro_data_structures.asset_manager import FileProvider
+from retro_data_structures.formats.mlvl import AreaWrapper
+from retro_data_structures.game_check import Game
 
 LOG = logging.getLogger("echoes_patcher")
 
@@ -29,7 +27,7 @@ def apply_area_modifications(editor: PatcherEditor, configuration: dict[str, dic
         mlvl = editor.get_mlvl(asset_ids.world.NAME_TO_ID[world_name])
 
         areas_by_name: dict[str, AreaWrapper] = {
-            area.name: area
+            get_name_for_area(area): area
             for area in mlvl.areas
         }
 
