@@ -2,6 +2,12 @@ import json
 import logging
 from pathlib import Path
 
+from retro_data_structures.asset_manager import FileProvider
+from retro_data_structures.formats.mlvl import AreaWrapper
+from retro_data_structures.enums.echoes import Effect
+from retro_data_structures.properties.echoes.objects.DamageableTrigger import DamageableTrigger
+from retro_data_structures.game_check import Game
+
 from open_prime_rando import dynamic_schema
 from open_prime_rando.echoes import specific_area_patches, asset_ids
 from open_prime_rando.echoes.inverted import apply_inverted
@@ -9,9 +15,6 @@ from open_prime_rando.echoes.small_randomizations import apply_small_randomizati
 from open_prime_rando.patcher_editor import PatcherEditor
 from open_prime_rando.unique_area_name import get_name_for_area
 from open_prime_rando.validator_with_default import DefaultValidatingDraft7Validator
-from retro_data_structures.asset_manager import FileProvider
-from retro_data_structures.formats.mlvl import AreaWrapper
-from retro_data_structures.game_check import Game
 
 LOG = logging.getLogger("echoes_patcher")
 
@@ -19,6 +22,31 @@ LOG = logging.getLogger("echoes_patcher")
 def _read_schema():
     with Path(__file__).parent.joinpath("echoes", "schema.json").open() as f:
         return json.load(f)
+
+
+def _change_portals_to_all_beams(area: AreaWrapper) -> None:
+    def fix_vuln(vuln):
+        vuln.damage_multiplier = 100.0
+        vuln.effect = Effect.Normal
+
+    for layer in area.layers:
+        for obj in layer.instances:
+            if obj.type == DamageableTrigger:
+                properties = obj.get_properties_as(DamageableTrigger)
+                if properties.get_name() == "Shoot to activate PORTAL":
+                    fix_vuln(properties.vulnerability.power)
+                    fix_vuln(properties.vulnerability.dark)
+                    fix_vuln(properties.vulnerability.light)
+                    fix_vuln(properties.vulnerability.annihilator)
+                    fix_vuln(properties.vulnerability.power_charge)
+                    fix_vuln(properties.vulnerability.entangler)
+                    fix_vuln(properties.vulnerability.light_blast)
+                    fix_vuln(properties.vulnerability.sonic_boom)
+                    fix_vuln(properties.vulnerability.super_missle)
+                    fix_vuln(properties.vulnerability.black_hole)
+                    fix_vuln(properties.vulnerability.sunburst)
+                    fix_vuln(properties.vulnerability.imploder)
+                    obj.set_properties(properties)
 
 
 def apply_area_modifications(editor: PatcherEditor, configuration: dict[str, dict]):
@@ -46,6 +74,9 @@ def apply_area_modifications(editor: PatcherEditor, configuration: dict[str, dic
                     area.connect_dock_to(dock_number, areas_by_name[dock_target["area"]],
                                          world_meta.DOCK_NAMES[dock_target["area"]][dock_target["dock"]])
 
+            if area_config["portals_with_any_beams"]:
+                _change_portals_to_all_beams(area)
+
             for layer_name, layer_state in area_config["layers"].items():
                 LOG.debug("Setting layer %s of %s - %s to %s", layer_name, world_name, area_name, str(layer_state))
                 area.get_layer(layer_name).active = layer_state
@@ -67,6 +98,7 @@ def patch_paks(file_provider: FileProvider, output_path: Path, configuration: di
     apply_area_modifications(editor, configuration["worlds"])
     apply_small_randomizations(editor, configuration["small_randomizations"])
     # apply_door_rando(editor, [])
+
 
     if configuration["inverted"]:
         apply_inverted(editor)

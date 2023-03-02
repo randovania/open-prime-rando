@@ -98,6 +98,11 @@
                     "default": {},
                     "$comment": "The list of docks is replaced in runtime with the existing docks of each specific area."
                 },
+                "portals_with_any_beams": {
+                    "type": "boolean",
+                    "description": "Changes all portals in this area to accept all four beams",
+                    "default": false
+                },
                 "layers": {
                     "type": "object",
                     "patternProperties": {
