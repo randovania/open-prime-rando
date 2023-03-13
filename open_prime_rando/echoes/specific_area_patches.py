@@ -2,12 +2,13 @@ import logging
 
 from construct import Container
 
-from open_prime_rando.echoes.asset_ids.agon_wastes import MINING_STATION_B_MREA
+from open_prime_rando.echoes.asset_ids.agon_wastes import MINING_STATION_B_MREA, PORTAL_TERMINAL_MREA
 from open_prime_rando.echoes.asset_ids.torvus_bog import TORVUS_ENERGY_CONTROLLER_MREA, TORVUS_TEMPLE_MREA
 from open_prime_rando.echoes.asset_ids.world import TORVUS_BOG_MLVL
 from open_prime_rando.patcher_editor import PatcherEditor
 from retro_data_structures.formats.script_object import ScriptInstanceHelper
 from retro_data_structures.game_check import Game
+from retro_data_structures.properties.echoes.objects.Counter import Counter
 from retro_data_structures.properties.echoes.objects.Relay import Relay
 from retro_data_structures.properties.echoes.objects.ScriptLayerController import ScriptLayerController
 
@@ -95,3 +96,32 @@ def torvus_temple_crash(editor: PatcherEditor):
     # for obj in ["GibFlash", "Sound - Swamp Crate Gib"] + debris:
     #     default.remove_instance(obj)
 
+
+def agon_wastes_portal_terminal_puzzle_patch(editor: PatcherEditor):
+    """
+    Patches Agon Wastes - Portal Terminal to behave like in GC NTSC-U/PAL
+    In GC NTSC-J version a counter was added to check for each cork to be broken
+    """
+    area = editor.get_mrea(PORTAL_TERMINAL_MREA)
+
+    """
+    Remove counter increment on the 2 first corks to destroy
+    """
+    relay_ids = [0x12033A, 0x120343]  # 0x120307 is the last cork to destroy
+    for relay_id in relay_ids:
+        relay = area.get_instance(relay_id)
+
+        properties = relay.get_properties()
+        assert isinstance(properties, Relay)
+        relay.remove_connections([0x12044E])
+        relay.set_properties(properties)
+
+    """
+    Set the destroyed cork counter to expect only one cork to be destroyed
+    """
+    counter = area.get_instance(0x12044E)
+
+    properties = counter.get_properties_as(Counter)
+    properties.editor_properties.unknown = 1
+    properties.max_count = 1
+    counter.set_properties(properties)
