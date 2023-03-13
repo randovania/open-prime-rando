@@ -121,7 +121,6 @@ def agon_wastes_portal_terminal_puzzle_patch(editor: PatcherEditor):
     """
     counter = area.get_instance(0x12044E)
 
-    assert isinstance(counter.get_properties(), Counter)
     properties = counter.get_properties_as(Counter)
     properties.editor_properties.unknown = 1
     properties.max_count = 1
