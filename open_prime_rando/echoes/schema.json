@@ -62,6 +62,11 @@
             "type": "boolean",
             "description": "Inverts Light and Dark Aether",
             "default": false
+        },
+        "auto_enabled_elevators": {
+            "type": "boolean",
+            "description": "Set elevators to be activated on room load",
+            "default": false
         }
     },
     "required": [

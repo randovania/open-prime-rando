@@ -3,7 +3,7 @@ import logging
 from pathlib import Path
 
 from open_prime_rando import dynamic_schema
-from open_prime_rando.echoes import specific_area_patches, asset_ids
+from open_prime_rando.echoes import auto_enabled_elevator_patches, specific_area_patches, asset_ids
 from open_prime_rando.echoes.inverted import apply_inverted
 from open_prime_rando.echoes.small_randomizations import apply_small_randomizations
 from open_prime_rando.patcher_editor import PatcherEditor
@@ -63,6 +63,8 @@ def patch_paks(file_provider: FileProvider, output_path: Path, configuration: di
     DefaultValidatingDraft7Validator(schema).validate(configuration)
 
     # custom_assets.create_custom_assets(editor)
+    if configuration["auto_enabled_elevators"]:
+        auto_enabled_elevator_patches.apply_auto_enabled_elevators_patch(editor)
     specific_area_patches.specific_patches(editor, configuration["area_patches"])
     apply_area_modifications(editor, configuration["worlds"])
     apply_small_randomizations(editor, configuration["small_randomizations"])
