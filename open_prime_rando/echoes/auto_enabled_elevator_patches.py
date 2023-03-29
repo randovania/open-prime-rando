@@ -39,11 +39,13 @@ def apply_auto_enabled_elevators_patch(editor: PatcherEditor):
     """
     for elevator_mrea, memory_relay_id in ELEVATOR_MEMORY_RELAY_PER_MREA.items():
         area = editor.get_mrea(elevator_mrea)
+        layers = area.script_layers()
+        layer = [layer for layer in layers if layer.name() == "Default"][0]
 
         """
         Add timer that activates the memory relay of the elevator hologram
         """
-        timer = ScriptInstanceHelper.new_instance(Game.ECHOES, "TIMR")
+        timer = ScriptInstanceHelper.new_instance(Game.ECHOES, "TIMR", layer)
         properties = timer.get_properties_as(Timer)
 
         properties.editor_properties.transform.position = [0.000000, 0.000000, 0.000000]
