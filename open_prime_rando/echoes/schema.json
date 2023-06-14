@@ -131,6 +131,12 @@
                     },
                     "required": ["area", "dock"],
                     "additionalProperties": false
+                },
+                "old_door_type": {
+                    "type": "string"
+                },
+                "new_door_type": {
+                    "type": "string"
                 }
             },
             "default": {},

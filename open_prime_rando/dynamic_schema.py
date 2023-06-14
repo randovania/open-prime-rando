@@ -9,7 +9,7 @@ def expand_schema(base_schema: dict, editor: PatcherEditor) -> dict:
     schema = copy.deepcopy(base_schema)
 
     world_props = schema["properties"]["worlds"]["properties"] = {}
-    for world, mlvl_id in open_prime_rando.echoes.asset_ids.world.NAME_TO_ID.items():
+    for world, mlvl_id in open_prime_rando.echoes.asset_ids.world.NAME_TO_ID_MLVL.items():
         world_def = copy.deepcopy(schema["$defs"]["world"])
         world_props[world] = world_def
 
