@@ -1,10 +1,11 @@
 from enum import IntEnum
+import struct
 from typing import NamedTuple
 
 
 class DoorIconColors(NamedTuple):
     surface_color: int
-    outline_color: int | None # unused
+    outline_color: int | None = None # unused
 
 
 class DoorMapIcon(IntEnum):
@@ -80,4 +81,12 @@ class DoorMapIcon(IntEnum):
         #     return
         
         return DoorIconColors(0xff00ffff)
-        
+    
+    @staticmethod
+    def get_surface_colors_as_bytes() -> bytes:
+        colors = [icon.colors.surface_color for icon in sorted(DoorMapIcon)]
+        return struct.pack(">" + "L"*len(colors), *colors)
+    
+    @staticmethod
+    def get_door_index_bounds() -> tuple[int, int]:
+        return min(*DoorMapIcon), max(*DoorMapIcon)

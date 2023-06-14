@@ -206,7 +206,7 @@ DOCK_TYPES: dict[str, DoorType] = {
     ),
     "Darkburst": BlastShieldDoorType(
         name="Darkburst",
-        vulnerability=dataclasses.replace(resist_all_vuln, darkburst=vulnerable),
+        vulnerability=dataclasses.replace(resist_all_vuln, black_hole=vulnerable),
         shell_model=dark_door_model,
         shell_color=Color(r=1, g=1, b=1, a=1),
         scan_text=(

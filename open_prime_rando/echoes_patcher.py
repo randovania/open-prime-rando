@@ -73,7 +73,6 @@ def patch_paks(file_provider: FileProvider, output_path: Path, configuration: di
     specific_area_patches.specific_patches(editor, configuration["area_patches"])
     apply_area_modifications(editor, configuration["worlds"])
     apply_small_randomizations(editor, configuration["small_randomizations"])
-    apply_door_rando(editor, [])
 
     if configuration["inverted"]:
         apply_inverted(editor)
