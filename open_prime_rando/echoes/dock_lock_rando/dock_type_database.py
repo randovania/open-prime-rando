@@ -43,9 +43,7 @@ DOCK_TYPES: dict[str, DoorType] = {
             missile=vulnerable, bomb=vulnerable, power_bomb=vulnerable,
 
         ),
-        shell_model=normal_door_model,
         shell_color=Color(r=0, g=1, b=1, a=1),
-        scan_text=None,
         map_icon=DoorMapIcon.Normal,
     ),
     "Dark": NormalDoorType(
@@ -62,7 +60,6 @@ DOCK_TYPES: dict[str, DoorType] = {
     "Light": NormalDoorType(
         name="Light",
         vulnerability=dataclasses.replace(resist_all_vuln, light=vulnerable, light_blast=vulnerable, sunburst=vulnerable),
-        shell_model=normal_door_model,
         shell_color=Color(r=1, g=1, b=1, a=1),
         scan_text=(
             "There is a Blast Shield on the door blocking access. ",
@@ -84,7 +81,6 @@ DOCK_TYPES: dict[str, DoorType] = {
     "Disabled": NormalDoorType(
         name="Disabled",
         vulnerability=resist_all_vuln,
-        shell_model=normal_door_model,
         shell_color=Color(r=0, g=0, b=0, a=0),
         scan_text=(
             "Door system access denied.",
@@ -95,7 +91,6 @@ DOCK_TYPES: dict[str, DoorType] = {
     "Missile": VanillaBlastShieldDoorType(
         name="Missile",
         vulnerability=dataclasses.replace(resist_all_vuln, missile=vulnerable),
-        shell_model=normal_door_model,
         shell_color=Color(r=1, g=0, b=0, a=1),
         scan_text=(
             "There is a Blast Shield on the door blocking access. ",
@@ -103,13 +98,10 @@ DOCK_TYPES: dict[str, DoorType] = {
         ),
         map_icon=DoorMapIcon.Missile,
         shield_model=0xBFB4A8EE,
-        shield_collision_box=blast_collision_box,
-        shield_collision_offset=blast_collision_offset
     ),
     "SuperMissile": VanillaBlastShieldDoorType(
         name="SuperMissile",
         vulnerability=dataclasses.replace(resist_all_vuln, super_missle=vulnerable),
-        shell_model=normal_door_model,
         shell_color=Color(r=0, g=1, b=0, a=1),
         scan_text=(
             "There is a Blast Shield on the door blocking access. ",
@@ -117,13 +109,10 @@ DOCK_TYPES: dict[str, DoorType] = {
         ),
         map_icon=DoorMapIcon.SuperMissile,
         shield_model=0xF115F575,
-        shield_collision_box=blast_collision_box,
-        shield_collision_offset=blast_collision_offset
     ),
     "PowerBomb": VanillaBlastShieldDoorType(
         name="PowerBomb",
         vulnerability=dataclasses.replace(resist_all_vuln, power_bomb=vulnerable),
-        shell_model=normal_door_model,
         shell_color=Color(r=1, g=0.94, b=0, a=1),
         scan_text=(
             "There is a Blast Shield on the door blocking access. ",
@@ -131,13 +120,10 @@ DOCK_TYPES: dict[str, DoorType] = {
         ),
         map_icon=DoorMapIcon.PowerBomb,
         shield_model=0xC2E4F075,
-        shield_collision_box=blast_collision_box,
-        shield_collision_offset=blast_collision_offset
     ),
     "SeekerMissile": SeekerBlastShieldDoorType(
         name="SeekerMissile",
         vulnerability=dataclasses.replace(resist_all_vuln, missile=vulnerable),
-        shell_model=normal_door_model,
         shell_color=Color(r=0.5, g=0, b=0.64, a=1),
         scan_text=(
             "There is a Blast Shield on the door blocking access. ",
@@ -145,8 +131,6 @@ DOCK_TYPES: dict[str, DoorType] = {
         ),
         map_icon=DoorMapIcon.SeekerMissile,
         shield_model=0x56F4208B,
-        shield_collision_box=blast_collision_box,
-        shield_collision_offset=blast_collision_offset
     ),
     "ScrewAttack": BlastShieldDoorType(
         name="ScrewAttack",
@@ -159,8 +143,6 @@ DOCK_TYPES: dict[str, DoorType] = {
         ),
         map_icon=DoorMapIcon.ScrewAttack,
         shield_model=0x56F4208B,
-        shield_collision_box=blast_collision_box,
-        shield_collision_offset=blast_collision_offset
     ),
     "Bomb": BlastShieldDoorType(
         name="Bomb",
@@ -173,8 +155,6 @@ DOCK_TYPES: dict[str, DoorType] = {
         ),
         map_icon=DoorMapIcon.Bomb,
         shield_model=0x56F4208B,
-        shield_collision_box=blast_collision_box,
-        shield_collision_offset=blast_collision_offset
     ),
     "Boost": BlastShieldDoorType(
         name="Boost",
@@ -187,8 +167,6 @@ DOCK_TYPES: dict[str, DoorType] = {
         ),
         map_icon=DoorMapIcon.Boost,
         shield_model=0x56F4208B,
-        shield_collision_box=blast_collision_box,
-        shield_collision_offset=blast_collision_offset
     ),
     "Grapple": GrappleDoorType(
         name="Grapple",
@@ -201,8 +179,6 @@ DOCK_TYPES: dict[str, DoorType] = {
         ),
         map_icon=DoorMapIcon.Grapple,
         shield_model=0x56F2208B,
-        shield_collision_box=blast_collision_box,
-        shield_collision_offset=blast_collision_offset
     ),
     "Darkburst": BlastShieldDoorType(
         name="Darkburst",
@@ -215,8 +191,6 @@ DOCK_TYPES: dict[str, DoorType] = {
         ),
         map_icon=DoorMapIcon.Dark,
         shield_model=0x56F2208B,
-        shield_collision_box=blast_collision_box,
-        shield_collision_offset=blast_collision_offset
     ),
     "Sunburst": BlastShieldDoorType(
         name="Sunburst",
@@ -229,8 +203,6 @@ DOCK_TYPES: dict[str, DoorType] = {
         ),
         map_icon=DoorMapIcon.Light,
         shield_model=0x56F2208B,
-        shield_collision_box=blast_collision_box,
-        shield_collision_offset=blast_collision_offset
     ),
     "SonicBoom": BlastShieldDoorType(
         name="SonicBoom",
@@ -243,13 +215,10 @@ DOCK_TYPES: dict[str, DoorType] = {
         ),
         map_icon=DoorMapIcon.Annihilator,
         shield_model=0x56F2208B,
-        shield_collision_box=blast_collision_box,
-        shield_collision_offset=blast_collision_offset
     ),
     "AgonEnergy": PlanetaryEnergyDoorType(
         name="AgonEnergy",
         vulnerability=resist_all_vuln,
-        shell_model=normal_door_model,
         shell_color=Color(r=0.64, g=0.34, b=0, a=1),
         scan_text=(
             "There is a Luminoth barrier on the door blocking access. ",
@@ -261,7 +230,6 @@ DOCK_TYPES: dict[str, DoorType] = {
     "TorvusEnergy": PlanetaryEnergyDoorType(
         name="TorvusEnergy",
         vulnerability=resist_all_vuln,
-        shell_model=normal_door_model,
         shell_color=Color(r=0.31, g=0.59, b=38, a=1),
         scan_text=(
             "There is a Luminoth barrier on the door blocking access. ",
@@ -273,7 +241,6 @@ DOCK_TYPES: dict[str, DoorType] = {
     "SanctuaryEnergy": PlanetaryEnergyDoorType(
         name="SanctuaryEnergy",
         vulnerability=resist_all_vuln,
-        shell_model=normal_door_model,
         shell_color=Color(r=0.64, g=0.34, b=0, a=1),
         scan_text=(
             "There is a Luminoth barrier on the door blocking access. ",

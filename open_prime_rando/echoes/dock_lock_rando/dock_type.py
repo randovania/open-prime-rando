@@ -22,18 +22,24 @@ from retro_data_structures.formats.strg import Strg
 from retro_data_structures.formats.script_object import ScriptInstanceHelper, InstanceId
 
 
-@dataclasses.dataclass(frozen=True)
+@dataclasses.dataclass(kw_only=True)
 class DoorType:
     name: str
 
     vulnerability: DamageVulnerability
 
-    shell_model: AssetId
+    shell_model: AssetId = 0x6B78FD92
     shell_color: Color
 
-    scan_text: tuple[str, ...] | None
+    scan_text: tuple[str, ...] | None = None
 
     map_icon: DoorMapIcon
+
+    patched_scan: AssetId | None = None
+
+    def get_paks(self, editor: PatcherEditor, world_name: str, area_name: str):
+        world_file = world.load_dedicated_file(world_name)
+        return editor.find_paks(world_file.NAME_TO_ID_MREA[area_name])
 
     def get_files(self, editor: PatcherEditor, world_name: str, area_name: str) -> tuple[AreaWrapper, Mapa]:
         world_file = world.load_dedicated_file(world_name)
@@ -76,23 +82,25 @@ class DoorType:
         strg = editor.get_parsed_asset(0x49DF4448, type_hint=Strg)
         return scan, strg
 
-    def get_patched_scan(self, editor: PatcherEditor) -> AssetId:
-        if (scan_id := editor.get_custom_asset(f"custom_door_{self.name}.SCAN")) is not None:
-            return scan_id
+    def get_patched_scan(self, editor: PatcherEditor, world_name: str, area_name: str) -> AssetId:
+        paks = self.get_paks(editor, world_name, area_name)
+        if self.patched_scan is None:
+            scan, strg = DoorType.get_scan_templates(editor)
+            for i, text in enumerate(self.scan_text):
+                strg.set_string(i, text)
+            
+            strg_id = editor.add_or_replace_custom_asset(f"custom_door_{self.name}.STRG", strg, paks)
 
-        scan, strg = DoorType.get_scan_templates(editor)
-        for i, text in enumerate(self.scan_text):
-            strg.set_string(i, text)
-        
-        # TODO: choose paks dynamically
-        strg_id = editor.add_file(f"custom_door_{self.name}.STRG", strg, editor.all_paks)
-        
-        scan_info = scan.scannable_object_info.get_properties_as(ScannableObjectInfo)
-        scan_info.string = strg_id
-        scan.scannable_object_info.set_properties(scan_info)
+            scan_info = scan.scannable_object_info.get_properties_as(ScannableObjectInfo)
+            scan_info.string = strg_id
+            scan.scannable_object_info.set_properties(scan_info)
 
-        # TODO: choose paks dynamically
-        return editor.add_file(f"custom_door_{self.name}.SCAN", scan, editor.all_paks)
+            scan_id = editor.add_or_replace_custom_asset(f"custom_door_{self.name}.SCAN", scan, paks)
+            self.patched_scan = scan_id
+        
+        for pak in paks:
+            editor.ensure_present(pak, self.patched_scan)
+        return self.patched_scan
 
     def patch_door(self, editor: PatcherEditor, world_name: str, area_name: str, dock_name: str):
         mrea, mapa = self.get_files(editor, world_name, area_name)
@@ -104,8 +112,11 @@ class DoorType:
         door_props.shell_color = self.shell_color
         door.set_properties(door_props)
 
+        for pak in self.get_paks(editor, world_name, area_name):
+            editor.ensure_present(pak, self.shell_model)
 
-@dataclasses.dataclass(frozen=True)
+
+@dataclasses.dataclass(kw_only=True)
 class NormalDoorType(DoorType):
     def patch_door(self, editor: PatcherEditor, world_name: str, area_name: str, dock_name: str):
         super().patch_door(editor, world_name, area_name, dock_name)
@@ -115,17 +126,17 @@ class NormalDoorType(DoorType):
         door_props = door.get_properties_as(Door)
         door_props.vulnerability = self.vulnerability
 
-        # if self.scan_text is not None:
-        #     door_props.alt_scannable.scannable_info0 = self.get_patched_scan(editor)
+        if self.scan_text is not None:
+            door_props.alt_scannable.scannable_info0 = self.get_patched_scan(editor, world_name, area_name)
         
         door.set_properties(door_props)
     
 
-@dataclasses.dataclass(frozen=True)
+@dataclasses.dataclass(kw_only=True)
 class BlastShieldDoorType(DoorType):
     shield_model: AssetId
-    shield_collision_box: Vector
-    shield_collision_offset: Vector
+    shield_collision_box: Vector = dataclasses.field(default_factory=lambda: Vector(0.35, 5.0, 4.0))
+    shield_collision_offset: Vector = dataclasses.field(default_factory=lambda: Vector(-2/3, 0, 2.0))
     
     def patch_door(self, editor: PatcherEditor, world_name: str, area_name: str, dock_name: str):
         """
@@ -145,7 +156,7 @@ class BlastShieldDoorType(DoorType):
         raise NotImplementedError()
     
 
-@dataclasses.dataclass(frozen=True)
+@dataclasses.dataclass(kw_only=True)
 class VanillaBlastShieldDoorType(BlastShieldDoorType):
     def remove_blast_shield(self, editor: PatcherEditor, world_name: str, area_name: str, dock_name: str):
         mrea = self.get_mrea(editor, world_name, area_name)
@@ -182,7 +193,7 @@ class VanillaBlastShieldDoorType(BlastShieldDoorType):
         mrea.mrea.remove_instance(lock)
 
 
-@dataclasses.dataclass(frozen=True)
+@dataclasses.dataclass(kw_only=True)
 class SeekerBlastShieldDoorType(VanillaBlastShieldDoorType):
     def patch_door(self, editor: PatcherEditor, world_name: str, area_name: str, dock_name: str):
         raise NotImplementedError()
@@ -191,7 +202,7 @@ class SeekerBlastShieldDoorType(VanillaBlastShieldDoorType):
         raise NotImplementedError()
 
 
-@dataclasses.dataclass(frozen=True)
+@dataclasses.dataclass(kw_only=True)
 class PlanetaryEnergyDoorType(DoorType):
     planetary_energy_item_id: int
 
@@ -199,31 +210,31 @@ class PlanetaryEnergyDoorType(DoorType):
         raise NotImplementedError()
 
 
-@dataclasses.dataclass(frozen=True)
+@dataclasses.dataclass(kw_only=True)
 class GrappleDoorType(BlastShieldDoorType):
     def patch_door(self, editor: PatcherEditor, world_name: str, area_name: str, dock_name: str):
         raise NotImplementedError()
 
 
-@dataclasses.dataclass(frozen=True)
+@dataclasses.dataclass(kw_only=True)
 class DarkVisorDoorType(BlastShieldDoorType):
     def patch_door(self, editor: PatcherEditor, world_name: str, area_name: str, dock_name: str):
         raise NotImplementedError()
 
 
-@dataclasses.dataclass(frozen=True)
+@dataclasses.dataclass(kw_only=True)
 class EchoVisorDoorType(BlastShieldDoorType):
     def patch_door(self, editor: PatcherEditor, world_name: str, area_name: str, dock_name: str):
         raise NotImplementedError()
 
 
-@dataclasses.dataclass(frozen=True)
+@dataclasses.dataclass(kw_only=True)
 class ScanVisorDoorType(BlastShieldDoorType):
     def patch_door(self, editor: PatcherEditor, world_name: str, area_name: str, dock_name: str):
         raise NotImplementedError()
 
 
-@dataclasses.dataclass(frozen=True)
+@dataclasses.dataclass(kw_only=True)
 class TranslatorDoorType(ScanVisorDoorType):
     translator_item_id: int
 

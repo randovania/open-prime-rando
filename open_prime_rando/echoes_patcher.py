@@ -32,9 +32,11 @@ def apply_area_modifications(editor: PatcherEditor, configuration: dict[str, dic
             for area in mlvl.areas
         }
 
-        for area_name, area in areas_by_name.items():
+        for i, (area_name, area) in enumerate(areas_by_name.items()):
             if area_name not in world_config["areas"]:
                 continue
+            
+            LOG.info(f"[{100*i/len(areas_by_name)}%] Processing {area_name}...")
 
             area_config = world_config["areas"][area_name]
 
@@ -54,6 +56,8 @@ def apply_area_modifications(editor: PatcherEditor, configuration: dict[str, dic
             for layer_name, layer_state in area_config["layers"].items():
                 LOG.debug("Setting layer %s of %s - %s to %s", layer_name, world_name, area_name, str(layer_state))
                 area.get_layer(layer_name).active = layer_state
+        
+            area.build_mlvl_dependencies(only_modified=True)
 
 
 def patch_paks(file_provider: FileProvider, output_path: Path, configuration: dict):
