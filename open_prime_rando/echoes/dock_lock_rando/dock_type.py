@@ -30,6 +30,7 @@ from retro_data_structures.formats.mlvl import AreaWrapper
 from retro_data_structures.formats.scan import Scan
 from retro_data_structures.formats.strg import Strg
 from retro_data_structures.formats.script_object import ScriptInstanceHelper, InstanceId
+from retro_data_structures.enums.echoes import State, Message
 
 
 @dataclasses.dataclass(kw_only=True)
@@ -133,7 +134,7 @@ class DoorType:
 @dataclasses.dataclass(kw_only=True)
 class NormalDoorType(DoorType):
     def patch_door(self, editor: PatcherEditor, world_name: str, area_name: str, dock_name: str, low_memory: bool):
-        super().patch_door(editor, world_name, area_name, dock_name)
+        super().patch_door(editor, world_name, area_name, dock_name, low_memory)
         mrea = self.get_mrea(editor, world_name, area_name)
         door = self.get_door_from_dock_index(mrea, self.get_dock_index(world_name, area_name, dock_name))
         
@@ -152,7 +153,7 @@ class BlastShieldDoorType(DoorType):
     shield_collision_box: Vector = dataclasses.field(default_factory=lambda: Vector(0.35, 5.0, 4.0))
     shield_collision_offset: Vector = dataclasses.field(default_factory=lambda: Vector(-2/3, 0, 2.0))
     
-    def get_spline() -> Spline:
+    def get_spline(self) -> Spline:
         return Spline(data=b'\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x00\x02\x02A \x00\x00?\x80\x00\x00\x02\x02\x01\x00\x00\x00\x00?\x80\x00\x00')
 
     def patch_door(self, editor: PatcherEditor, world_name: str, area_name: str, dock_name: str, low_memory: bool):
@@ -170,7 +171,7 @@ class BlastShieldDoorType(DoorType):
             ACTV -> door, RSET
             ACTV -> blast shield, DCTV
         """
-        super().patch_door(editor, world_name, area_name, dock_name)
+        super().patch_door(editor, world_name, area_name, dock_name, low_memory)
         mrea = self.get_mrea(editor, world_name, area_name)
         door = self.get_door_from_dock_index(mrea, self.get_dock_index(world_name, area_name, dock_name))
         _door = door.get_properties_as(Door)
@@ -221,34 +222,38 @@ class BlastShieldDoorType(DoorType):
             _relay.editor_properties.transform = _door.editor_properties.transform
             _relay.editor_properties.active = False
 
-        lock.add_connection("DEAD", "PLAY", sound)
-        lock.add_connection("DEAD", "PLAY", streamed)
-        lock.add_connection("DEAD", "ACTV", relay)
+        lock.add_connection(State.Dead, Message.Play, sound)
+        lock.add_connection(State.Dead, Message.Play, streamed)
+        lock.add_connection(State.Dead, Message.Activate, relay)
 
-        relay.add_connection("ACTV", "DCTV", lock)
-        relay.add_connection("ACTV", "RSET", door)
+        relay.add_connection(State.Active, Message.Deactivate, lock)
+        relay.add_connection(State.Active, Message.Reset, door)
 
-        door.add_connection("OPEN", "ACTV", relay)
+        door.add_connection(State.Open, Message.Activate, relay)
+
+        dependencies = [
+            model,
+            0x8B4CD966, # MetalDoorLockBreak AGSC
+        ]
 
         if not low_memory:
+            particle = 0xCDCBDF04
+
             gibs = default.add_instance_with(Effect(
                 editor_properties=EditorProperties(
                     transform=_door.editor_properties.transform,
                     active=False
                 ),
-                particle_effect=0xCDCBDF04,
+                particle_effect=particle,
                 restart_on_activate=True,
                 motion_control_spline=self.get_spline(),
             ))
 
-            lock.add_connection("DEAD", "ACTV", gibs)
+            lock.add_connection(State.Dead, Message.Activate, gibs)
+            dependencies.append(particle)
 
         for pak in self.get_paks(editor, world_name, area_name):
-            for asset in (
-                model,
-                0x8B4CD966, # MetalDoorLockBreak AGSC
-                0xCDCBDF04  # gibs PART
-            ):
+            for asset in dependencies:
                 editor.ensure_present(pak, asset)
 
     
@@ -261,7 +266,7 @@ class VanillaBlastShieldDoorType(BlastShieldDoorType):
 
         relay = None
         for connection in door.connections:
-            if connection.state == "OPEN" and connection.message == "ACTV":
+            if connection.state == State.Open and connection.message == Message.Activate:
                 target = mrea.get_instance(connection.target)
                 if target.type == MemoryRelay:
                     relay = target
@@ -272,7 +277,7 @@ class VanillaBlastShieldDoorType(BlastShieldDoorType):
         
         lock = None
         for connection in relay.connections:
-            if connection.state == "ACTV" and connection.message == "DCTV":
+            if connection.state == State.Active and connection.message == Message.Deactivate:
                 target = mrea.get_instance(connection.target)
                 if target.type == Actor:
                     lock = target
