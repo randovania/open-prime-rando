@@ -79,7 +79,7 @@ class PatcherEditor(AssetManager):
             target_dol.write_bytes(self.dol.dol_file.getvalue())
 
     def add_or_replace_custom_asset(self, name: str, new_data: Resource, in_paks: typing.Iterable[str] = []) -> AssetId:
-        if self.get_custom_asset(name) is not None:
+        if self.does_asset_exists(name):
             asset_id = self.replace_asset(name, new_data)
             for pak in in_paks:
                 self.ensure_present(pak, asset_id)

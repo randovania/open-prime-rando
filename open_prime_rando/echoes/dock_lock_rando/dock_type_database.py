@@ -178,7 +178,7 @@ DOCK_TYPES: dict[str, DoorType] = {
             "Analysis indicates that the Blast Shield is invulnerable to weapon fire, but is weakly secured. The Grapple Beam may be able to remove it."
         ),
         map_icon=DoorMapIcon.Grapple,
-        shield_model=0x56F2208B,
+        shield_model=0x56F4208B,
     ),
     "Darkburst": BlastShieldDoorType(
         name="Darkburst",
@@ -190,7 +190,7 @@ DOCK_TYPES: dict[str, DoorType] = {
             "Analysis indicates that the Blast Shield is invulnerable to most weapons. A massive burst of dark energy may damage it."
         ),
         map_icon=DoorMapIcon.Dark,
-        shield_model=0x56F2208B,
+        shield_model=0x56F4208B,
     ),
     "Sunburst": BlastShieldDoorType(
         name="Sunburst",
@@ -202,11 +202,11 @@ DOCK_TYPES: dict[str, DoorType] = {
             "Analysis indicates that the Blast Shield is invulnerable to most weapons. A massive burst of light energy may damage it."
         ),
         map_icon=DoorMapIcon.Light,
-        shield_model=0x56F2208B,
+        shield_model=0x56F4208B,
     ),
     "SonicBoom": BlastShieldDoorType(
         name="SonicBoom",
-        vulnerability=dataclasses.replace(resist_all_vuln, sonic_boom=vulnerable),
+        vulnerability=dataclasses.replace(resist_all_vuln, imploder=vulnerable),
         shell_model=annihilator_door_model,
         shell_color=Color(r=1, g=1, b=1, a=1),
         scan_text=(
@@ -214,7 +214,7 @@ DOCK_TYPES: dict[str, DoorType] = {
             "Analysis indicates that the Blast Shield is invulnerable to most weapons. A massive burst of light and dark energy may damage it."
         ),
         map_icon=DoorMapIcon.Annihilator,
-        shield_model=0x56F2208B,
+        shield_model=0x56F4208B,
     ),
     "AgonEnergy": PlanetaryEnergyDoorType(
         name="AgonEnergy",

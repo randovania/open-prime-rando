@@ -15,6 +15,11 @@ from retro_data_structures.properties.echoes.objects.Door import Door
 from retro_data_structures.properties.echoes.objects.Actor import Actor
 from retro_data_structures.properties.echoes.objects.MemoryRelay import MemoryRelay
 from retro_data_structures.properties.echoes.objects.ScannableObjectInfo import ScannableObjectInfo
+from retro_data_structures.properties.echoes.objects.Sound import Sound
+from retro_data_structures.properties.echoes.objects.StreamedAudio import StreamedAudio
+from retro_data_structures.properties.echoes.objects.MemoryRelay import MemoryRelay
+from retro_data_structures.properties.echoes.objects.Effect import Effect
+from retro_data_structures.properties.echoes.core.Spline import Spline
 from retro_data_structures.formats.mapa import Mapa
 from retro_data_structures.formats.mlvl import AreaWrapper
 from retro_data_structures.formats.scan import Scan
@@ -84,7 +89,7 @@ class DoorType:
 
     def get_patched_scan(self, editor: PatcherEditor, world_name: str, area_name: str) -> AssetId:
         paks = self.get_paks(editor, world_name, area_name)
-        if self.patched_scan is None:
+        if self.patched_scan is None or not editor.does_asset_exists(self.patched_scan):
             scan, strg = DoorType.get_scan_templates(editor)
             for i, text in enumerate(self.scan_text):
                 strg.set_string(i, text)
@@ -138,6 +143,9 @@ class BlastShieldDoorType(DoorType):
     shield_collision_box: Vector = dataclasses.field(default_factory=lambda: Vector(0.35, 5.0, 4.0))
     shield_collision_offset: Vector = dataclasses.field(default_factory=lambda: Vector(-2/3, 0, 2.0))
     
+    def get_spline(editor: PatcherEditor) -> Spline:
+        return Spline(data=b'\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x00\x02\x02A \x00\x00?\x80\x00\x00\x02\x02\x01\x00\x00\x00\x00?\x80\x00\x00')
+
     def patch_door(self, editor: PatcherEditor, world_name: str, area_name: str, dock_name: str):
         """
         blast shield connections:
@@ -153,7 +161,74 @@ class BlastShieldDoorType(DoorType):
             ACTV -> door, RSET
             ACTV -> blast shield, DCTV
         """
-        raise NotImplementedError()
+        super().patch_door(editor, world_name, area_name, dock_name)
+        mrea = self.get_mrea(editor, world_name, area_name)
+        _door = self.get_door_from_dock_index(mrea, self.get_dock_index(world_name, area_name, dock_name))
+        door = _door.get_properties_as(Door)
+
+        default = mrea.get_layer("Default")
+        
+        _sound = default.add_instance("SOND", "Metal Door Lock Breaking")
+        sound = _sound.get_properties_as(Sound)
+        sound.editor_properties.transform = door.editor_properties.transform
+        sound.sound = 948
+        sound.max_audible_distance = 150.0
+        sound.surround_pan.surround_pan = 1.0
+        _sound.set_properties(sound)
+
+        _streamed = default.add_instance("STAU", "StreamedAudio - Event Jingle")
+        streamed = _streamed.get_properties_as(StreamedAudio)
+        streamed.editor_properties.transform = door.editor_properties.transform
+        streamed.song_file = "/audio/evt_x_event_00.dsp"
+        streamed.fade_in_time = 0.01
+        streamed.volume = 65
+        streamed.software_channel = 1
+        streamed.unknown = False
+        _streamed.set_properties(streamed)
+
+        _relay = default.add_memory_relay("Lock Cleared")
+        relay = _relay.get_properties_as(MemoryRelay)
+        relay.editor_properties.transform = door.editor_properties.transform
+        relay.editor_properties.active = False
+        _relay.set_properties(relay)
+
+        _gibs = default.add_instance("EFCT", "Missile Lock Explosion Gibs")
+        gibs = _gibs.get_properties_as(Effect)
+        gibs.editor_properties.transform = door.editor_properties.transform
+        gibs.editor_properties.active = False
+        gibs.particle_effect = 0xCDCBDF04
+        gibs.restart_on_activate = True
+        gibs.motion_control_spline = BlastShieldDoorType.get_spline(editor)
+        _gibs.set_properties(gibs)
+
+        _lock = default.add_instance("ACTR", "Blast Shield Lock")
+        lock = _lock.get_properties_as(Actor)
+        lock.editor_properties.transform = door.editor_properties.transform
+        lock.collision_box = self.shield_collision_box
+        lock.collision_offset = self.shield_collision_offset
+        lock.vulnerability = self.vulnerability
+        lock.model = self.shield_model
+        lock.actor_information.scannable.scannable_info0 = self.get_patched_scan(editor, world_name, area_name)
+        _lock.set_properties(lock)
+
+        _lock.add_connection("DEAD", "PLAY", _sound)
+        _lock.add_connection("DEAD", "PLAY", _streamed)
+        # _lock.add_connection("DEAD", "ACTV", _gibs)
+        _lock.add_connection("DEAD", "ACTV", _relay)
+
+        _relay.add_connection("ACTV", "DCTV", _lock)
+        _relay.add_connection("ACTV", "RSET", _door)
+
+        _door.add_connection("OPEN", "ACTV", _relay)
+
+        for pak in self.get_paks(editor, world_name, area_name):
+            for asset in (
+                self.shield_model,
+                0x8B4CD966, # MetalDoorLockBreak AGSC
+                0xCDCBDF04  # gibs PART
+            ):
+                editor.ensure_present(pak, asset)
+
     
 
 @dataclasses.dataclass(kw_only=True)
