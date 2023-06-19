@@ -1,55 +1,41 @@
-from retro_data_structures.enums import echoes
-from retro_data_structures.formats.script_object import ScriptInstanceHelper
-from retro_data_structures.properties.echoes.archetypes.DamageVulnerability import DamageVulnerability
-from retro_data_structures.properties.echoes.archetypes.WeaponVulnerability import WeaponVulnerability
-from retro_data_structures.properties.echoes.objects.Door import Door
+from pathlib import Path
 
-from open_prime_rando.echoes.asset_ids.temple_grounds import HIVE_ACCESS_TUNNEL_MREA
-
+from construct import Construct, Container
+from open_prime_rando.echoes.dock_lock_rando.dock_type import *
+from open_prime_rando.echoes.dock_lock_rando.dock_type_database import DOCK_TYPES
 from open_prime_rando.patcher_editor import PatcherEditor
 
-def change_door_to_light(door: ScriptInstanceHelper):
-    door_props: Door = door.get_properties()
-    door_props.shell_color.r = 1.0
-    door_props.shell_color.g = 1.0
-    door_props.shell_color.b = 1.0
-
-    v = door_props.vulnerability
-    types = ["power", "dark", "annihilator", "bomb", "power_bomb", "missile", "power_charge", "entangler",
-             "sonic_boom", "super_missle", "black_hole", "imploder"]
-    for t in types:
-        dmg_vuln: WeaponVulnerability = getattr(v, t)
-        dmg_vuln.damage_multiplier = 0.0
-        dmg_vuln.effect = echoes.Effect.Reflect
-
-    for t in ["light", "light_blast", "sunburst"]:
-        dmg_vuln: WeaponVulnerability = getattr(v, t)
-        dmg_vuln.damage_multiplier = 100.0
-        dmg_vuln.effect = echoes.Effect.Normal
-
-    door.set_properties(door_props)
+from retro_data_structures.base_resource import RawResource
+from retro_data_structures.formats.cmdl import Cmdl
+from retro_data_structures.game_check import Game
 
 
-def apply_door_rando(editor: PatcherEditor, door_rando_configuration: list[dict]):
-    access_tunnel = editor.get_mrea(HIVE_ACCESS_TUNNEL_MREA)
+def add_custom_models(editor: PatcherEditor):
+    assets = Path(__file__).parent.parent.joinpath("custom_assets", "doors")
+    def get_txtr(n: str) -> AssetId:
+        res = RawResource(
+            type="TXTR",
+            data=assets.joinpath(f"{n}.TXTR").read_bytes()
+        )
+        return editor.add_file(f"{n}.TXTR", res, [])
+    
+    emissive = get_txtr("custom_door_lock_greyscale_emissive")
+    template = editor.get_parsed_asset(0xF115F575, type_hint=Cmdl)
 
-    docks = {}
-    doors = {}
+    for name in ("darkburst", "sunburst", "sonicboom"):
+        txtr = get_txtr(f"custom_door_lock_{name}")
+        cmdl = Container(template.raw)
+        cmdl.material_sets[0].texture_file_ids[0] = txtr
+        cmdl.material_sets[0].texture_file_ids[1] = emissive
+        editor.add_file(f"custom_door_lock_{name}.CMDL", Cmdl(cmdl, Game.ECHOES, editor), [])
 
-    for script_layer in access_tunnel.script_layers:
-        for instance in script_layer.instances:
-            # try:
-            #     print("{}: {}".format(instance, instance.name))
-            #     # print(instance.get_properties())
-            # except Exception as e:
-            #     print("{}: {} --- {}".format(instance, e, instance._raw.instance.base_property.hex()))
-            #     continue
 
-            if instance.type == "DOCK":
-                docks[instance.id] = instance
+def apply_door_rando(editor: PatcherEditor, world_name: str, area_name: str, dock_name: str, new_door_type: str, old_door_type: str | None, low_memory: bool):
+    if old_door_type is not None:
+        old_door = DOCK_TYPES[old_door_type]
 
-            if instance.type == "DOOR":
-                doors[instance.id] = instance
-
-    for door in doors.values():
-        change_door_to_light(door)
+        if isinstance(old_door, VanillaBlastShieldDoorType):
+            old_door.remove_blast_shield(editor, world_name, area_name, dock_name)
+    
+    new_door = DOCK_TYPES[new_door_type]
+    new_door.patch_door(editor, world_name, area_name, dock_name, low_memory)

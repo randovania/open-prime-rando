@@ -112,6 +112,10 @@
                     },
                     "default": {},
                     "$comment": "The list of layers is replaced in runtime with the existing layers of each specific area."
+                },
+                "low_memory_mode": {
+                    "type": "boolean",
+                    "default": false
                 }
             },
             "additionalProperties": false
@@ -131,10 +135,40 @@
                     },
                     "required": ["area", "dock"],
                     "additionalProperties": false
+                },
+                "old_door_type": {
+                    "$ref": "#/$defs/dock_type"
+                },
+                "new_door_type": {
+                    "$ref": "#/$defs/dock_type"
                 }
             },
             "default": {},
             "additionalProperties": false
+        },
+        "dock_type": {
+            "type": "string",
+            "enum": [
+                "Normal",
+                "Dark",
+                "Light",
+                "Annihilator",
+                "Disabled",
+                "Missile",
+                "SuperMissile",
+                "PowerBomb",
+                "SeekerMissile",
+                "ScrewAttack",
+                "Bomb",
+                "Boost",
+                "Grapple",
+                "Darkburst",
+                "Sunburst",
+                "SonicBoom",
+                "AgonEnergy",
+                "TorvusEnergy",
+                "SanctuaryEnergy"
+            ]
         }
     }
 }

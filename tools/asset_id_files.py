@@ -55,7 +55,7 @@ def generate_template(items: dict[str, int], suffix: str) -> str:
     )
     template += "\n"
 
-    template += "\nNAME_TO_ID = {\n"
+    template += f"\nNAME_TO_ID{suffix}" + " = {\n"
     for name in sorted(items):
         template += f"    \"{name}\": 0x{items[name]:08X},\n"
     template += "}\n"
@@ -68,6 +68,7 @@ def create_asset_id_files(editor: PatcherEditor, output_path: Path):
 
     custom_world_names = _CUSTOM_WORLD_NAMES.get(editor.target_game, {})
     world_names = {}
+    mapw_names = {}
 
     for value in editor.all_asset_ids():
         if editor.get_asset_type(value).lower() != "mlvl":
@@ -85,11 +86,13 @@ def create_asset_id_files(editor: PatcherEditor, output_path: Path):
             world_name = custom_world_names[value]
 
         world_names[world_name] = value
+        mapw_names[world_name] = mlvl.raw.world_map_id
 
         area_names = {}
+        mapa_names = {}
         dock_names = {}
 
-        for area in mlvl.raw.areas:
+        for area, mapa in zip(mlvl.raw.areas, mlvl.mapw.mapa_ids):
             try:
                 strg = editor.get_parsed_asset(area.area_name_id, type_hint=Strg)
                 area_name = strg.raw.string_tables[0].strings[0].string
@@ -99,6 +102,7 @@ def create_asset_id_files(editor: PatcherEditor, output_path: Path):
 
             assert area_name not in area_names, area_name
             area_names[area_name] = area.area_mrea_id
+            mapa_names[area_name] = mapa
             mrea = editor.get_parsed_asset(area_names[area_name], type_hint=Mrea)
 
             docks = {}
@@ -116,10 +120,12 @@ def create_asset_id_files(editor: PatcherEditor, output_path: Path):
             dock_names[area_name] = docks
 
         world_file_body = generate_template(area_names, "_MREA")
+        world_file_body += generate_template(mapa_names, "_MAPA")
         world_file_body += dock_name_templates(dock_names)
         output_path.joinpath(f"{filter_name(world_name).lower()}.py").write_text(world_file_body)
 
     global_file_body = generate_template(world_names, "_MLVL")
+    global_file_body += generate_template(mapw_names, "_MAPW")
 
     global_file_body += "\n_DEDICATED_FILES = {\n"
     for name in sorted(world_names.keys()):

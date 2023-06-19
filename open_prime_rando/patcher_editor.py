@@ -5,7 +5,7 @@ from pathlib import Path
 
 from ppc_asm.dol_file import DolEditor, DolHeader
 from retro_data_structures.asset_manager import AssetManager, FileProvider
-from retro_data_structures.base_resource import BaseResource, NameOrAssetId, RawResource, AssetId
+from retro_data_structures.base_resource import Resource, BaseResource, NameOrAssetId, RawResource, AssetId
 from retro_data_structures.crc import crc32
 from retro_data_structures.formats.mlvl import Mlvl, AreaWrapper
 from retro_data_structures.formats.mrea import Mrea
@@ -77,3 +77,12 @@ class PatcherEditor(AssetManager):
             target_dol = output_path.joinpath("sys/main.dol")
             target_dol.parent.mkdir(exist_ok=True, parents=True)
             target_dol.write_bytes(self.dol.dol_file.getvalue())
+
+    def add_or_replace_custom_asset(self, name: str, new_data: Resource, in_paks: typing.Iterable[str] = ()) -> AssetId:
+        if self.does_asset_exists(name):
+            asset_id = self.replace_asset(name, new_data)
+            for pak in in_paks:
+                self.ensure_present(pak, asset_id)
+        else:
+            asset_id = self.add_file(name, new_data, in_paks)
+        return asset_id
