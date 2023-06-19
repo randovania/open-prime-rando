@@ -3,8 +3,7 @@ import logging
 from pathlib import Path
 
 from open_prime_rando import dynamic_schema
-from open_prime_rando.echoes import auto_enabled_elevator_patches, specific_area_patches, asset_ids
-from open_prime_rando.echoes.dock_lock_rando import apply_door_rando
+from open_prime_rando.echoes import auto_enabled_elevator_patches, specific_area_patches, asset_ids, dock_lock_rando
 from open_prime_rando.echoes.inverted import apply_inverted
 from open_prime_rando.echoes.small_randomizations import apply_small_randomizations
 from open_prime_rando.patcher_editor import PatcherEditor
@@ -44,7 +43,7 @@ def apply_area_modifications(editor: PatcherEditor, configuration: dict[str, dic
                 dock_number = world_meta.DOCK_NAMES[area_name][dock_name]
 
                 if "new_door_type" in dock_config:
-                    apply_door_rando(editor, world_name, area_name, dock_name, dock_config["new_door_type"], dock_config.get("old_door_type"))
+                    dock_lock_rando.apply_door_rando(editor, world_name, area_name, dock_name, dock_config["new_door_type"], dock_config.get("old_door_type"))
                 
                 if "connect_to" in dock_config:
                     dock_target = dock_config["connect_to"]
@@ -72,6 +71,7 @@ def patch_paks(file_provider: FileProvider, output_path: Path, configuration: di
     DefaultValidatingDraft7Validator(schema).validate(configuration)
 
     # custom_assets.create_custom_assets(editor)
+    dock_lock_rando.add_custom_models(editor)
     if configuration["auto_enabled_elevators"]:
         auto_enabled_elevator_patches.apply_auto_enabled_elevators_patch(editor)
     specific_area_patches.specific_patches(editor, configuration["area_patches"])

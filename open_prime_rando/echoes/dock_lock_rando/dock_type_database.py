@@ -5,6 +5,7 @@ from retro_data_structures.properties.echoes.archetypes.DamageVulnerability impo
 from retro_data_structures.properties.echoes.archetypes.WeaponVulnerability import WeaponVulnerability
 from retro_data_structures.properties.echoes.core.Color import Color
 from retro_data_structures.properties.echoes.core.Vector import Vector
+from retro_data_structures.crc import crc32
 
 from open_prime_rando.echoes.dock_lock_rando.dock_type import *
 from open_prime_rando.echoes.dock_lock_rando.map_icons import DoorMapIcon
@@ -190,7 +191,7 @@ DOCK_TYPES: dict[str, DoorType] = {
             "Analysis indicates that the Blast Shield is invulnerable to most weapons. A massive burst of dark energy may damage it."
         ),
         map_icon=DoorMapIcon.Dark,
-        shield_model=0x56F4208B,
+        shield_model="custom_door_lock_darkburst.CMDL",
     ),
     "Sunburst": BlastShieldDoorType(
         name="Sunburst",
@@ -202,7 +203,7 @@ DOCK_TYPES: dict[str, DoorType] = {
             "Analysis indicates that the Blast Shield is invulnerable to most weapons. A massive burst of light energy may damage it."
         ),
         map_icon=DoorMapIcon.Light,
-        shield_model=0x56F4208B,
+        shield_model="custom_door_lock_sunburst.CMDL",
     ),
     "SonicBoom": BlastShieldDoorType(
         name="SonicBoom",
@@ -214,7 +215,7 @@ DOCK_TYPES: dict[str, DoorType] = {
             "Analysis indicates that the Blast Shield is invulnerable to most weapons. A massive burst of light and dark energy may damage it."
         ),
         map_icon=DoorMapIcon.Annihilator,
-        shield_model=0x56F4208B,
+        shield_model="custom_door_lock_sonicboom.CMDL",
     ),
     "AgonEnergy": PlanetaryEnergyDoorType(
         name="AgonEnergy",

@@ -6,6 +6,7 @@ from open_prime_rando.patcher_editor import PatcherEditor
 from open_prime_rando.echoes.asset_ids import *
 
 from retro_data_structures.base_resource import AssetId
+from retro_data_structures.asset_manager import NameOrAssetId
 from retro_data_structures.properties.echoes.archetypes.DamageVulnerability import DamageVulnerability
 from retro_data_structures.properties.echoes.archetypes.WeaponVulnerability import WeaponVulnerability
 from retro_data_structures.properties.echoes.core.Color import Color
@@ -33,7 +34,7 @@ class DoorType:
 
     vulnerability: DamageVulnerability
 
-    shell_model: AssetId = 0x6B78FD92
+    shell_model: NameOrAssetId = 0x6B78FD92
     shell_color: Color
 
     scan_text: tuple[str, ...] | None = None
@@ -112,13 +113,15 @@ class DoorType:
         door = self.get_door_from_dock_index(mrea, self.get_dock_index(world_name, area_name, dock_name))
         self.patch_map_icon(mapa, door)
 
+        shell_model = editor._resolve_asset_id(self.shell_model)
+
         door_props = door.get_properties_as(Door)
-        door_props.shell_model = self.shell_model
+        door_props.shell_model = shell_model
         door_props.shell_color = self.shell_color
         door.set_properties(door_props)
 
         for pak in self.get_paks(editor, world_name, area_name):
-            editor.ensure_present(pak, self.shell_model)
+            editor.ensure_present(pak, shell_model)
 
 
 @dataclasses.dataclass(kw_only=True)
@@ -139,7 +142,7 @@ class NormalDoorType(DoorType):
 
 @dataclasses.dataclass(kw_only=True)
 class BlastShieldDoorType(DoorType):
-    shield_model: AssetId
+    shield_model: NameOrAssetId
     shield_collision_box: Vector = dataclasses.field(default_factory=lambda: Vector(0.35, 5.0, 4.0))
     shield_collision_offset: Vector = dataclasses.field(default_factory=lambda: Vector(-2/3, 0, 2.0))
     
@@ -201,13 +204,15 @@ class BlastShieldDoorType(DoorType):
         gibs.motion_control_spline = BlastShieldDoorType.get_spline(editor)
         _gibs.set_properties(gibs)
 
+        model = editor._resolve_asset_id(self.shield_model)
+
         _lock = default.add_instance("ACTR", "Blast Shield Lock")
         lock = _lock.get_properties_as(Actor)
         lock.editor_properties.transform = door.editor_properties.transform
         lock.collision_box = self.shield_collision_box
         lock.collision_offset = self.shield_collision_offset
         lock.vulnerability = self.vulnerability
-        lock.model = self.shield_model
+        lock.model = model
         lock.actor_information.scannable.scannable_info0 = self.get_patched_scan(editor, world_name, area_name)
         _lock.set_properties(lock)
 
@@ -223,7 +228,7 @@ class BlastShieldDoorType(DoorType):
 
         for pak in self.get_paks(editor, world_name, area_name):
             for asset in (
-                self.shield_model,
+                model,
                 0x8B4CD966, # MetalDoorLockBreak AGSC
                 0xCDCBDF04  # gibs PART
             ):
