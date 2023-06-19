@@ -30,7 +30,7 @@ def add_custom_models(editor: PatcherEditor):
         editor.add_file(f"custom_door_lock_{name}.CMDL", Cmdl(cmdl, Game.ECHOES, editor), [])
 
 
-def apply_door_rando(editor: PatcherEditor, world_name: str, area_name: str, dock_name: str, new_door_type: str, old_door_type: str | None):
+def apply_door_rando(editor: PatcherEditor, world_name: str, area_name: str, dock_name: str, new_door_type: str, old_door_type: str | None, low_memory: bool):
     if old_door_type is not None:
         old_door = DOCK_TYPES[old_door_type]
 
@@ -38,4 +38,4 @@ def apply_door_rando(editor: PatcherEditor, world_name: str, area_name: str, doc
             old_door.remove_blast_shield(editor, world_name, area_name, dock_name)
     
     new_door = DOCK_TYPES[new_door_type]
-    new_door.patch_door(editor, world_name, area_name, dock_name)
+    new_door.patch_door(editor, world_name, area_name, dock_name, low_memory)

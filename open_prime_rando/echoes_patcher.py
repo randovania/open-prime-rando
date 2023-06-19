@@ -38,12 +38,21 @@ def apply_area_modifications(editor: PatcherEditor, configuration: dict[str, dic
             LOG.info(f"[{100*i/len(areas_by_name)}%] Processing {area_name}...")
 
             area_config = world_config["areas"][area_name]
+            low_memory = area_config["low_memory_mode"]
 
             for dock_name, dock_config in area_config["docks"].items():
                 dock_number = world_meta.DOCK_NAMES[area_name][dock_name]
 
                 if "new_door_type" in dock_config:
-                    dock_lock_rando.apply_door_rando(editor, world_name, area_name, dock_name, dock_config["new_door_type"], dock_config.get("old_door_type"))
+                    dock_lock_rando.apply_door_rando(
+                        editor,
+                        world_name,
+                        area_name,
+                        dock_name,
+                        dock_config["new_door_type"],
+                        dock_config.get("old_door_type"),
+                        low_memory
+                    )
                 
                 if "connect_to" in dock_config:
                     dock_target = dock_config["connect_to"]
