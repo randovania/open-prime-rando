@@ -1,29 +1,12 @@
 import dataclasses
 
-from retro_data_structures.enums import echoes
-from retro_data_structures.properties.echoes.archetypes.DamageVulnerability import DamageVulnerability
-from retro_data_structures.properties.echoes.archetypes.WeaponVulnerability import WeaponVulnerability
 from retro_data_structures.properties.echoes.core.Color import Color
 from retro_data_structures.properties.echoes.core.Vector import Vector
-from retro_data_structures.crc import crc32
 
 from open_prime_rando.echoes.dock_lock_rando.dock_type import *
 from open_prime_rando.echoes.dock_lock_rando.map_icons import DoorMapIcon
+from open_prime_rando.echoes.vulnerabilities import vulnerable, resist_all_vuln
 
-reflect = WeaponVulnerability(damage_multiplier=0, effect=echoes.Effect.Reflect)
-vulnerable = WeaponVulnerability(damage_multiplier=100, effect=echoes.Effect.Normal)
-immune = WeaponVulnerability(damage_multiplier=0, effect=echoes.Effect.Normal, ignore_radius=True)
-
-resist_all_vuln = DamageVulnerability(
-    power=reflect, dark=reflect, light=reflect, annihilator=reflect,
-    power_charge=reflect, entangler=reflect, light_blast=reflect, sonic_boom=reflect,
-    super_missle=reflect, black_hole=reflect, sunburst=reflect, imploder=reflect,
-
-    boost_ball=immune, cannon_ball=immune, screw_attack=immune, bomb=immune, power_bomb=immune,
-    missile=immune, phazon=reflect, ai=immune, poison_water=immune, dark_water=immune, lava=immune,
-    area_damage_hot=immune, area_damage_cold=immune, area_damage_dark=immune, area_damage_light=immune,
-    weapon_vulnerability=immune, normal_safe_zone=immune,
-)
 
 normal_door_model = 0x6B78FD92
 dark_door_model = 0xbbcf134d
@@ -31,6 +14,7 @@ annihilator_door_model = 0xa50c7238
 
 blast_collision_box = Vector(0.35, 5.0, 4.0)
 blast_collision_offset = Vector(-2/3, 0, 2.0)
+
 
 DOCK_TYPES: dict[str, DoorType] = {
     "Normal": NormalDoorType(
@@ -128,7 +112,7 @@ DOCK_TYPES: dict[str, DoorType] = {
         shell_color=Color(r=0.5, g=0, b=0.64, a=1),
         scan_text=(
             "There is a Blast Shield on the door blocking access. ",
-            "Analysis indicates that the Blast Shield is invulnerable to most weapons. Five simultaneous blasts from Seeker Missiles may damage it."
+            "Analysis indicates that the Blast Shield is invulnerable to most weapons. Five simultaneous Missile blasts may damage it."
         ),
         map_icon=DoorMapIcon.SeekerMissile,
         shield_model=0x56F4208B,
