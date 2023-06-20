@@ -10,9 +10,10 @@ from retro_data_structures.properties.echoes.objects.PointOfInterest import Poin
 from retro_data_structures.properties.echoes.objects.ScannableObjectInfo import ScannableObjectInfo
 from retro_data_structures.properties.echoes.objects.Sound import Sound
 from retro_data_structures.properties.echoes.objects.Switch import Switch
+from retro_data_structures.enums.echoes import State, Message
 
 ECHO_LOCK_MREAS = [MAIN_GYRO_CHAMBER_MREA, SENTINELS_PATH_MREA, PROFANE_PATH_MREA]
-ECHO_LOCK_STATES = ["ZERO", "IS00", "IS01", "IS02"]
+ECHO_LOCK_STATES = [State.Zero, State.InternalState00, State.InternalState01, State.InternalState02]
 ECHO_LOCK_SOUNDS = [1005, 1006, 1007]
 
 
@@ -63,21 +64,18 @@ def randomize_echo_locks(editor: PatcherEditor, rng: random.Random):
 
         # Update all scan posts to have the updated scan text
         for scan_point, key_scan in zip(key_scan_points, key_scans):
-            scan = scan_point.get_properties_as(PointOfInterest)
-            scan.scan_info.scannable_info0 = key_scan
-            scan_point.set_properties(scan)
+            with scan_point.edit_properties(PointOfInterest) as scan:
+                scan.scan_info.scannable_info0 = key_scan
 
         for i, key in enumerate(solution):
-            counter.add_connection(ECHO_LOCK_STATES[i], "ZERO", correct_key_relays[key])
+            counter.add_connection(ECHO_LOCK_STATES[i], Message.SetToZero, correct_key_relays[key])
 
-            tone = lock_tone_players[i].get_properties_as(Sound)
-            tone.sound = ECHO_LOCK_SOUNDS[key]
-            lock_tone_players[i].set_properties(tone)
+            with lock_tone_players[i].edit_properties(Sound) as tone:
+                tone.sound = ECHO_LOCK_SOUNDS[key]
 
         for i, switch in enumerate(key_switches):
-            props = switch.get_properties_as(Switch)
-            props.is_open = i == solution[0]
-            switch.set_properties(props)
+            with switch.edit_properties(Switch) as props:
+                props.is_open = i == solution[0]
 
         # edit scan to indicate the solution
         solution_text = "Sonic detection gear needed to interface with this system. The combination of its sonic locks is:\n"
@@ -89,6 +87,6 @@ def randomize_echo_locks(editor: PatcherEditor, rng: random.Random):
         gate_scan.scannable_object_info.set_properties(gate_scan_info)
         scan_id = editor.add_file(f"accessible_echo_gate_{asset_id}.SCAN", gate_scan, all_paks)
 
-        poi = gate_poi.get_properties_as(PointOfInterest)
-        poi.scan_info.scannable_info0 = scan_id
-        gate_poi.set_properties(poi)
+        with gate_poi.edit_properties(PointOfInterest) as poi:
+            poi.scan_info.scannable_info0 = scan_id
+

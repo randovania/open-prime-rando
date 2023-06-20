@@ -8,6 +8,7 @@ from retro_data_structures.crc import crc32
 from retro_data_structures.formats.cmdl import Cmdl
 from retro_data_structures.base_resource import RawResource
 from open_prime_rando.echoes.asset_ids.sanctuary_fortress import MAIN_GYRO_CHAMBER_MREA
+from retro_data_structures.enums.echoes import State, Message
 
 from open_prime_rando.patcher_editor import PatcherEditor
 
@@ -29,7 +30,7 @@ RUBIKS_CUBES = {
 @dataclass(frozen=True)
 class RubiksColor:
     name: str
-    state: str
+    state: State
     cmdl: int
     old_txtr: int
 
@@ -48,19 +49,19 @@ class RubiksColor:
 COLORS = {
     "RED": RubiksColor(
         name="red",
-        state="IS00",
+        state=State.InternalState00,
         cmdl=0xF21AB8BF,
         old_txtr=0x29A5FF4B,
     ),
     "GREEN": RubiksColor(
         name="green",
-        state="IS01",
+        state=State.InternalState01,
         cmdl=0x5F2ADFC3,
         old_txtr=0xEE2889A3,
     ),
     "BLUE": RubiksColor(
         name="blue",
-        state="IS02",
+        state=State.InternalState02,
         cmdl=0x8F25F715,
         old_txtr=0xFED23B81,
     )
@@ -69,7 +70,7 @@ COLORS = {
 
 def randomize_rubiks_puzzles(editor: PatcherEditor, rng: random.Random):
     mrea = editor.get_mrea(MAIN_GYRO_CHAMBER_MREA)
-    
+
     # Add custom textures so colorblind players can distinguish the cubes
     for color in COLORS.values():
         txtr_id = editor.add_file(color.txtr_name, color.txtr, editor.find_paks(MAIN_GYRO_CHAMBER_MREA))
@@ -93,8 +94,8 @@ def randomize_rubiks_puzzles(editor: PatcherEditor, rng: random.Random):
             assert cube is not None
 
             puzzle.remove_connections(cube)
-            puzzle.add_connection(color.state, "ATCH", cube)
+            puzzle.add_connection(color.state, Message.Attach, cube)
 
-            props = cube.get_properties_as(Actor)
-            props.model = color.cmdl
-            cube.set_properties(props)
+            with cube.edit_properties(Actor) as props:
+                props.model = color.cmdl
+
