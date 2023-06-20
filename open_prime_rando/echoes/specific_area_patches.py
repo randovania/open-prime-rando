@@ -11,6 +11,7 @@ from retro_data_structures.game_check import Game
 from retro_data_structures.properties.echoes.objects.Counter import Counter
 from retro_data_structures.properties.echoes.objects.Relay import Relay
 from retro_data_structures.properties.echoes.objects.ScriptLayerController import ScriptLayerController
+from retro_data_structures.enums.echoes import State, Message
 
 LOG = logging.getLogger("echoes_patcher")
 
@@ -69,8 +70,8 @@ def torvus_generator(editor: PatcherEditor):
     # TODO: add new objects to new layers
 
     obj = area.get_instance(2686994)
-    obj.add_connection("Zero", "Increment", layer_cont1)
-    obj.add_connection("Zero", "Increment", layer_cont2)
+    obj.add_connection(State.Zero, Message.Increment, layer_cont1)
+    obj.add_connection(State.Zero, Message.Increment, layer_cont2)
 
 
 def torvus_temple_crash(editor: PatcherEditor):
@@ -121,7 +122,6 @@ def agon_wastes_portal_terminal_puzzle_patch(editor: PatcherEditor):
     """
     counter = area.get_instance(0x12044E)
 
-    properties = counter.get_properties_as(Counter)
-    properties.editor_properties.unknown = 1
-    properties.max_count = 1
-    counter.set_properties(properties)
+    with counter.edit_properties(Counter) as props:
+        props.editor_properties.unknown = 1
+        props.max_count = 1

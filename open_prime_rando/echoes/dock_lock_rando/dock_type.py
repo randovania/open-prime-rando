@@ -57,14 +57,14 @@ class DoorType:
         mrea = editor.get_area_helper(world.NAME_TO_ID_MLVL[world_name], world_file.NAME_TO_ID_MREA[area_name])
         mapa = editor.get_file(world_file.NAME_TO_ID_MAPA[area_name], type_hint=Mapa)
         return mrea, mapa
-    
+
     def get_dock_index(self, world_name: str, area_name: str, dock_name: str) -> int:
         world_file = world.load_dedicated_file(world_name)
         return world_file.DOCK_NAMES[area_name][dock_name]
-    
+
     def get_mrea(self, editor: PatcherEditor, world_name: str, area_name: str) -> AreaWrapper:
         return self.get_files(editor, world_name, area_name)[0]
-    
+
     def get_door_from_dock_index(self, mrea: AreaWrapper, dock_index: int) -> ScriptInstanceHelper:
         dock = next(
             inst for inst in mrea.mrea.all_instances
@@ -86,7 +86,7 @@ class DoorType:
             if door.id_matches(obj.editor_id):
                 obj.type = self.map_icon.value
                 return
-    
+
     @staticmethod
     def get_scan_templates(editor: PatcherEditor) -> tuple[Scan, Strg]:
         # Uncategorized/There is a Blast Shield on the door blocking acces_0.SCAN
@@ -101,16 +101,15 @@ class DoorType:
             scan, strg = DoorType.get_scan_templates(editor)
             for i, text in enumerate(self.scan_text):
                 strg.set_string(i, text)
-            
+
             strg_id = editor.add_or_replace_custom_asset(f"custom_door_{self.name}.STRG", strg, paks)
 
-            scan_info = scan.scannable_object_info.get_properties_as(ScannableObjectInfo)
-            scan_info.string = strg_id
-            scan.scannable_object_info.set_properties(scan_info)
+            with scan.scannable_object_info.edit_properties(ScannableObjectInfo) as scan_info:
+                scan_info.string = strg_id
 
             scan_id = editor.add_or_replace_custom_asset(f"custom_door_{self.name}.SCAN", scan, paks)
             self.patched_scan = scan_id
-        
+
         for pak in paks:
             editor.ensure_present(pak, self.patched_scan)
         return self.patched_scan
@@ -122,10 +121,9 @@ class DoorType:
 
         shell_model = editor._resolve_asset_id(self.shell_model)
 
-        door_props = door.get_properties_as(Door)
-        door_props.shell_model = shell_model
-        door_props.shell_color = self.shell_color
-        door.set_properties(door_props)
+        with door.edit_properties(Door) as door_props:
+            door_props.shell_model = shell_model
+            door_props.shell_color = self.shell_color
 
         for pak in self.get_paks(editor, world_name, area_name):
             editor.ensure_present(pak, shell_model)
@@ -137,22 +135,19 @@ class NormalDoorType(DoorType):
         super().patch_door(editor, world_name, area_name, dock_name, low_memory)
         mrea = self.get_mrea(editor, world_name, area_name)
         door = self.get_door_from_dock_index(mrea, self.get_dock_index(world_name, area_name, dock_name))
-        
-        door_props = door.get_properties_as(Door)
-        door_props.vulnerability = self.vulnerability
 
-        if self.scan_text is not None:
-            door_props.alt_scannable.scannable_info0 = self.get_patched_scan(editor, world_name, area_name)
-        
-        door.set_properties(door_props)
-    
+        with door.edit_properties(Door) as door_props:
+            door_props.vulnerability = self.vulnerability
+            if self.scan_text is not None:
+                door_props.alt_scannable.scannable_info0 = self.get_patched_scan(editor, world_name, area_name)
+
 
 @dataclasses.dataclass(kw_only=True)
 class BlastShieldDoorType(DoorType):
     shield_model: NameOrAssetId
     shield_collision_box: Vector = dataclasses.field(default_factory=lambda: Vector(0.35, 5.0, 4.0))
     shield_collision_offset: Vector = dataclasses.field(default_factory=lambda: Vector(-2/3, 0, 2.0))
-    
+
     def get_spline(self) -> Spline:
         return Spline(data=b'\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x00\x02\x02A \x00\x00?\x80\x00\x00\x02\x02\x01\x00\x00\x00\x00?\x80\x00\x00')
 
@@ -163,10 +158,10 @@ class BlastShieldDoorType(DoorType):
             DEAD -> lock breaking SoundEffect, PLAY
             DEAD -> lock explosion gibs, ACTV
             DEAD -> jingle streamedaudio, PLAY
-        
+
         door connections:
             OPEN -> lock cleared MemoryRelay, ACTV
-        
+
         memory relay connections:
             ACTV -> door, RSET
             ACTV -> blast shield, DCTV
@@ -174,14 +169,14 @@ class BlastShieldDoorType(DoorType):
         super().patch_door(editor, world_name, area_name, dock_name, low_memory)
         mrea = self.get_mrea(editor, world_name, area_name)
         door = self.get_door_from_dock_index(mrea, self.get_dock_index(world_name, area_name, dock_name))
-        _door = door.get_properties_as(Door)
+        door_transform = door.get_properties_as(Door).editor_properties.transform
 
         default = mrea.get_layer("Default")
-        
+
         sound = default.add_instance_with(Sound(
             editor_properties=EditorProperties(
                 name="Metal Door Lock Breaking",
-                transform=_door.editor_properties.transform
+                transform=door_transform
             ),
             sound=948,
             max_audible_distance=150.0,
@@ -191,7 +186,7 @@ class BlastShieldDoorType(DoorType):
         streamed = default.add_instance_with(StreamedAudio(
             editor_properties=EditorProperties(
                 name="StreamedAudio - Event Jingle",
-                transform=_door.editor_properties.transform
+                transform=door_transform
             ),
             song_file="/audio/evt_x_event_00.dsp",
             fade_in_time=0.01,
@@ -204,7 +199,7 @@ class BlastShieldDoorType(DoorType):
         lock = default.add_instance_with(Actor(
             editor_properties=EditorProperties(
                 name=f"{self.name} Blast Shield Lock",
-                transform=_door.editor_properties.transform
+                transform=door_transform
             ),
             collision_box=self.shield_collision_box,
             collision_offset=self.shield_collision_offset,
@@ -219,7 +214,7 @@ class BlastShieldDoorType(DoorType):
 
         relay = default.add_memory_relay("Lock Cleared")
         with relay.edit_properties(MemoryRelay) as _relay:
-            _relay.editor_properties.transform = _door.editor_properties.transform
+            _relay.editor_properties.transform = door_transform
             _relay.editor_properties.active = False
 
         lock.add_connection(State.Dead, Message.Play, sound)
@@ -241,7 +236,7 @@ class BlastShieldDoorType(DoorType):
 
             gibs = default.add_instance_with(Effect(
                 editor_properties=EditorProperties(
-                    transform=_door.editor_properties.transform,
+                    transform=door_transform,
                     active=False
                 ),
                 particle_effect=particle,
@@ -256,7 +251,7 @@ class BlastShieldDoorType(DoorType):
             for asset in dependencies:
                 editor.ensure_present(pak, asset)
 
-    
+
 
 @dataclasses.dataclass(kw_only=True)
 class VanillaBlastShieldDoorType(BlastShieldDoorType):
@@ -271,10 +266,10 @@ class VanillaBlastShieldDoorType(BlastShieldDoorType):
                 if target.type == MemoryRelay:
                     relay = target
                     break
-        
+
         if relay is None:
             raise TypeError(f"No MemoryRelay connected to {door} in {world_name}/{area_name}")
-        
+
         lock = None
         for connection in relay.connections:
             if connection.state == State.Active and connection.message == Message.Deactivate:
@@ -282,10 +277,10 @@ class VanillaBlastShieldDoorType(BlastShieldDoorType):
                 if target.type == Actor:
                     lock = target
                     break
-        
+
         if lock is None:
             raise TypeError(f"No lock Actor connected to {relay} in {world_name}/{area_name}")
-        
+
         for connection in lock.connections:
             mrea.mrea.remove_instance(connection.target)
         mrea.mrea.remove_instance(lock)
@@ -295,7 +290,7 @@ class VanillaBlastShieldDoorType(BlastShieldDoorType):
 class SeekerBlastShieldDoorType(VanillaBlastShieldDoorType):
     def patch_door(self, editor: PatcherEditor, world_name: str, area_name: str, dock_name: str, low_memory: bool):
         raise NotImplementedError()
-    
+
     def remove_blast_shield(self, editor: PatcherEditor, world_name: str, area_name: str, dock_name: str):
         raise NotImplementedError()
 
@@ -338,4 +333,3 @@ class TranslatorDoorType(ScanVisorDoorType):
 
     def patch_door(self, editor: PatcherEditor, world_name: str, area_name: str, dock_name: str, low_memory: bool):
         raise NotImplementedError()
-    
