@@ -15,8 +15,7 @@ def expand_schema(base_schema: dict, editor: PatcherEditor) -> dict:
 
         mlvl = editor.get_mlvl(mlvl_id)
         area_props = {}
-        # FIXME: setting it to True for now to fix elevator rooms breaking when renamed
-        world_def["properties"]["areas"] = {"type": "object", "additionalProperties": True, "properties": area_props}
+        world_def["properties"]["areas"] = {"type": "object", "additionalProperties": False, "properties": area_props}
 
         world_details = open_prime_rando.echoes.asset_ids.world.load_dedicated_file(world)
 

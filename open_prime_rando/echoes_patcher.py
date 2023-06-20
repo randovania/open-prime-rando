@@ -3,7 +3,9 @@ import logging
 from pathlib import Path
 
 from open_prime_rando import dynamic_schema
-from open_prime_rando.echoes import auto_enabled_elevator_patches, specific_area_patches, asset_ids, dock_lock_rando
+from open_prime_rando.echoes import specific_area_patches, asset_ids, dock_lock_rando
+from open_prime_rando.echoes.elevators import auto_enabled_elevator_patches
+from open_prime_rando.echoes.elevators.elevator_rando import patch_elevator
 from open_prime_rando.echoes.inverted import apply_inverted
 from open_prime_rando.echoes.small_randomizations import apply_small_randomizations
 from open_prime_rando.patcher_editor import PatcherEditor
@@ -34,7 +36,7 @@ def apply_area_modifications(editor: PatcherEditor, configuration: dict[str, dic
         for i, (area_name, area) in enumerate(areas_by_name.items()):
             if area_name not in world_config["areas"]:
                 continue
-            
+
             LOG.info(f"[{100*i/len(areas_by_name)}%] Processing {area_name}...")
 
             area_config = world_config["areas"][area_name]
@@ -53,7 +55,7 @@ def apply_area_modifications(editor: PatcherEditor, configuration: dict[str, dic
                         dock_config.get("old_door_type"),
                         low_memory
                     )
-                
+
                 if "connect_to" in dock_config:
                     dock_target = dock_config["connect_to"]
                     LOG.debug("Connecting dock %s of %s - %s to %s - %s",
@@ -64,7 +66,13 @@ def apply_area_modifications(editor: PatcherEditor, configuration: dict[str, dic
             for layer_name, layer_state in area_config["layers"].items():
                 LOG.debug("Setting layer %s of %s - %s to %s", layer_name, world_name, area_name, str(layer_state))
                 area.get_layer(layer_name).active = layer_state
-        
+
+            for elevator in area_config["elevators"]:
+                patch_elevator(editor, area, elevator["instance_id"], elevator["target_mlvl"], elevator["target_mrea"], elevator["target_name"])
+
+            if area_config["new_name"] is not None:
+                area.strg.set_string(0, area_config["new_name"])
+
             area.build_mlvl_dependencies(only_modified=True)
 
 

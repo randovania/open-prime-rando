@@ -115,7 +115,36 @@
                 },
                 "low_memory_mode": {
                     "type": "boolean",
-                    "default": false
+                    "default": false,
+                    "$comment": "Some areas are riding the memory/object limit. Certain patches will account for these limitations if this flag is set."
+                },
+                "new_name": {
+                    "type": ["string", "null"],
+                    "default": null,
+                    "$comment": "If set, rename the area to this value"
+                },
+                "elevators": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "instance_id": {
+                                "type": "int"
+                            },
+                            "target_assets": {
+                                "$ref": "#/$defs/area_identifier"
+                            },
+                            "target_name": {
+                                "type": "string"
+                            }
+                        },
+                        "required": [
+                            "instance_id",
+                            "target_assets",
+                            "target_name"
+                        ]
+                    },
+                    "default": []
                 }
             },
             "additionalProperties": false
@@ -169,6 +198,17 @@
                 "TorvusEnergy",
                 "SanctuaryEnergy"
             ]
+        },
+        "area_identifier": {
+            "type": "object",
+            "properties": {
+                "world_asset_id": {
+                    "type": "int"
+                },
+                "area_asset_id": {
+                    "type": "int"
+                }
+            }
         }
     }
 }
