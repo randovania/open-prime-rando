@@ -1,12 +1,15 @@
 import dataclasses
 import functools
 import logging
+from typing import NamedTuple, Type
 from open_prime_rando.echoes.dock_lock_rando.map_icons import DoorMapIcon
 from open_prime_rando.patcher_editor import PatcherEditor
 from open_prime_rando.echoes.asset_ids import *
+from open_prime_rando.echoes.vulnerabilities import resist_all_vuln
 
 from retro_data_structures.base_resource import AssetId
 from retro_data_structures.asset_manager import NameOrAssetId
+from retro_data_structures.properties.base_property import BaseObjectType
 from retro_data_structures.properties.echoes.archetypes.DamageVulnerability import DamageVulnerability
 from retro_data_structures.properties.echoes.archetypes.WeaponVulnerability import WeaponVulnerability
 from retro_data_structures.properties.echoes.core.Color import Color
@@ -15,6 +18,9 @@ from retro_data_structures.properties.echoes.archetypes.EditorProperties import 
 from retro_data_structures.properties.echoes.archetypes.ScannableParameters import ScannableParameters
 from retro_data_structures.properties.echoes.archetypes.SurroundPan import SurroundPan
 from retro_data_structures.properties.echoes.archetypes.ActorParameters import ActorParameters
+from retro_data_structures.properties.echoes.archetypes.HealthInfo import HealthInfo
+from retro_data_structures.properties.echoes.archetypes.VisorParameters import VisorParameters
+from retro_data_structures.properties.echoes.archetypes.Transform import Transform
 from retro_data_structures.properties.echoes.objects.Dock import Dock
 from retro_data_structures.properties.echoes.objects.Door import Door
 from retro_data_structures.properties.echoes.objects.Actor import Actor
@@ -24,13 +30,19 @@ from retro_data_structures.properties.echoes.objects.Sound import Sound
 from retro_data_structures.properties.echoes.objects.StreamedAudio import StreamedAudio
 from retro_data_structures.properties.echoes.objects.MemoryRelay import MemoryRelay
 from retro_data_structures.properties.echoes.objects.Effect import Effect
+from retro_data_structures.properties.echoes.objects.DamageableTrigger import DamageableTrigger
+from retro_data_structures.properties.echoes.objects.DamageableTriggerOrientated import DamageableTriggerOrientated
+from retro_data_structures.properties.echoes.objects.Timer import Timer
+from retro_data_structures.properties.echoes.objects.CameraShaker import CameraShaker
+from retro_data_structures.properties.echoes.objects.Counter import Counter
+from retro_data_structures.properties.echoes.objects.Relay import Relay
 from retro_data_structures.properties.echoes.core.Spline import Spline
 from retro_data_structures.formats.mapa import Mapa
 from retro_data_structures.formats.mlvl import AreaWrapper
 from retro_data_structures.formats.scan import Scan
 from retro_data_structures.formats.strg import Strg
-from retro_data_structures.formats.script_object import ScriptInstanceHelper, InstanceId
-from retro_data_structures.enums.echoes import State, Message
+from retro_data_structures.formats.script_object import ScriptInstanceHelper
+from retro_data_structures.enums.echoes import State, Message, VisorFlags
 
 
 @dataclasses.dataclass(kw_only=True)
@@ -142,11 +154,29 @@ class NormalDoorType(DoorType):
                 door_props.alt_scannable.scannable_info0 = self.get_patched_scan(editor, world_name, area_name)
 
 
+class BlastShieldActors(NamedTuple):
+    door: ScriptInstanceHelper
+    sound: ScriptInstanceHelper
+    streamed: ScriptInstanceHelper
+    lock: ScriptInstanceHelper
+    relay: ScriptInstanceHelper
+    gibs: ScriptInstanceHelper | None
+
+
 @dataclasses.dataclass(kw_only=True)
 class BlastShieldDoorType(DoorType):
     shield_model: NameOrAssetId
     shield_collision_box: Vector = dataclasses.field(default_factory=lambda: Vector(0.35, 5.0, 4.0))
     shield_collision_offset: Vector = dataclasses.field(default_factory=lambda: Vector(-2/3, 0, 2.0))
+
+    def find_attached_instance(self, area: AreaWrapper, source: ScriptInstanceHelper, state: State, message: Message, target_type: Type[BaseObjectType], target_name: str | None = None) -> ScriptInstanceHelper:
+        for connection in source.connections:
+            if connection.state == state and connection.message == message:
+                target = area.get_instance(connection.target)
+                if target.type == target_type and (target_name is None or target.name == target_name):
+                    return target
+        name = f"{target_type} named {target_name}" if target_name is not None else str(target_type)
+        raise TypeError(f"No {name} connected to {source}")
 
     def get_spline(self) -> Spline:
         return Spline(data=b'\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x00\x02\x02A \x00\x00?\x80\x00\x00\x02\x02\x01\x00\x00\x00\x00?\x80\x00\x00')
@@ -231,6 +261,7 @@ class BlastShieldDoorType(DoorType):
             0x8B4CD966, # MetalDoorLockBreak AGSC
         ]
 
+        gibs = None
         if not low_memory:
             particle = 0xCDCBDF04
 
@@ -251,6 +282,7 @@ class BlastShieldDoorType(DoorType):
             for asset in dependencies:
                 editor.ensure_present(pak, asset)
 
+        return BlastShieldActors(door, sound, streamed, lock, relay, gibs)
 
 
 @dataclasses.dataclass(kw_only=True)
@@ -259,27 +291,8 @@ class VanillaBlastShieldDoorType(BlastShieldDoorType):
         mrea = self.get_mrea(editor, world_name, area_name)
         door = self.get_door_from_dock_index(mrea, self.get_dock_index(world_name, area_name, dock_name))
 
-        relay = None
-        for connection in door.connections:
-            if connection.state == State.Open and connection.message == Message.Activate:
-                target = mrea.get_instance(connection.target)
-                if target.type == MemoryRelay:
-                    relay = target
-                    break
-
-        if relay is None:
-            raise TypeError(f"No MemoryRelay connected to {door} in {world_name}/{area_name}")
-
-        lock = None
-        for connection in relay.connections:
-            if connection.state == State.Active and connection.message == Message.Deactivate:
-                target = mrea.get_instance(connection.target)
-                if target.type == Actor:
-                    lock = target
-                    break
-
-        if lock is None:
-            raise TypeError(f"No lock Actor connected to {relay} in {world_name}/{area_name}")
+        relay = self.find_attached_instance(mrea, door, State.Open, Message.Activate, MemoryRelay)
+        lock = self.find_attached_instance(mrea, relay, State.Active, Message.Deactivate, Actor)
 
         for connection in lock.connections:
             mrea.mrea.remove_instance(connection.target)
@@ -289,10 +302,112 @@ class VanillaBlastShieldDoorType(BlastShieldDoorType):
 @dataclasses.dataclass(kw_only=True)
 class SeekerBlastShieldDoorType(VanillaBlastShieldDoorType):
     def patch_door(self, editor: PatcherEditor, world_name: str, area_name: str, dock_name: str, low_memory: bool):
-        raise NotImplementedError()
+        actors = super().patch_door(editor, world_name, area_name, dock_name, low_memory)
+        mrea = self.get_mrea(editor, world_name, area_name)
+        default = mrea.get_layer("Default")
+
+        # immune instead of reflect so that it explodes on the lock
+        missile_immune = dataclasses.replace(resist_all_vuln, missile=WeaponVulnerability(damage_multiplier=0.0))
+        with actors.lock.edit_properties(Actor) as lock:
+            lock.vulnerability = missile_immune
+        with actors.door.edit_properties(Door) as door:
+            door.vulnerability = missile_immune
+
+        door_transform = actors.door.get_properties_as(Door).editor_properties.transform
+
+        def create_trigger(name: str, health: float, lock_on: bool = True) -> ScriptInstanceHelper:
+            pos = Vector(
+                door_transform.position.x,
+                door_transform.position.y,
+                door_transform.position.z + 1.8
+            )
+
+            return default.add_instance_with(DamageableTriggerOrientated(
+                editor_properties=EditorProperties(
+                    name=name,
+                    transform=Transform(
+                        position=pos,
+                        rotation=door_transform.rotation,
+                        scale=Vector(4.0, 4.0, 1.5)
+                    ),
+                ),
+                health=HealthInfo(health=health),
+                vulnerability=self.vulnerability,
+                enable_seeker_lock_on=lock_on,
+                visor=VisorParameters(
+                    visor_flags=VisorFlags.Combat | VisorFlags.Dark
+                )
+            ))
+
+        timer = default.add_instance_with(Timer(
+            editor_properties=EditorProperties(
+                name="Button Control",
+                transform=door_transform
+            ),
+            time=0.75
+        ))
+
+        timer_reset = default.add_instance_with(Timer(
+            editor_properties=EditorProperties(
+                name="Button Reset",
+                transform=door_transform
+            ),
+            time=0.01
+        ))
+
+        # create 5 triggers so that you can have 5 lock-ons
+        # 30.01 health because splash damage is inconsistent. missiles do 30 damage
+        # so this guarantees you need at least 2 missiles at once to break it
+        triggers = [create_trigger(f"Bridge Button {i}", 30.01) for i in range(5)]
+        main_trigger = triggers[0]
+        mini_trigger = create_trigger("Bridge Button Mini", 1.0, False)
+
+        # start a timer when the tiny trigger dies. stop it if the main trigger dies
+        mini_trigger.add_connection(State.Dead, Message.ResetAndStart, timer)
+        main_trigger.add_connection(State.Dead, Message.Stop, timer)
+        for trigger in triggers:
+            timer.add_connection(State.Zero, Message.Deactivate, trigger)
+
+        # if the timer counts all the way down, reset the triggers
+        timer.add_connection(State.Zero, Message.ResetAndStart, timer_reset)
+        timer_reset.add_connection(State.Zero, Message.Activate, mini_trigger)
+        for trigger in triggers:
+            timer_reset.add_connection(State.Zero, Message.Activate, trigger)
+
+        # move the lock's connections to the trigger, since it's the thing that dies now
+        for connection in actors.lock.connections:
+            actors.lock.remove_connection(connection)
+            main_trigger.add_connection(
+                connection.state,
+                connection.message,
+                default.get_instance(connection.target)
+            )
+
+        for trigger in triggers:
+            actors.relay.add_connection(State.Active, Message.Deactivate, trigger)
+
 
     def remove_blast_shield(self, editor: PatcherEditor, world_name: str, area_name: str, dock_name: str):
-        raise NotImplementedError()
+        mrea = self.get_mrea(editor, world_name, area_name)
+        door = self.get_door_from_dock_index(mrea, self.get_dock_index(world_name, area_name, dock_name))
+
+        default = mrea.get_layer("Default")
+
+        memory_relay = self.find_attached_instance(mrea, door, State.Open, Message.Activate, MemoryRelay)
+        trigger = self.find_attached_instance(mrea, memory_relay, State.Active, Message.Deactivate, DamageableTrigger)
+        shaker = self.find_attached_instance(mrea, trigger, State.Dead, Message.Action, CameraShaker)
+        counter = self.find_attached_instance(mrea, trigger, State.Dead, Message.Increment, Counter)
+        complete_relay = self.find_attached_instance(mrea, counter, State.MaxReached, Message.SetToZero, Relay)
+
+        default.remove_instance(shaker)
+        for connection in complete_relay.connections:
+            try:
+                default.remove_instance(connection.target)
+            except KeyError:
+                # I guess claris already removed it probably?
+                complete_relay.remove_connection(connection)
+        default.remove_instance(complete_relay)
+        default.remove_instance(counter)
 
 
 @dataclasses.dataclass(kw_only=True)
