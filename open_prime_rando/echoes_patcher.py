@@ -68,10 +68,23 @@ def apply_area_modifications(editor: PatcherEditor, configuration: dict[str, dic
                 area.get_layer(layer_name).active = layer_state
 
             for elevator in area_config["elevators"]:
-                patch_elevator(editor, area, elevator["instance_id"], elevator["target_mlvl"], elevator["target_mrea"], elevator["target_name"])
+                patch_elevator(
+                    editor,
+                    area,
+                    elevator["instance_id"],
+                    elevator["target_assets"]["world_asset_id"],
+                    elevator["target_assets"]["area_asset_id"],
+                    elevator["target_strg"],
+                    elevator["target_name"]
+                )
 
             if area_config["new_name"] is not None:
-                area.strg.set_string(0, area_config["new_name"])
+                old_strg = area._raw.area_name_id
+                strg = editor.get_parsed_asset(old_strg, type_hint=Strg)
+                strg.set_string(0, area_config["new_name"])
+                paks = editor.find_paks(old_strg)
+                new_strg = editor.add_file(f"custom_name_for_{area.internal_name}.STRG", strg, paks)
+                area._raw.area_name_id = new_strg
 
             area.build_mlvl_dependencies(only_modified=True)
 

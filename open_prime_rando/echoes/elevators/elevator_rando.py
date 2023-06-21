@@ -10,5 +10,6 @@ def patch_elevator(editor: PatcherEditor, area: AreaWrapper, elevator_id: int, t
         props.world = target_mlvl
         props.area = target_mrea
 
-    strg = editor.get_file(target_strg, Strg)
-    strg.set_string(1, f"Access to &push;&main-color=#FF3333;{target_name} &pop;granted. Step into the hologram to activate elevator.")
+    if target_strg is not None:
+        strg = editor.get_file(target_strg, Strg)
+        strg.set_string(1, f"Access to &push;&main-color=#FF3333;{target_name} &pop;granted. Step into the hologram to activate elevator.")

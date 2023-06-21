@@ -129,10 +129,13 @@
                         "type": "object",
                         "properties": {
                             "instance_id": {
-                                "type": "int"
+                                "type": "integer"
                             },
                             "target_assets": {
                                 "$ref": "#/$defs/area_identifier"
+                            },
+                            "target_strg": {
+                                "type": ["integer", "null"]
                             },
                             "target_name": {
                                 "type": "string"
@@ -203,10 +206,10 @@
             "type": "object",
             "properties": {
                 "world_asset_id": {
-                    "type": "int"
+                    "type": "integer"
                 },
                 "area_asset_id": {
-                    "type": "int"
+                    "type": "integer"
                 }
             }
         }
