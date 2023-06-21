@@ -135,7 +135,8 @@
                                 "$ref": "#/$defs/area_identifier"
                             },
                             "target_strg": {
-                                "type": ["integer", "null"]
+                                "type": ["integer", "null"],
+                                "default": null
                             },
                             "target_name": {
                                 "type": "string"
@@ -145,7 +146,8 @@
                             "instance_id",
                             "target_assets",
                             "target_name"
-                        ]
+                        ],
+                        "additionalProperties": false
                     },
                     "default": []
                 }
