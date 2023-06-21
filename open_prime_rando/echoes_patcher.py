@@ -1,6 +1,7 @@
 import json
 import logging
 from pathlib import Path
+from typing import Callable
 
 from open_prime_rando import dynamic_schema
 from open_prime_rando.echoes import specific_area_patches, asset_ids, dock_lock_rando
@@ -14,6 +15,7 @@ from open_prime_rando.validator_with_default import DefaultValidatingDraft7Valid
 from retro_data_structures.asset_manager import FileProvider
 from retro_data_structures.formats.mlvl import AreaWrapper
 from retro_data_structures.game_check import Game
+from retro_data_structures.formats.strg import Strg
 
 LOG = logging.getLogger("echoes_patcher")
 
@@ -23,7 +25,10 @@ def _read_schema():
         return json.load(f)
 
 
-def apply_area_modifications(editor: PatcherEditor, configuration: dict[str, dict]):
+def apply_area_modifications(editor: PatcherEditor, configuration: dict[str, dict], status_update: Callable[[str, float], None]):
+    num_areas = sum(len(world_config["areas"]) for world_config in configuration.values())
+    areas_processed = 0.0
+
     for world_name, world_config in configuration.items():
         world_meta = asset_ids.world.load_dedicated_file(world_name)
         mlvl = editor.get_mlvl(asset_ids.world.NAME_TO_ID_MLVL[world_name])
@@ -37,7 +42,8 @@ def apply_area_modifications(editor: PatcherEditor, configuration: dict[str, dic
             if area_name not in world_config["areas"]:
                 continue
 
-            LOG.info(f"[{100*i/len(areas_by_name)}%] Processing {area_name}...")
+            status_update(f"Processing {world_name} - {area_name}...", areas_processed/num_areas)
+            areas_processed += 1
 
             area_config = world_config["areas"][area_name]
             low_memory = area_config["low_memory_mode"]
@@ -89,24 +95,27 @@ def apply_area_modifications(editor: PatcherEditor, configuration: dict[str, dic
             area.build_mlvl_dependencies(only_modified=True)
 
 
-def patch_paks(file_provider: FileProvider, output_path: Path, configuration: dict):
-    LOG.info("Will patch files at %s", file_provider)
+def patch_paks(file_provider: FileProvider,
+               output_path: Path,
+               configuration: dict,
+               status_update: Callable[[str, float], None] = lambda s, _: LOG.info(s)):
+    status_update(f"Will patch files at {file_provider}", 0)
 
     editor = PatcherEditor(file_provider, Game.ECHOES)
 
-    LOG.info("Preparing schema")
+    status_update("Preparing schema", 0)
     schema = dynamic_schema.expand_schema(_read_schema(), editor)
 
-    LOG.info("Validating schema")
+    status_update("Validating schema", 0)
     DefaultValidatingDraft7Validator(schema).validate(configuration)
 
-    # custom_assets.create_custom_assets(editor)
+    status_update("Applying small patches", 0)
     dock_lock_rando.add_custom_models(editor)
     if configuration["auto_enabled_elevators"]:
         auto_enabled_elevator_patches.apply_auto_enabled_elevators_patch(editor)
     specific_area_patches.specific_patches(editor, configuration["area_patches"])
-    apply_area_modifications(editor, configuration["worlds"])
     apply_small_randomizations(editor, configuration["small_randomizations"])
+    apply_area_modifications(editor, configuration["worlds"], status_update)
 
     if configuration["inverted"]:
         apply_inverted(editor)
@@ -115,4 +124,4 @@ def patch_paks(file_provider: FileProvider, output_path: Path, configuration: di
     editor.flush_modified_assets()
 
     editor.save_modifications(output_path)
-    LOG.info("Finished.")
+    status_update("Finished", 1.0)
