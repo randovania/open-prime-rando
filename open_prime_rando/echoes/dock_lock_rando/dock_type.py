@@ -385,6 +385,9 @@ class SeekerBlastShieldDoorType(VanillaBlastShieldDoorType):
 
         for trigger in triggers:
             actors.relay.add_connection(State.Active, Message.Deactivate, trigger)
+        actors.relay.add_connection(State.Active, Message.Deactivate, mini_trigger)
+        actors.relay.add_connection(State.Active, Message.Deactivate, timer)
+        actors.relay.add_connection(State.Active, Message.Deactivate, timer_reset)
 
 
     def remove_blast_shield(self, editor: PatcherEditor, world_name: str, area_name: str, dock_name: str):
