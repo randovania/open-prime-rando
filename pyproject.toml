@@ -1,8 +1,57 @@
 [build-system]
-requires = ["setuptools>=58.0.0", "setuptools_scm[toml]>=3.4.3"]
+requires = [
+    "setuptools>=61.2",
+    "setuptools_scm[toml]>=3.4.3"
+]
 build-backend = "setuptools.build_meta"
+
+[project]
+name = "open-prime-rando"
+description = "An open source randomizer patcher for Metroid Prime 2 and 3."
+authors = [{name = "Henrique Gemignani"}]
+classifiers = [
+    "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+]
+requires-python = ">=3.10"
+dependencies = [
+    "retro-data-structures>=0.19.1",
+    "jsonschema>=4.0.0",
+    "ppc-asm",
+]
+dynamic = ["version"]
+
+[project.readme]
+file = "README.md"
+content-type = "text/markdown"
+
+[project.urls]
+Homepage = "https://github.com/randovania/open-prime-rando"
 
 [tool.setuptools_scm]
 local_scheme = "no-local-version"
 write_to = "src/open_prime_rando/version.py"
 git_describe_command = "git describe --dirty --tags --long --match v[0-9]*"
+
+[tool.pytest.ini_options]
+minversion = "6.0"
+testpaths = [
+    "tests",
+]
+# asyncio_mode = "auto"
+xfail_strict = true
+filterwarnings = [
+    "error",
+    "ignore::DeprecationWarning",
+]
+
+
+[tool.ruff]
+line-length = 120
+select = ["E", "F", "W", "C90", "I", "UP"]
+
+# Version to target for generated code.
+target-version = "py310"

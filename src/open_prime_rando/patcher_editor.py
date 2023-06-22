@@ -5,9 +5,9 @@ from pathlib import Path
 
 from ppc_asm.dol_file import DolEditor, DolHeader
 from retro_data_structures.asset_manager import AssetManager, FileProvider
-from retro_data_structures.base_resource import Resource, BaseResource, NameOrAssetId, RawResource, AssetId
+from retro_data_structures.base_resource import AssetId, BaseResource, NameOrAssetId, RawResource, Resource
 from retro_data_structures.crc import crc32
-from retro_data_structures.formats.mlvl import Mlvl, AreaWrapper
+from retro_data_structures.formats.mlvl import AreaWrapper, Mlvl
 from retro_data_structures.formats.mrea import Mrea
 from retro_data_structures.game_check import Game
 
@@ -40,7 +40,7 @@ class PatcherEditor(AssetManager):
         else:
             self.dol = None
 
-    def get_file(self, path: NameOrAssetId, type_hint: typing.Type[T] = BaseResource) -> T:
+    def get_file(self, path: NameOrAssetId, type_hint: type[T] = BaseResource) -> T:
         if path not in self.memory_files:
             self.memory_files[path] = self.get_parsed_asset(path, type_hint=type_hint)
         return self.memory_files[path]
@@ -62,7 +62,7 @@ class PatcherEditor(AssetManager):
 
     def add_file(self,
                  name: str,
-                 asset: typing.Union[RawResource, BaseResource],
+                 asset: RawResource | BaseResource,
                  paks: typing.Iterable[str]
                  ) -> AssetId:
         asset_id = crc32(name)

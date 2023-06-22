@@ -1,10 +1,15 @@
 import json
 import logging
+from collections.abc import Callable
 from pathlib import Path
-from typing import Callable
+
+from retro_data_structures.asset_manager import FileProvider
+from retro_data_structures.formats.mlvl import AreaWrapper
+from retro_data_structures.formats.strg import Strg
+from retro_data_structures.game_check import Game
 
 from open_prime_rando import dynamic_schema
-from open_prime_rando.echoes import specific_area_patches, asset_ids, dock_lock_rando
+from open_prime_rando.echoes import asset_ids, dock_lock_rando, specific_area_patches
 from open_prime_rando.echoes.elevators import auto_enabled_elevator_patches
 from open_prime_rando.echoes.elevators.elevator_rando import patch_elevator
 from open_prime_rando.echoes.inverted import apply_inverted
@@ -12,10 +17,6 @@ from open_prime_rando.echoes.small_randomizations import apply_small_randomizati
 from open_prime_rando.patcher_editor import PatcherEditor
 from open_prime_rando.unique_area_name import get_name_for_area
 from open_prime_rando.validator_with_default import DefaultValidatingDraft7Validator
-from retro_data_structures.asset_manager import FileProvider
-from retro_data_structures.formats.mlvl import AreaWrapper
-from retro_data_structures.game_check import Game
-from retro_data_structures.formats.strg import Strg
 
 LOG = logging.getLogger("echoes_patcher")
 
@@ -25,7 +26,8 @@ def _read_schema():
         return json.load(f)
 
 
-def apply_area_modifications(editor: PatcherEditor, configuration: dict[str, dict], status_update: Callable[[str, float], None]):
+def apply_area_modifications(editor: PatcherEditor, configuration: dict[str, dict],
+                             status_update: Callable[[str, float], None]):
     num_areas = sum(len(world_config["areas"]) for world_config in configuration.values())
     areas_processed = 0.0
 

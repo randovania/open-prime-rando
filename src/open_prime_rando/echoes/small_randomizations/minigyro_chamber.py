@@ -1,10 +1,10 @@
-from enum import Enum
 import random
+from enum import Enum
+
 from open_prime_rando.echoes.asset_ids.sanctuary_fortress import MINIGYRO_CHAMBER_MREA
 from open_prime_rando.patcher_editor import PatcherEditor
-
+from retro_data_structures.enums.echoes import Message, State
 from retro_data_structures.formats.strg import Strg
-from retro_data_structures.enums.echoes import State, Message
 
 
 class GyroColor(Enum):
@@ -52,7 +52,7 @@ def randomize_minigyro_chamber(editor: PatcherEditor, rng: random.Random):
 
     # play jingle on the final gyro
     stop_gyros = [mrea.get_instance_by_name(f"[IN/OUT] Stop gyroscope {i+1}") for i in range(4)]
-    jingle = mrea.get_instance_by_name(f"StreamedAudio - Event Jingle")
+    jingle = mrea.get_instance_by_name("StreamedAudio - Event Jingle")
 
     stop_gyros[3].remove_connections(jingle)
     stop_gyros[solution[3].value].add_connection(State.Zero, Message.Play, jingle)
@@ -60,5 +60,5 @@ def randomize_minigyro_chamber(editor: PatcherEditor, rng: random.Random):
     # print([f"{mrea.get_instance(c.target).name} - {c.state}: {c.message}" for c in counter.connections])
 
     scan = editor.get_file(0xFBFF349D, Strg)
-    solution_text = '\n'.join((gyro.text for gyro in solution))
+    solution_text = '\n'.join(gyro.text for gyro in solution)
     scan.set_string(1, f"Safety lockdown code is as follows:\n\n\n{solution_text}")

@@ -2,14 +2,13 @@ import argparse
 import os.path
 from pathlib import Path
 
-from retro_data_structures.asset_manager import IsoFileProvider
-from retro_data_structures.formats import Strg, Mrea
-from retro_data_structures.game_check import Game
-from retro_data_structures.properties.shared_objects import Dock
 import retro_data_structures.exceptions
-
 from open_prime_rando.patcher_editor import PatcherEditor
 from open_prime_rando.unique_area_name import CUSTOM_AREA_NAMES
+from retro_data_structures.asset_manager import IsoFileProvider
+from retro_data_structures.formats import Mrea, Strg
+from retro_data_structures.game_check import Game
+from retro_data_structures.properties.shared_objects import Dock
 
 _CUSTOM_WORLD_NAMES = {
     Game.ECHOES: {
@@ -26,6 +25,9 @@ _CUSTOM_AREA_NAMES = {
     Game.ECHOES: CUSTOM_AREA_NAMES,
 }
 
+
+# Complexity
+# ruff: noqa: C901
 
 def filter_name(s: str) -> str:
     result = s.replace("!", "").replace(" ", "_").replace("'", "").replace(

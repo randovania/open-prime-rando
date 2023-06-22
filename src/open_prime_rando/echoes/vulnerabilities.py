@@ -1,8 +1,6 @@
 from retro_data_structures.enums import echoes
-
 from retro_data_structures.properties.echoes.archetypes.DamageVulnerability import DamageVulnerability
 from retro_data_structures.properties.echoes.archetypes.WeaponVulnerability import WeaponVulnerability
-
 
 reflect = WeaponVulnerability(damage_multiplier=0, effect=echoes.Effect.Reflect)
 vulnerable = WeaponVulnerability(damage_multiplier=100, effect=echoes.Effect.Normal)
