@@ -4,5 +4,5 @@ build-backend = "setuptools.build_meta"
 
 [tool.setuptools_scm]
 local_scheme = "no-local-version"
-write_to = "open_prime_rando/version.py"
+write_to = "src/open_prime_rando/version.py"
 git_describe_command = "git describe --dirty --tags --long --match v[0-9]*"
