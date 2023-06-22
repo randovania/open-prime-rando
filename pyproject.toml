@@ -14,6 +14,7 @@ classifiers = [
     "Development Status :: 3 - Alpha",
     "Intended Audience :: Developers",
     "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
 ]
 requires-python = ">=3.10"
 dependencies = [
@@ -34,3 +35,23 @@ Homepage = "https://github.com/randovania/open-prime-rando"
 local_scheme = "no-local-version"
 write_to = "src/open_prime_rando/version.py"
 git_describe_command = "git describe --dirty --tags --long --match v[0-9]*"
+
+[tool.pytest.ini_options]
+minversion = "6.0"
+testpaths = [
+    "tests",
+]
+# asyncio_mode = "auto"
+xfail_strict = true
+filterwarnings = [
+    "error",
+    "ignore::DeprecationWarning",
+]
+
+
+[tool.ruff]
+line-length = 120
+select = ["E", "F", "W", "C90", "I", "UP"]
+
+# Version to target for generated code.
+target-version = "py310"
