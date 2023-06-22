@@ -1,17 +1,13 @@
-from dataclasses import dataclass
-from enum import Enum
-from pathlib import Path
 import random
+from dataclasses import dataclass
+from pathlib import Path
 
-from retro_data_structures.properties.echoes.objects.Actor import Actor
-from retro_data_structures.crc import crc32
-from retro_data_structures.formats.cmdl import Cmdl
-from retro_data_structures.base_resource import RawResource
 from open_prime_rando.echoes.asset_ids.sanctuary_fortress import MAIN_GYRO_CHAMBER_MREA
-from retro_data_structures.enums.echoes import State, Message
-
 from open_prime_rando.patcher_editor import PatcherEditor
-
+from retro_data_structures.base_resource import RawResource
+from retro_data_structures.enums.echoes import Message, State
+from retro_data_structures.formats.cmdl import Cmdl
+from retro_data_structures.properties.echoes.objects.Actor import Actor
 
 RUBIKS_CUBES = {
     "Puzzle 1": [

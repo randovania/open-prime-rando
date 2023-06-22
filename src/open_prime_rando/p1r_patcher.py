@@ -2,10 +2,11 @@ import json
 import logging
 from pathlib import Path
 
-from open_prime_rando.patcher_editor import PatcherEditor
-from open_prime_rando.validator_with_default import DefaultValidatingDraft7Validator
 from retro_data_structures.asset_manager import FileProvider
 from retro_data_structures.game_check import Game
+
+from open_prime_rando.patcher_editor import PatcherEditor
+from open_prime_rando.validator_with_default import DefaultValidatingDraft7Validator
 
 LOG = logging.getLogger("p1r_patcher")
 

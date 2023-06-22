@@ -1,48 +1,45 @@
 import dataclasses
-import functools
-import logging
-from typing import NamedTuple, Type
-from open_prime_rando.echoes.dock_lock_rando.map_icons import DoorMapIcon
-from open_prime_rando.patcher_editor import PatcherEditor
-from open_prime_rando.echoes.asset_ids import *
-from open_prime_rando.echoes.vulnerabilities import resist_all_vuln
+from typing import NamedTuple
 
-from retro_data_structures.base_resource import AssetId
+from open_prime_rando.echoes.asset_ids import world
+from open_prime_rando.echoes.dock_lock_rando.map_icons import DoorMapIcon
+from open_prime_rando.echoes.vulnerabilities import resist_all_vuln
+from open_prime_rando.patcher_editor import PatcherEditor
 from retro_data_structures.asset_manager import NameOrAssetId
-from retro_data_structures.properties.base_property import BaseObjectType
-from retro_data_structures.properties.echoes.archetypes.DamageVulnerability import DamageVulnerability
-from retro_data_structures.properties.echoes.archetypes.WeaponVulnerability import WeaponVulnerability
-from retro_data_structures.properties.echoes.core.Color import Color
-from retro_data_structures.properties.echoes.core.Vector import Vector
-from retro_data_structures.properties.echoes.archetypes.EditorProperties import EditorProperties
-from retro_data_structures.properties.echoes.archetypes.ScannableParameters import ScannableParameters
-from retro_data_structures.properties.echoes.archetypes.SurroundPan import SurroundPan
-from retro_data_structures.properties.echoes.archetypes.ActorParameters import ActorParameters
-from retro_data_structures.properties.echoes.archetypes.HealthInfo import HealthInfo
-from retro_data_structures.properties.echoes.archetypes.VisorParameters import VisorParameters
-from retro_data_structures.properties.echoes.archetypes.Transform import Transform
-from retro_data_structures.properties.echoes.objects.Dock import Dock
-from retro_data_structures.properties.echoes.objects.Door import Door
-from retro_data_structures.properties.echoes.objects.Actor import Actor
-from retro_data_structures.properties.echoes.objects.MemoryRelay import MemoryRelay
-from retro_data_structures.properties.echoes.objects.ScannableObjectInfo import ScannableObjectInfo
-from retro_data_structures.properties.echoes.objects.Sound import Sound
-from retro_data_structures.properties.echoes.objects.StreamedAudio import StreamedAudio
-from retro_data_structures.properties.echoes.objects.MemoryRelay import MemoryRelay
-from retro_data_structures.properties.echoes.objects.Effect import Effect
-from retro_data_structures.properties.echoes.objects.DamageableTrigger import DamageableTrigger
-from retro_data_structures.properties.echoes.objects.DamageableTriggerOrientated import DamageableTriggerOrientated
-from retro_data_structures.properties.echoes.objects.Timer import Timer
-from retro_data_structures.properties.echoes.objects.CameraShaker import CameraShaker
-from retro_data_structures.properties.echoes.objects.Counter import Counter
-from retro_data_structures.properties.echoes.objects.Relay import Relay
-from retro_data_structures.properties.echoes.core.Spline import Spline
+from retro_data_structures.base_resource import AssetId
+from retro_data_structures.enums.echoes import Message, State, VisorFlags
 from retro_data_structures.formats.mapa import Mapa
 from retro_data_structures.formats.mlvl import AreaWrapper
 from retro_data_structures.formats.scan import Scan
-from retro_data_structures.formats.strg import Strg
 from retro_data_structures.formats.script_object import ScriptInstanceHelper
-from retro_data_structures.enums.echoes import State, Message, VisorFlags
+from retro_data_structures.formats.strg import Strg
+from retro_data_structures.properties.base_property import BaseObjectType
+from retro_data_structures.properties.echoes.archetypes.ActorParameters import ActorParameters
+from retro_data_structures.properties.echoes.archetypes.DamageVulnerability import DamageVulnerability
+from retro_data_structures.properties.echoes.archetypes.EditorProperties import EditorProperties
+from retro_data_structures.properties.echoes.archetypes.HealthInfo import HealthInfo
+from retro_data_structures.properties.echoes.archetypes.ScannableParameters import ScannableParameters
+from retro_data_structures.properties.echoes.archetypes.SurroundPan import SurroundPan
+from retro_data_structures.properties.echoes.archetypes.Transform import Transform
+from retro_data_structures.properties.echoes.archetypes.VisorParameters import VisorParameters
+from retro_data_structures.properties.echoes.archetypes.WeaponVulnerability import WeaponVulnerability
+from retro_data_structures.properties.echoes.core.Color import Color
+from retro_data_structures.properties.echoes.core.Spline import Spline
+from retro_data_structures.properties.echoes.core.Vector import Vector
+from retro_data_structures.properties.echoes.objects.Actor import Actor
+from retro_data_structures.properties.echoes.objects.CameraShaker import CameraShaker
+from retro_data_structures.properties.echoes.objects.Counter import Counter
+from retro_data_structures.properties.echoes.objects.DamageableTrigger import DamageableTrigger
+from retro_data_structures.properties.echoes.objects.DamageableTriggerOrientated import DamageableTriggerOrientated
+from retro_data_structures.properties.echoes.objects.Dock import Dock
+from retro_data_structures.properties.echoes.objects.Door import Door
+from retro_data_structures.properties.echoes.objects.Effect import Effect
+from retro_data_structures.properties.echoes.objects.MemoryRelay import MemoryRelay
+from retro_data_structures.properties.echoes.objects.Relay import Relay
+from retro_data_structures.properties.echoes.objects.ScannableObjectInfo import ScannableObjectInfo
+from retro_data_structures.properties.echoes.objects.Sound import Sound
+from retro_data_structures.properties.echoes.objects.StreamedAudio import StreamedAudio
+from retro_data_structures.properties.echoes.objects.Timer import Timer
 
 
 @dataclasses.dataclass(kw_only=True)
@@ -51,7 +48,7 @@ class DoorType:
 
     vulnerability: DamageVulnerability
 
-    shell_model: NameOrAssetId = 0x6B78FD92 # normal door model
+    shell_model: NameOrAssetId = 0x6B78FD92  # normal door model
     shell_color: Color
 
     scan_text: tuple[str, ...] | None = None
@@ -81,8 +78,8 @@ class DoorType:
         dock = next(
             inst for inst in mrea.mrea.all_instances
             if (
-                inst.type == Dock and
-                inst.get_properties_as(Dock).dock_number == dock_index
+                    inst.type == Dock and
+                    inst.get_properties_as(Dock).dock_number == dock_index
             )
         )
         for instance in mrea.mrea.all_instances:
@@ -167,9 +164,12 @@ class BlastShieldActors(NamedTuple):
 class BlastShieldDoorType(DoorType):
     shield_model: NameOrAssetId
     shield_collision_box: Vector = dataclasses.field(default_factory=lambda: Vector(0.35, 5.0, 4.0))
-    shield_collision_offset: Vector = dataclasses.field(default_factory=lambda: Vector(-2/3, 0, 2.0))
+    shield_collision_offset: Vector = dataclasses.field(default_factory=lambda: Vector(-2 / 3, 0, 2.0))
 
-    def find_attached_instance(self, area: AreaWrapper, source: ScriptInstanceHelper, state: State, message: Message, target_type: Type[BaseObjectType], target_name: str | None = None) -> ScriptInstanceHelper:
+    def find_attached_instance(
+            self, area: AreaWrapper, source: ScriptInstanceHelper, state: State, message: Message,
+            target_type: type[BaseObjectType], target_name: str | None = None
+    ) -> ScriptInstanceHelper:
         for connection in source.connections:
             if connection.state == state and connection.message == message:
                 target = area.get_instance(connection.target)
@@ -179,7 +179,10 @@ class BlastShieldDoorType(DoorType):
         raise TypeError(f"No {name} connected to {source}")
 
     def get_spline(self) -> Spline:
-        return Spline(data=b'\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x00\x02\x02A \x00\x00?\x80\x00\x00\x02\x02\x01\x00\x00\x00\x00?\x80\x00\x00')
+        return Spline(
+            data=b'\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x00\x02'
+                 b'\x02A \x00\x00?\x80\x00\x00\x02\x02\x01\x00\x00\x00\x00?\x80\x00\x00'
+        )
 
     def patch_door(self, editor: PatcherEditor, world_name: str, area_name: str, dock_name: str, low_memory: bool):
         """
@@ -258,7 +261,7 @@ class BlastShieldDoorType(DoorType):
 
         dependencies = [
             model,
-            0x8B4CD966, # MetalDoorLockBreak AGSC
+            0x8B4CD966,  # MetalDoorLockBreak AGSC
         ]
 
         gibs = None
@@ -388,7 +391,6 @@ class SeekerBlastShieldDoorType(VanillaBlastShieldDoorType):
         actors.relay.add_connection(State.Active, Message.Deactivate, mini_trigger)
         actors.relay.add_connection(State.Active, Message.Deactivate, timer)
         actors.relay.add_connection(State.Active, Message.Deactivate, timer_reset)
-
 
     def remove_blast_shield(self, editor: PatcherEditor, world_name: str, area_name: str, dock_name: str):
         mrea = self.get_mrea(editor, world_name, area_name)

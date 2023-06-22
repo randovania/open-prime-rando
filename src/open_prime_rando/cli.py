@@ -5,7 +5,7 @@ import logging
 import logging.config
 from pathlib import Path
 
-from retro_data_structures.asset_manager import PathFileProvider, IsoFileProvider
+from retro_data_structures.asset_manager import IsoFileProvider, PathFileProvider
 
 _game_to_patcher = {
     "echoes": "open_prime_rando.echoes_patcher",

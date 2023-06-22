@@ -1,16 +1,18 @@
 import dataclasses
 
 import construct
+from open_prime_rando.echoes.asset_ids import world as world_ids
+from open_prime_rando.echoes.inverted import area_pairs
+from open_prime_rando.patcher_editor import PatcherEditor
 from retro_data_structures.base_resource import Dependency, RawResource
 from retro_data_structures.dependencies import recursive_dependencies_for_editor
 from retro_data_structures.formats import Mlvl
+from retro_data_structures.formats.mlvl import AreaWrapper
+from retro_data_structures.formats.script_layer import ScriptLayerHelper
+from retro_data_structures.formats.script_object import InstanceId, ScriptInstanceHelper
 from retro_data_structures.properties.echoes.objects.AreaAttributes import AreaAttributes
 from retro_data_structures.properties.echoes.objects.SafeZone import SafeZone
 from retro_data_structures.properties.echoes.objects.SafeZoneCrystal import SafeZoneCrystal
-
-from open_prime_rando.echoes.asset_ids import world as world_ids
-from open_prime_rando.echoes.inverted.area_pairs import TG_PAIRS, AGON_PAIRS
-from open_prime_rando.patcher_editor import PatcherEditor
 
 _WORLDS = [
     world_ids.TEMPLE_GROUNDS_MLVL, world_ids.AGON_WASTES_MLVL, world_ids.TORVUS_BOG_MLVL,
@@ -65,6 +67,81 @@ def _swap_dark_world(editor: PatcherEditor):
             )
 
 
+def _copy_safe_zones(dark: AreaWrapper, dark_layer: ScriptLayerHelper, light_layer: ScriptLayerHelper,
+                     new_dependencies: set[int], special_ids: set):
+    copied_safe_zones = {}
+
+    for instance in list(dark_layer.instances):
+        if instance.type == SafeZone:
+            copied_safe_zones[instance.id] = light_layer.add_instance_with(props := instance.get_properties())
+            assert isinstance(props, SafeZone)
+            new_dependencies.add(props.impact_effect)
+
+            ids = {conn.target for conn in instance.connections}
+            for target in ids:
+                target_name = dark.get_instance(target).name
+                if "ENTERED Safezone" not in target_name and "EXITED Safezone" not in target_name:
+                    special_ids.add(instance.id)
+
+            if instance.id not in special_ids:
+                dark_layer.remove_instance(instance)
+
+    return copied_safe_zones
+
+
+def _copy_safe_zone_crystal(copied_crystal: ScriptInstanceHelper,
+                            instance: ScriptInstanceHelper,
+                            copied_safe_zones: dict[InstanceId, ScriptInstanceHelper],
+                            dark: AreaWrapper, special_ids: set[int],
+                            ):
+    targets_special = False
+
+    for conn in instance.connections:
+        if conn.target == instance.id:
+            target = copied_crystal
+        elif conn.target in copied_safe_zones:
+            targets_special = targets_special or conn.target in special_ids
+            target = copied_safe_zones[conn.target]
+        else:
+            targets_special = True
+            weird_target = dark.get_instance(conn.target)
+            print(
+                f"Crystal {instance.name} at {dark.name} has unexpected connections "
+                f"to {weird_target} ({weird_target.name})")
+            continue
+        copied_crystal.add_connection(conn.state, conn.message, target)
+
+    return targets_special
+
+
+def _update_dependencies(world: Mlvl, light: AreaWrapper, new_dependencies: set[int]):
+    # Add assets used by safe zones
+    new_dependencies = frozenset(new_dependencies)
+    if new_dependencies not in _all_deps_cache:
+        _all_deps_cache[new_dependencies] = recursive_dependencies_for_editor(
+            world.asset_manager, list(new_dependencies)
+        )
+
+    dependencies = light._raw.dependencies
+    assert isinstance(dependencies.dependencies_b, list)
+    for dep in _all_deps_cache[new_dependencies]:
+        dependencies.dependencies_b.append(construct.Container(
+            asset_id=dep.id,
+            asset_type=dep.type,
+        ))
+
+    for i in range(1, len(dependencies.dependencies_offset)):
+        dependencies.dependencies_offset[i] += len(new_dependencies)
+
+    # Add Safe Zone's module dep
+    module_dependencies = light._raw.module_dependencies
+    for module_dep in set(SafeZone.modules() + SafeZoneCrystal.modules()):
+        if module_dep not in module_dependencies.rel_module:
+            module_dependencies.rel_module.insert(0, module_dep)
+            for i in range(1, len(module_dependencies.rel_offset)):
+                module_dependencies.rel_offset[i] += 1
+
+
 def _move_safe_zones(world: Mlvl, pairs: list[tuple[int, int]]):
     for pair in pairs:
         light = world.get_area(pair[0])
@@ -75,25 +152,11 @@ def _move_safe_zones(world: Mlvl, pairs: list[tuple[int, int]]):
 
         assert light_layer.index == 0
 
-        new_dependencies = set()  # asset ids that must be added to the mlvl dependency list
+        new_dependencies: set[int] = set()  # asset ids that must be added to the mlvl dependency list
         special_ids = set()  # ids for objects that have extra functionality and we want to keep
-        copied_safe_zones = {}
 
         # Copy the safe zones
-        for instance in list(dark_layer.instances):
-            if instance.type == SafeZone:
-                copied_safe_zones[instance.id] = light_layer.add_instance_with(props := instance.get_properties())
-                assert isinstance(props, SafeZone)
-                new_dependencies.add(props.impact_effect)
-
-                ids = {conn.target for conn in instance.connections}
-                for target in ids:
-                    target_name = dark.get_instance(target).name
-                    if "ENTERED Safezone" not in target_name and "EXITED Safezone" not in target_name:
-                        special_ids.add(instance.id)
-
-                if instance.id not in special_ids:
-                    dark_layer.remove_instance(instance)
+        copied_safe_zones = _copy_safe_zones(dark, dark_layer, light_layer, new_dependencies, special_ids)
 
         # Copy the safe zone crystals
         for instance in list(dark_layer.instances):
@@ -101,54 +164,15 @@ def _move_safe_zones(world: Mlvl, pairs: list[tuple[int, int]]):
                 copied_crystal = light_layer.add_instance_with(props := instance.get_properties())
                 new_dependencies.update(collect_dependencies(props))
 
-                targets_special = False
-
-                for conn in instance.connections:
-                    if conn.target == instance.id:
-                        target = copied_crystal
-                    elif conn.target in copied_safe_zones:
-                        targets_special = targets_special or conn.target in special_ids
-                        target = copied_safe_zones[conn.target]
-                    else:
-                        targets_special = True
-                        weird_target = dark.get_instance(conn.target)
-                        print(
-                            f"Crystal {instance.name} at {dark.name} has unexpected connections to {weird_target} ({weird_target.name})")
-                        continue
-                    copied_crystal.add_connection(conn.state, conn.message, target)
-
+                targets_special = _copy_safe_zone_crystal(
+                    copied_crystal, instance, copied_safe_zones, dark, special_ids
+                )
                 if not targets_special:
                     dark_layer.remove_instance(instance)
 
         assert 0xffffffff not in new_dependencies
-
         # Update dependencies
-
-        # Add assets used by safe zones
-        new_dependencies = frozenset(new_dependencies)
-        if new_dependencies not in _all_deps_cache:
-            _all_deps_cache[new_dependencies] = recursive_dependencies_for_editor(
-                world.asset_manager, list(new_dependencies)
-            )
-
-        dependencies = light._raw.dependencies
-        assert isinstance(dependencies.dependencies_b, list)
-        for dep in _all_deps_cache[new_dependencies]:
-            dependencies.dependencies_b.append(construct.Container(
-                asset_id=dep.id,
-                asset_type=dep.type,
-            ))
-
-        for i in range(1, len(dependencies.dependencies_offset)):
-            dependencies.dependencies_offset[i] += len(new_dependencies)
-
-        # Add Safe Zone's module dep
-        module_dependencies = light._raw.module_dependencies
-        for module_dep in set(SafeZone.modules() + SafeZoneCrystal.modules()):
-            if module_dep not in module_dependencies.rel_module:
-                module_dependencies.rel_module.insert(0, module_dep)
-                for i in range(1, len(module_dependencies.rel_offset)):
-                    module_dependencies.rel_offset[i] += 1
+        _update_dependencies(world, light, new_dependencies)
 
 
 def apply_inverted(editor: PatcherEditor):

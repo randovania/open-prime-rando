@@ -1,11 +1,11 @@
-from enum import IntEnum
 import struct
+from enum import IntEnum
 from typing import NamedTuple
 
 
 class DoorIconColors(NamedTuple):
     surface_color: int
-    outline_color: int | None = None # unused
+    outline_color: int | None = None  # unused
 
 
 class DoorMapIcon(IntEnum):
@@ -38,55 +38,40 @@ class DoorMapIcon(IntEnum):
 
     @property
     def colors(self) -> DoorIconColors:
-        if self == DoorMapIcon.Normal:
-            return DoorIconColors(0x3379bfff)
-        if self == DoorMapIcon.Missile:
-            return DoorIconColors(0xd63333ff)
-        if self == DoorMapIcon.Dark:
-            return DoorIconColors(0x000000ff, 0x898989ff)
-        if self == DoorMapIcon.Annihilator:
-            return DoorIconColors(0x4b4b4bff)
-        if self == DoorMapIcon.Light:
-            return DoorIconColors(0xffffffff)
-        if self == DoorMapIcon.SuperMissile:
-            return DoorIconColors(0x50a148ff)
-        if self == DoorMapIcon.SeekerMissile:
-            return DoorIconColors(0x794f77ff)
-        if self == DoorMapIcon.PowerBomb:
-            return DoorIconColors(0xeae50bff)
-        
-        if self == DoorMapIcon.AgonEnergy:
-            return DoorIconColors(0xa45600ff)
-        if self == DoorMapIcon.TorvusEnergy:
-            return DoorIconColors(0x4e9761ff)
-        if self == DoorMapIcon.SanctuaryEnergy:
-            return DoorIconColors(0x56789dff)
-        
-        if self == DoorMapIcon.ScanVisor:
-            return DoorIconColors(0x007f7fff)
-        if self == DoorMapIcon.DarkVisor:
-            return DoorIconColors(0x660000ff)
-        # if self == DoorMapIcon.EchoVisor:
-        #     return 
-        
-        if self == DoorMapIcon.Disabled:
-            return DoorIconColors(0x202020ff)
-        # if self == DoorMapIcon.ScrewAttack:
-        #     return
-        # if self == DoorMapIcon.Bomb:
-        #     return
-        # if self == DoorMapIcon.Boost:
-        #     return
-        # if self == DoorMapIcon.Grapple:
-        #     return
-        
-        return DoorIconColors(0xff00ffff)
-    
+        return _ALL_COLORS.get(self, DoorIconColors(0xff00ffff))
+
     @staticmethod
     def get_surface_colors_as_bytes() -> bytes:
         colors = [icon.colors.surface_color for icon in sorted(DoorMapIcon)]
-        return struct.pack(">" + "L"*len(colors), *colors)
-    
+        return struct.pack(">" + "L" * len(colors), *colors)
+
     @staticmethod
     def get_door_index_bounds() -> tuple[int, int]:
         return min(*DoorMapIcon), max(*DoorMapIcon)
+
+
+_ALL_COLORS = {
+    DoorMapIcon.Normal: DoorIconColors(0x3379bfff),
+    DoorMapIcon.Missile: DoorIconColors(0xd63333ff),
+    DoorMapIcon.Dark: DoorIconColors(0x000000ff, 0x898989ff),
+    DoorMapIcon.Annihilator: DoorIconColors(0x4b4b4bff),
+    DoorMapIcon.Light: DoorIconColors(0xffffffff),
+    DoorMapIcon.SuperMissile: DoorIconColors(0x50a148ff),
+    DoorMapIcon.SeekerMissile: DoorIconColors(0x794f77ff),
+    DoorMapIcon.PowerBomb: DoorIconColors(0xeae50bff),
+
+    DoorMapIcon.AgonEnergy: DoorIconColors(0xa45600ff),
+    DoorMapIcon.TorvusEnergy: DoorIconColors(0x4e9761ff),
+    DoorMapIcon.SanctuaryEnergy: DoorIconColors(0x56789dff),
+
+    DoorMapIcon.ScanVisor: DoorIconColors(0x007f7fff),
+    DoorMapIcon.DarkVisor: DoorIconColors(0x660000ff),
+    # DoorMapIcon.EchoVisor: None,
+
+    # DoorMapIcon.ScrewAttack: None,
+    # DoorMapIcon.Bomb: None,
+    # DoorMapIcon.Boost: None,
+    # DoorMapIcon.Grapple: None,
+
+    DoorMapIcon.Disabled: DoorIconColors(0x202020ff),
+}

@@ -5,13 +5,9 @@ import open_prime_rando.echoes.asset_ids.temple_grounds as temple_grounds
 import open_prime_rando.echoes.asset_ids.torvus_bog as torvus_bog
 import open_prime_rando.echoes.asset_ids.world as world
 from open_prime_rando.patcher_editor import PatcherEditor
-
-from retro_data_structures.formats.script_object import ScriptInstanceHelper
-from retro_data_structures.game_check import Game
-from retro_data_structures.properties.echoes.objects.Timer import Timer
+from retro_data_structures.enums.echoes import Message, State
 from retro_data_structures.properties.echoes.archetypes.EditorProperties import EditorProperties
-from retro_data_structures.enums.echoes import State, Message
-
+from retro_data_structures.properties.echoes.objects.Timer import Timer
 
 ELEVATOR_MEMORY_RELAY_PER_MREA = {
     world.GREAT_TEMPLE_MLVL: {

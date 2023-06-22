@@ -3,14 +3,13 @@ import random
 from open_prime_rando.echoes.asset_ids.sanctuary_fortress import MAIN_GYRO_CHAMBER_MREA, SENTINELS_PATH_MREA
 from open_prime_rando.echoes.asset_ids.temple_grounds import PROFANE_PATH_MREA
 from open_prime_rando.patcher_editor import PatcherEditor
-from retro_data_structures.enums.echoes import ScanSpeed
+from retro_data_structures.enums.echoes import Message, ScanSpeed, State
 from retro_data_structures.formats.scan import Scan
 from retro_data_structures.formats.strg import Strg
 from retro_data_structures.properties.echoes.objects.PointOfInterest import PointOfInterest
 from retro_data_structures.properties.echoes.objects.ScannableObjectInfo import ScannableObjectInfo
 from retro_data_structures.properties.echoes.objects.Sound import Sound
 from retro_data_structures.properties.echoes.objects.Switch import Switch
-from retro_data_structures.enums.echoes import State, Message
 
 ECHO_LOCK_MREAS = [MAIN_GYRO_CHAMBER_MREA, SENTINELS_PATH_MREA, PROFANE_PATH_MREA]
 ECHO_LOCK_STATES = [State.Zero, State.InternalState00, State.InternalState01, State.InternalState02]
@@ -78,8 +77,9 @@ def randomize_echo_locks(editor: PatcherEditor, rng: random.Random):
                 props.is_open = i == solution[0]
 
         # edit scan to indicate the solution
-        solution_text = "Sonic detection gear needed to interface with this system. The combination of its sonic locks is:\n"
-        solution_text += ", ".join((["Low", "Medium", "High"][key] for key in solution))
+        solution_text = ("Sonic detection gear needed to interface with this system. "
+                         "The combination of its sonic locks is:\n")
+        solution_text += ", ".join(["Low", "Medium", "High"][key] for key in solution)
         gate_strg.set_string(1, solution_text)
         strg_id = editor.add_file(f"accessible_echo_gate_{asset_id}.STRG", gate_strg, all_paks)
 
