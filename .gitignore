@@ -132,4 +132,4 @@ dmypy.json
 .pyre/
 
 # Project
-open_prime_rando/version.py
+src/open_prime_rando/version.py
