@@ -3,12 +3,13 @@ import os.path
 from pathlib import Path
 
 import retro_data_structures.exceptions
-from open_prime_rando.patcher_editor import PatcherEditor
-from open_prime_rando.unique_area_name import CUSTOM_AREA_NAMES
 from retro_data_structures.asset_manager import IsoFileProvider
 from retro_data_structures.formats import Mrea, Strg
 from retro_data_structures.game_check import Game
 from retro_data_structures.properties.shared_objects import Dock
+
+from open_prime_rando.patcher_editor import PatcherEditor
+from open_prime_rando.unique_area_name import CUSTOM_AREA_NAMES
 
 _CUSTOM_WORLD_NAMES = {
     Game.ECHOES: {
@@ -102,6 +103,8 @@ def create_asset_id_files(editor: PatcherEditor, output_path: Path):
                 area_name = area.internal_area_name
             area_name = _CUSTOM_AREA_NAMES[editor.target_game].get(area.area_mrea_id, area_name)
 
+            if area_name in area_names:
+                area_name += "_2"
             assert area_name not in area_names, area_name
             area_names[area_name] = area.area_mrea_id
             mapa_names[area_name] = mapa
@@ -155,7 +158,7 @@ def main():
 
     create_asset_id_files(
         PatcherEditor(IsoFileProvider(args.iso), Game.ECHOES),
-        Path(__file__).parents[1].joinpath("open_prime_rando", args.game, "asset_ids"),
+        Path(__file__).parents[1].joinpath("src", "open_prime_rando", args.game, "asset_ids"),
     )
 
 

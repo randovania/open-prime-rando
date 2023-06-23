@@ -42,8 +42,8 @@ MINING_STATION_B_MREA = 0xDB7B2CED
 OASIS_ACCESS_MREA = 0xF2CCC41E
 PHAZON_SITE_MREA = 0x200EF5E7
 PLAZA_ACCESS_MREA = 0xADF88927
-PORTAL_ACCESS_MREA = 0x89D246FD
-PORTAL_ACCESS_A_MREA = 0x2312EE1D
+PORTAL_ACCESS_MREA = 0x2312EE1D
+PORTAL_ACCESS_2_MREA = 0x89D246FD
 PORTAL_SITE_MREA = 0xBF7F572C
 PORTAL_TERMINAL_MREA = 0x2BCD44A7
 SAND_CACHE_MREA = 0xF4B1F727
@@ -53,7 +53,7 @@ SAVE_STATION_1_MREA = 0x5A154E2E
 SAVE_STATION_2_MREA = 0xAC204F8B
 SAVE_STATION_3_MREA = 0x0279F7EF
 SAVE_STATION_A_MREA = 0x50017152
-SAVE_STATION_C_MREA = 0xB979562C
+SAVE_STATION_B_MREA = 0xB979562C
 SECURITY_STATION_A_MREA = 0xF723A29A
 SECURITY_STATION_B_MREA = 0x0ADA5AEF
 STORAGE_A_MREA = 0x10323944
@@ -116,8 +116,8 @@ NAME_TO_ID_MREA = {
     "Oasis Access": 0xF2CCC41E,
     "Phazon Site": 0x200EF5E7,
     "Plaza Access": 0xADF88927,
-    "Portal Access": 0x89D246FD,
-    "Portal Access A": 0x2312EE1D,
+    "Portal Access": 0x2312EE1D,
+    "Portal Access_2": 0x89D246FD,
     "Portal Site": 0xBF7F572C,
     "Portal Terminal": 0x2BCD44A7,
     "Sand Cache": 0xF4B1F727,
@@ -127,7 +127,7 @@ NAME_TO_ID_MREA = {
     "Save Station 2": 0xAC204F8B,
     "Save Station 3": 0x0279F7EF,
     "Save Station A": 0x50017152,
-    "Save Station C": 0xB979562C,
+    "Save Station B": 0xB979562C,
     "Security Station A": 0xF723A29A,
     "Security Station B": 0x0ADA5AEF,
     "Storage A": 0x10323944,
@@ -191,8 +191,8 @@ MINING_STATION_B_MAPA = 0xF2AED7D0
 OASIS_ACCESS_MAPA = 0xDB193F23
 PHAZON_SITE_MAPA = 0x09DB0EDA
 PLAZA_ACCESS_MAPA = 0x842D721A
-PORTAL_ACCESS_MAPA = 0xA007BDC0
-PORTAL_ACCESS_A_MAPA = 0x0AC71520
+PORTAL_ACCESS_MAPA = 0x0AC71520
+PORTAL_ACCESS_2_MAPA = 0xA007BDC0
 PORTAL_SITE_MAPA = 0x96AAAC11
 PORTAL_TERMINAL_MAPA = 0x0218BF9A
 SAND_CACHE_MAPA = 0xDD640C1A
@@ -202,7 +202,7 @@ SAVE_STATION_1_MAPA = 0x73C0B513
 SAVE_STATION_2_MAPA = 0x85F5B4B6
 SAVE_STATION_3_MAPA = 0x2BAC0CD2
 SAVE_STATION_A_MAPA = 0x79D48A6F
-SAVE_STATION_C_MAPA = 0x90ACAD11
+SAVE_STATION_B_MAPA = 0x90ACAD11
 SECURITY_STATION_A_MAPA = 0xDEF659A7
 SECURITY_STATION_B_MAPA = 0x230FA1D2
 STORAGE_A_MAPA = 0x39E7C279
@@ -265,8 +265,8 @@ NAME_TO_ID_MAPA = {
     "Oasis Access": 0xDB193F23,
     "Phazon Site": 0x09DB0EDA,
     "Plaza Access": 0x842D721A,
-    "Portal Access": 0xA007BDC0,
-    "Portal Access A": 0x0AC71520,
+    "Portal Access": 0x0AC71520,
+    "Portal Access_2": 0xA007BDC0,
     "Portal Site": 0x96AAAC11,
     "Portal Terminal": 0x0218BF9A,
     "Sand Cache": 0xDD640C1A,
@@ -276,7 +276,7 @@ NAME_TO_ID_MAPA = {
     "Save Station 2": 0x85F5B4B6,
     "Save Station 3": 0x2BAC0CD2,
     "Save Station A": 0x79D48A6F,
-    "Save Station C": 0x90ACAD11,
+    "Save Station B": 0x90ACAD11,
     "Security Station A": 0xDEF659A7,
     "Security Station B": 0x230FA1D2,
     "Storage A": 0x39E7C279,
@@ -515,7 +515,7 @@ DOCK_NAMES = {
         "South": 0,
         "North": 1,
     },
-    "Portal Access A": {
+    "Portal Access_2": {
         "South": 0,
         "North": 1,
     },
@@ -555,7 +555,7 @@ DOCK_NAMES = {
         "North": 0,
         "East": 1,
     },
-    "Save Station C": {
+    "Save Station B": {
         "South": 0,
         "West": 1,
     },

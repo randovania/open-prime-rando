@@ -21,7 +21,7 @@ HALL_OF_COMBAT_MASTERY_MREA = 0x5571E89E
 HAZING_CLIFF_MREA = 0x37814F2A
 HIVE_AMMO_STATION_MREA = 0xF1DF78DC
 HIVE_CACHE_1_MREA = 0x5F43767D
-HIVE_CACHE_3_MREA = 0x072FCFBC
+HIVE_CACHE_2_MREA = 0x072FCFBC
 HIVE_CONTROLLER_ACCESS_MREA = 0x26AC7F1E
 HIVE_DYNAMO_ACCESS_MREA = 0xFBAF3B2B
 HIVE_DYNAMO_WORKS_MREA = 0xF24EF6B4
@@ -90,7 +90,7 @@ NAME_TO_ID_MREA = {
     "Hazing Cliff": 0x37814F2A,
     "Hive Ammo Station": 0xF1DF78DC,
     "Hive Cache 1": 0x5F43767D,
-    "Hive Cache 3": 0x072FCFBC,
+    "Hive Cache 2": 0x072FCFBC,
     "Hive Controller Access": 0x26AC7F1E,
     "Hive Dynamo Access": 0xFBAF3B2B,
     "Hive Dynamo Works": 0xF24EF6B4,
@@ -160,7 +160,7 @@ HALL_OF_COMBAT_MASTERY_MAPA = 0x7CA413A3
 HAZING_CLIFF_MAPA = 0x1E54B417
 HIVE_AMMO_STATION_MAPA = 0xD80A83E1
 HIVE_CACHE_1_MAPA = 0x76968D40
-HIVE_CACHE_3_MAPA = 0x2EFA3481
+HIVE_CACHE_2_MAPA = 0x2EFA3481
 HIVE_CONTROLLER_ACCESS_MAPA = 0x0F798423
 HIVE_DYNAMO_ACCESS_MAPA = 0xD27AC016
 HIVE_DYNAMO_WORKS_MAPA = 0xDB9B0D89
@@ -229,7 +229,7 @@ NAME_TO_ID_MAPA = {
     "Hazing Cliff": 0x1E54B417,
     "Hive Ammo Station": 0xD80A83E1,
     "Hive Cache 1": 0x76968D40,
-    "Hive Cache 3": 0x2EFA3481,
+    "Hive Cache 2": 0x2EFA3481,
     "Hive Controller Access": 0x0F798423,
     "Hive Dynamo Access": 0xD27AC016,
     "Hive Dynamo Works": 0xDB9B0D89,
@@ -373,7 +373,7 @@ DOCK_NAMES = {
     "Hive Cache 1": {
         "South": 0,
     },
-    "Hive Cache 3": {
+    "Hive Cache 2": {
         "group1_West": 0,
         "VirtualWest": 1,
     },
