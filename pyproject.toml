@@ -17,12 +17,22 @@ classifiers = [
     "Programming Language :: Python :: 3.11",
 ]
 requires-python = ">=3.10"
+dynamic = ["version"]
+
 dependencies = [
     "retro-data-structures>=0.20.1",
     "jsonschema>=4.0.0",
     "ppc-asm",
+    "py_randomprime",  # for Prime 1 symbols
 ]
-dynamic = ["version"]
+
+[project.optional-dependencies]
+test = [
+    "pytest",
+    "pytest-cov",
+    "pytest-mock",
+    "pre-commit",
+]
 
 [project.readme]
 file = "README.md"
