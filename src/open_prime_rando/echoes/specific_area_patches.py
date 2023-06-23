@@ -6,7 +6,7 @@ from open_prime_rando.echoes.asset_ids.torvus_bog import TORVUS_ENERGY_CONTROLLE
 from open_prime_rando.echoes.asset_ids.world import TORVUS_BOG_MLVL
 from open_prime_rando.patcher_editor import PatcherEditor
 from retro_data_structures.enums.echoes import Message, State
-from retro_data_structures.formats.script_object import ScriptInstanceHelper
+from retro_data_structures.formats.script_object import ScriptInstance
 from retro_data_structures.game_check import Game
 from retro_data_structures.properties.echoes.objects.Counter import Counter
 from retro_data_structures.properties.echoes.objects.Relay import Relay
@@ -32,8 +32,8 @@ def sand_mining(editor: PatcherEditor):
     post_pickup_relay.set_properties(properties)
 
 
-def create_layer_controller(area_id: int, layer: int, dynamic: bool = False) -> ScriptInstanceHelper:
-    layer_controller = ScriptInstanceHelper.new_instance(Game.ECHOES, "SLCT")
+def create_layer_controller(area_id: int, layer: int, dynamic: bool = False) -> ScriptInstance:
+    layer_controller = ScriptInstance.new_instance(Game.ECHOES, "SLCT")
     props = layer_controller.get_properties()
     assert isinstance(props, ScriptLayerController)
 
@@ -77,24 +77,21 @@ def torvus_temple_crash(editor: PatcherEditor):
     """
     Remove cosmetic objects from Torvus Temple to minimize the chance of chance via alloc failure
     """
-    world = editor.get_mlvl(TORVUS_BOG_MLVL)
-    area = world.get_area(TORVUS_TEMPLE_MREA)
+    area = editor.get_area(TORVUS_BOG_MLVL, TORVUS_TEMPLE_MREA)
 
-    area.get_layer("Default")
-    first_pass = area.get_layer("1st Pass")
-    second_pass = area.get_layer("2nd PAss")
+    to_remove = [
+        "Thrust1",
+        "Thrust1",
+        "Thrust2",
+        "Thrust2",
+        "Looping Thrust w/Doppler",
+        "Looping Thrust w/Doppler",
+        "GENERATE GIBS",
+    ]
+    to_remove.extend(["SwampCrateDebris"] * 7)
 
-    for obj in ["Thrust1", "Thrust1", "Thrust2", "Thrust2", "Looping Thrust w/Doppler", "Looping Thrust w/Doppler"]:
-        first_pass.remove_instance(obj)
-
-    for obj in ["GENERATE GIBS"]:
-        second_pass.remove_instance(obj)
-
-    # These are generated objects, so to remove these we need to change the generated objects layer
-    # Since that isn't properly exposed by RDS, let's skip for now
-    # debris = ["SwampCrateDebris"] * 7
-    # for obj in ["GibFlash", "Sound - Swamp Crate Gib"] + debris:
-    #     default.remove_instance(obj)
+    for obj in to_remove:
+        area.remove_instance(obj)
 
 
 def agon_wastes_portal_terminal_puzzle_patch(editor: PatcherEditor):

@@ -9,9 +9,9 @@ from retro_data_structures.asset_manager import NameOrAssetId
 from retro_data_structures.base_resource import AssetId
 from retro_data_structures.enums.echoes import Message, State, VisorFlags
 from retro_data_structures.formats.mapa import Mapa
-from retro_data_structures.formats.mlvl import AreaWrapper
+from retro_data_structures.formats.mrea import Area
 from retro_data_structures.formats.scan import Scan
-from retro_data_structures.formats.script_object import ScriptInstanceHelper
+from retro_data_structures.formats.script_object import ScriptInstance
 from retro_data_structures.formats.strg import Strg
 from retro_data_structures.properties.base_property import BaseObjectType
 from retro_data_structures.properties.echoes.archetypes.ActorParameters import ActorParameters
@@ -61,36 +61,36 @@ class DoorType:
         world_file = world.load_dedicated_file(world_name)
         return editor.find_paks(world_file.NAME_TO_ID_MREA[area_name])
 
-    def get_files(self, editor: PatcherEditor, world_name: str, area_name: str) -> tuple[AreaWrapper, Mapa]:
+    def get_files(self, editor: PatcherEditor, world_name: str, area_name: str) -> tuple[Area, Mapa]:
         world_file = world.load_dedicated_file(world_name)
-        mrea = editor.get_area_helper(world.NAME_TO_ID_MLVL[world_name], world_file.NAME_TO_ID_MREA[area_name])
+        area = editor.get_area(world.NAME_TO_ID_MLVL[world_name], world_file.NAME_TO_ID_MREA[area_name])
         mapa = editor.get_file(world_file.NAME_TO_ID_MAPA[area_name], type_hint=Mapa)
-        return mrea, mapa
+        return area, mapa
 
     def get_dock_index(self, world_name: str, area_name: str, dock_name: str) -> int:
         world_file = world.load_dedicated_file(world_name)
         return world_file.DOCK_NAMES[area_name][dock_name]
 
-    def get_mrea(self, editor: PatcherEditor, world_name: str, area_name: str) -> AreaWrapper:
+    def get_area(self, editor: PatcherEditor, world_name: str, area_name: str) -> Area:
         return self.get_files(editor, world_name, area_name)[0]
 
-    def get_door_from_dock_index(self, mrea: AreaWrapper, dock_index: int) -> ScriptInstanceHelper:
+    def get_door_from_dock_index(self, area: Area, dock_index: int) -> ScriptInstance:
         dock = next(
-            inst for inst in mrea.mrea.all_instances
+            inst for inst in area.all_instances
             if (
                     inst.type == Dock and
                     inst.get_properties_as(Dock).dock_number == dock_index
             )
         )
-        for instance in mrea.mrea.all_instances:
+        for instance in area.all_instances:
             if instance.type != Door:
                 continue
             for connection in instance.connections:
                 if dock.id_matches(connection.target):
                     return instance
-        raise KeyError(f"no door found with a connection to {dock} in {mrea.name}")
+        raise KeyError(f"no door found with a connection to {dock} in {area.name}")
 
-    def patch_map_icon(self, mapa: Mapa, door: ScriptInstanceHelper):
+    def patch_map_icon(self, mapa: Mapa, door: ScriptInstance):
         for obj in mapa.raw.mappable_objects:
             if door.id_matches(obj.editor_id):
                 obj.type = self.map_icon.value
@@ -99,9 +99,9 @@ class DoorType:
     @staticmethod
     def get_scan_templates(editor: PatcherEditor) -> tuple[Scan, Strg]:
         # Uncategorized/There is a Blast Shield on the door blocking acces_0.SCAN
-        scan = editor.get_parsed_asset(0x36DE1342, type_hint=Scan)
+        scan = editor.get_file(0x36DE1342, type_hint=Scan)
         # Strings/Uncategorized/There is a Blast Shield on the door blocking acces_0_0.STRG
-        strg = editor.get_parsed_asset(0x49DF4448, type_hint=Strg)
+        strg = editor.get_file(0x49DF4448, type_hint=Strg)
         return scan, strg
 
     def get_patched_scan(self, editor: PatcherEditor, world_name: str, area_name: str) -> AssetId:
@@ -124,8 +124,8 @@ class DoorType:
         return self.patched_scan
 
     def patch_door(self, editor: PatcherEditor, world_name: str, area_name: str, dock_name: str, low_memory: bool):
-        mrea, mapa = self.get_files(editor, world_name, area_name)
-        door = self.get_door_from_dock_index(mrea, self.get_dock_index(world_name, area_name, dock_name))
+        area, mapa = self.get_files(editor, world_name, area_name)
+        door = self.get_door_from_dock_index(area, self.get_dock_index(world_name, area_name, dock_name))
         self.patch_map_icon(mapa, door)
 
         shell_model = editor._resolve_asset_id(self.shell_model)
@@ -142,8 +142,8 @@ class DoorType:
 class NormalDoorType(DoorType):
     def patch_door(self, editor: PatcherEditor, world_name: str, area_name: str, dock_name: str, low_memory: bool):
         super().patch_door(editor, world_name, area_name, dock_name, low_memory)
-        mrea = self.get_mrea(editor, world_name, area_name)
-        door = self.get_door_from_dock_index(mrea, self.get_dock_index(world_name, area_name, dock_name))
+        area = self.get_area(editor, world_name, area_name)
+        door = self.get_door_from_dock_index(area, self.get_dock_index(world_name, area_name, dock_name))
 
         with door.edit_properties(Door) as door_props:
             door_props.vulnerability = self.vulnerability
@@ -152,12 +152,12 @@ class NormalDoorType(DoorType):
 
 
 class BlastShieldActors(NamedTuple):
-    door: ScriptInstanceHelper
-    sound: ScriptInstanceHelper
-    streamed: ScriptInstanceHelper
-    lock: ScriptInstanceHelper
-    relay: ScriptInstanceHelper
-    gibs: ScriptInstanceHelper | None
+    door: ScriptInstance
+    sound: ScriptInstance
+    streamed: ScriptInstance
+    lock: ScriptInstance
+    relay: ScriptInstance
+    gibs: ScriptInstance | None
 
 
 @dataclasses.dataclass(kw_only=True)
@@ -167,9 +167,9 @@ class BlastShieldDoorType(DoorType):
     shield_collision_offset: Vector = dataclasses.field(default_factory=lambda: Vector(-2 / 3, 0, 2.0))
 
     def find_attached_instance(
-            self, area: AreaWrapper, source: ScriptInstanceHelper, state: State, message: Message,
+            self, area: Area, source: ScriptInstance, state: State, message: Message,
             target_type: type[BaseObjectType], target_name: str | None = None
-    ) -> ScriptInstanceHelper:
+    ) -> ScriptInstance:
         for connection in source.connections:
             if connection.state == state and connection.message == message:
                 target = area.get_instance(connection.target)
@@ -200,11 +200,11 @@ class BlastShieldDoorType(DoorType):
             ACTV -> blast shield, DCTV
         """
         super().patch_door(editor, world_name, area_name, dock_name, low_memory)
-        mrea = self.get_mrea(editor, world_name, area_name)
-        door = self.get_door_from_dock_index(mrea, self.get_dock_index(world_name, area_name, dock_name))
+        area = self.get_area(editor, world_name, area_name)
+        door = self.get_door_from_dock_index(area, self.get_dock_index(world_name, area_name, dock_name))
         door_transform = door.get_properties_as(Door).editor_properties.transform
 
-        default = mrea.get_layer("Default")
+        default = area.get_layer("Default")
 
         sound = default.add_instance_with(Sound(
             editor_properties=EditorProperties(
@@ -291,23 +291,23 @@ class BlastShieldDoorType(DoorType):
 @dataclasses.dataclass(kw_only=True)
 class VanillaBlastShieldDoorType(BlastShieldDoorType):
     def remove_blast_shield(self, editor: PatcherEditor, world_name: str, area_name: str, dock_name: str):
-        mrea = self.get_mrea(editor, world_name, area_name)
-        door = self.get_door_from_dock_index(mrea, self.get_dock_index(world_name, area_name, dock_name))
+        area = self.get_area(editor, world_name, area_name)
+        door = self.get_door_from_dock_index(area, self.get_dock_index(world_name, area_name, dock_name))
 
-        relay = self.find_attached_instance(mrea, door, State.Open, Message.Activate, MemoryRelay)
-        lock = self.find_attached_instance(mrea, relay, State.Active, Message.Deactivate, Actor)
+        relay = self.find_attached_instance(area, door, State.Open, Message.Activate, MemoryRelay)
+        lock = self.find_attached_instance(area, relay, State.Active, Message.Deactivate, Actor)
 
         for connection in lock.connections:
-            mrea.mrea.remove_instance(connection.target)
-        mrea.mrea.remove_instance(lock)
+            area.remove_instance(connection.target)
+        area.remove_instance(lock)
 
 
 @dataclasses.dataclass(kw_only=True)
 class SeekerBlastShieldDoorType(VanillaBlastShieldDoorType):
     def patch_door(self, editor: PatcherEditor, world_name: str, area_name: str, dock_name: str, low_memory: bool):
         actors = super().patch_door(editor, world_name, area_name, dock_name, low_memory)
-        mrea = self.get_mrea(editor, world_name, area_name)
-        default = mrea.get_layer("Default")
+        area = self.get_area(editor, world_name, area_name)
+        default = area.get_layer("Default")
 
         # immune instead of reflect so that it explodes on the lock
         missile_immune = dataclasses.replace(resist_all_vuln, missile=WeaponVulnerability(damage_multiplier=0.0))
@@ -318,7 +318,7 @@ class SeekerBlastShieldDoorType(VanillaBlastShieldDoorType):
 
         door_transform = actors.door.get_properties_as(Door).editor_properties.transform
 
-        def create_trigger(name: str, health: float, lock_on: bool = True) -> ScriptInstanceHelper:
+        def create_trigger(name: str, health: float, lock_on: bool = True) -> ScriptInstance:
             pos = Vector(
                 door_transform.position.x,
                 door_transform.position.y,
@@ -393,16 +393,16 @@ class SeekerBlastShieldDoorType(VanillaBlastShieldDoorType):
         actors.relay.add_connection(State.Active, Message.Deactivate, timer_reset)
 
     def remove_blast_shield(self, editor: PatcherEditor, world_name: str, area_name: str, dock_name: str):
-        mrea = self.get_mrea(editor, world_name, area_name)
-        door = self.get_door_from_dock_index(mrea, self.get_dock_index(world_name, area_name, dock_name))
+        area = self.get_area(editor, world_name, area_name)
+        door = self.get_door_from_dock_index(area, self.get_dock_index(world_name, area_name, dock_name))
 
-        default = mrea.get_layer("Default")
+        default = area.get_layer("Default")
 
-        memory_relay = self.find_attached_instance(mrea, door, State.Open, Message.Activate, MemoryRelay)
-        trigger = self.find_attached_instance(mrea, memory_relay, State.Active, Message.Deactivate, DamageableTrigger)
-        shaker = self.find_attached_instance(mrea, trigger, State.Dead, Message.Action, CameraShaker)
-        counter = self.find_attached_instance(mrea, trigger, State.Dead, Message.Increment, Counter)
-        complete_relay = self.find_attached_instance(mrea, counter, State.MaxReached, Message.SetToZero, Relay)
+        memory_relay = self.find_attached_instance(area, door, State.Open, Message.Activate, MemoryRelay)
+        trigger = self.find_attached_instance(area, memory_relay, State.Active, Message.Deactivate, DamageableTrigger)
+        shaker = self.find_attached_instance(area, trigger, State.Dead, Message.Action, CameraShaker)
+        counter = self.find_attached_instance(area, trigger, State.Dead, Message.Increment, Counter)
+        complete_relay = self.find_attached_instance(area, counter, State.MaxReached, Message.SetToZero, Relay)
 
         default.remove_instance(shaker)
         for connection in complete_relay.connections:

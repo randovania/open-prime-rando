@@ -79,7 +79,7 @@ def create_asset_id_files(editor: PatcherEditor, output_path: Path):
         mlvl = editor.get_mlvl(value)
 
         try:
-            strg = editor.get_parsed_asset(mlvl.raw.world_name_id, type_hint=Strg)
+            strg = editor.get_file(mlvl.raw.world_name_id, type_hint=Strg)
             world_name = strg.raw.string_tables[0].strings[0].string
         except retro_data_structures.exceptions.UnknownAssetId:
             if value not in custom_world_names:
@@ -96,7 +96,7 @@ def create_asset_id_files(editor: PatcherEditor, output_path: Path):
 
         for area, mapa in zip(mlvl.raw.areas, mlvl.mapw.mapa_ids):
             try:
-                strg = editor.get_parsed_asset(area.area_name_id, type_hint=Strg)
+                strg = editor.get_file(area.area_name_id, type_hint=Strg)
                 area_name = strg.raw.string_tables[0].strings[0].string
             except retro_data_structures.exceptions.UnknownAssetId:
                 area_name = area.internal_area_name
@@ -105,7 +105,7 @@ def create_asset_id_files(editor: PatcherEditor, output_path: Path):
             assert area_name not in area_names, area_name
             area_names[area_name] = area.area_mrea_id
             mapa_names[area_name] = mapa
-            mrea = editor.get_parsed_asset(area_names[area_name], type_hint=Mrea)
+            mrea = editor.get_file(area_names[area_name], type_hint=Mrea)
 
             docks = {}
             for layer in mrea.script_layers:

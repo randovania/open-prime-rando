@@ -48,7 +48,7 @@ def apply_auto_enabled_elevators_patch(editor: PatcherEditor):
     """
     for mlvl_id, areas in ELEVATOR_MEMORY_RELAY_PER_MREA.items():
         for mrea_id, memory_relay_id in areas.items():
-            area = editor.get_area_helper(mlvl_id, mrea_id)
+            area = editor.get_area(mlvl_id, mrea_id)
             timer = area.get_layer("Default").add_instance_with(Timer(
                 editor_properties=EditorProperties(
                     name="Timer - Auto enable elevator",

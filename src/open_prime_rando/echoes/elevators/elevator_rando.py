@@ -1,10 +1,10 @@
 from open_prime_rando.patcher_editor import PatcherEditor
-from retro_data_structures.formats.mlvl import AreaWrapper
+from retro_data_structures.formats.mrea import Area
 from retro_data_structures.formats.strg import Strg
 from retro_data_structures.properties.echoes.objects.WorldTeleporter import WorldTeleporter
 
 
-def patch_elevator(editor: PatcherEditor, area: AreaWrapper, elevator_id: int,
+def patch_elevator(editor: PatcherEditor, area: Area, elevator_id: int,
                    target_mlvl: int, target_mrea: int, target_strg: int, target_name: str):
 
     elevator = area.get_instance(elevator_id)

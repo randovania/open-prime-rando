@@ -7,9 +7,9 @@ from open_prime_rando.patcher_editor import PatcherEditor
 from retro_data_structures.base_resource import Dependency, RawResource
 from retro_data_structures.dependencies import recursive_dependencies_for_editor
 from retro_data_structures.formats import Mlvl
-from retro_data_structures.formats.mlvl import AreaWrapper
-from retro_data_structures.formats.script_layer import ScriptLayerHelper
-from retro_data_structures.formats.script_object import InstanceId, ScriptInstanceHelper
+from retro_data_structures.formats.mrea import Area
+from retro_data_structures.formats.script_layer import ScriptLayer
+from retro_data_structures.formats.script_object import InstanceId, ScriptInstance
 from retro_data_structures.properties.echoes.objects.AreaAttributes import AreaAttributes
 from retro_data_structures.properties.echoes.objects.SafeZone import SafeZone
 from retro_data_structures.properties.echoes.objects.SafeZoneCrystal import SafeZoneCrystal
@@ -67,7 +67,7 @@ def _swap_dark_world(editor: PatcherEditor):
             )
 
 
-def _copy_safe_zones(dark: AreaWrapper, dark_layer: ScriptLayerHelper, light_layer: ScriptLayerHelper,
+def _copy_safe_zones(dark: Area, dark_layer: ScriptLayer, light_layer: ScriptLayer,
                      new_dependencies: set[int], special_ids: set):
     copied_safe_zones = {}
 
@@ -89,10 +89,10 @@ def _copy_safe_zones(dark: AreaWrapper, dark_layer: ScriptLayerHelper, light_lay
     return copied_safe_zones
 
 
-def _copy_safe_zone_crystal(copied_crystal: ScriptInstanceHelper,
-                            instance: ScriptInstanceHelper,
-                            copied_safe_zones: dict[InstanceId, ScriptInstanceHelper],
-                            dark: AreaWrapper, special_ids: set[int],
+def _copy_safe_zone_crystal(copied_crystal: ScriptInstance,
+                            instance: ScriptInstance,
+                            copied_safe_zones: dict[InstanceId, ScriptInstance],
+                            dark: Area, special_ids: set[int],
                             ):
     targets_special = False
 
@@ -114,7 +114,7 @@ def _copy_safe_zone_crystal(copied_crystal: ScriptInstanceHelper,
     return targets_special
 
 
-def _update_dependencies(world: Mlvl, light: AreaWrapper, new_dependencies: set[int]):
+def _update_dependencies(world: Mlvl, light: Area, new_dependencies: set[int]):
     # Add assets used by safe zones
     new_dependencies = frozenset(new_dependencies)
     if new_dependencies not in _all_deps_cache:

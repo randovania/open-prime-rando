@@ -5,7 +5,7 @@ from open_prime_rando.echoes import custom_assets
 
 def test_create_split_ammo():
     manager = MagicMock()
-    asset = manager.get_parsed_asset.return_value
+    asset = manager.get_file.return_value
     find_paks = manager.find_paks.return_value
 
     custom_assets._create_split_ammo(manager)
