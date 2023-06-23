@@ -3,10 +3,10 @@ import uuid
 
 from ppc_asm.dol_file import DolFile
 
-from open_prime_rando.dol_patching import all_prime_dol_patches, dol_version, echoes_dol_patches, echoes_dol_versions
-from open_prime_rando.dol_patching.beam_configuration import BeamAmmoConfiguration
-from open_prime_rando.dol_patching.echoes_dol_patches import EchoesDolVersion
-from open_prime_rando.dol_patching.echoes_user_preferences import OprEchoesUserPreferences
+from open_prime_rando.dol_patching import all_prime_dol_patches, dol_version
+from open_prime_rando.dol_patching.echoes import dol_patches, dol_versions
+from open_prime_rando.dol_patching.echoes.beam_configuration import BeamAmmoConfiguration
+from open_prime_rando.dol_patching.echoes.user_preferences import OprEchoesUserPreferences
 
 
 @dataclasses.dataclass(frozen=True)
@@ -37,8 +37,8 @@ class EchoesDolPatchesData:
 
 
 def apply_patches(dol_file: DolFile, patches_data: EchoesDolPatchesData):
-    version = dol_version.find_version_for_dol(dol_file, echoes_dol_versions.ALL_VERSIONS)
-    assert isinstance(version, EchoesDolVersion)
+    version = dol_version.find_version_for_dol(dol_file, dol_versions.ALL_VERSIONS)
+    assert isinstance(version, dol_patches.EchoesDolVersion)
 
     dol_file.set_editable(True)
     with dol_file:
@@ -50,21 +50,21 @@ def apply_patches(dol_file: DolFile, patches_data: EchoesDolPatchesData):
                                                                    patches_data.dangerous_energy_tank,
                                                                    version.game, dol_file)
 
-        echoes_dol_patches.apply_fixes(version, dol_file)
-        echoes_dol_patches.change_powerup_should_persist(
+        dol_patches.apply_fixes(version, dol_file)
+        dol_patches.change_powerup_should_persist(
             version, dol_file,
             ["Double Damage", "Unlimited Missiles", "Unlimited Beam Ammo"]
         )
 
-        echoes_dol_patches.apply_unvisited_room_names(version, dol_file, patches_data.unvisited_room_names)
-        echoes_dol_patches.apply_teleporter_sounds(version, dol_file, patches_data.teleporter_sounds)
+        dol_patches.apply_unvisited_room_names(version, dol_file, patches_data.unvisited_room_names)
+        dol_patches.apply_teleporter_sounds(version, dol_file, patches_data.teleporter_sounds)
 
-        echoes_dol_patches.apply_game_options_patch(version.game_options_constructor_address,
+        dol_patches.apply_game_options_patch(version.game_options_constructor_address,
                                                     patches_data.user_preferences, dol_file)
-        echoes_dol_patches.apply_beam_cost_patch(version.beam_cost_addresses, patches_data.beam_configurations,
+        dol_patches.apply_beam_cost_patch(version.beam_cost_addresses, patches_data.beam_configurations,
                                                  dol_file)
-        echoes_dol_patches.apply_safe_zone_heal_patch(version.safe_zone, version.sda2_base,
+        dol_patches.apply_safe_zone_heal_patch(version.safe_zone, version.sda2_base,
                                                       patches_data.safe_zone_heal_per_second, dol_file)
-        echoes_dol_patches.apply_starting_visor_patch(version.starting_beam_visor, patches_data.default_items,
+        dol_patches.apply_starting_visor_patch(version.starting_beam_visor, patches_data.default_items,
                                                       dol_file)
-        echoes_dol_patches.apply_map_door_changes(version.map_door_types, dol_file)
+        dol_patches.apply_map_door_changes(version.map_door_types, dol_file)

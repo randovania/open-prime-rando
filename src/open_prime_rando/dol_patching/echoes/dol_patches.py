@@ -14,8 +14,8 @@ from open_prime_rando.dol_patching.all_prime_dol_patches import (
     DangerousEnergyTankAddresses,
     HealthCapacityAddresses,
 )
-from open_prime_rando.dol_patching.beam_configuration import BeamAmmoConfiguration
-from open_prime_rando.dol_patching.echoes_user_preferences import OprEchoesUserPreferences
+from open_prime_rando.dol_patching.echoes.beam_configuration import BeamAmmoConfiguration
+from open_prime_rando.dol_patching.echoes.user_preferences import OprEchoesUserPreferences
 from open_prime_rando.echoes.dock_lock_rando.map_icons import DoorMapIcon
 
 POWERUP_TO_INDEX = {

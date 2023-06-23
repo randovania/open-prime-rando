@@ -1,4 +1,4 @@
-from open_prime_rando.dol_patching.prime1_dol_patches import Prime1DolVersion
+from open_prime_rando.dol_patching.prime1.dol_patches import Prime1DolVersion
 
 ALL_VERSIONS = [
     Prime1DolVersion(

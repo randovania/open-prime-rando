@@ -1,7 +1,7 @@
 from retro_data_structures.game_check import Game
 
 from open_prime_rando.dol_patching.all_prime_dol_patches import PowerupFunctionsAddresses
-from open_prime_rando.dol_patching.corruption_dol_patches import CorruptionDolVersion
+from open_prime_rando.dol_patching.corruption.dol_patches import CorruptionDolVersion
 
 ALL_VERSIONS = [
     CorruptionDolVersion(

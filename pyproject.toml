@@ -23,6 +23,7 @@ dependencies = [
     "retro-data-structures>=0.19.1",
     "jsonschema>=4.0.0",
     "ppc-asm",
+    "py_randomprime",  # for Prime 1 symbols
 ]
 
 [project.optional-dependencies]

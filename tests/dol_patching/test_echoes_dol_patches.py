@@ -1,8 +1,8 @@
 import pytest
-from open_prime_rando.dol_patching import echoes_dol_patches, echoes_dol_versions
-from open_prime_rando.dol_patching.beam_configuration import BeamAmmoConfiguration
-from open_prime_rando.dol_patching.echoes_dol_patches import StartingBeamVisorAddresses
-from open_prime_rando.dol_patching.echoes_user_preferences import OprEchoesUserPreferences
+from open_prime_rando.dol_patching.echoes import dol_patches, dol_versions
+from open_prime_rando.dol_patching.echoes.beam_configuration import BeamAmmoConfiguration
+from open_prime_rando.dol_patching.echoes.dol_patches import StartingBeamVisorAddresses
+from open_prime_rando.dol_patching.echoes.user_preferences import OprEchoesUserPreferences
 from ppc_asm.dol_file import DolHeader, Section
 
 DOLS = [
@@ -25,7 +25,7 @@ DOLS = [
                          Section(offset=0, base_address=0, size=0),
                          Section(offset=0, base_address=0, size=0)),
                bss_address=2151438880, bss_size=368356, entry_point=2147496588),
-     echoes_dol_versions.ALL_VERSIONS[0]),
+     dol_versions.ALL_VERSIONS[0]),
     (DolHeader(sections=(Section(offset=256, base_address=2147496192, size=1344),
                          Section(offset=1600, base_address=2147498048, size=3809312),
                          Section(offset=0, base_address=0, size=0),
@@ -45,7 +45,7 @@ DOLS = [
                          Section(offset=0, base_address=0, size=0),
                          Section(offset=0, base_address=0, size=0)),
                bss_address=2151443520, bss_size=368548, entry_point=2147496588),
-     echoes_dol_versions.ALL_VERSIONS[1]),
+     dol_versions.ALL_VERSIONS[1]),
 ]
 
 
@@ -56,7 +56,7 @@ def test_apply_game_options_patch(dol_file):
     # Run
     dol_file.set_editable(True)
     with dol_file:
-        echoes_dol_patches.apply_game_options_patch(offset, user_preferences, dol_file)
+        dol_patches.apply_game_options_patch(offset, user_preferences, dol_file)
 
     # Assert
     results = dol_file.dol_path.read_bytes()[0x100:]
@@ -87,7 +87,7 @@ def test_apply_game_options_patch(dol_file):
 
 
 def test_apply_beam_cost_patch(dol_file):
-    patch_addresses = echoes_dol_patches.BeamCostAddresses(
+    patch_addresses = dol_patches.BeamCostAddresses(
         uncharged_cost=0x2000,
         charged_cost=0x2010,
         charge_combo_ammo_cost=0x2020,
@@ -127,7 +127,7 @@ def test_apply_beam_cost_patch(dol_file):
     # Run
     dol_file.set_editable(True)
     with dol_file:
-        echoes_dol_patches.apply_beam_cost_patch(patch_addresses, beam_configurations, dol_file)
+        dol_patches.apply_beam_cost_patch(patch_addresses, beam_configurations, dol_file)
 
     # Assert
     results = dol_file.dol_path.read_bytes()[0x100:]
@@ -194,7 +194,7 @@ def test_apply_starting_visor_patch(dol_file, starting_beam, starting_visor):
     # Run
     dol_file.set_editable(True)
     with dol_file:
-        echoes_dol_patches.apply_starting_visor_patch(addresses, default_items, dol_file)
+        dol_patches.apply_starting_visor_patch(addresses, default_items, dol_file)
 
     # Assert
     results = dol_file.dol_path.read_bytes()[0x100:]
@@ -234,7 +234,7 @@ def test_apply_starting_visor_patch(dol_file, starting_beam, starting_visor):
 
 
 def test_apply_safe_zone_heal_patch(dol_file):
-    addresses = echoes_dol_patches.SafeZoneAddresses(
+    addresses = dol_patches.SafeZoneAddresses(
         heal_per_frame_constant=0x2000,
         increment_health_fmr=0x2030,
     )
@@ -243,7 +243,7 @@ def test_apply_safe_zone_heal_patch(dol_file):
     # Run
     dol_file.set_editable(True)
     with dol_file:
-        echoes_dol_patches.apply_safe_zone_heal_patch(addresses, sda2_base, 1.0,
+        dol_patches.apply_safe_zone_heal_patch(addresses, sda2_base, 1.0,
                                                       dol_file)
 
     # Assert
@@ -283,7 +283,7 @@ def test_apply_fixes(dol_file, header, version):
     # Run
     dol_file.set_editable(True)
     with dol_file:
-        echoes_dol_patches.apply_fixes(version, dol_file)
+        dol_patches.apply_fixes(version, dol_file)
 
 
 @pytest.mark.parametrize(["header", "version"], DOLS)
@@ -294,7 +294,7 @@ def test_apply_unvisited_room_names(dol_file, header, version, enabled):
     # Run
     dol_file.set_editable(True)
     with dol_file:
-        echoes_dol_patches.apply_unvisited_room_names(version, dol_file, enabled)
+        dol_patches.apply_unvisited_room_names(version, dol_file, enabled)
 
 
 @pytest.mark.parametrize(["header", "version"], DOLS)
@@ -305,4 +305,4 @@ def test_apply_teleporter_sounds(dol_file, header, version, enabled):
     # Run
     dol_file.set_editable(True)
     with dol_file:
-        echoes_dol_patches.apply_teleporter_sounds(version, dol_file, enabled)
+        dol_patches.apply_teleporter_sounds(version, dol_file, enabled)
