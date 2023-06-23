@@ -133,6 +133,8 @@ class DoorType:
         with door.edit_properties(Door) as door_props:
             door_props.shell_model = shell_model
             door_props.shell_color = self.shell_color
+            if self.scan_text is not None:
+                door_props.alt_scannable.scannable_info0 = self.get_patched_scan(editor, world_name, area_name)
 
         for pak in self.get_paks(editor, world_name, area_name):
             editor.ensure_present(pak, shell_model)
@@ -147,8 +149,6 @@ class NormalDoorType(DoorType):
 
         with door.edit_properties(Door) as door_props:
             door_props.vulnerability = self.vulnerability
-            if self.scan_text is not None:
-                door_props.alt_scannable.scannable_info0 = self.get_patched_scan(editor, world_name, area_name)
 
 
 class BlastShieldActors(NamedTuple):
