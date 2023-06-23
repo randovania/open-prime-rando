@@ -396,23 +396,17 @@ class SeekerBlastShieldDoorType(VanillaBlastShieldDoorType):
         area = self.get_area(editor, world_name, area_name)
         door = self.get_door_from_dock_index(area, self.get_dock_index(world_name, area_name, dock_name))
 
-        default = area.get_layer("Default")
-
         memory_relay = self.find_attached_instance(area, door, State.Open, Message.Activate, MemoryRelay)
         trigger = self.find_attached_instance(area, memory_relay, State.Active, Message.Deactivate, DamageableTrigger)
         shaker = self.find_attached_instance(area, trigger, State.Dead, Message.Action, CameraShaker)
         counter = self.find_attached_instance(area, trigger, State.Dead, Message.Increment, Counter)
         complete_relay = self.find_attached_instance(area, counter, State.MaxReached, Message.SetToZero, Relay)
 
-        default.remove_instance(shaker)
+        area.remove_instance(shaker)
         for connection in complete_relay.connections:
-            try:
-                default.remove_instance(connection.target)
-            except KeyError:
-                # I guess claris already removed it probably?
-                complete_relay.remove_connection(connection)
-        default.remove_instance(complete_relay)
-        default.remove_instance(counter)
+            area.remove_instance(connection.target)
+        area.remove_instance(complete_relay)
+        area.remove_instance(counter)
 
 
 @dataclasses.dataclass(kw_only=True)
