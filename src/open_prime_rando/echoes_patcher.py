@@ -1,3 +1,4 @@
+
 import json
 import logging
 from collections.abc import Callable
@@ -97,6 +98,26 @@ def apply_area_modifications(editor: PatcherEditor, configuration: dict[str, dic
             area.build_mlvl_dependencies(only_modified=True)
 
 
+def apply_corrupted_memory_card_change(editor: PatcherEditor):
+    # STRG_MemoryCard_0
+    table = editor.get_file(0x88E242D6, Strg)
+
+    name_to_index = {
+        table.raw.name_table.name_array[entry.offset].string: entry.index
+        for entry in table.raw.name_table.name_entries
+    }
+
+    table.set_string(
+        name_to_index["CorruptedFile"],
+        """The save file was created using a different
+Randomizer ISO and must be deleted."""
+    )
+    table.set_string(
+        name_to_index["ChoiceDeleteCorruptedFile"],
+        "Delete Incompatible File"
+    )
+
+
 def patch_paks(file_provider: FileProvider,
                output_path: Path,
                configuration: dict,
@@ -117,6 +138,7 @@ def patch_paks(file_provider: FileProvider,
         auto_enabled_elevator_patches.apply_auto_enabled_elevators_patch(editor)
     specific_area_patches.specific_patches(editor, configuration["area_patches"])
     apply_small_randomizations(editor, configuration["small_randomizations"])
+    apply_corrupted_memory_card_change(editor)
     apply_area_modifications(editor, configuration["worlds"], status_update)
 
     if configuration["inverted"]:
