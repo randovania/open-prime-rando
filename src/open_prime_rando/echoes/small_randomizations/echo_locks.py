@@ -1,8 +1,8 @@
 import random
 
-from open_prime_rando.echoes.asset_ids.world import TEMPLE_GROUNDS_MLVL, SANCTUARY_FORTRESS_MLVL
 from open_prime_rando.echoes.asset_ids.sanctuary_fortress import MAIN_GYRO_CHAMBER_MREA, SENTINELS_PATH_MREA
 from open_prime_rando.echoes.asset_ids.temple_grounds import PROFANE_PATH_MREA
+from open_prime_rando.echoes.asset_ids.world import SANCTUARY_FORTRESS_MLVL, TEMPLE_GROUNDS_MLVL
 from open_prime_rando.patcher_editor import PatcherEditor
 from retro_data_structures.enums.echoes import Message, ScanSpeed, State
 from retro_data_structures.formats.scan import Scan
