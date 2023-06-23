@@ -99,9 +99,9 @@ class DoorType:
     @staticmethod
     def get_scan_templates(editor: PatcherEditor) -> tuple[Scan, Strg]:
         # Uncategorized/There is a Blast Shield on the door blocking acces_0.SCAN
-        scan = editor.get_file(0x36DE1342, type_hint=Scan)
+        scan = editor.get_parsed_asset(0x36DE1342, type_hint=Scan)
         # Strings/Uncategorized/There is a Blast Shield on the door blocking acces_0_0.STRG
-        strg = editor.get_file(0x49DF4448, type_hint=Strg)
+        strg = editor.get_parsed_asset(0x49DF4448, type_hint=Strg)
         return scan, strg
 
     def get_patched_scan(self, editor: PatcherEditor, world_name: str, area_name: str) -> AssetId:
