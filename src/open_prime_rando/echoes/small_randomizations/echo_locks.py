@@ -23,9 +23,9 @@ ECHO_LOCK_SOUNDS = [1005, 1006, 1007]
 
 def randomize_echo_locks(editor: PatcherEditor, rng: random.Random):
     # create key scan assets
-    key_scan = editor.get_file(0x2E7C4349, type_hint=Scan)
+    key_scan = editor.get_parsed_asset(0x2E7C4349, type_hint=Scan)
     scan_info = key_scan.scannable_object_info.get_properties_as(ScannableObjectInfo)
-    key_strg = editor.get_file(0x43894960, type_hint=Strg)
+    key_strg = editor.get_parsed_asset(0x43894960, type_hint=Strg)
 
     all_paks = set()
     for _, mrea in ECHO_LOCK_MREAS:
@@ -47,10 +47,10 @@ def randomize_echo_locks(editor: PatcherEditor, rng: random.Random):
 
         key_scans.append(scan_id)
 
-    gate_scan = editor.get_file(0x80A987AA, type_hint=Scan)
+    gate_scan = editor.get_parsed_asset(0x80A987AA, type_hint=Scan)
     gate_scan_info = gate_scan.scannable_object_info.get_properties_as(ScannableObjectInfo)
     gate_scan_info.scan_speed = ScanSpeed.Slow
-    gate_strg = editor.get_file(0x2820CC3D, type_hint=Strg)
+    gate_strg = editor.get_parsed_asset(0x2820CC3D, type_hint=Strg)
 
     for mlvl_id, mrea_id in ECHO_LOCK_MREAS:
         area = editor.get_area(mlvl_id, mrea_id)

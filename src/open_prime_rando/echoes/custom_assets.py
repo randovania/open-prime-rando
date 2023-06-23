@@ -51,17 +51,17 @@ def _create_visor_derivatives(editor: AssetManager):
         editor.register_custom_asset_name(f"{translator.name}_cmdl", translator.new_cmdl)
         editor.register_custom_asset_name(f"{translator.name}_ancs", translator.new_ancs)
 
-        cmdl = editor.get_file(SCAN_VISOR_CMDL, type_hint=Cmdl)
+        cmdl = editor.get_parsed_asset(SCAN_VISOR_CMDL, type_hint=Cmdl)
         cmdl.raw.material_sets[0].texture_file_ids[0] = translator.txtr
         cmdl.raw.material_sets[0].texture_file_ids[1] = translator.txtr
         editor.add_new_asset(f"{translator.name}_cmdl", cmdl, editor.find_paks(SCAN_VISOR_CMDL))
 
-        ancs = editor.get_file(DARK_VISOR_ANCS, type_hint=Ancs)
+        ancs = editor.get_parsed_asset(DARK_VISOR_ANCS, type_hint=Ancs)
         ancs.raw.character_set.characters[0].model_id = translator.new_cmdl
         editor.add_new_asset(f"{translator.name}_ancs", ancs, editor.find_paks(DARK_VISOR_ANCS))
 
     editor.register_custom_asset_name("scan_visor_ancs", editor.generate_asset_id())
-    ancs = editor.get_file(DARK_VISOR_ANCS, type_hint=Ancs)
+    ancs = editor.get_parsed_asset(DARK_VISOR_ANCS, type_hint=Ancs)
     ancs.raw.character_set.characters[0].model_id = SCAN_VISOR_CMDL
     editor.add_new_asset("scan_visor_ancs", ancs, editor.find_paks(DARK_VISOR_ANCS))
 
@@ -102,14 +102,14 @@ def _create_split_ammo(editor: AssetManager):
         editor.register_custom_asset_name(f"{ammo.name}_cmdl", ammo.new_cmdl)
         editor.register_custom_asset_name(f"{ammo.name}_ancs", ammo.new_ancs)
 
-        cmdl = editor.get_file(BEAM_AMMO_EXPANSION_CMDL, type_hint=Cmdl)
+        cmdl = editor.get_parsed_asset(BEAM_AMMO_EXPANSION_CMDL, type_hint=Cmdl)
         cmdl.raw.material_sets[0].texture_file_ids[0] = ammo.txtr_a
         cmdl.raw.material_sets[0].texture_file_ids[2] = ammo.txtr_a
         cmdl.raw.material_sets[0].texture_file_ids[3] = ammo.txtr_b
         cmdl.raw.material_sets[0].texture_file_ids[4] = ammo.txtr_b
         editor.add_new_asset(f"{ammo.name}_cmdl", cmdl, editor.find_paks(BEAM_AMMO_EXPANSION_CMDL))
 
-        ancs = editor.get_file(BEAM_AMMO_EXPANSION_ANCS, type_hint=Ancs)
+        ancs = editor.get_parsed_asset(BEAM_AMMO_EXPANSION_ANCS, type_hint=Ancs)
         ancs.raw.character_set.characters[0].model_id = ammo.new_cmdl
         ancs.raw.character_set.characters[0].particle_resource_data.generic_particles = [
             0x89C2F268,

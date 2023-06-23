@@ -19,7 +19,7 @@ def add_custom_models(editor: PatcherEditor):
         return editor.add_file(f"{n}.TXTR", res, [])
 
     emissive = get_txtr("custom_door_lock_greyscale_emissive")
-    template = editor.get_file(0xF115F575, type_hint=Cmdl)
+    template = editor.get_parsed_asset(0xF115F575, type_hint=Cmdl)
 
     for name in ("darkburst", "sunburst", "sonicboom"):
         txtr = get_txtr(f"custom_door_lock_{name}")
