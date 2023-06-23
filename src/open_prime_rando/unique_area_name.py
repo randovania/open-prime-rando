@@ -1,4 +1,4 @@
-from retro_data_structures.formats.mlvl import AreaWrapper
+from retro_data_structures.formats.mrea import Area
 
 CUSTOM_AREA_NAMES = {
     0xF3EE585F: "Portal Chamber (Light)",
@@ -6,5 +6,5 @@ CUSTOM_AREA_NAMES = {
 }
 
 
-def get_name_for_area(area: AreaWrapper) -> str:
+def get_name_for_area(area: Area) -> str:
     return CUSTOM_AREA_NAMES.get(area.mrea_asset_id, area.name)

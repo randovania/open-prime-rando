@@ -7,8 +7,8 @@ from ppc_asm.dol_file import DolEditor, DolHeader
 from retro_data_structures.asset_manager import AssetManager, FileProvider
 from retro_data_structures.base_resource import AssetId, BaseResource, NameOrAssetId, RawResource, Resource
 from retro_data_structures.crc import crc32
-from retro_data_structures.formats.mlvl import AreaWrapper, Mlvl
-from retro_data_structures.formats.mrea import Mrea
+from retro_data_structures.formats.mlvl import Mlvl
+from retro_data_structures.formats.mrea import Area
 from retro_data_structures.game_check import Game
 
 T = typing.TypeVar("T")
@@ -48,10 +48,7 @@ class PatcherEditor(AssetManager):
     def get_mlvl(self, name: NameOrAssetId) -> Mlvl:
         return self.get_file(name, Mlvl)
 
-    def get_mrea(self, name: NameOrAssetId) -> Mrea:
-        return self.get_file(name, Mrea)
-
-    def get_area_helper(self, mlvl: NameOrAssetId, mrea: NameOrAssetId) -> AreaWrapper:
+    def get_area(self, mlvl: NameOrAssetId, mrea: NameOrAssetId) -> Area:
         return self.get_mlvl(mlvl).get_area(mrea)
 
     def flush_modified_assets(self):
@@ -63,7 +60,7 @@ class PatcherEditor(AssetManager):
     def add_file(self,
                  name: str,
                  asset: RawResource | BaseResource,
-                 paks: typing.Iterable[str]
+                 paks: typing.Iterable[str] = ()
                  ) -> AssetId:
         asset_id = crc32(name)
         self.register_custom_asset_name(name, asset_id)

@@ -4,7 +4,7 @@ from collections.abc import Callable
 from pathlib import Path
 
 from retro_data_structures.asset_manager import FileProvider
-from retro_data_structures.formats.mlvl import AreaWrapper
+from retro_data_structures.formats.mrea import Area
 from retro_data_structures.formats.strg import Strg
 from retro_data_structures.game_check import Game
 
@@ -35,7 +35,7 @@ def apply_area_modifications(editor: PatcherEditor, configuration: dict[str, dic
         world_meta = asset_ids.world.load_dedicated_file(world_name)
         mlvl = editor.get_mlvl(asset_ids.world.NAME_TO_ID_MLVL[world_name])
 
-        areas_by_name: dict[str, AreaWrapper] = {
+        areas_by_name: dict[str, Area] = {
             get_name_for_area(area): area
             for area in mlvl.areas
         }

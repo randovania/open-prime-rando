@@ -3,6 +3,7 @@ from dataclasses import dataclass
 from pathlib import Path
 
 from open_prime_rando.echoes.asset_ids.sanctuary_fortress import MAIN_GYRO_CHAMBER_MREA
+from open_prime_rando.echoes.asset_ids.world import SANCTUARY_FORTRESS_MLVL
 from open_prime_rando.patcher_editor import PatcherEditor
 from retro_data_structures.base_resource import RawResource
 from retro_data_structures.enums.echoes import Message, State
@@ -65,7 +66,7 @@ COLORS = {
 
 
 def randomize_rubiks_puzzles(editor: PatcherEditor, rng: random.Random):
-    mrea = editor.get_mrea(MAIN_GYRO_CHAMBER_MREA)
+    area = editor.get_area(SANCTUARY_FORTRESS_MLVL, MAIN_GYRO_CHAMBER_MREA)
 
     # Add custom textures so colorblind players can distinguish the cubes
     for color in COLORS.values():
@@ -84,12 +85,11 @@ def randomize_rubiks_puzzles(editor: PatcherEditor, rng: random.Random):
         ]
         rng.shuffle(solution)
 
-        puzzle = mrea.get_instance_by_name(puzzle_name)
+        puzzle = area.get_instance(puzzle_name)
         for color, cube_id in zip(solution, cubes):
-            cube = mrea.get_instance(cube_id)
-            assert cube is not None
+            cube = area.get_instance(cube_id)
 
-            puzzle.remove_connections(cube)
+            puzzle.remove_connections_from(cube)
             puzzle.add_connection(color.state, Message.Attach, cube)
 
             with cube.edit_properties(Actor) as props:
