@@ -1,3 +1,4 @@
+import dataclasses
 from retro_data_structures.enums import echoes
 from retro_data_structures.properties.echoes.archetypes.DamageVulnerability import DamageVulnerability
 from retro_data_structures.properties.echoes.archetypes.WeaponVulnerability import WeaponVulnerability
@@ -16,4 +17,13 @@ resist_all_vuln = DamageVulnerability(
     missile=immune, phazon=reflect, ai=immune, poison_water=immune, dark_water=immune, lava=immune,
     area_damage_hot=immune, area_damage_cold=immune, area_damage_dark=immune, area_damage_light=immune,
     weapon_vulnerability=immune, normal_safe_zone=immune,
+)
+
+normal_vuln = dataclasses.replace(
+    resist_all_vuln,
+    power=vulnerable, dark=vulnerable, light=vulnerable, annihilator=vulnerable,
+    power_charge=vulnerable, entangler=vulnerable, light_blast=vulnerable, sonic_boom=vulnerable,
+    super_missle=vulnerable, black_hole=vulnerable, sunburst=vulnerable, imploder=vulnerable,
+
+    missile=vulnerable, bomb=vulnerable, power_bomb=vulnerable,
 )
