@@ -102,12 +102,13 @@ jobs:
 
       - name: Run Tests
         run:
-          venv/bin/python -m pytest --cov --durations=100
+          venv/bin/python -m pytest --cov src --cov-report=xml --durations=100
 
       - name: codecov
         uses: codecov/codecov-action@v3
         with:
-          fail_ci_if_error: true
+          fail_ci_if_error: false
+          files: ./coverage.xml
         env:
           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
 
