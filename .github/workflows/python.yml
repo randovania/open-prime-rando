@@ -102,7 +102,7 @@ jobs:
 
       - name: Run Tests
         run:
-          venv/bin/python -m pytest --cov --cov-report=xml --durations=100
+          venv/bin/python -m pytest --cov src --cov-report=xml --durations=100
 
       - name: codecov
         uses: codecov/codecov-action@v3
