@@ -123,7 +123,7 @@ DOCK_TYPES: dict[str, dock_type.DoorType] = {
             "Analysis indicates that the Blast Shield is invulnerable to most weapons. The Screw Attack may damage it."
         ),
         map_icon=DoorMapIcon.ScrewAttack,
-        shield_model=0x56F4208B,
+        shield_model="custom_door_lock_screwattack.CMDL",
     ),
     "Bomb": dock_type.BlastShieldDoorType(
         name="Bomb",

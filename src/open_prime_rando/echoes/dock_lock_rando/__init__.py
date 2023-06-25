@@ -11,18 +11,25 @@ from retro_data_structures.game_check import Game
 
 def add_custom_models(editor: PatcherEditor):
     assets = Path(__file__).parent.parent.joinpath("custom_assets", "doors")
-    def get_txtr(n: str) -> AssetId:
+    def get_txtr(n: str, must_exist: bool = True) -> AssetId:
+        f = assets.joinpath(n)
+        if not must_exist and not f.exists():
+            return None
         res = RawResource(
             type="TXTR",
-            data=assets.joinpath(f"{n}.TXTR").read_bytes()
+            data=f.read_bytes()
         )
-        return editor.add_file(f"{n}.TXTR", res, [])
+        return editor.add_file(n, res)
 
-    emissive = get_txtr("custom_door_lock_greyscale_emissive")
+    greyscale_emissive = get_txtr("custom_door_lock_greyscale_emissive.TXTR")
     template = editor.get_parsed_asset(0xF115F575, type_hint=Cmdl)
 
-    for name in ("darkburst", "sunburst", "sonicboom"):
-        txtr = get_txtr(f"custom_door_lock_{name}")
+    for name in ("darkburst", "sunburst", "sonicboom", "screwattack"):
+        txtr = get_txtr(f"custom_door_lock_{name}.TXTR")
+        emissive = get_txtr(f"custom_door_lock_{name}_emissive.TXTR", must_exist=False)
+        if emissive is None:
+            emissive = greyscale_emissive
+
         cmdl = Container(template.raw)
         cmdl.material_sets[0].texture_file_ids[0] = txtr
         cmdl.material_sets[0].texture_file_ids[1] = emissive
