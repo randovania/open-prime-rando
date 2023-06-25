@@ -252,7 +252,7 @@ DOCK_TYPES: dict[str, dock_type.DoorType] = {
             "Neutralizing the control emitter may disable it."
         ),
         map_icon=DoorMapIcon.EchoVisor,
-        shield_model="custom_door_lock_sonicboom.CMDL",
+        shield_model="custom_door_lock_echo_visor.CMDL",
         visor_flags=VisorFlags.Echo,
         player_controller_proxy=8,
     ),
