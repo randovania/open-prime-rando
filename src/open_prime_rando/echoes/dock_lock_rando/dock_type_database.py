@@ -2,7 +2,7 @@ import dataclasses
 
 from open_prime_rando.echoes.dock_lock_rando import dock_type
 from open_prime_rando.echoes.dock_lock_rando.map_icons import DoorMapIcon
-from open_prime_rando.echoes.vulnerabilities import normal_vuln, resist_all_vuln, vulnerable
+from open_prime_rando.echoes.vulnerabilities import normal_vuln, resist_all_vuln, vulnerable, vulnerable_no_splash
 from retro_data_structures.enums.echoes import VisorFlags
 from retro_data_structures.properties.echoes.core.Color import Color
 from retro_data_structures.properties.echoes.core.Vector import Vector
@@ -140,7 +140,11 @@ DOCK_TYPES: dict[str, dock_type.DoorType] = {
     ),
     "Boost": dock_type.BlastShieldDoorType(
         name="Boost",
-        vulnerability=dataclasses.replace(resist_all_vuln, boost_ball=vulnerable, cannon_ball=vulnerable),
+        vulnerability=dataclasses.replace(
+            resist_all_vuln,
+            boost_ball=vulnerable,
+            cannon_ball=vulnerable_no_splash
+        ),
         shell_model=normal_door_model,
         shell_color=Color(1, 1/3, 0, 1),
         scan_text=(
