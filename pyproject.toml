@@ -62,6 +62,7 @@ filterwarnings = [
 [tool.ruff]
 line-length = 120
 select = ["E", "F", "W", "C90", "I", "UP"]
+src = ["src"]
 
 # Version to target for generated code.
 target-version = "py310"
