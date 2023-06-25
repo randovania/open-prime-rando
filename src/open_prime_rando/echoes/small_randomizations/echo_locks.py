@@ -1,9 +1,5 @@
 import random
 
-from open_prime_rando.echoes.asset_ids.sanctuary_fortress import MAIN_GYRO_CHAMBER_MREA, SENTINELS_PATH_MREA
-from open_prime_rando.echoes.asset_ids.temple_grounds import PROFANE_PATH_MREA
-from open_prime_rando.echoes.asset_ids.world import SANCTUARY_FORTRESS_MLVL, TEMPLE_GROUNDS_MLVL
-from open_prime_rando.patcher_editor import PatcherEditor
 from retro_data_structures.enums.echoes import Message, ScanSpeed, State
 from retro_data_structures.formats.scan import Scan
 from retro_data_structures.formats.strg import Strg
@@ -11,6 +7,11 @@ from retro_data_structures.properties.echoes.objects.PointOfInterest import Poin
 from retro_data_structures.properties.echoes.objects.ScannableObjectInfo import ScannableObjectInfo
 from retro_data_structures.properties.echoes.objects.Sound import Sound
 from retro_data_structures.properties.echoes.objects.Switch import Switch
+
+from open_prime_rando.echoes.asset_ids.sanctuary_fortress import MAIN_GYRO_CHAMBER_MREA, SENTINELS_PATH_MREA
+from open_prime_rando.echoes.asset_ids.temple_grounds import PROFANE_PATH_MREA
+from open_prime_rando.echoes.asset_ids.world import SANCTUARY_FORTRESS_MLVL, TEMPLE_GROUNDS_MLVL
+from open_prime_rando.patcher_editor import PatcherEditor
 
 ECHO_LOCK_MREAS = [
     (SANCTUARY_FORTRESS_MLVL, MAIN_GYRO_CHAMBER_MREA),

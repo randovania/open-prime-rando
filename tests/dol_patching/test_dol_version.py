@@ -1,8 +1,9 @@
 from unittest.mock import MagicMock
 
 import pytest
-from open_prime_rando.dol_patching import dol_version
 from retro_data_structures.game_check import Game
+
+from open_prime_rando.dol_patching import dol_version
 
 test_versions = [
     dol_version.DolVersion(

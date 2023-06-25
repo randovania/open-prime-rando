@@ -1,16 +1,17 @@
 import logging
 
 from construct import Container
-from open_prime_rando.echoes.asset_ids.agon_wastes import MINING_STATION_B_MREA, PORTAL_TERMINAL_MREA
-from open_prime_rando.echoes.asset_ids.torvus_bog import TORVUS_ENERGY_CONTROLLER_MREA, TORVUS_TEMPLE_MREA
-from open_prime_rando.echoes.asset_ids.world import TORVUS_BOG_MLVL
-from open_prime_rando.patcher_editor import PatcherEditor
 from retro_data_structures.enums.echoes import Message, State
 from retro_data_structures.formats.script_object import ScriptInstance
 from retro_data_structures.game_check import Game
 from retro_data_structures.properties.echoes.objects.Counter import Counter
 from retro_data_structures.properties.echoes.objects.Relay import Relay
 from retro_data_structures.properties.echoes.objects.ScriptLayerController import ScriptLayerController
+
+from open_prime_rando.echoes.asset_ids.agon_wastes import MINING_STATION_B_MREA, PORTAL_TERMINAL_MREA
+from open_prime_rando.echoes.asset_ids.torvus_bog import TORVUS_ENERGY_CONTROLLER_MREA, TORVUS_TEMPLE_MREA
+from open_prime_rando.echoes.asset_ids.world import TORVUS_BOG_MLVL
+from open_prime_rando.patcher_editor import PatcherEditor
 
 LOG = logging.getLogger("echoes_patcher")
 

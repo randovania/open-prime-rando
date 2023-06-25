@@ -3,12 +3,13 @@ import os.path
 from pathlib import Path
 
 import retro_data_structures.exceptions
-from open_prime_rando.patcher_editor import PatcherEditor
-from open_prime_rando.unique_area_name import CUSTOM_AREA_NAMES
 from retro_data_structures.asset_manager import IsoFileProvider
 from retro_data_structures.formats import Mrea, Strg
 from retro_data_structures.game_check import Game
 from retro_data_structures.properties.shared_objects import Dock
+
+from open_prime_rando.patcher_editor import PatcherEditor
+from open_prime_rando.unique_area_name import CUSTOM_AREA_NAMES
 
 _CUSTOM_WORLD_NAMES = {
     Game.ECHOES: {

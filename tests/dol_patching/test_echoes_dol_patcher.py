@@ -1,8 +1,9 @@
 from unittest.mock import MagicMock
 
 import pytest_mock
-from open_prime_rando.dol_patching.echoes import dol_patcher, dol_versions
 from retro_data_structures.game_check import Game
+
+from open_prime_rando.dol_patching.echoes import dol_patcher, dol_versions
 
 
 def test_apply_patches(mocker: pytest_mock.MockerFixture):
