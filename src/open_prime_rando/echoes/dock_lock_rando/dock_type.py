@@ -374,9 +374,19 @@ class SeekerBlastShieldDoorType(VanillaBlastShieldDoorType):
         # create 5 triggers so that you can have 5 lock-ons
         # 30.01 health because splash damage is inconsistent. missiles do 30 damage
         # so this guarantees you need at least 2 missiles at once to break it
-        triggers = [default.add_instance_with(self.create_trigger(f"Bridge Button {i}", 30.01)) for i in range(5)]
+        triggers = [
+            default.add_instance_with(self.create_trigger(
+                f"Bridge Button {i}",
+                door_transform, 30.01)
+            ) for i in range(5)
+        ]
         main_trigger = triggers[0]
-        mini_trigger = default.add_instance_with(self.create_trigger("Bridge Button Mini", 1.0, False))
+        mini_trigger = default.add_instance_with(self.create_trigger(
+            "Bridge Button Mini",
+            door_transform,
+            1.0,
+            seeker_lock_on=False
+        ))
 
         # start a timer when the tiny trigger dies. stop it if the main trigger dies
         mini_trigger.add_connection(State.Dead, Message.ResetAndStart, timer)
