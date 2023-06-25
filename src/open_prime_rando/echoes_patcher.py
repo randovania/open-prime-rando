@@ -95,7 +95,7 @@ def apply_area_modifications(editor: PatcherEditor, configuration: dict[str, dic
                 new_strg = editor.add_file(f"custom_name_for_{area.internal_name}.STRG", strg, paks)
                 area._raw.area_name_id = new_strg
 
-            area.build_mlvl_dependencies(only_modified=True)
+            area.update_all_dependencies(only_modified=True)
 
 
 def apply_corrupted_memory_card_change(editor: PatcherEditor):

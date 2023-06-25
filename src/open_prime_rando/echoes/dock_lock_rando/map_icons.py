@@ -66,11 +66,11 @@ _ALL_COLORS = {
 
     DoorMapIcon.ScanVisor: DoorIconColors(0x007f7fff),
     DoorMapIcon.DarkVisor: DoorIconColors(0x660000ff),
-    # DoorMapIcon.EchoVisor: None,
+    DoorMapIcon.EchoVisor: DoorIconColors(0xcc7a00ff),
 
-    # DoorMapIcon.ScrewAttack: None,
-    # DoorMapIcon.Bomb: None,
-    # DoorMapIcon.Boost: None,
+    DoorMapIcon.ScrewAttack: DoorIconColors(0xed94d4ff),
+    DoorMapIcon.Bomb: DoorIconColors(0x55557fff),
+    DoorMapIcon.Boost: DoorIconColors(0xff5500ff),
     # DoorMapIcon.Grapple: None,
 
     DoorMapIcon.Disabled: DoorIconColors(0x202020ff),
