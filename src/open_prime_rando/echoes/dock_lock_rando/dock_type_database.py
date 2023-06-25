@@ -268,7 +268,7 @@ DOCK_TYPES: dict[str, dock_type.DoorType] = {
             "Interface method unknown. Control units not present in the visible spectrum or current timespace. "
         ),
         map_icon=DoorMapIcon.DarkVisor,
-        shield_model=0xBFB4A8EE,
+        shield_model="custom_door_lock_dark_visor.CMDL",
         visor_flags=VisorFlags.Dark,
         player_controller_proxy=7,
     )
