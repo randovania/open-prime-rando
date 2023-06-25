@@ -240,7 +240,10 @@ class BlastShieldDoorType(DoorType):
         super().patch_door(editor, world_name, area_name, dock_name, low_memory)
         area = self.get_area(editor, world_name, area_name)
         door = self.get_door_from_dock_index(area, self.get_dock_index(world_name, area_name, dock_name))
-        door_transform = door.get_properties_as(Door).editor_properties.transform
+
+        with door.edit_properties(Door) as _door:
+            door_transform = _door.editor_properties.transform
+            _door.vulnerability = resist_all_vuln
 
         default = area.get_layer("Default")
 
