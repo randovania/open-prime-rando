@@ -77,7 +77,7 @@ jobs:
         shell: bash
 
       - name: run pytest
-        run: python -m pytest
+        run: python -m pytest --skip-if-missing
 
   full_test:
     runs-on: self-hosted
