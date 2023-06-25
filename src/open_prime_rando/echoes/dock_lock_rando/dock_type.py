@@ -1,5 +1,4 @@
 import dataclasses
-from typing import NamedTuple
 
 from open_prime_rando.echoes.asset_ids import world
 from open_prime_rando.echoes.dock_lock_rando.map_icons import DoorMapIcon

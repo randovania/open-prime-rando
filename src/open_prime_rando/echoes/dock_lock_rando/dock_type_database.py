@@ -2,10 +2,10 @@ import dataclasses
 
 from open_prime_rando.echoes.dock_lock_rando import dock_type
 from open_prime_rando.echoes.dock_lock_rando.map_icons import DoorMapIcon
-from open_prime_rando.echoes.vulnerabilities import resist_all_vuln, vulnerable, normal_vuln
+from open_prime_rando.echoes.vulnerabilities import normal_vuln, resist_all_vuln, vulnerable
+from retro_data_structures.enums.echoes import VisorFlags
 from retro_data_structures.properties.echoes.core.Color import Color
 from retro_data_structures.properties.echoes.core.Vector import Vector
-from retro_data_structures.enums.echoes import VisorFlags
 
 normal_door_model = 0x6B78FD92
 dark_door_model = 0xbbcf134d
