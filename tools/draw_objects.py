@@ -25,7 +25,6 @@ def _draw_component(dot: graphviz.Digraph, instances: list[ScriptInstance],
 
     dot.render(cleanup=True, format="png")
 
-
 def draw_objects(editor: PatcherEditor, world_name: str, area_name: str):
     mlvl = editor.get_mlvl(world.NAME_TO_ID_MLVL[world_name])
     area = mlvl.get_area(world.load_dedicated_file(world_name).NAME_TO_ID_MREA[area_name])
@@ -71,8 +70,8 @@ def main():
     parser.add_argument("--game", required=False, default="echoes", choices=["echoes"])
     parser.add_argument("--iso", required=iso is None, type=Path, default=iso,
                         help="Path to where the ISO.")
-    parser.add_argument("world")
-    parser.add_argument("area")
+    parser.add_argument("world", help="Name of the world to check, as used in the schema")
+    parser.add_argument("area", help="Name of the area to check, as used in the schema")
     args = parser.parse_args()
 
     draw_objects(
