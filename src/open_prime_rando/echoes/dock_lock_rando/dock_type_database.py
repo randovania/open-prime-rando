@@ -5,6 +5,7 @@ from open_prime_rando.echoes.dock_lock_rando.map_icons import DoorMapIcon
 from open_prime_rando.echoes.vulnerabilities import resist_all_vuln, vulnerable, normal_vuln
 from retro_data_structures.properties.echoes.core.Color import Color
 from retro_data_structures.properties.echoes.core.Vector import Vector
+from retro_data_structures.enums.echoes import VisorFlags
 
 normal_door_model = 0x6B78FD92
 dark_door_model = 0xbbcf134d
@@ -236,4 +237,34 @@ DOCK_TYPES: dict[str, dock_type.DoorType] = {
         map_icon=DoorMapIcon.AgonEnergy,
         planetary_energy_item_id=-1  # TODO
     ),
+    "EchoVisor": dock_type.EchoVisorDoorType(
+        name="EchoVisor",
+        vulnerability=normal_vuln,
+        shell_model=dark_door_model,
+        shell_color=Color(1/16, 1/16, 1/16, 1),
+        scan_text=(
+            "There is a Blast Shield on the door blocking access. ",
+            "Sonic detection gear needed to interface with this system."
+            "Neutralizing the control emitter may disable it."
+        ),
+        map_icon=DoorMapIcon.EchoVisor,
+        shield_model="custom_door_lock_sonicboom.CMDL",
+        visor_flags=VisorFlags.Echo,
+        player_controller_proxy=8,
+    ),
+    "DarkVisor": dock_type.DarkVisorDoorType(
+        name="DarkVisor",
+        vulnerability=normal_vuln,
+        shell_model=dark_door_model,
+        shell_color=Color(1, 0, 0, 1),
+        scan_text=(
+            "There is a Blast Shield on the door blocking access. ",
+            "Scans indicate presence of a control system."
+            "Interface method unknown. Control units not present in the visible spectrum or current timespace. "
+        ),
+        map_icon=DoorMapIcon.DarkVisor,
+        shield_model=0xBFB4A8EE,
+        visor_flags=VisorFlags.Dark,
+        player_controller_proxy=7,
+    )
 }

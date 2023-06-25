@@ -201,7 +201,9 @@
                 "SonicBoom",
                 "AgonEnergy",
                 "TorvusEnergy",
-                "SanctuaryEnergy"
+                "SanctuaryEnergy",
+                "DarkVisor",
+                "EchoVisor"
             ]
         },
         "area_identifier": {

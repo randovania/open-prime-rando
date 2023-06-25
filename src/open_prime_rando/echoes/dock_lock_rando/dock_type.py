@@ -34,7 +34,9 @@ from retro_data_structures.properties.echoes.objects.DamageableTriggerOrientated
 from retro_data_structures.properties.echoes.objects.Dock import Dock
 from retro_data_structures.properties.echoes.objects.Door import Door
 from retro_data_structures.properties.echoes.objects.Effect import Effect
+from retro_data_structures.properties.echoes.objects.HUDHint import HUDHint
 from retro_data_structures.properties.echoes.objects.MemoryRelay import MemoryRelay
+from retro_data_structures.properties.echoes.objects.PlayerController import PlayerController
 from retro_data_structures.properties.echoes.objects.Relay import Relay
 from retro_data_structures.properties.echoes.objects.ScannableObjectInfo import ScannableObjectInfo
 from retro_data_structures.properties.echoes.objects.Sound import Sound
@@ -152,8 +154,8 @@ class NormalDoorType(DoorType):
         with door.edit_properties(Door) as door_props:
             door_props.vulnerability = self.vulnerability
 
-
-class BlastShieldActors(NamedTuple):
+@dataclasses.dataclass
+class BlastShieldActors:
     door: ScriptInstance
     sound: ScriptInstance
     streamed: ScriptInstance
@@ -184,6 +186,40 @@ class BlastShieldDoorType(DoorType):
         return Spline(
             data=b'\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x00\x02'
                  b'\x02A \x00\x00?\x80\x00\x00\x02\x02\x01\x00\x00\x00\x00?\x80\x00\x00'
+        )
+
+    def create_trigger(self,
+                       name: str,
+                       door_xfm: Transform,
+                       health: float,
+                       visor_flags: VisorFlags = VisorFlags.Combat | VisorFlags.Dark,
+                       active: bool = True,
+                       seeker_lock_on: bool = True,
+                       orbitable: bool = False,
+    ):
+        pos = Vector(
+            door_xfm.position.x,
+            door_xfm.position.y,
+            door_xfm.position.z + 1.8
+        )
+
+        return DamageableTriggerOrientated(
+            editor_properties=EditorProperties(
+                name=name,
+                transform=Transform(
+                    position=pos,
+                    rotation=door_xfm.rotation,
+                    scale=Vector(4.0, 4.0, 1.5)
+                ),
+                active=active
+            ),
+            health=HealthInfo(health=health),
+            vulnerability=self.vulnerability,
+            enable_seeker_lock_on=seeker_lock_on,
+            orbitable=orbitable,
+            visor=VisorParameters(
+                visor_flags=visor_flags
+            )
         )
 
     def patch_door(self, editor: PatcherEditor, world_name: str, area_name: str, dock_name: str, low_memory: bool):
@@ -320,30 +356,6 @@ class SeekerBlastShieldDoorType(VanillaBlastShieldDoorType):
 
         door_transform = actors.door.get_properties_as(Door).editor_properties.transform
 
-        def create_trigger(name: str, health: float, lock_on: bool = True) -> ScriptInstance:
-            pos = Vector(
-                door_transform.position.x,
-                door_transform.position.y,
-                door_transform.position.z + 1.8
-            )
-
-            return default.add_instance_with(DamageableTriggerOrientated(
-                editor_properties=EditorProperties(
-                    name=name,
-                    transform=Transform(
-                        position=pos,
-                        rotation=door_transform.rotation,
-                        scale=Vector(4.0, 4.0, 1.5)
-                    ),
-                ),
-                health=HealthInfo(health=health),
-                vulnerability=self.vulnerability,
-                enable_seeker_lock_on=lock_on,
-                visor=VisorParameters(
-                    visor_flags=VisorFlags.Combat | VisorFlags.Dark
-                )
-            ))
-
         timer = default.add_instance_with(Timer(
             editor_properties=EditorProperties(
                 name="Button Control",
@@ -363,9 +375,9 @@ class SeekerBlastShieldDoorType(VanillaBlastShieldDoorType):
         # create 5 triggers so that you can have 5 lock-ons
         # 30.01 health because splash damage is inconsistent. missiles do 30 damage
         # so this guarantees you need at least 2 missiles at once to break it
-        triggers = [create_trigger(f"Bridge Button {i}", 30.01) for i in range(5)]
+        triggers = [default.add_instance_with(self.create_trigger(f"Bridge Button {i}", 30.01)) for i in range(5)]
         main_trigger = triggers[0]
-        mini_trigger = create_trigger("Bridge Button Mini", 1.0, False)
+        mini_trigger = default.add_instance_with(self.create_trigger("Bridge Button Mini", 1.0, False))
 
         # start a timer when the tiny trigger dies. stop it if the main trigger dies
         mini_trigger.add_connection(State.Dead, Message.ResetAndStart, timer)
@@ -385,7 +397,7 @@ class SeekerBlastShieldDoorType(VanillaBlastShieldDoorType):
             main_trigger.add_connection(
                 connection.state,
                 connection.message,
-                default.get_instance(connection.target)
+                connection.target
             )
 
         for trigger in triggers:
@@ -425,16 +437,183 @@ class GrappleDoorType(BlastShieldDoorType):
         raise NotImplementedError()
 
 
-@dataclasses.dataclass(kw_only=True)
-class DarkVisorDoorType(BlastShieldDoorType):
-    def patch_door(self, editor: PatcherEditor, world_name: str, area_name: str, dock_name: str, low_memory: bool):
-        raise NotImplementedError()
+@dataclasses.dataclass
+class VisorBlastShieldActors(BlastShieldActors):
+    trigger: ScriptInstance
+    visor_detector: ScriptInstance
 
 
 @dataclasses.dataclass(kw_only=True)
-class EchoVisorDoorType(BlastShieldDoorType):
+class VisorDoorType(BlastShieldDoorType):
+    visor_flags: VisorFlags
+    player_controller_proxy: int
+
     def patch_door(self, editor: PatcherEditor, world_name: str, area_name: str, dock_name: str, low_memory: bool):
-        raise NotImplementedError()
+        actors = super().patch_door(editor, world_name, area_name, dock_name, low_memory)
+        area = self.get_area(editor, world_name, area_name)
+        default = area.get_layer("Default")
+
+        with actors.door.edit_properties(Door) as door:
+            door.vulnerability = resist_all_vuln
+            door_xfm = door.editor_properties.transform
+
+
+        with actors.lock.edit_properties(Actor) as lock:
+            lock.vulnerability = resist_all_vuln
+
+        trigger = default.add_instance_with(self.create_trigger(
+            "Door Button", door_xfm, 1.0, self.visor_flags,
+            active=False, seeker_lock_on=False, orbitable=True
+        ))
+
+        visor_detector = default.add_instance_with(PlayerController(
+            editor_properties=EditorProperties(
+                name="Detect Visor",
+                transform=door_xfm
+            ),
+            unknown_0xe71de331=1,
+            proxy_type=self.player_controller_proxy
+        ))
+
+        visor_detector.add_connection(State.Entered, Message.Activate, trigger)
+        visor_detector.add_connection(State.Exited, Message.Deactivate, trigger)
+
+        for connection in actors.lock.connections:
+            actors.lock.remove_connection(connection)
+            trigger.add_connection(
+                connection.state,
+                connection.message,
+                connection.target
+            )
+
+        actors.relay.add_connection(State.Active, Message.Deactivate, trigger)
+        actors.relay.add_connection(State.Active, Message.Deactivate, visor_detector)
+
+        return VisorBlastShieldActors(
+            actors.door, actors.sound, actors.streamed,
+            actors.lock, actors.relay, actors.gibs,
+            trigger, visor_detector
+        )
+
+
+@dataclasses.dataclass(kw_only=True)
+class DarkVisorDoorType(VisorDoorType):
+    def patch_door(self, editor: PatcherEditor, world_name: str, area_name: str, dock_name: str, low_memory: bool):
+        actors = super().patch_door(editor, world_name, area_name, dock_name, low_memory)
+
+        with actors.lock.edit_properties(Actor) as lock:
+            # TODO: update the template
+            # this property makes the actor appear red in dark visor
+            lock.actor_information.unknown_0xcd4c81a1 = True
+
+
+@dataclasses.dataclass(kw_only=True)
+class EchoVisorDoorType(VisorDoorType):
+    def patch_door(self, editor: PatcherEditor, world_name: str, area_name: str, dock_name: str, low_memory: bool):
+        actors = super().patch_door(editor, world_name, area_name, dock_name, low_memory)
+        area = self.get_area(editor, world_name, area_name)
+        default = area.get_layer("Default")
+
+        door_xfm = actors.door.get_properties_as(Door).editor_properties.transform
+
+        center_pos = Vector(
+            door_xfm.position.x,
+            door_xfm.position.y,
+            door_xfm.position.z + 1.8
+        )
+
+        hud_hint = default.add_instance_with(HUDHint(
+            editor_properties=EditorProperties(
+                name="Echo Target Icon",
+                transform=Transform(
+                    center_pos,
+                    door_xfm.rotation,
+                ),
+                active=True
+            ),
+            hud_texture=0x36B1CB06,
+            unknown_0x6078a651=24.0,
+            unknown_0xf00bb6bb=128.0,
+            animation_time=0.5,
+            animation_frames=4,
+            unknown_0xd993f97b=2
+        ))
+
+        beacon_loop = default.add_instance_with(Sound(
+            editor_properties=EditorProperties(
+                name="Echo Beacon Sound Loop",
+                transform=Transform(
+                    position=center_pos
+                ),
+            ),
+            sound=1003,
+            max_audible_distance=75.0,
+            min_volume=0,
+            max_volume=60,
+            surround_pan=SurroundPan(
+                pan=0.0,
+                surround_pan=1.0
+            ),
+            loop=True,
+            play_always=True,
+            echo_visor_max_volume=127
+        ))
+
+        disrupted = default.add_instance_with(Sound(
+            editor_properties=EditorProperties(
+                name="Echo Particle Disrupted",
+                transform=Transform(
+                    position=center_pos
+                ),
+            ),
+            sound=1004,
+            max_audible_distance=75.0,
+            min_volume=20,
+            max_volume=120,
+            surround_pan=SurroundPan(
+                pan=0.0,
+                surround_pan=1.0
+            ),
+        ))
+
+        timer = default.add_instance_with(Timer(
+            editor_properties=EditorProperties(
+                name="Open Echo Door",
+                transform=door_xfm,
+            ),
+            time=1.0
+        ))
+        for connection in actors.trigger.connections:
+            actors.trigger.remove_connection(connection)
+            timer.add_connection(
+                State.Zero,
+                connection.message,
+                connection.target
+            )
+
+        with actors.lock.edit_properties(Actor) as lock:
+            lock.echo_information.is_echo_emitter = True
+
+        actors.trigger.add_connection(State.Dead, Message.ResetAndStart, timer)
+        actors.trigger.add_connection(State.Dead, Message.InternalMessage00, hud_hint)
+        actors.trigger.add_connection(State.Dead, Message.Stop, beacon_loop)
+        actors.trigger.add_connection(State.Dead, Message.Play, disrupted)
+
+        actors.visor_detector.add_connection(State.Entered, Message.Play, beacon_loop)
+        actors.visor_detector.add_connection(State.Exited, Message.Stop, beacon_loop)
+
+        actors.relay.add_connection(State.Active, Message.Deactivate, hud_hint)
+        actors.relay.add_connection(State.Active, Message.Deactivate, beacon_loop)
+        actors.relay.add_connection(State.Active, Message.Deactivate, timer)
+        actors.relay.add_connection(State.Active, Message.Deactivate, disrupted)
+
+        dependencies = (
+            0x36B1CB06, # hud hint TXTR
+            0x4FBCAC73 # DigitalGuardianBeacon.AGSC
+        )
+        for pak in self.get_paks(editor, world_name, area_name):
+            for asset in dependencies:
+                editor.ensure_present(pak, asset)
 
 
 @dataclasses.dataclass(kw_only=True)
