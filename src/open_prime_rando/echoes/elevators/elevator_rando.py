@@ -1,7 +1,8 @@
-from open_prime_rando.patcher_editor import PatcherEditor
 from retro_data_structures.formats.mrea import Area
 from retro_data_structures.formats.strg import Strg
 from retro_data_structures.properties.echoes.objects.WorldTeleporter import WorldTeleporter
+
+from open_prime_rando.patcher_editor import PatcherEditor
 
 
 def patch_elevator(editor: PatcherEditor, area: Area, elevator_id: int,

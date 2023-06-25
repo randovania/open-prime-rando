@@ -2,9 +2,6 @@ import random
 from dataclasses import dataclass
 from pathlib import Path
 
-from open_prime_rando.echoes.asset_ids.sanctuary_fortress import MAIN_GYRO_CHAMBER_MREA
-from open_prime_rando.echoes.asset_ids.world import SANCTUARY_FORTRESS_MLVL
-from open_prime_rando.patcher_editor import PatcherEditor
 from retro_data_structures.base_resource import RawResource
 from retro_data_structures.enums.echoes import Message, State
 from retro_data_structures.formats.cmdl import Cmdl
@@ -13,6 +10,10 @@ from retro_data_structures.properties.echoes.core.Vector import Vector
 from retro_data_structures.properties.echoes.objects.Actor import Actor
 from retro_data_structures.properties.echoes.objects.DamageableTrigger import DamageableTrigger
 from retro_data_structures.properties.echoes.objects.Waypoint import Waypoint
+
+from open_prime_rando.echoes.asset_ids.sanctuary_fortress import MAIN_GYRO_CHAMBER_MREA
+from open_prime_rando.echoes.asset_ids.world import SANCTUARY_FORTRESS_MLVL
+from open_prime_rando.patcher_editor import PatcherEditor
 
 RUBIKS_CUBES = {
     "Puzzle 1": [

@@ -1,10 +1,6 @@
 import dataclasses
 from typing import NamedTuple
 
-from open_prime_rando.echoes.asset_ids import world
-from open_prime_rando.echoes.dock_lock_rando.map_icons import DoorMapIcon
-from open_prime_rando.echoes.vulnerabilities import resist_all_vuln
-from open_prime_rando.patcher_editor import PatcherEditor
 from retro_data_structures.asset_manager import NameOrAssetId
 from retro_data_structures.base_resource import AssetId
 from retro_data_structures.enums.echoes import Message, State, VisorFlags
@@ -40,6 +36,11 @@ from retro_data_structures.properties.echoes.objects.ScannableObjectInfo import 
 from retro_data_structures.properties.echoes.objects.Sound import Sound
 from retro_data_structures.properties.echoes.objects.StreamedAudio import StreamedAudio
 from retro_data_structures.properties.echoes.objects.Timer import Timer
+
+from open_prime_rando.echoes.asset_ids import world
+from open_prime_rando.echoes.dock_lock_rando.map_icons import DoorMapIcon
+from open_prime_rando.echoes.vulnerabilities import resist_all_vuln
+from open_prime_rando.patcher_editor import PatcherEditor
 
 
 @dataclasses.dataclass(kw_only=True)

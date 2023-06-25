@@ -1,9 +1,6 @@
 import dataclasses
 
 import construct
-from open_prime_rando.echoes.asset_ids import world as world_ids
-from open_prime_rando.echoes.inverted import area_pairs
-from open_prime_rando.patcher_editor import PatcherEditor
 from retro_data_structures.base_resource import Dependency, RawResource
 from retro_data_structures.dependencies import recursive_dependencies_for_editor
 from retro_data_structures.formats import Mlvl
@@ -13,6 +10,10 @@ from retro_data_structures.formats.script_object import InstanceId, ScriptInstan
 from retro_data_structures.properties.echoes.objects.AreaAttributes import AreaAttributes
 from retro_data_structures.properties.echoes.objects.SafeZone import SafeZone
 from retro_data_structures.properties.echoes.objects.SafeZoneCrystal import SafeZoneCrystal
+
+from open_prime_rando.echoes.asset_ids import world as world_ids
+from open_prime_rando.echoes.inverted import area_pairs
+from open_prime_rando.patcher_editor import PatcherEditor
 
 _WORLDS = [
     world_ids.TEMPLE_GROUNDS_MLVL, world_ids.AGON_WASTES_MLVL, world_ids.TORVUS_BOG_MLVL,
