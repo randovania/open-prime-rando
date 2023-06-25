@@ -1,9 +1,10 @@
 import dataclasses
 
 import pytest
-from open_prime_rando.dol_patching import all_prime_dol_patches
 from ppc_asm import assembler
 from retro_data_structures.game_check import Game
+
+from open_prime_rando.dol_patching import all_prime_dol_patches
 
 
 @pytest.fixture(name="string_display")

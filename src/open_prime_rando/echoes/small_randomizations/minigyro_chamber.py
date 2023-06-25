@@ -1,11 +1,12 @@
 import random
 from enum import Enum
 
+from retro_data_structures.enums.echoes import Message, State
+from retro_data_structures.formats.strg import Strg
+
 from open_prime_rando.echoes.asset_ids.sanctuary_fortress import MINIGYRO_CHAMBER_MREA
 from open_prime_rando.echoes.asset_ids.world import SANCTUARY_FORTRESS_MLVL
 from open_prime_rando.patcher_editor import PatcherEditor
-from retro_data_structures.enums.echoes import Message, State
-from retro_data_structures.formats.strg import Strg
 
 
 class GyroColor(Enum):

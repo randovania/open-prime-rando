@@ -1,9 +1,10 @@
 import pytest
+from ppc_asm.dol_file import DolHeader, Section
+
 from open_prime_rando.dol_patching.echoes import dol_patches, dol_versions
 from open_prime_rando.dol_patching.echoes.beam_configuration import BeamAmmoConfiguration
 from open_prime_rando.dol_patching.echoes.dol_patches import StartingBeamVisorAddresses
 from open_prime_rando.dol_patching.echoes.user_preferences import OprEchoesUserPreferences
-from ppc_asm.dol_file import DolHeader, Section
 
 DOLS = [
     (DolHeader(sections=(Section(offset=256, base_address=2147496192, size=1344),

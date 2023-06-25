@@ -1,12 +1,13 @@
 from pathlib import Path
 
 from construct import Container
-from open_prime_rando.echoes.dock_lock_rando import dock_type
-from open_prime_rando.echoes.dock_lock_rando.dock_type_database import DOCK_TYPES
-from open_prime_rando.patcher_editor import PatcherEditor
 from retro_data_structures.base_resource import AssetId, RawResource
 from retro_data_structures.formats.cmdl import Cmdl
 from retro_data_structures.game_check import Game
+
+from open_prime_rando.echoes.dock_lock_rando import dock_type
+from open_prime_rando.echoes.dock_lock_rando.dock_type_database import DOCK_TYPES
+from open_prime_rando.patcher_editor import PatcherEditor
 
 
 def add_custom_models(editor: PatcherEditor):
