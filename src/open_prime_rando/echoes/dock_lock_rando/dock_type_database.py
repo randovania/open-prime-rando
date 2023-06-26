@@ -124,7 +124,7 @@ DOCK_TYPES: dict[str, dock_type.DoorType] = {
             "Analysis indicates that the Blast Shield is invulnerable to most weapons. The Screw Attack may damage it."
         ),
         map_icon=DoorMapIcon.ScrewAttack,
-        shield_model="custom_door_lock_screw_attack.CMDL",
+        shield_model="screw_attack",
     ),
     "Bomb": dock_type.BlastShieldDoorType(
         name="Bomb",
@@ -137,7 +137,7 @@ DOCK_TYPES: dict[str, dock_type.DoorType] = {
             "A Morph Ball Bomb blast may damage it."
         ),
         map_icon=DoorMapIcon.Bomb,
-        shield_model="custom_door_lock_morph_ball_bombs.CMDL",
+        shield_model="morph_ball_bombs",
     ),
     "Boost": dock_type.BlastShieldDoorType(
         name="Boost",
@@ -153,7 +153,7 @@ DOCK_TYPES: dict[str, dock_type.DoorType] = {
             "Analysis indicates that the Blast Shield is invulnerable to most weapons. The Boost Ball may damage it."
         ),
         map_icon=DoorMapIcon.Boost,
-        shield_model="custom_door_lock_boost_ball.CMDL",
+        shield_model="boost_ball",
     ),
     "Grapple": dock_type.GrappleDoorType(
         name="Grapple",
@@ -179,7 +179,7 @@ DOCK_TYPES: dict[str, dock_type.DoorType] = {
             "A massive burst of dark energy may damage it."
         ),
         map_icon=DoorMapIcon.Dark,
-        shield_model="custom_door_lock_darkburst.CMDL",
+        shield_model="darkburst",
     ),
     "Sunburst": dock_type.BlastShieldDoorType(
         name="Sunburst",
@@ -192,7 +192,7 @@ DOCK_TYPES: dict[str, dock_type.DoorType] = {
             "A massive burst of light energy may damage it."
         ),
         map_icon=DoorMapIcon.Light,
-        shield_model="custom_door_lock_sunburst.CMDL",
+        shield_model="sunburst",
     ),
     "SonicBoom": dock_type.BlastShieldDoorType(
         name="SonicBoom",
@@ -205,7 +205,7 @@ DOCK_TYPES: dict[str, dock_type.DoorType] = {
             "A massive burst of light and dark energy may damage it."
         ),
         map_icon=DoorMapIcon.Annihilator,
-        shield_model="custom_door_lock_sonic_boom.CMDL",
+        shield_model="sonic_boom",
     ),
     "AgonEnergy": dock_type.PlanetaryEnergyDoorType(
         name="AgonEnergy",
@@ -253,7 +253,7 @@ DOCK_TYPES: dict[str, dock_type.DoorType] = {
             "Neutralizing the control emitter may disable it."
         ),
         map_icon=DoorMapIcon.EchoVisor,
-        shield_model="custom_door_lock_echo_visor.CMDL",
+        shield_model="echo_visor",
         visor_flags=VisorFlags.Echo,
         player_controller_proxy=8,
     ),
@@ -268,7 +268,7 @@ DOCK_TYPES: dict[str, dock_type.DoorType] = {
             "Interface method unknown. Control units not present in the visible spectrum or current timespace. "
         ),
         map_icon=DoorMapIcon.DarkVisor,
-        shield_model="custom_door_lock_dark_visor.CMDL",
+        shield_model="dark_visor",
         visor_flags=VisorFlags.Dark,
         player_controller_proxy=7,
     )
