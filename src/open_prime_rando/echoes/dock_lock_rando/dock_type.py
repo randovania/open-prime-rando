@@ -269,7 +269,11 @@ class BlastShieldDoorType(DoorType):
             unknown=False
         ))
 
-        model = editor._resolve_asset_id(self.shield_model)
+        shield_model = self.shield_model
+        if isinstance(shield_model, str):
+            shield_model = f"custom_door_lock_{shield_model}.CMDL"
+        model = editor._resolve_asset_id(shield_model)
+
         lock = default.add_instance_with(Actor(
             editor_properties=EditorProperties(
                 name=f"{self.name} Blast Shield Lock",

@@ -124,7 +124,7 @@ DOCK_TYPES: dict[str, dock_type.DoorType] = {
             "Analysis indicates that the Blast Shield is invulnerable to most weapons. The Screw Attack may damage it."
         ),
         map_icon=DoorMapIcon.ScrewAttack,
-        shield_model="custom_door_lock_screwattack.CMDL",
+        shield_model="screw_attack",
     ),
     "Bomb": dock_type.BlastShieldDoorType(
         name="Bomb",
@@ -137,7 +137,7 @@ DOCK_TYPES: dict[str, dock_type.DoorType] = {
             "A Morph Ball Bomb blast may damage it."
         ),
         map_icon=DoorMapIcon.Bomb,
-        shield_model="custom_door_lock_sonicboom.CMDL",
+        shield_model="morph_ball_bombs",
     ),
     "Boost": dock_type.BlastShieldDoorType(
         name="Boost",
@@ -153,7 +153,7 @@ DOCK_TYPES: dict[str, dock_type.DoorType] = {
             "Analysis indicates that the Blast Shield is invulnerable to most weapons. The Boost Ball may damage it."
         ),
         map_icon=DoorMapIcon.Boost,
-        shield_model=0xBFB4A8EE,
+        shield_model="boost_ball",
     ),
     "Grapple": dock_type.GrappleDoorType(
         name="Grapple",
@@ -179,7 +179,7 @@ DOCK_TYPES: dict[str, dock_type.DoorType] = {
             "A massive burst of dark energy may damage it."
         ),
         map_icon=DoorMapIcon.Dark,
-        shield_model="custom_door_lock_darkburst.CMDL",
+        shield_model="darkburst",
     ),
     "Sunburst": dock_type.BlastShieldDoorType(
         name="Sunburst",
@@ -192,7 +192,7 @@ DOCK_TYPES: dict[str, dock_type.DoorType] = {
             "A massive burst of light energy may damage it."
         ),
         map_icon=DoorMapIcon.Light,
-        shield_model="custom_door_lock_sunburst.CMDL",
+        shield_model="sunburst",
     ),
     "SonicBoom": dock_type.BlastShieldDoorType(
         name="SonicBoom",
@@ -205,7 +205,7 @@ DOCK_TYPES: dict[str, dock_type.DoorType] = {
             "A massive burst of light and dark energy may damage it."
         ),
         map_icon=DoorMapIcon.Annihilator,
-        shield_model="custom_door_lock_sonicboom.CMDL",
+        shield_model="sonic_boom",
     ),
     "AgonEnergy": dock_type.PlanetaryEnergyDoorType(
         name="AgonEnergy",
@@ -249,11 +249,11 @@ DOCK_TYPES: dict[str, dock_type.DoorType] = {
         shell_color=Color(1/16, 1/16, 1/16, 1),
         scan_text=(
             "There is a Blast Shield on the door blocking access. ",
-            "Sonic detection gear needed to interface with this system."
+            "Sonic detection gear needed to interface with this system. "
             "Neutralizing the control emitter may disable it."
         ),
         map_icon=DoorMapIcon.EchoVisor,
-        shield_model="custom_door_lock_echo_visor.CMDL",
+        shield_model="echo_visor",
         visor_flags=VisorFlags.Echo,
         player_controller_proxy=8,
     ),
@@ -264,12 +264,57 @@ DOCK_TYPES: dict[str, dock_type.DoorType] = {
         shell_color=Color(1, 0, 0, 1),
         scan_text=(
             "There is a Blast Shield on the door blocking access. ",
-            "Scans indicate presence of a control system."
+            "Scans indicate presence of a control system. "
             "Interface method unknown. Control units not present in the visible spectrum or current timespace. "
         ),
         map_icon=DoorMapIcon.DarkVisor,
-        shield_model=0xBFB4A8EE,
+        shield_model="dark_visor",
         visor_flags=VisorFlags.Dark,
         player_controller_proxy=7,
+    ),
+    "Cannon": dock_type.BlastShieldDoorType(
+        name="Cannon",
+        vulnerability=dataclasses.replace(
+            resist_all_vuln,
+            cannon_ball=vulnerable_no_splash
+        ),
+        shell_model=normal_door_model,
+        shell_color=Color(1, 1/3, 0, 1),
+        scan_text=(
+            "There is a Blast Shield on the door blocking access. ",
+            "Analysis indicates that the Blast Shield is invulnerable to most weapons. The Cannon Ball may damage it."
+        ),
+        map_icon=DoorMapIcon.Boost,
+        shield_model="cannon_ball",
+    ),
+    "Charge": dock_type.BlastShieldDoorType(
+        name="Charge",
+        vulnerability=dataclasses.replace(
+            resist_all_vuln,
+            power_charge=vulnerable,
+            entangler=vulnerable,
+            light_blast=vulnerable,
+            sonic_boom=vulnerable,
+        ),
+        shell_model=normal_door_model,
+        shell_color=Color(0, 1, 1, 1),
+        scan_text=(
+            "There is a Blast Shield on the door blocing access. ",
+            "Analysis indicates that the Blast Shield is invulnerable to normal beam fire. "
+            "The Charge Beam may damage it."
+        ),
+        map_icon=DoorMapIcon.Normal,
+        shield_model="charge_beam"
+    ),
+    "Power": dock_type.NormalDoorType(
+        name="Power",
+        vulnerability=dataclasses.replace(resist_all_vuln, power=vulnerable),
+        shell_color=Color(1, 0.8, 0, 1),
+        scan_text=(
+            "There is a Blast Shield on the door blocking access. ",
+            "Analysis indicates that the Blast Shield is invulnerable to light and dark energy. "
+            "The Power Beam may damage it."
+        ),
+        map_icon=DoorMapIcon.PowerBomb # TODO: give it its own?
     )
 }

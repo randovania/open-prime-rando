@@ -25,7 +25,13 @@ def add_custom_models(editor: PatcherEditor):
     greyscale_emissive = get_txtr("custom_door_lock_greyscale_emissive.TXTR")
     template = editor.get_parsed_asset(0xF115F575, type_hint=Cmdl)
 
-    for name in ("darkburst", "sunburst", "sonicboom", "screwattack", "echo_visor"):
+    for door_type in DOCK_TYPES.values():
+        if not (
+            isinstance(door_type, dock_type.BlastShieldDoorType)
+            and isinstance(door_type.shield_model, str)
+        ):
+            continue
+        name = door_type.shield_model
         txtr = get_txtr(f"custom_door_lock_{name}.TXTR")
         emissive = get_txtr(f"custom_door_lock_{name}_emissive.TXTR", must_exist=False)
         if emissive is None:
