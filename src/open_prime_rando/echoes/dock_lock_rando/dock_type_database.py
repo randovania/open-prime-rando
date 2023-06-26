@@ -124,7 +124,7 @@ DOCK_TYPES: dict[str, dock_type.DoorType] = {
             "Analysis indicates that the Blast Shield is invulnerable to most weapons. The Screw Attack may damage it."
         ),
         map_icon=DoorMapIcon.ScrewAttack,
-        shield_model="custom_door_lock_screwattack.CMDL",
+        shield_model="custom_door_lock_screw_attack.CMDL",
     ),
     "Bomb": dock_type.BlastShieldDoorType(
         name="Bomb",
@@ -137,7 +137,7 @@ DOCK_TYPES: dict[str, dock_type.DoorType] = {
             "A Morph Ball Bomb blast may damage it."
         ),
         map_icon=DoorMapIcon.Bomb,
-        shield_model="custom_door_lock_sonicboom.CMDL",
+        shield_model="custom_door_lock_morph_ball_bombs.CMDL",
     ),
     "Boost": dock_type.BlastShieldDoorType(
         name="Boost",
@@ -153,7 +153,7 @@ DOCK_TYPES: dict[str, dock_type.DoorType] = {
             "Analysis indicates that the Blast Shield is invulnerable to most weapons. The Boost Ball may damage it."
         ),
         map_icon=DoorMapIcon.Boost,
-        shield_model=0xBFB4A8EE,
+        shield_model="custom_door_lock_boost_ball.CMDL",
     ),
     "Grapple": dock_type.GrappleDoorType(
         name="Grapple",
@@ -205,7 +205,7 @@ DOCK_TYPES: dict[str, dock_type.DoorType] = {
             "A massive burst of light and dark energy may damage it."
         ),
         map_icon=DoorMapIcon.Annihilator,
-        shield_model="custom_door_lock_sonicboom.CMDL",
+        shield_model="custom_door_lock_sonic_boom.CMDL",
     ),
     "AgonEnergy": dock_type.PlanetaryEnergyDoorType(
         name="AgonEnergy",

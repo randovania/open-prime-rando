@@ -28,8 +28,10 @@ def add_custom_models(editor: PatcherEditor):
     for name in (
         "darkburst",
         "sunburst",
-        "sonicboom",
-        "screwattack",
+        "sonic_boom",
+        "screw_attack",
+        "morph_ball_bombs",
+        "boost_ball",
         "echo_visor",
         "dark_visor",
     ):
