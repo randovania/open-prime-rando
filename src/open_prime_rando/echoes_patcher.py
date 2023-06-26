@@ -16,7 +16,6 @@ from open_prime_rando.echoes.elevators.elevator_rando import patch_elevator
 from open_prime_rando.echoes.inverted import apply_inverted
 from open_prime_rando.echoes.small_randomizations import apply_small_randomizations
 from open_prime_rando.patcher_editor import PatcherEditor
-from open_prime_rando.unique_area_name import get_name_for_area
 from open_prime_rando.validator_with_default import DefaultValidatingDraft7Validator
 
 LOG = logging.getLogger("echoes_patcher")
@@ -36,8 +35,13 @@ def apply_area_modifications(editor: PatcherEditor, configuration: dict[str, dic
         world_meta = asset_ids.world.load_dedicated_file(world_name)
         mlvl = editor.get_mlvl(asset_ids.world.NAME_TO_ID_MLVL[world_name])
 
+        mrea_to_name: dict[int, str] = {
+            mrea: name
+            for name, mrea in world_meta.NAME_TO_ID_MREA.items()
+        }
+
         areas_by_name: dict[str, Area] = {
-            get_name_for_area(area): area
+            mrea_to_name[area.mrea_asset_id]: area
             for area in mlvl.areas
         }
 
@@ -123,6 +127,7 @@ def patch_paks(file_provider: FileProvider,
                configuration: dict,
                status_update: Callable[[str, float], None] = lambda s, _: LOG.info(s)):
     status_update(f"Will patch files at {file_provider}", 0)
+    output_path.joinpath("files", "opr_patcher_data.json").write_text(json.dumps(configuration))
 
     editor = PatcherEditor(file_provider, Game.ECHOES)
 
