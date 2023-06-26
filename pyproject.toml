@@ -26,6 +26,10 @@ dependencies = [
     "py_randomprime",  # for Prime 1 symbols
 ]
 
+# Entry Points for PyInstaller
+[project.entry-points.pyinstaller40]
+hook-dirs = "open_prime_rando.__pyinstaller:get_hook_dirs"
+
 [project.optional-dependencies]
 test = [
     "pytest",
