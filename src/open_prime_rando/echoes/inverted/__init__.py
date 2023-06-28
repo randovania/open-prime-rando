@@ -1,9 +1,5 @@
-import dataclasses
 
-import construct
-from retro_data_structures.base_resource import Dependency, RawResource
-from retro_data_structures.dependencies import recursive_dependencies_for_editor
-from retro_data_structures.formats import Mlvl
+from retro_data_structures.formats import Mapa, Mlvl
 from retro_data_structures.formats.mrea import Area
 from retro_data_structures.formats.script_layer import ScriptLayer
 from retro_data_structures.formats.script_object import InstanceId, ScriptInstance
@@ -30,15 +26,6 @@ _AREAS_TO_SKIP = {
 }
 
 
-def collect_dependencies(obj):
-    for field in dataclasses.fields(obj):
-        if "asset_types" in field.metadata:
-            yield getattr(obj, field.name)
-
-
-_all_deps_cache: dict[frozenset[int], set[Dependency]] = {}
-
-
 def _swap_dark_world(editor: PatcherEditor):
     for world_id in _WORLDS:
         world = editor.get_mlvl(world_id)
@@ -49,34 +36,25 @@ def _swap_dark_world(editor: PatcherEditor):
 
             is_dark_world = area.internal_name.endswith("_dark")
 
-            for layer in area.layers:
-                for instance in layer.instances:
-                    if instance.type == AreaAttributes:
-                        prop = instance.get_properties()
-                        assert isinstance(prop, AreaAttributes)
+            for instance in area.all_instances:
+                if instance.type == AreaAttributes:
+                    with instance.edit_properties(AreaAttributes) as prop:
                         if prop.dark_world != is_dark_world:
                             print(area.name, is_dark_world, "found", prop.dark_world)
                         prop.dark_world = not is_dark_world
-                        instance.set_properties(prop)
 
             mapa_id = world.mapw.get_mapa_id(area.index)
-            mapa = bytearray(editor.get_raw_asset(mapa_id).data)
-            mapa[8:12] = construct.Int32ub.build(not is_dark_world)
-            editor.replace_asset(
-                mapa_id,
-                RawResource("MAPA", bytes(mapa))
-            )
+            mapa = editor.get_file(mapa_id, Mapa)
+            mapa.raw.type = not is_dark_world
 
 
 def _copy_safe_zones(dark: Area, dark_layer: ScriptLayer, light_layer: ScriptLayer,
-                     new_dependencies: set[int], special_ids: set):
+                     special_ids: set):
     copied_safe_zones = {}
 
     for instance in list(dark_layer.instances):
         if instance.type == SafeZone:
-            copied_safe_zones[instance.id] = light_layer.add_instance_with(props := instance.get_properties())
-            assert isinstance(props, SafeZone)
-            new_dependencies.add(props.impact_effect)
+            copied_safe_zones[instance.id] = light_layer.add_instance_with(instance.get_properties_as(SafeZone))
 
             ids = {conn.target for conn in instance.connections}
             for target in ids:
@@ -115,65 +93,31 @@ def _copy_safe_zone_crystal(copied_crystal: ScriptInstance,
     return targets_special
 
 
-def _update_dependencies(world: Mlvl, light: Area, new_dependencies: set[int]):
-    # Add assets used by safe zones
-    new_dependencies = frozenset(new_dependencies)
-    if new_dependencies not in _all_deps_cache:
-        _all_deps_cache[new_dependencies] = recursive_dependencies_for_editor(
-            world.asset_manager, list(new_dependencies)
-        )
-
-    dependencies = light._raw.dependencies
-    assert isinstance(dependencies.dependencies_b, list)
-    for dep in _all_deps_cache[new_dependencies]:
-        dependencies.dependencies_b.append(construct.Container(
-            asset_id=dep.id,
-            asset_type=dep.type,
-        ))
-
-    for i in range(1, len(dependencies.dependencies_offset)):
-        dependencies.dependencies_offset[i] += len(new_dependencies)
-
-    # Add Safe Zone's module dep
-    module_dependencies = light._raw.module_dependencies
-    for module_dep in set(SafeZone.modules() + SafeZoneCrystal.modules()):
-        if module_dep not in module_dependencies.rel_module:
-            module_dependencies.rel_module.insert(0, module_dep)
-            for i in range(1, len(module_dependencies.rel_offset)):
-                module_dependencies.rel_offset[i] += 1
-
-
 def _move_safe_zones(world: Mlvl, pairs: list[tuple[int, int]]):
-    for pair in pairs:
-        light = world.get_area(pair[0])
-        dark = world.get_area(pair[1])
+    for light_id, dark_id in pairs:
+        light = world.get_area(light_id)
+        dark = world.get_area(dark_id)
 
         light_layer = light.get_layer("Default")
         dark_layer = dark.get_layer("Default")
 
         assert light_layer.index == 0
 
-        new_dependencies: set[int] = set()  # asset ids that must be added to the mlvl dependency list
         special_ids = set()  # ids for objects that have extra functionality and we want to keep
 
         # Copy the safe zones
-        copied_safe_zones = _copy_safe_zones(dark, dark_layer, light_layer, new_dependencies, special_ids)
+        copied_safe_zones = _copy_safe_zones(dark, dark_layer, light_layer, special_ids)
 
         # Copy the safe zone crystals
         for instance in list(dark_layer.instances):
             if instance.type == SafeZoneCrystal:
-                copied_crystal = light_layer.add_instance_with(props := instance.get_properties())
-                new_dependencies.update(collect_dependencies(props))
+                copied_crystal = light_layer.add_instance_with(instance.get_properties_as(SafeZoneCrystal))
 
                 targets_special = _copy_safe_zone_crystal(
                     copied_crystal, instance, copied_safe_zones, dark, special_ids
                 )
                 if not targets_special:
                     dark_layer.remove_instance(instance)
-
-        assert 0xffffffff not in new_dependencies
-        # Update dependencies
-        _update_dependencies(world, light, new_dependencies)
 
 
 def apply_inverted(editor: PatcherEditor):

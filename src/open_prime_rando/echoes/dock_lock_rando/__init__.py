@@ -40,7 +40,7 @@ def add_custom_models(editor: PatcherEditor):
         cmdl = Container(template.raw)
         cmdl.material_sets[0].texture_file_ids[0] = txtr
         cmdl.material_sets[0].texture_file_ids[1] = emissive
-        editor.add_file(f"custom_door_lock_{name}.CMDL", Cmdl(cmdl, Game.ECHOES, editor), [])
+        editor.add_file(f"custom_door_lock_{name}.CMDL", Cmdl(cmdl, Game.ECHOES, editor))
 
 
 def apply_door_rando(editor: PatcherEditor, world_name: str, area_name: str, dock_name: str,
