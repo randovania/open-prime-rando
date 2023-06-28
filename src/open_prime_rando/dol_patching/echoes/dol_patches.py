@@ -16,7 +16,6 @@ from open_prime_rando.dol_patching.all_prime_dol_patches import (
 )
 from open_prime_rando.dol_patching.echoes.beam_configuration import BeamAmmoConfiguration
 from open_prime_rando.dol_patching.echoes.user_preferences import OprEchoesUserPreferences
-from open_prime_rando.echoes.dock_lock_rando.map_icons import DoorMapIcon
 
 POWERUP_TO_INDEX = {
     "Double Damage": 58,
@@ -441,9 +440,12 @@ def freeze_player():
 
 
 def apply_map_door_changes(door_symbols: MapDoorTypeAddresses, dol_file: DolFile):
-    DOOR_MIN, DOOR_MAX = DoorMapIcon.get_door_index_bounds()
+    # This ends up being a slow import, don't do it early
+    from open_prime_rando.echoes.dock_lock_rando.map_icons import DoorMapIcon
 
-    num_door_colors = 1 + DOOR_MAX - DOOR_MIN
+    door_min, door_max = DoorMapIcon.get_door_index_bounds()
+
+    num_door_colors = 1 + door_max - door_min
     assert num_door_colors <= 32, "There's only enough space for 32 colors in the table!"
 
     is_door_symbols = [
@@ -455,8 +457,8 @@ def apply_map_door_changes(door_symbols: MapDoorTypeAddresses, dol_file: DolFile
         door_symbols.map_area_commit_resources2,
     ]
     for symbol in is_door_symbols:
-        dol_file.write_instructions(symbol.low, [cmpwi(symbol.register, DOOR_MIN)])
-        dol_file.write_instructions(symbol.high, [cmpwi(symbol.register, DOOR_MAX)])
+        dol_file.write_instructions(symbol.low, [cmpwi(symbol.register, door_min)])
+        dol_file.write_instructions(symbol.high, [cmpwi(symbol.register, door_max)])
 
     # TODO: add colors to GetDoorColor
     dol_file.symbols["CTweakAutoMapper::GetDoorColor"] = door_symbols.get_door_color
@@ -468,7 +470,7 @@ def apply_map_door_changes(door_symbols: MapDoorTypeAddresses, dol_file: DolFile
 
     dol_file.write_instructions("CTweakAutoMapper::GetDoorColor", [
         custom_ppc.load_unsigned_32bit(_colors, door_color_array),
-        addi(_type, _type, -DOOR_MIN),
+        addi(_type, _type, -door_min),
         mulli(_type, _type, 4),
         lwzx(r0, _colors, _type),
         stw(r0, 0, _out_color),
