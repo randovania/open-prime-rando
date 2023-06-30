@@ -1,5 +1,6 @@
 import argparse
 import os.path
+import shutil
 from pathlib import Path
 
 import retro_data_structures.exceptions
@@ -14,6 +15,7 @@ from open_prime_rando.unique_area_name import CUSTOM_AREA_NAMES
 _CUSTOM_WORLD_NAMES = {
     Game.ECHOES: {
         0x69802220: "FrontEnd",
+        0x7B6EAA68: "FrontEnd",
         0xA50A80CC: "M01_SidehopperStation",
         0xAE171602: "M02_Spires",
         0xE3B0C703: "M03_CrossfireChaos",
@@ -36,6 +38,10 @@ def filter_name(s: str) -> str:
     while result and not result[0].isalpha():
         result = result[1:]
     return result
+
+
+def filter_and_lower_name(s: str) -> str:
+    return filter_name(s).lower()
 
 
 def dock_name_templates(dock_names: dict[str, dict[str, int]]) -> str:
@@ -68,6 +74,8 @@ def generate_template(items: dict[str, int], suffix: str) -> str:
 
 def create_asset_id_files(editor: PatcherEditor, output_path: Path):
     output_path.mkdir(parents=True, exist_ok=True)
+    shutil.rmtree(output_path)
+    output_path.mkdir()
 
     custom_world_names = _CUSTOM_WORLD_NAMES.get(editor.target_game, {})
     world_names = {}
@@ -103,6 +111,8 @@ def create_asset_id_files(editor: PatcherEditor, output_path: Path):
                 area_name = area.internal_area_name
             area_name = _CUSTOM_AREA_NAMES[editor.target_game].get(area.area_mrea_id, area_name)
 
+            if area_name in area_names:
+                area_name += "_2"
             assert area_name not in area_names, area_name
             area_names[area_name] = area.area_mrea_id
             mapa_names[area_name] = mapa
@@ -125,14 +135,14 @@ def create_asset_id_files(editor: PatcherEditor, output_path: Path):
         world_file_body = generate_template(area_names, "_MREA")
         world_file_body += generate_template(mapa_names, "_MAPA")
         world_file_body += dock_name_templates(dock_names)
-        output_path.joinpath(f"{filter_name(world_name).lower()}.py").write_text(world_file_body)
+        output_path.joinpath(f"{filter_and_lower_name(world_name)}.py").write_text(world_file_body)
 
     global_file_body = generate_template(world_names, "_MLVL")
     global_file_body += generate_template(mapw_names, "_MAPW")
 
     global_file_body += "\n_DEDICATED_FILES = {\n"
     for name in sorted(world_names.keys()):
-        global_file_body += f"    \"{name}\": \".{filter_name(name).lower()}\",\n"
+        global_file_body += f"    \"{name}\": \".{filter_and_lower_name(name)}\",\n"
     global_file_body += """}
 
 
@@ -146,6 +156,16 @@ def load_dedicated_file(world_name: str):
 
     output_path.joinpath("world.py").write_text(global_file_body)
 
+    output_path.joinpath("__init__.py").write_text("\n".join([
+        "from . import (\n    " + ",\n    ".join(map(filter_and_lower_name, world_names.keys())),
+        ")",
+        "",
+        "__all__ = [",
+        *[f'    "{filter_and_lower_name(it)}",' for it in world_names.keys()],
+        "]",
+        "",
+    ]))
+
 
 def main():
     parser = argparse.ArgumentParser()
@@ -156,7 +176,7 @@ def main():
 
     create_asset_id_files(
         PatcherEditor(IsoFileProvider(args.iso), Game.ECHOES),
-        Path(__file__).parents[1].joinpath("open_prime_rando", args.game, "asset_ids"),
+        Path(__file__).parents[1].joinpath("src", "open_prime_rando", args.game, "asset_ids"),
     )
 
 
