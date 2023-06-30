@@ -157,8 +157,8 @@ class NormalDoorType(DoorType):
 @dataclasses.dataclass
 class BlastShieldActors:
     door: ScriptInstance
-    sound: ScriptInstance
-    streamed: ScriptInstance
+    sound: ScriptInstance | None
+    streamed: ScriptInstance | None
     lock: ScriptInstance
     relay: ScriptInstance
     gibs: ScriptInstance | None
@@ -247,28 +247,6 @@ class BlastShieldDoorType(DoorType):
 
         default = area.get_layer("Default")
 
-        sound = default.add_instance_with(Sound(
-            editor_properties=EditorProperties(
-                name="Metal Door Lock Breaking",
-                transform=door_transform
-            ),
-            sound=948,
-            max_audible_distance=150.0,
-            surround_pan=SurroundPan(surround_pan=1.0)
-        ))
-
-        streamed = default.add_instance_with(StreamedAudio(
-            editor_properties=EditorProperties(
-                name="StreamedAudio - Event Jingle",
-                transform=door_transform
-            ),
-            song_file="/audio/evt_x_event_00.dsp",
-            fade_in_time=0.01,
-            volume=65,
-            software_channel=1,
-            unknown=False
-        ))
-
         shield_model = self.shield_model
         if isinstance(shield_model, str):
             shield_model = f"custom_door_lock_{shield_model}.CMDL"
@@ -295,8 +273,6 @@ class BlastShieldDoorType(DoorType):
             _relay.editor_properties.transform = door_transform
             _relay.editor_properties.active = False
 
-        lock.add_connection(State.Dead, Message.Play, sound)
-        lock.add_connection(State.Dead, Message.Play, streamed)
         lock.add_connection(State.Dead, Message.Activate, relay)
 
         relay.add_connection(State.Active, Message.Deactivate, lock)
@@ -304,12 +280,12 @@ class BlastShieldDoorType(DoorType):
 
         door.add_connection(State.Open, Message.Activate, relay)
 
-        dependencies = [
-            model,
-            0x8B4CD966,  # MetalDoorLockBreak AGSC
-        ]
+        dependencies = [model]
 
         gibs = None
+        sound = None
+        streamed = None
+
         if not low_memory:
             particle = 0xCDCBDF04
 
@@ -323,8 +299,34 @@ class BlastShieldDoorType(DoorType):
                 motion_control_spline=self.get_spline(),
             ))
 
+            sound = default.add_instance_with(Sound(
+                editor_properties=EditorProperties(
+                    name="Metal Door Lock Breaking",
+                    transform=door_transform
+                ),
+                sound=948,
+                max_audible_distance=150.0,
+                surround_pan=SurroundPan(surround_pan=1.0)
+            ))
+
+            streamed = default.add_instance_with(StreamedAudio(
+                editor_properties=EditorProperties(
+                    name="StreamedAudio - Event Jingle",
+                    transform=door_transform
+                ),
+                song_file="/audio/evt_x_event_00.dsp",
+                fade_in_time=0.01,
+                volume=65,
+                software_channel=1,
+                unknown=False
+            ))
+
+            lock.add_connection(State.Dead, Message.Play, sound)
+            lock.add_connection(State.Dead, Message.Play, streamed)
             lock.add_connection(State.Dead, Message.Activate, gibs)
+
             dependencies.append(particle)
+            dependencies.append(0x8B4CD966) # MetalDoorLockBreak AGSC
 
         for pak in self.get_paks(editor, world_name, area_name):
             for asset in dependencies:
@@ -363,6 +365,7 @@ class SeekerBlastShieldDoorType(VanillaBlastShieldDoorType):
 
         door_transform = actors.door.get_properties_as(Door).editor_properties.transform
 
+        # TODO: try using a sequencetimer to squeeze one fewer instance out of this
         timer = default.add_instance_with(Timer(
             editor_properties=EditorProperties(
                 name="Button Control",
@@ -380,6 +383,7 @@ class SeekerBlastShieldDoorType(VanillaBlastShieldDoorType):
         ))
 
         # create 5 triggers so that you can have 5 lock-ons
+        # TODO: only use 2 triggers in low memory mode and just accept it being more jank?
         # 30.01 health because splash damage is inconsistent. missiles do 30 damage
         # so this guarantees you need at least 2 missiles at once to break it
         triggers = [
@@ -389,6 +393,7 @@ class SeekerBlastShieldDoorType(VanillaBlastShieldDoorType):
             ) for i in range(5)
         ]
         main_trigger = triggers[0]
+        # TODO: repurpose one of the big triggers for this to save an instance
         mini_trigger = default.add_instance_with(self.create_trigger(
             "Bridge Button Mini",
             door_transform,
@@ -556,78 +561,81 @@ class EchoVisorDoorType(VisorDoorType):
             unknown_0xd993f97b=2
         ))
 
-        beacon_loop = default.add_instance_with(Sound(
-            editor_properties=EditorProperties(
-                name="Echo Beacon Sound Loop",
-                transform=Transform(
-                    position=center_pos
-                ),
-            ),
-            sound=1003,
-            max_audible_distance=75.0,
-            min_volume=0,
-            max_volume=60,
-            surround_pan=SurroundPan(
-                pan=0.0,
-                surround_pan=1.0
-            ),
-            loop=True,
-            play_always=True,
-            echo_visor_max_volume=127
-        ))
-
-        disrupted = default.add_instance_with(Sound(
-            editor_properties=EditorProperties(
-                name="Echo Particle Disrupted",
-                transform=Transform(
-                    position=center_pos
-                ),
-            ),
-            sound=1004,
-            max_audible_distance=75.0,
-            min_volume=20,
-            max_volume=120,
-            surround_pan=SurroundPan(
-                pan=0.0,
-                surround_pan=1.0
-            ),
-        ))
-
-        timer = default.add_instance_with(Timer(
-            editor_properties=EditorProperties(
-                name="Open Echo Door",
-                transform=door_xfm,
-            ),
-            time=1.0
-        ))
-        for connection in actors.trigger.connections:
-            actors.trigger.remove_connection(connection)
-            timer.add_connection(
-                State.Zero,
-                connection.message,
-                connection.target
-            )
-
         with actors.lock.edit_properties(Actor) as lock:
             lock.echo_information.is_echo_emitter = True
 
-        actors.trigger.add_connection(State.Dead, Message.ResetAndStart, timer)
-        actors.trigger.add_connection(State.Dead, Message.InternalMessage00, hud_hint)
-        actors.trigger.add_connection(State.Dead, Message.Stop, beacon_loop)
-        actors.trigger.add_connection(State.Dead, Message.Play, disrupted)
-
-        actors.visor_detector.add_connection(State.Entered, Message.Play, beacon_loop)
-        actors.visor_detector.add_connection(State.Exited, Message.Stop, beacon_loop)
-
         actors.relay.add_connection(State.Active, Message.Deactivate, hud_hint)
-        actors.relay.add_connection(State.Active, Message.Deactivate, beacon_loop)
-        actors.relay.add_connection(State.Active, Message.Deactivate, timer)
-        actors.relay.add_connection(State.Active, Message.Deactivate, disrupted)
 
-        dependencies = (
-            0x36B1CB06, # hud hint TXTR
-            0x4FBCAC73 # DigitalGuardianBeacon.AGSC
-        )
+        dependencies = [0x36B1CB06] # hud hint TXTR
+
+        if not low_memory:
+            beacon_loop = default.add_instance_with(Sound(
+                editor_properties=EditorProperties(
+                    name="Echo Beacon Sound Loop",
+                    transform=Transform(
+                        position=center_pos
+                    ),
+                ),
+                sound=1003,
+                max_audible_distance=75.0,
+                min_volume=0,
+                max_volume=60,
+                surround_pan=SurroundPan(
+                    pan=0.0,
+                    surround_pan=1.0
+                ),
+                loop=True,
+                play_always=True,
+                echo_visor_max_volume=127
+            ))
+
+            disrupted = default.add_instance_with(Sound(
+                editor_properties=EditorProperties(
+                    name="Echo Particle Disrupted",
+                    transform=Transform(
+                        position=center_pos
+                    ),
+                ),
+                sound=1004,
+                max_audible_distance=75.0,
+                min_volume=20,
+                max_volume=120,
+                surround_pan=SurroundPan(
+                    pan=0.0,
+                    surround_pan=1.0
+                ),
+            ))
+
+            timer = default.add_instance_with(Timer(
+                editor_properties=EditorProperties(
+                    name="Open Echo Door",
+                    transform=door_xfm,
+                ),
+                time=1.0
+            ))
+
+            for connection in actors.trigger.connections:
+                actors.trigger.remove_connection(connection)
+                timer.add_connection(
+                    State.Zero,
+                    connection.message,
+                    connection.target
+                )
+
+            actors.trigger.add_connection(State.Dead, Message.ResetAndStart, timer)
+            actors.trigger.add_connection(State.Dead, Message.InternalMessage00, hud_hint)
+            actors.trigger.add_connection(State.Dead, Message.Stop, beacon_loop)
+            actors.trigger.add_connection(State.Dead, Message.Play, disrupted)
+
+            actors.visor_detector.add_connection(State.Entered, Message.Play, beacon_loop)
+            actors.visor_detector.add_connection(State.Exited, Message.Stop, beacon_loop)
+
+            actors.relay.add_connection(State.Active, Message.Deactivate, beacon_loop)
+            actors.relay.add_connection(State.Active, Message.Deactivate, timer)
+            actors.relay.add_connection(State.Active, Message.Deactivate, disrupted)
+
+            dependencies.append(0x4FBCAC73) # DigitalGuardianBeacon.AGSC
+
         for pak in self.get_paks(editor, world_name, area_name):
             for asset in dependencies:
                 editor.ensure_present(pak, asset)
