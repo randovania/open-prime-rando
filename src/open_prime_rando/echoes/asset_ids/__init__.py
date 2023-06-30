@@ -1,5 +1,9 @@
-from . import agon_wastes, great_temple, sanctuary_fortress, temple_grounds, torvus_bog, world
+from . import agon_wastes, great_temple, sanctuary_fortress, temple_grounds, torvus_bog
 
 __all__ = [
-    "agon_wastes", "great_temple", "sanctuary_fortress", "temple_grounds", "torvus_bog", "world",
+    "great_temple",
+    "sanctuary_fortress",
+    "torvus_bog",
+    "agon_wastes",
+    "temple_grounds",
 ]

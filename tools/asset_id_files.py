@@ -14,14 +14,14 @@ from open_prime_rando.unique_area_name import CUSTOM_AREA_NAMES
 
 _CUSTOM_WORLD_NAMES = {
     Game.ECHOES: {
-        0x69802220: "FrontEnd",
-        0x7B6EAA68: "FrontEnd",
-        0xA50A80CC: "M01_SidehopperStation",
-        0xAE171602: "M02_Spires",
-        0xE3B0C703: "M03_CrossfireChaos",
-        0x233E42BE: "M04_Pipeline",
-        0x406ADD7F: "M05_SpiderComplex",
-        0x7E19ED26: "M06_ShootingGallery",
+        0x69802220: None,  # "FrontEnd",
+        0x7B6EAA68: None,  # "FrontEnd",
+        0xA50A80CC: None,  # "M01_SidehopperStation",
+        0xAE171602: None,  # "M02_Spires",
+        0xE3B0C703: None,  # "M03_CrossfireChaos",
+        0x233E42BE: None,  # "M04_Pipeline",
+        0x406ADD7F: None,  # "M05_SpiderComplex",
+        0x7E19ED26: None,  # "M06_ShootingGallery",
     }
 }
 _CUSTOM_AREA_NAMES = {
@@ -92,9 +92,11 @@ def create_asset_id_files(editor: PatcherEditor, output_path: Path):
             world_name = strg.raw.string_tables[0].strings[0].string
         except retro_data_structures.exceptions.UnknownAssetId:
             if value not in custom_world_names:
-                print(f"Skipping MLVL {value}: no name found")
-                continue
+                raise
+
             world_name = custom_world_names[value]
+            if world_name is None:
+                continue
 
         world_names[world_name] = value
         mapw_names[world_name] = mlvl.raw.world_map_id
