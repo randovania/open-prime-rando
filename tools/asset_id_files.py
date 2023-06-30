@@ -158,12 +158,15 @@ def load_dedicated_file(world_name: str):
 
     output_path.joinpath("world.py").write_text(global_file_body)
 
+    all_imports = list(map(filter_and_lower_name, world_names.keys()))
+    all_imports.append("world")
+
     output_path.joinpath("__init__.py").write_text("\n".join([
-        "from . import (\n    " + ",\n    ".join(map(filter_and_lower_name, world_names.keys())),
+        "from . import (\n    " + ",\n    ".join(all_imports),
         ")",
         "",
         "__all__ = [",
-        *[f'    "{filter_and_lower_name(it)}",' for it in world_names.keys()],
+        *[f'    "{it}",' for it in all_imports],
         "]",
         "",
     ]))
