@@ -1,0 +1,3323 @@
+{
+    "worlds": {
+        "Temple Grounds": {
+            "areas": {
+                "Dynamo Chamber": {
+                    "elevators": [],
+                    "docks": {
+                        "North": {
+                            "old_door_type": "Normal",
+                            "new_door_type": "PowerBomb"
+                        }
+                    },
+                    "layers": {
+                        "1st Pass Scripting": false,
+                        "2nd Pass Scripting": true
+                    },
+                    "low_memory_mode": false
+                },
+                "Trooper Security Station": {
+                    "elevators": [],
+                    "docks": {},
+                    "layers": {
+                        "1st Pass": false,
+                        "2nd Pass": true
+                    }
+                },
+                "Landing Site": {
+                    "elevators": [],
+                    "docks": {
+                        "North": {
+                            "old_door_type": "Normal",
+                            "new_door_type": "SeekerMissile"
+                        }
+                    },
+                    "layers": {},
+                    "low_memory_mode": false
+                },
+                "Service Access": {
+                    "elevators": [],
+                    "docks": {
+                        "South": {
+                            "old_door_type": "Normal",
+                            "new_door_type": "SeekerMissile"
+                        },
+                        "East": {
+                            "old_door_type": "Normal",
+                            "new_door_type": "Dark"
+                        },
+                        "West": {
+                            "old_door_type": "SuperMissile",
+                            "new_door_type": "PowerBomb"
+                        }
+                    },
+                    "layers": {},
+                    "low_memory_mode": false
+                },
+                "Path of Honor": {
+                    "elevators": [],
+                    "docks": {
+                        "West": {
+                            "old_door_type": "Normal",
+                            "new_door_type": "Dark"
+                        },
+                        "North": {
+                            "old_door_type": "SeekerMissile",
+                            "new_door_type": "Normal"
+                        }
+                    },
+                    "layers": {},
+                    "low_memory_mode": false
+                },
+                "Meeting Grounds": {
+                    "elevators": [],
+                    "docks": {
+                        "North": {
+                            "old_door_type": "Normal",
+                            "new_door_type": "SeekerMissile"
+                        },
+                        "EastBottom": {
+                            "old_door_type": "SuperMissile",
+                            "new_door_type": "PowerBomb"
+                        }
+                    },
+                    "layers": {},
+                    "low_memory_mode": false
+                },
+                "Hive Transport Area": {
+                    "elevators": [],
+                    "docks": {
+                        "group35_blue_01_Temple_Hive_1_4_East_BigDoor": {
+                            "old_door_type": "Normal",
+                            "new_door_type": "PowerBomb"
+                        }
+                    },
+                    "layers": {},
+                    "low_memory_mode": false
+                },
+                "Hall of Honored Dead": {
+                    "elevators": [],
+                    "docks": {
+                        "South": {
+                            "old_door_type": "SeekerMissile",
+                            "new_door_type": "Normal"
+                        }
+                    },
+                    "layers": {},
+                    "low_memory_mode": false
+                },
+                "Hall of Eyes": {
+                    "elevators": [],
+                    "docks": {
+                        "West": {
+                            "old_door_type": "SuperMissile",
+                            "new_door_type": "Normal"
+                        },
+                        "South": {
+                            "old_door_type": "Normal",
+                            "new_door_type": "SeekerMissile"
+                        }
+                    },
+                    "layers": {},
+                    "low_memory_mode": false
+                },
+                "Hive Chamber C": {
+                    "elevators": [],
+                    "docks": {
+                        "North1": {
+                            "old_door_type": "Normal",
+                            "new_door_type": "Normal"
+                        },
+                        "blue_01_Temple_Hive_1_4_West_BigDoor": {
+                            "old_door_type": "Normal",
+                            "new_door_type": "PowerBomb"
+                        }
+                    },
+                    "layers": {},
+                    "low_memory_mode": false
+                },
+                "Hive Tunnel": {
+                    "elevators": [],
+                    "docks": {
+                        "East1": {
+                            "old_door_type": "Normal",
+                            "new_door_type": "PowerBomb"
+                        }
+                    },
+                    "layers": {},
+                    "low_memory_mode": false
+                },
+                "Base Access": {
+                    "elevators": [],
+                    "docks": {
+                        "South": {
+                            "old_door_type": "SuperMissile",
+                            "new_door_type": "Normal"
+                        }
+                    },
+                    "layers": {},
+                    "low_memory_mode": false
+                },
+                "Path of Eyes": {
+                    "elevators": [],
+                    "docks": {
+                        "North": {
+                            "old_door_type": "SuperMissile",
+                            "new_door_type": "PowerBomb"
+                        },
+                        "East": {
+                            "old_door_type": "SuperMissile",
+                            "new_door_type": "Normal"
+                        }
+                    },
+                    "layers": {},
+                    "low_memory_mode": false
+                },
+                "Hive Chamber B": {
+                    "elevators": [],
+                    "docks": {
+                        "South": {
+                            "old_door_type": "Normal",
+                            "new_door_type": "Missile"
+                        }
+                    },
+                    "layers": {},
+                    "low_memory_mode": false
+                },
+                "Hive Save Station": {
+                    "elevators": [],
+                    "docks": {
+                        "South": {
+                            "old_door_type": "Normal",
+                            "new_door_type": "Normal"
+                        }
+                    },
+                    "layers": {},
+                    "low_memory_mode": false
+                },
+                "Command Chamber": {
+                    "elevators": [],
+                    "docks": {
+                        "East": {
+                            "old_door_type": "Normal",
+                            "new_door_type": "PowerBomb"
+                        },
+                        "West2": {
+                            "old_door_type": "Normal",
+                            "new_door_type": "PowerBomb"
+                        }
+                    },
+                    "layers": {},
+                    "low_memory_mode": false
+                },
+                "War Ritual Grounds": {
+                    "elevators": [],
+                    "docks": {
+                        "EastBottom": {
+                            "old_door_type": "Normal",
+                            "new_door_type": "SeekerMissile"
+                        },
+                        "North": {
+                            "old_door_type": "SuperMissile",
+                            "new_door_type": "Normal"
+                        }
+                    },
+                    "layers": {},
+                    "low_memory_mode": false
+                },
+                "Windchamber Gateway": {
+                    "elevators": [],
+                    "docks": {
+                        "South": {
+                            "old_door_type": "SuperMissile",
+                            "new_door_type": "PowerBomb"
+                        },
+                        "East": {
+                            "old_door_type": "PowerBomb",
+                            "new_door_type": "Missile"
+                        }
+                    },
+                    "layers": {},
+                    "low_memory_mode": false
+                },
+                "Torvus Transport Access": {
+                    "elevators": [],
+                    "docks": {
+                        "South": {
+                            "old_door_type": "Missile",
+                            "new_door_type": "Sunburst"
+                        }
+                    },
+                    "layers": {},
+                    "low_memory_mode": false
+                },
+                "Temple Assembly Site": {
+                    "elevators": [],
+                    "docks": {
+                        "South1": {
+                            "old_door_type": "Missile",
+                            "new_door_type": "PowerBomb"
+                        },
+                        "West": {
+                            "old_door_type": "Normal",
+                            "new_door_type": "Missile"
+                        }
+                    },
+                    "layers": {},
+                    "low_memory_mode": false
+                },
+                "Hive Storage": {
+                    "elevators": [],
+                    "docks": {
+                        "North1": {
+                            "old_door_type": "Normal",
+                            "new_door_type": "Missile"
+                        },
+                        "West": {
+                            "old_door_type": "Normal",
+                            "new_door_type": "PowerBomb"
+                        }
+                    },
+                    "layers": {},
+                    "low_memory_mode": false
+                },
+                "Shrine Access": {
+                    "elevators": [],
+                    "docks": {
+                        "West": {
+                            "old_door_type": "Normal",
+                            "new_door_type": "SeekerMissile"
+                        },
+                        "South": {
+                            "old_door_type": "SuperMissile",
+                            "new_door_type": "SonicBoom"
+                        },
+                        "East": {
+                            "old_door_type": "SeekerMissile",
+                            "new_door_type": "SonicBoom"
+                        }
+                    },
+                    "layers": {},
+                    "low_memory_mode": false
+                },
+                "Grand Windchamber": {
+                    "elevators": [],
+                    "docks": {
+                        "West": {
+                            "old_door_type": "PowerBomb",
+                            "new_door_type": "Missile"
+                        }
+                    },
+                    "layers": {},
+                    "low_memory_mode": false
+                },
+                "Transport to Torvus Bog": {
+                    "elevators": [
+                        {
+                            "instance_id": 1966093,
+                            "target_assets": {
+                                "world_asset_id": 2252328306,
+                                "area_asset_id": 408633584
+                            },
+                            "target_strg": 3917689266,
+                            "target_name": "Temple Transport Emerald"
+                        }
+                    ],
+                    "docks": {
+                        "North": {
+                            "old_door_type": "Missile",
+                            "new_door_type": "Sunburst"
+                        }
+                    },
+                    "layers": {},
+                    "low_memory_mode": false,
+                    "new_name": "Transport to Temple Transport Emerald"
+                },
+                "Temple Transport B": {
+                    "elevators": [
+                        {
+                            "instance_id": 2097251,
+                            "target_assets": {
+                                "world_asset_id": 1119434212,
+                                "area_asset_id": 3331021649
+                            },
+                            "target_strg": 2420389345,
+                            "target_name": "Agon Temple Access"
+                        }
+                    ],
+                    "docks": {
+                        "East": {
+                            "old_door_type": "Normal",
+                            "new_door_type": "Missile"
+                        }
+                    },
+                    "layers": {},
+                    "low_memory_mode": false,
+                    "new_name": "Transport to Agon Temple Access"
+                },
+                "Storage Cavern B": {
+                    "elevators": [],
+                    "docks": {
+                        "North": {
+                            "old_door_type": "Missile",
+                            "new_door_type": "PowerBomb"
+                        }
+                    },
+                    "layers": {},
+                    "low_memory_mode": false
+                },
+                "Plain of Dark Worship": {
+                    "elevators": [],
+                    "docks": {
+                        "South": {
+                            "old_door_type": "SeekerMissile",
+                            "new_door_type": "Sunburst"
+                        }
+                    },
+                    "layers": {},
+                    "low_memory_mode": false
+                },
+                "Defiled Shrine": {
+                    "elevators": [],
+                    "docks": {
+                        "North": {
+                            "old_door_type": "SuperMissile",
+                            "new_door_type": "SonicBoom"
+                        }
+                    },
+                    "layers": {},
+                    "low_memory_mode": false
+                },
+                "Gateway Access": {
+                    "elevators": [],
+                    "docks": {
+                        "North": {
+                            "old_door_type": "Normal",
+                            "new_door_type": "SeekerMissile"
+                        },
+                        "West": {
+                            "old_door_type": "Normal",
+                            "new_door_type": "SonicBoom"
+                        }
+                    },
+                    "layers": {},
+                    "low_memory_mode": false
+                },
+                "Windchamber Tunnel": {
+                    "elevators": [],
+                    "docks": {
+                        "East": {
+                            "old_door_type": "PowerBomb",
+                            "new_door_type": "Normal"
+                        }
+                    },
+                    "layers": {},
+                    "low_memory_mode": false
+                },
+                "Communication Area": {
+                    "elevators": [],
+                    "docks": {
+                        "South11": {
+                            "old_door_type": "Normal",
+                            "new_door_type": "PowerBomb"
+                        }
+                    },
+                    "layers": {},
+                    "low_memory_mode": false
+                },
+                "Lake Access": {
+                    "elevators": [],
+                    "docks": {
+                        "A__North1": {
+                            "old_door_type": "SuperMissile",
+                            "new_door_type": "Sunburst"
+                        }
+                    },
+                    "layers": {},
+                    "low_memory_mode": false
+                },
+                "Sky Temple Gateway": {
+                    "elevators": [
+                        {
+                            "instance_id": 136970379,
+                            "target_assets": {
+                                "world_asset_id": 1006255871,
+                                "area_asset_id": 1393588666
+                            },
+                            "target_strg": null,
+                            "target_name": "Temple Grounds - Credits"
+                        }
+                    ],
+                    "docks": {
+                        "South": {
+                            "old_door_type": "Normal",
+                            "new_door_type": "SeekerMissile"
+                        },
+                        "Cinema_Dock": {
+                            "connect_to": {
+                                "area": "game_end_part3",
+                                "dock": "cinema_dock"
+                            }
+                        }
+                    },
+                    "layers": {},
+                    "low_memory_mode": false,
+                    "new_name": "Transport to Credits"
+                },
+                "GFMC Compound": {
+                    "elevators": [],
+                    "docks": {
+                        "West": {
+                            "old_door_type": "PowerBomb",
+                            "new_door_type": "Normal"
+                        },
+                        "WestTop": {
+                            "old_door_type": "Missile",
+                            "new_door_type": "Normal"
+                        }
+                    },
+                    "layers": {},
+                    "low_memory_mode": false
+                },
+                "Sacred Bridge": {
+                    "elevators": [],
+                    "docks": {
+                        "East": {
+                            "old_door_type": "Missile",
+                            "new_door_type": "Normal"
+                        },
+                        "South": {
+                            "old_door_type": "Normal",
+                            "new_door_type": "PowerBomb"
+                        }
+                    },
+                    "layers": {},
+                    "low_memory_mode": false
+                },
+                "Sacred Path": {
+                    "elevators": [],
+                    "docks": {
+                        "North": {
+                            "old_door_type": "Normal",
+                            "new_door_type": "PowerBomb"
+                        }
+                    },
+                    "layers": {},
+                    "low_memory_mode": false
+                },
+                "Profane Path": {
+                    "elevators": [],
+                    "docks": {
+                        "North": {
+                            "old_door_type": "Normal",
+                            "new_door_type": "PowerBomb"
+                        }
+                    },
+                    "layers": {},
+                    "low_memory_mode": false
+                },
+                "Phazon Pit": {
+                    "elevators": [],
+                    "docks": {
+                        "South": {
+                            "old_door_type": "Normal",
+                            "new_door_type": "PowerBomb"
+                        },
+                        "East": {
+                            "old_door_type": "Normal",
+                            "new_door_type": "Missile"
+                        }
+                    },
+                    "layers": {},
+                    "low_memory_mode": false
+                },
+                "Phazon Grounds": {
+                    "elevators": [],
+                    "docks": {
+                        "WestTop": {
+                            "old_door_type": "Normal",
+                            "new_door_type": "Missile"
+                        },
+                        "East": {
+                            "old_door_type": "SeekerMissile",
+                            "new_door_type": "Missile"
+                        }
+                    },
+                    "layers": {},
+                    "low_memory_mode": false
+                },
+                "Reliquary Access": {
+                    "elevators": [],
+                    "docks": {
+                        "West": {
+                            "old_door_type": "SeekerMissile",
+                            "new_door_type": "Missile"
+                        },
+                        "South": {
+                            "old_door_type": "Light",
+                            "new_door_type": "Normal"
+                        }
+                    },
+                    "layers": {},
+                    "low_memory_mode": false
+                },
+                "Reliquary Grounds": {
+                    "elevators": [],
+                    "docks": {
+                        "North": {
+                            "old_door_type": "Light",
+                            "new_door_type": "Normal"
+                        },
+                        "South_Top": {
+                            "old_door_type": "Normal",
+                            "new_door_type": "PowerBomb"
+                        }
+                    },
+                    "layers": {},
+                    "low_memory_mode": false
+                },
+                "Ing Reliquary": {
+                    "elevators": [],
+                    "docks": {
+                        "North_Top": {
+                            "old_door_type": "Normal",
+                            "new_door_type": "PowerBomb"
+                        }
+                    },
+                    "layers": {},
+                    "low_memory_mode": false
+                },
+                "Temple Transport C": {
+                    "elevators": [
+                        {
+                            "instance_id": 589851,
+                            "target_assets": {
+                                "world_asset_id": 1119434212,
+                                "area_asset_id": 2806956034
+                            },
+                            "target_strg": 1116828519,
+                            "target_name": "Agon Portal Access"
+                        }
+                    ],
+                    "docks": {},
+                    "layers": {},
+                    "new_name": "Transport to Agon Portal Access"
+                },
+                "Transport to Agon Wastes": {
+                    "elevators": [
+                        {
+                            "instance_id": 1572998,
+                            "target_assets": {
+                                "world_asset_id": 1039999561,
+                                "area_asset_id": 1868895730
+                            },
+                            "target_strg": 1177189496,
+                            "target_name": "Torvus Entrance"
+                        }
+                    ],
+                    "docks": {},
+                    "layers": {},
+                    "new_name": "Transport to Torvus Entrance"
+                },
+                "Transport to Sanctuary Fortress": {
+                    "elevators": [
+                        {
+                            "instance_id": 3342446,
+                            "target_assets": {
+                                "world_asset_id": 464164546,
+                                "area_asset_id": 3528156989
+                            },
+                            "target_strg": 2363755252,
+                            "target_name": "Sanctuary Entrance"
+                        }
+                    ],
+                    "docks": {},
+                    "layers": {},
+                    "new_name": "Transport to Sanctuary Entrance"
+                },
+                "Temple Transport A": {
+                    "elevators": [
+                        {
+                            "instance_id": 3538975,
+                            "target_assets": {
+                                "world_asset_id": 1119434212,
+                                "area_asset_id": 1473133138
+                            },
+                            "target_strg": 2155694422,
+                            "target_name": "Agon Entrance"
+                        }
+                    ],
+                    "docks": {},
+                    "layers": {},
+                    "new_name": "Transport to Agon Entrance"
+                }
+            }
+        },
+        "Agon Wastes": {
+            "areas": {
+                "Security Station B": {
+                    "elevators": [],
+                    "docks": {
+                        "South_Observation": {
+                            "old_door_type": "Missile",
+                            "new_door_type": "Normal"
+                        },
+                        "North": {
+                            "old_door_type": "Dark",
+                            "new_door_type": "Normal"
+                        }
+                    },
+                    "layers": {
+                        "1st Pass": false,
+                        "2nd Pass": true
+                    },
+                    "low_memory_mode": false
+                },
+                "Transport to Temple Grounds": {
+                    "elevators": [
+                        {
+                            "instance_id": 122,
+                            "target_assets": {
+                                "world_asset_id": 1006255871,
+                                "area_asset_id": 1345979968
+                            },
+                            "target_strg": 2084247194,
+                            "target_name": "Sanctuary Quadrant"
+                        }
+                    ],
+                    "docks": {
+                        "East": {
+                            "old_door_type": "Normal",
+                            "new_door_type": "PowerBomb"
+                        }
+                    },
+                    "layers": {},
+                    "low_memory_mode": false,
+                    "new_name": "Transport to Sanctuary Quadrant"
+                },
+                "Plaza Access": {
+                    "elevators": [],
+                    "docks": {
+                        "West": {
+                            "old_door_type": "Normal",
+                            "new_door_type": "PowerBomb"
+                        }
+                    },
+                    "layers": {},
+                    "low_memory_mode": false
+                },
+                "Mining Plaza": {
+                    "elevators": [],
+                    "docks": {
+                        "North": {
+                            "old_door_type": "Normal",
+                            "new_door_type": "Annihilator"
+                        },
+                        "South": {
+                            "old_door_type": "Missile",
+                            "new_door_type": "Normal"
+                        }
+                    },
+                    "layers": {},
+                    "low_memory_mode": false
+                },
+                "Transit Station": {
+                    "elevators": [],
+                    "docks": {
+                        "South": {
+                            "old_door_type": "Normal",
+                            "new_door_type": "Annihilator"
+                        }
+                    },
+                    "layers": {},
+                    "low_memory_mode": false
+                },
+                "Save Station A": {
+                    "elevators": [],
+                    "docks": {
+                        "East": {
+                            "old_door_type": "Normal",
+                            "new_door_type": "Normal"
+                        },
+                        "North": {
+                            "old_door_type": "Missile",
+                            "new_door_type": "Normal"
+                        }
+                    },
+                    "layers": {},
+                    "low_memory_mode": false
+                },
+                "Duelling Range": {
+                    "elevators": [],
+                    "docks": {
+                        "South": {
+                            "old_door_type": "Normal",
+                            "new_door_type": "Normal"
+                        },
+                        "West": {
+                            "old_door_type": "Dark",
+                            "new_door_type": "Normal"
+                        }
+                    },
+                    "layers": {},
+                    "low_memory_mode": false
+                },
+                "Mining Station B": {
+                    "elevators": [],
+                    "docks": {
+                        "Docks_SouthLower": {
+                            "old_door_type": "Light",
+                            "new_door_type": "Annihilator"
+                        },
+                        "East": {
+                            "old_door_type": "SeekerMissile",
+                            "new_door_type": "Normal"
+                        }
+                    },
+                    "layers": {},
+                    "low_memory_mode": false
+                },
+                "Transport Center": {
+                    "elevators": [],
+                    "docks": {
+                        "West": {
+                            "old_door_type": "Normal",
+                            "new_door_type": "Normal"
+                        },
+                        "South": {
+                            "old_door_type": "SeekerMissile",
+                            "new_door_type": "Normal"
+                        }
+                    },
+                    "layers": {},
+                    "low_memory_mode": false
+                },
+                "Mining Station A": {
+                    "elevators": [],
+                    "docks": {
+                        "East1": {
+                            "old_door_type": "Normal",
+                            "new_door_type": "Missile"
+                        },
+                        "South1": {
+                            "old_door_type": "Normal",
+                            "new_door_type": "PowerBomb"
+                        }
+                    },
+                    "layers": {},
+                    "low_memory_mode": false
+                },
+                "Save Station 2": {
+                    "elevators": [],
+                    "docks": {
+                        "North": {
+                            "old_door_type": "Normal",
+                            "new_door_type": "Normal"
+                        },
+                        "East": {
+                            "old_door_type": "Missile",
+                            "new_door_type": "Normal"
+                        }
+                    },
+                    "layers": {},
+                    "low_memory_mode": false
+                },
+                "Ing Cache 4": {
+                    "elevators": [],
+                    "docks": {
+                        "East": {
+                            "old_door_type": "Dark",
+                            "new_door_type": "Normal"
+                        }
+                    },
+                    "layers": {},
+                    "low_memory_mode": false
+                },
+                "Storage A": {
+                    "elevators": [],
+                    "docks": {
+                        "North": {
+                            "old_door_type": "Normal",
+                            "new_door_type": "Annihilator"
+                        }
+                    },
+                    "layers": {},
+                    "low_memory_mode": false
+                },
+                "Mine Shaft": {
+                    "elevators": [],
+                    "docks": {
+                        "East": {
+                            "old_door_type": "Dark",
+                            "new_door_type": "Normal"
+                        },
+                        "West": {
+                            "old_door_type": "SeekerMissile",
+                            "new_door_type": "Normal"
+                        }
+                    },
+                    "layers": {},
+                    "low_memory_mode": false
+                },
+                "Portal Terminal": {
+                    "elevators": [],
+                    "docks": {
+                        "North": {
+                            "old_door_type": "Normal",
+                            "new_door_type": "SeekerMissile"
+                        }
+                    },
+                    "layers": {},
+                    "low_memory_mode": false
+                },
+                "Transport to Torvus Bog": {
+                    "elevators": [
+                        {
+                            "instance_id": 1245307,
+                            "target_assets": {
+                                "world_asset_id": 1006255871,
+                                "area_asset_id": 2918020398
+                            },
+                            "target_strg": 3549584208,
+                            "target_name": "Torvus Quadrant"
+                        }
+                    ],
+                    "docks": {
+                        "Dock - North": {
+                            "old_door_type": "SeekerMissile",
+                            "new_door_type": "Normal"
+                        }
+                    },
+                    "layers": {},
+                    "low_memory_mode": false,
+                    "new_name": "Transport to Torvus Quadrant"
+                },
+                "Crossroads": {
+                    "elevators": [],
+                    "docks": {
+                        "West": {
+                            "old_door_type": "Missile",
+                            "new_door_type": "Normal"
+                        }
+                    },
+                    "layers": {},
+                    "low_memory_mode": false
+                },
+                "Temple Access": {
+                    "elevators": [],
+                    "docks": {
+                        "North": {
+                            "old_door_type": "Normal",
+                            "new_door_type": "Missile"
+                        },
+                        "South": {
+                            "old_door_type": "Normal",
+                            "new_door_type": "Missile"
+                        }
+                    },
+                    "layers": {},
+                    "low_memory_mode": false
+                },
+                "Central Station Access": {
+                    "elevators": [],
+                    "docks": {
+                        "West": {
+                            "old_door_type": "Normal",
+                            "new_door_type": "Missile"
+                        },
+                        "East": {
+                            "old_door_type": "Missile",
+                            "new_door_type": "Normal"
+                        }
+                    },
+                    "layers": {},
+                    "low_memory_mode": false
+                },
+                "Portal Access A": {
+                    "elevators": [],
+                    "docks": {
+                        "South": {
+                            "old_door_type": "Normal",
+                            "new_door_type": "SeekerMissile"
+                        },
+                        "North": {
+                            "old_door_type": "Normal",
+                            "new_door_type": "PowerBomb"
+                        }
+                    },
+                    "layers": {},
+                    "low_memory_mode": false
+                },
+                "Judgment Pit": {
+                    "elevators": [],
+                    "docks": {
+                        "North": {
+                            "old_door_type": "Missile",
+                            "new_door_type": "SeekerMissile"
+                        },
+                        "South_save": {
+                            "old_door_type": "Dark",
+                            "new_door_type": "Normal"
+                        },
+                        "East1": {
+                            "old_door_type": "SuperMissile",
+                            "new_door_type": "Normal"
+                        }
+                    },
+                    "layers": {},
+                    "low_memory_mode": false
+                },
+                "Agon Temple": {
+                    "elevators": [],
+                    "docks": {
+                        "West": {
+                            "old_door_type": "Dark",
+                            "new_door_type": "Normal"
+                        },
+                        "South": {
+                            "old_door_type": "Normal",
+                            "new_door_type": "Missile"
+                        },
+                        "North": {
+                            "old_door_type": "Normal",
+                            "new_door_type": "Dark"
+                        },
+                        "East": {
+                            "old_door_type": "Light",
+                            "new_door_type": "Normal"
+                        }
+                    },
+                    "layers": {},
+                    "low_memory_mode": false
+                },
+                "Central Mining Station": {
+                    "elevators": [],
+                    "docks": {
+                        "East_Upper": {
+                            "old_door_type": "Light",
+                            "new_door_type": "PowerBomb"
+                        },
+                        "West": {
+                            "old_door_type": "Missile",
+                            "new_door_type": "Normal"
+                        }
+                    },
+                    "layers": {},
+                    "low_memory_mode": false
+                },
+                "Dark Agon Temple Access": {
+                    "elevators": [],
+                    "docks": {
+                        "South": {
+                            "old_door_type": "Missile",
+                            "new_door_type": "SeekerMissile"
+                        }
+                    },
+                    "layers": {},
+                    "low_memory_mode": false
+                },
+                "Warrior's Walk": {
+                    "elevators": [],
+                    "docks": {
+                        "West": {
+                            "old_door_type": "SuperMissile",
+                            "new_door_type": "Normal"
+                        },
+                        "East": {
+                            "old_door_type": "SuperMissile",
+                            "new_door_type": "Normal"
+                        }
+                    },
+                    "layers": {},
+                    "low_memory_mode": false
+                },
+                "Save Station 1": {
+                    "elevators": [],
+                    "docks": {
+                        "North": {
+                            "old_door_type": "Dark",
+                            "new_door_type": "Normal"
+                        }
+                    },
+                    "layers": {},
+                    "low_memory_mode": false
+                },
+                "Controller Access": {
+                    "elevators": [],
+                    "docks": {
+                        "North": {
+                            "old_door_type": "Normal",
+                            "new_door_type": "PowerBomb"
+                        },
+                        "South1": {
+                            "old_door_type": "Normal",
+                            "new_door_type": "Dark"
+                        }
+                    },
+                    "layers": {},
+                    "low_memory_mode": false
+                },
+                "Sandcanyon": {
+                    "elevators": [],
+                    "docks": {
+                        "East": {
+                            "old_door_type": "Normal",
+                            "new_door_type": "Dark"
+                        },
+                        "West": {
+                            "old_door_type": "Light",
+                            "new_door_type": "Normal"
+                        }
+                    },
+                    "layers": {},
+                    "low_memory_mode": false
+                },
+                "Command Center Access": {
+                    "elevators": [],
+                    "docks": {
+                        "EastLowerDoor": {
+                            "old_door_type": "Dark",
+                            "new_door_type": "Normal"
+                        },
+                        "West_Upper": {
+                            "old_door_type": "Light",
+                            "new_door_type": "PowerBomb"
+                        },
+                        "EastUpperDoor": {
+                            "old_door_type": "Light",
+                            "new_door_type": "Annihilator"
+                        }
+                    },
+                    "layers": {},
+                    "low_memory_mode": false
+                },
+                "Battleground": {
+                    "elevators": [],
+                    "docks": {
+                        "East_Upper": {
+                            "old_door_type": "Light",
+                            "new_door_type": "Normal"
+                        },
+                        "East_Lower": {
+                            "old_door_type": "Light",
+                            "new_door_type": "Disabled"
+                        },
+                        "West": {
+                            "old_door_type": "SuperMissile",
+                            "new_door_type": "Normal"
+                        }
+                    },
+                    "layers": {},
+                    "low_memory_mode": false
+                },
+                "Agon Energy Controller": {
+                    "elevators": [],
+                    "docks": {
+                        "South": {
+                            "old_door_type": "Normal",
+                            "new_door_type": "PowerBomb"
+                        }
+                    },
+                    "layers": {},
+                    "low_memory_mode": false
+                },
+                "Ventilation Area A": {
+                    "elevators": [],
+                    "docks": {
+                        "docks_North": {
+                            "old_door_type": "PowerBomb",
+                            "new_door_type": "Annihilator"
+                        },
+                        "docks_West": {
+                            "old_door_type": "Normal",
+                            "new_door_type": "Dark"
+                        },
+                        "docks_docks_East": {
+                            "old_door_type": "Light",
+                            "new_door_type": "PowerBomb"
+                        }
+                    },
+                    "layers": {},
+                    "low_memory_mode": false
+                },
+                "Command Center": {
+                    "elevators": [],
+                    "docks": {
+                        "WestUpperDoor": {
+                            "old_door_type": "Light",
+                            "new_door_type": "Annihilator"
+                        },
+                        "South": {
+                            "old_door_type": "Normal",
+                            "new_door_type": "Dark"
+                        },
+                        "WestLowerDoor": {
+                            "old_door_type": "Dark",
+                            "new_door_type": "Normal"
+                        },
+                        "NorthObservation": {
+                            "old_door_type": "Missile",
+                            "new_door_type": "Normal"
+                        }
+                    },
+                    "layers": {},
+                    "low_memory_mode": false
+                },
+                "Double Path": {
+                    "elevators": [],
+                    "docks": {
+                        "West_Lower": {
+                            "old_door_type": "Light",
+                            "new_door_type": "Disabled"
+                        },
+                        "West_Upper": {
+                            "old_door_type": "Light",
+                            "new_door_type": "Normal"
+                        },
+                        "EastUpperDoor": {
+                            "old_door_type": "Dark",
+                            "new_door_type": "Normal"
+                        },
+                        "EastLowerDoor": {
+                            "old_door_type": "Light",
+                            "new_door_type": "Normal"
+                        }
+                    },
+                    "layers": {},
+                    "low_memory_mode": false
+                },
+                "Transport to Sanctuary Fortress": {
+                    "elevators": [
+                        {
+                            "instance_id": 2949235,
+                            "target_assets": {
+                                "world_asset_id": 1006255871,
+                                "area_asset_id": 1287880522
+                            },
+                            "target_strg": 3069534230,
+                            "target_name": "Agon Quadrant"
+                        }
+                    ],
+                    "docks": {
+                        "Dock - South": {
+                            "old_door_type": "PowerBomb",
+                            "new_door_type": "Annihilator"
+                        }
+                    },
+                    "layers": {},
+                    "low_memory_mode": false,
+                    "new_name": "Transport to Agon Quadrant"
+                },
+                "Main Reactor": {
+                    "elevators": [],
+                    "docks": {
+                        "West_TopNorth": {
+                            "old_door_type": "Light",
+                            "new_door_type": "PowerBomb"
+                        },
+                        "East_TopSouth": {
+                            "old_door_type": "Normal",
+                            "new_door_type": "PowerBomb"
+                        },
+                        "West_TopSouth": {
+                            "old_door_type": "Normal",
+                            "new_door_type": "Dark"
+                        },
+                        "Docks_Docks_Docks_South": {
+                            "old_door_type": "Dark",
+                            "new_door_type": "Normal"
+                        }
+                    },
+                    "layers": {},
+                    "low_memory_mode": true
+                },
+                "Biostorage Access": {
+                    "elevators": [],
+                    "docks": {
+                        "North": {
+                            "old_door_type": "Normal",
+                            "new_door_type": "Dark"
+                        },
+                        "South": {
+                            "old_door_type": "Missile",
+                            "new_door_type": "Annihilator"
+                        }
+                    },
+                    "layers": {},
+                    "low_memory_mode": false
+                },
+                "Doomed Entry": {
+                    "elevators": [],
+                    "docks": {
+                        "WestLowerDoor": {
+                            "old_door_type": "Light",
+                            "new_door_type": "Normal"
+                        },
+                        "WestUpperDoor": {
+                            "old_door_type": "Dark",
+                            "new_door_type": "Normal"
+                        },
+                        "NorthObservation": {
+                            "old_door_type": "Dark",
+                            "new_door_type": "PowerBomb"
+                        },
+                        "South": {
+                            "old_door_type": "Light",
+                            "new_door_type": "Dark"
+                        }
+                    },
+                    "layers": {},
+                    "low_memory_mode": false
+                },
+                "Sand Processing": {
+                    "elevators": [],
+                    "docks": {
+                        "West": {
+                            "old_door_type": "Normal",
+                            "new_door_type": "PowerBomb"
+                        },
+                        "East": {
+                            "old_door_type": "Normal",
+                            "new_door_type": "Normal"
+                        }
+                    },
+                    "layers": {},
+                    "low_memory_mode": false
+                },
+                "Dark Oasis": {
+                    "elevators": [],
+                    "docks": {
+                        "East_TopSouth": {
+                            "old_door_type": "Normal",
+                            "new_door_type": "Dark"
+                        },
+                        "West_TopSouth": {
+                            "old_door_type": "Light",
+                            "new_door_type": "Missile"
+                        }
+                    },
+                    "layers": {},
+                    "low_memory_mode": false
+                },
+                "Biostorage Station": {
+                    "elevators": [],
+                    "docks": {
+                        "East": {
+                            "old_door_type": "Normal",
+                            "new_door_type": "PowerBomb"
+                        },
+                        "North": {
+                            "old_door_type": "Missile",
+                            "new_door_type": "Annihilator"
+                        },
+                        "West": {
+                            "old_door_type": "Dark",
+                            "new_door_type": "Normal"
+                        }
+                    },
+                    "layers": {},
+                    "low_memory_mode": false
+                },
+                "Feeding Pit Access": {
+                    "elevators": [],
+                    "docks": {
+                        "South": {
+                            "old_door_type": "Light",
+                            "new_door_type": "Missile"
+                        },
+                        "North": {
+                            "old_door_type": "Light",
+                            "new_door_type": "Dark"
+                        }
+                    },
+                    "layers": {},
+                    "low_memory_mode": false
+                },
+                "Oasis Access": {
+                    "elevators": [],
+                    "docks": {
+                        "South_Observation": {
+                            "old_door_type": "Dark",
+                            "new_door_type": "PowerBomb"
+                        }
+                    },
+                    "layers": {},
+                    "low_memory_mode": false
+                },
+                "Save Station C": {
+                    "elevators": [],
+                    "docks": {
+                        "West": {
+                            "old_door_type": "Normal",
+                            "new_door_type": "Normal"
+                        },
+                        "South": {
+                            "old_door_type": "Missile",
+                            "new_door_type": "Normal"
+                        }
+                    },
+                    "layers": {},
+                    "low_memory_mode": false
+                },
+                "Hall of Stairs": {
+                    "elevators": [],
+                    "docks": {
+                        "East": {
+                            "old_door_type": "Missile",
+                            "new_door_type": "Normal"
+                        },
+                        "West": {
+                            "old_door_type": "Normal",
+                            "new_door_type": "Dark"
+                        }
+                    },
+                    "layers": {},
+                    "low_memory_mode": false
+                },
+                "Ing Cache 3": {
+                    "elevators": [],
+                    "docks": {
+                        "East": {
+                            "old_door_type": "Light",
+                            "new_door_type": "Missile"
+                        }
+                    },
+                    "layers": {},
+                    "low_memory_mode": false
+                },
+                "Security Station A": {
+                    "elevators": [],
+                    "docks": {
+                        "West": {
+                            "old_door_type": "Normal",
+                            "new_door_type": "PowerBomb"
+                        },
+                        "North": {
+                            "old_door_type": "Normal",
+                            "new_door_type": "Dark"
+                        }
+                    },
+                    "layers": {},
+                    "low_memory_mode": false
+                },
+                "Storage B": {
+                    "elevators": [],
+                    "docks": {
+                        "East": {
+                            "old_door_type": "Dark",
+                            "new_door_type": "Normal"
+                        }
+                    },
+                    "layers": {},
+                    "low_memory_mode": false
+                },
+                "Feeding Pit": {
+                    "elevators": [],
+                    "docks": {
+                        "North": {
+                            "old_door_type": "Light",
+                            "new_door_type": "Missile"
+                        },
+                        "West": {
+                            "old_door_type": "Dark",
+                            "new_door_type": "Missile"
+                        },
+                        "East": {
+                            "old_door_type": "Missile",
+                            "new_door_type": "Annihilator"
+                        }
+                    },
+                    "layers": {},
+                    "low_memory_mode": false
+                },
+                "Ventilation Area B": {
+                    "elevators": [],
+                    "docks": {
+                        "North": {
+                            "old_door_type": "Missile",
+                            "new_door_type": "Normal"
+                        },
+                        "South": {
+                            "old_door_type": "Normal",
+                            "new_door_type": "Disabled"
+                        }
+                    },
+                    "layers": {},
+                    "low_memory_mode": false
+                },
+                "Save Station 3": {
+                    "elevators": [],
+                    "docks": {
+                        "South": {
+                            "old_door_type": "Normal",
+                            "new_door_type": "Normal"
+                        },
+                        "West": {
+                            "old_door_type": "Missile",
+                            "new_door_type": "Normal"
+                        }
+                    },
+                    "layers": {},
+                    "low_memory_mode": false
+                },
+                "Bioenergy Production": {
+                    "elevators": [],
+                    "docks": {
+                        "East": {
+                            "old_door_type": "SuperMissile",
+                            "new_door_type": "Normal"
+                        },
+                        "South": {
+                            "old_door_type": "Normal",
+                            "new_door_type": "Dark"
+                        },
+                        "North": {
+                            "old_door_type": "Normal",
+                            "new_door_type": "Disabled"
+                        }
+                    },
+                    "layers": {},
+                    "low_memory_mode": false
+                },
+                "Watering Hole": {
+                    "elevators": [],
+                    "docks": {
+                        "North": {
+                            "old_door_type": "Normal",
+                            "new_door_type": "Dark"
+                        },
+                        "West": {
+                            "old_door_type": "Missile",
+                            "new_door_type": "Annihilator"
+                        }
+                    },
+                    "layers": {},
+                    "low_memory_mode": false
+                },
+                "Ing Cache 1": {
+                    "elevators": [],
+                    "docks": {
+                        "East": {
+                            "old_door_type": "Light",
+                            "new_door_type": "Missile"
+                        }
+                    },
+                    "layers": {},
+                    "low_memory_mode": false
+                },
+                "Bitter Well": {
+                    "elevators": [],
+                    "docks": {
+                        "South": {
+                            "old_door_type": "Normal",
+                            "new_door_type": "SonicBoom"
+                        },
+                        "North": {
+                            "old_door_type": "Normal",
+                            "new_door_type": "Normal"
+                        }
+                    },
+                    "layers": {},
+                    "low_memory_mode": false
+                },
+                "Storage C": {
+                    "elevators": [],
+                    "docks": {
+                        "West": {
+                            "old_door_type": "SuperMissile",
+                            "new_door_type": "Normal"
+                        }
+                    },
+                    "layers": {},
+                    "low_memory_mode": false
+                },
+                "Phazon Site": {
+                    "elevators": [],
+                    "docks": {
+                        "South": {
+                            "old_door_type": "Normal",
+                            "new_door_type": "Dark"
+                        },
+                        "North": {
+                            "old_door_type": "Normal",
+                            "new_door_type": "SonicBoom"
+                        },
+                        "East": {
+                            "old_door_type": "Annihilator",
+                            "new_door_type": "SonicBoom"
+                        }
+                    },
+                    "layers": {},
+                    "low_memory_mode": false
+                },
+                "Ing Cache 2": {
+                    "elevators": [],
+                    "docks": {
+                        "West": {
+                            "old_door_type": "Annihilator",
+                            "new_door_type": "SonicBoom"
+                        }
+                    },
+                    "layers": {},
+                    "low_memory_mode": false
+                }
+            }
+        },
+        "Great Temple": {
+            "areas": {
+                "Temple Transport A": {
+                    "elevators": [
+                        {
+                            "instance_id": 152,
+                            "target_assets": {
+                                "world_asset_id": 1006255871,
+                                "area_asset_id": 2889020216
+                            },
+                            "target_strg": 827726881,
+                            "target_name": "Torvus Gate"
+                        }
+                    ],
+                    "docks": {
+                        "South": {
+                            "old_door_type": "Normal",
+                            "new_door_type": "SonicBoom"
+                        }
+                    },
+                    "layers": {},
+                    "low_memory_mode": false,
+                    "new_name": "Transport to Torvus Gate"
+                },
+                "Transport A Access": {
+                    "elevators": [],
+                    "docks": {
+                        "North": {
+                            "old_door_type": "Normal",
+                            "new_door_type": "SonicBoom"
+                        }
+                    },
+                    "layers": {},
+                    "low_memory_mode": false
+                },
+                "Temple Sanctuary": {
+                    "elevators": [],
+                    "docks": {
+                        "South": {
+                            "old_door_type": "Normal",
+                            "new_door_type": "SuperMissile"
+                        }
+                    },
+                    "layers": {},
+                    "low_memory_mode": false
+                },
+                "Transport C Access": {
+                    "elevators": [],
+                    "docks": {
+                        "West": {
+                            "old_door_type": "Normal",
+                            "new_door_type": "Light"
+                        }
+                    },
+                    "layers": {},
+                    "low_memory_mode": false
+                },
+                "Controller Transport": {
+                    "elevators": [],
+                    "docks": {
+                        "NorthBottom": {
+                            "old_door_type": "Normal",
+                            "new_door_type": "SuperMissile"
+                        },
+                        "NorthTop": {
+                            "old_door_type": "Normal",
+                            "new_door_type": "Sunburst"
+                        }
+                    },
+                    "layers": {},
+                    "low_memory_mode": false
+                },
+                "Temple Transport C": {
+                    "elevators": [
+                        {
+                            "instance_id": 393260,
+                            "target_assets": {
+                                "world_asset_id": 464164546,
+                                "area_asset_id": 3145160350
+                            },
+                            "target_strg": 1430348762,
+                            "target_name": "Sanctuary Vault side"
+                        }
+                    ],
+                    "docks": {
+                        "East": {
+                            "old_door_type": "Normal",
+                            "new_door_type": "Light"
+                        }
+                    },
+                    "layers": {},
+                    "low_memory_mode": false,
+                    "new_name": "Transport to Sanctuary Vault side"
+                },
+                "Main Energy Controller": {
+                    "elevators": [],
+                    "docks": {
+                        "SouthLight": {
+                            "old_door_type": "Normal",
+                            "new_door_type": "Sunburst"
+                        }
+                    },
+                    "layers": {},
+                    "low_memory_mode": false
+                },
+                "Temple Transport B": {
+                    "elevators": [
+                        {
+                            "instance_id": 524321,
+                            "target_assets": {
+                                "world_asset_id": 1039999561,
+                                "area_asset_id": 3205424168
+                            },
+                            "target_strg": 2113337837,
+                            "target_name": "Lower Torvus Access"
+                        }
+                    ],
+                    "docks": {},
+                    "layers": {},
+                    "new_name": "Transport to Lower Torvus Access"
+                },
+                "Sky Temple Energy Controller": {
+                    "elevators": [
+                        {
+                            "instance_id": 589949,
+                            "target_assets": {
+                                "world_asset_id": 1006255871,
+                                "area_asset_id": 2278776548
+                            },
+                            "target_strg": null,
+                            "target_name": "Sky Temple Grounds - Sky Temple Gateway"
+                        }
+                    ],
+                    "docks": {},
+                    "layers": {},
+                    "new_name": "Sky Temple Energy Controller"
+                }
+            }
+        },
+        "Torvus Bog": {
+            "areas": {
+                "Transport to Temple Grounds": {
+                    "elevators": [
+                        {
+                            "instance_id": 129,
+                            "target_assets": {
+                                "world_asset_id": 1006255871,
+                                "area_asset_id": 1660916974
+                            },
+                            "target_strg": 3964483773,
+                            "target_name": "Agon Gate"
+                        }
+                    ],
+                    "docks": {
+                        "West": {
+                            "old_door_type": "Normal",
+                            "new_door_type": "PowerBomb"
+                        }
+                    },
+                    "layers": {},
+                    "low_memory_mode": false,
+                    "new_name": "Transport to Agon Gate"
+                },
+                "Temple Transport Access": {
+                    "elevators": [],
+                    "docks": {
+                        "East": {
+                            "old_door_type": "Normal",
+                            "new_door_type": "PowerBomb"
+                        },
+                        "West": {
+                            "old_door_type": "Normal",
+                            "new_door_type": "PowerBomb"
+                        }
+                    },
+                    "layers": {},
+                    "low_memory_mode": false
+                },
+                "Torvus Lagoon": {
+                    "elevators": [],
+                    "docks": {
+                        "East (0A_Hall)": {
+                            "old_door_type": "Normal",
+                            "new_door_type": "PowerBomb"
+                        },
+                        "South (00_Pickup)": {
+                            "old_door_type": "Missile",
+                            "new_door_type": "Normal"
+                        },
+                        "SouthLower (0B_Hall)": {
+                            "old_door_type": "Dark",
+                            "new_door_type": "PowerBomb"
+                        },
+                        "NorthUpper (0D_Hall)": {
+                            "old_door_type": "Light",
+                            "new_door_type": "Darkburst"
+                        }
+                    },
+                    "layers": {},
+                    "low_memory_mode": false
+                },
+                "Ruined Alcove": {
+                    "elevators": [],
+                    "docks": {
+                        "South": {
+                            "old_door_type": "Light",
+                            "new_door_type": "Darkburst"
+                        },
+                        "West": {
+                            "old_door_type": "Light",
+                            "new_door_type": "Normal"
+                        }
+                    },
+                    "layers": {},
+                    "low_memory_mode": false
+                },
+                "Path of Roots": {
+                    "elevators": [],
+                    "docks": {
+                        "North": {
+                            "old_door_type": "Dark",
+                            "new_door_type": "PowerBomb"
+                        }
+                    },
+                    "layers": {},
+                    "low_memory_mode": false
+                },
+                "Save Station A": {
+                    "elevators": [],
+                    "docks": {
+                        "North": {
+                            "old_door_type": "Normal",
+                            "new_door_type": "Normal"
+                        }
+                    },
+                    "layers": {},
+                    "low_memory_mode": false
+                },
+                "Forgotten Bridge": {
+                    "elevators": [],
+                    "docks": {
+                        "East": {
+                            "old_door_type": "Light",
+                            "new_door_type": "Normal"
+                        },
+                        "West": {
+                            "old_door_type": "Dark",
+                            "new_door_type": "Normal"
+                        },
+                        "South": {
+                            "old_door_type": "Normal",
+                            "new_door_type": "Light"
+                        }
+                    },
+                    "layers": {},
+                    "low_memory_mode": false
+                },
+                "Portal Chamber (Dark)": {
+                    "elevators": [],
+                    "docks": {
+                        "West": {
+                            "old_door_type": "Dark",
+                            "new_door_type": "Normal"
+                        },
+                        "East": {
+                            "old_door_type": "Normal",
+                            "new_door_type": "SuperMissile"
+                        }
+                    },
+                    "layers": {},
+                    "low_memory_mode": false
+                },
+                "Great Bridge": {
+                    "elevators": [],
+                    "docks": {
+                        "WestUpper": {
+                            "old_door_type": "Dark",
+                            "new_door_type": "SonicBoom"
+                        },
+                        "North": {
+                            "old_door_type": "Light",
+                            "new_door_type": "SeekerMissile"
+                        },
+                        "EastC": {
+                            "old_door_type": "Missile",
+                            "new_door_type": "Normal"
+                        },
+                        "WestLower": {
+                            "old_door_type": "Normal",
+                            "new_door_type": "Darkburst"
+                        }
+                    },
+                    "layers": {},
+                    "low_memory_mode": false
+                },
+                "Plaza Access": {
+                    "elevators": [],
+                    "docks": {
+                        "North": {
+                            "old_door_type": "Normal",
+                            "new_door_type": "Darkburst"
+                        },
+                        "South": {
+                            "old_door_type": "Normal",
+                            "new_door_type": "Missile"
+                        }
+                    },
+                    "layers": {},
+                    "low_memory_mode": false
+                },
+                "Abandoned Worksite": {
+                    "elevators": [],
+                    "docks": {
+                        "South": {
+                            "old_door_type": "Light",
+                            "new_door_type": "SeekerMissile"
+                        },
+                        "North": {
+                            "old_door_type": "Normal",
+                            "new_door_type": "Light"
+                        }
+                    },
+                    "layers": {},
+                    "low_memory_mode": false
+                },
+                "Dark Forgotten Bridge": {
+                    "elevators": [],
+                    "docks": {
+                        "South": {
+                            "old_door_type": "SuperMissile",
+                            "new_door_type": "Annihilator"
+                        },
+                        "West": {
+                            "old_door_type": "Normal",
+                            "new_door_type": "PowerBomb"
+                        },
+                        "East": {
+                            "old_door_type": "PowerBomb",
+                            "new_door_type": "Missile"
+                        },
+                        "North": {
+                            "old_door_type": "Light",
+                            "new_door_type": "SeekerMissile"
+                        }
+                    },
+                    "layers": {},
+                    "low_memory_mode": false
+                },
+                "Grove Access": {
+                    "elevators": [],
+                    "docks": {
+                        "West": {
+                            "old_door_type": "Dark",
+                            "new_door_type": "Normal"
+                        },
+                        "East": {
+                            "old_door_type": "Dark",
+                            "new_door_type": "Normal"
+                        }
+                    },
+                    "layers": {},
+                    "low_memory_mode": false
+                },
+                "Poisoned Bog": {
+                    "elevators": [],
+                    "docks": {
+                        "NorthUpper": {
+                            "old_door_type": "PowerBomb",
+                            "new_door_type": "Light"
+                        },
+                        "South": {
+                            "old_door_type": "SeekerMissile",
+                            "new_door_type": "Normal"
+                        },
+                        "West": {
+                            "old_door_type": "Normal",
+                            "new_door_type": "SuperMissile"
+                        }
+                    },
+                    "layers": {},
+                    "low_memory_mode": false
+                },
+                "Venomous Pond": {
+                    "elevators": [],
+                    "docks": {
+                        "Docks_SouthUpper1": {
+                            "old_door_type": "Missile",
+                            "new_door_type": "Normal"
+                        },
+                        "North": {
+                            "old_door_type": "Normal",
+                            "new_door_type": "SeekerMissile"
+                        },
+                        "WestLower": {
+                            "old_door_type": "Light",
+                            "new_door_type": "Normal"
+                        },
+                        "EastC": {
+                            "old_door_type": "Dark",
+                            "new_door_type": "Normal"
+                        }
+                    },
+                    "layers": {},
+                    "low_memory_mode": false
+                },
+                "Temple Access": {
+                    "elevators": [],
+                    "docks": {
+                        "Easttop": {
+                            "old_door_type": "Dark",
+                            "new_door_type": "SonicBoom"
+                        },
+                        "Eastbottom": {
+                            "old_door_type": "Normal",
+                            "new_door_type": "Darkburst"
+                        },
+                        "West": {
+                            "old_door_type": "SuperMissile",
+                            "new_door_type": "Annihilator"
+                        },
+                        "Westtop": {
+                            "old_door_type": "Dark",
+                            "new_door_type": "PowerBomb"
+                        }
+                    },
+                    "layers": {},
+                    "low_memory_mode": false
+                },
+                "Torvus Plaza": {
+                    "elevators": [],
+                    "docks": {
+                        "South": {
+                            "old_door_type": "Normal",
+                            "new_door_type": "Darkburst"
+                        }
+                    },
+                    "layers": {},
+                    "low_memory_mode": false
+                },
+                "Dark Arena Tunnel": {
+                    "elevators": [],
+                    "docks": {
+                        "South": {
+                            "old_door_type": "Light",
+                            "new_door_type": "SeekerMissile"
+                        },
+                        "North": {
+                            "old_door_type": "Normal",
+                            "new_door_type": "Annihilator"
+                        }
+                    },
+                    "layers": {},
+                    "low_memory_mode": false
+                },
+                "Putrid Alcove": {
+                    "elevators": [],
+                    "docks": {
+                        "South": {
+                            "old_door_type": "PowerBomb",
+                            "new_door_type": "Light"
+                        },
+                        "West": {
+                            "old_door_type": "PowerBomb",
+                            "new_door_type": "Missile"
+                        }
+                    },
+                    "layers": {},
+                    "low_memory_mode": false
+                },
+                "Brooding Ground": {
+                    "elevators": [],
+                    "docks": {
+                        "North": {
+                            "old_door_type": "SuperMissile",
+                            "new_door_type": "Annihilator"
+                        },
+                        "South": {
+                            "old_door_type": "Normal",
+                            "new_door_type": "SeekerMissile"
+                        }
+                    },
+                    "layers": {},
+                    "low_memory_mode": false
+                },
+                "Dark Falls": {
+                    "elevators": [],
+                    "docks": {
+                        "West": {
+                            "old_door_type": "Dark",
+                            "new_door_type": "Missile"
+                        },
+                        "East": {
+                            "old_door_type": "Normal",
+                            "new_door_type": "PowerBomb"
+                        }
+                    },
+                    "layers": {},
+                    "low_memory_mode": false
+                },
+                "Torvus Grove": {
+                    "elevators": [],
+                    "docks": {
+                        "East": {
+                            "old_door_type": "Dark",
+                            "new_door_type": "Normal"
+                        },
+                        "South": {
+                            "old_door_type": "Light",
+                            "new_door_type": "Normal"
+                        },
+                        "North": {
+                            "old_door_type": "Normal",
+                            "new_door_type": "SuperMissile"
+                        }
+                    },
+                    "layers": {},
+                    "low_memory_mode": false
+                },
+                "Dark Torvus Temple Access": {
+                    "elevators": [],
+                    "docks": {
+                        "Eastbottom": {
+                            "old_door_type": "Light",
+                            "new_door_type": "Normal"
+                        },
+                        "West": {
+                            "old_door_type": "Light",
+                            "new_door_type": "Annihilator"
+                        }
+                    },
+                    "layers": {},
+                    "low_memory_mode": false
+                },
+                "Save Station 1": {
+                    "elevators": [],
+                    "docks": {
+                        "Docks_Docks_North": {
+                            "old_door_type": "Normal",
+                            "new_door_type": "Normal"
+                        }
+                    },
+                    "layers": {},
+                    "low_memory_mode": false
+                },
+                "Torvus Temple": {
+                    "elevators": [],
+                    "docks": {
+                        "WestGenerator": {
+                            "old_door_type": "SuperMissile",
+                            "new_door_type": "Dark"
+                        },
+                        "NorthDoor": {
+                            "old_door_type": "Normal",
+                            "new_door_type": "SeekerMissile"
+                        },
+                        "EastTop": {
+                            "old_door_type": "Dark",
+                            "new_door_type": "PowerBomb"
+                        },
+                        "South": {
+                            "old_door_type": "SeekerMissile",
+                            "new_door_type": "SeekerMissile"
+                        },
+                        "East": {
+                            "old_door_type": "SuperMissile",
+                            "new_door_type": "Annihilator"
+                        },
+                        "West": {
+                            "old_door_type": "SuperMissile",
+                            "new_door_type": "Annihilator"
+                        }
+                    },
+                    "layers": {},
+                    "low_memory_mode": true
+                },
+                "Dark Torvus Arena": {
+                    "elevators": [],
+                    "docks": {
+                        "South": {
+                            "old_door_type": "Normal",
+                            "new_door_type": "Annihilator"
+                        }
+                    },
+                    "layers": {},
+                    "low_memory_mode": false
+                },
+                "Polluted Mire": {
+                    "elevators": [],
+                    "docks": {
+                        "East": {
+                            "old_door_type": "Dark",
+                            "new_door_type": "Missile"
+                        }
+                    },
+                    "layers": {},
+                    "low_memory_mode": false
+                },
+                "Underground Tunnel": {
+                    "elevators": [],
+                    "docks": {
+                        "South": {
+                            "old_door_type": "Normal",
+                            "new_door_type": "SeekerMissile"
+                        },
+                        "North": {
+                            "old_door_type": "Light",
+                            "new_door_type": "Normal"
+                        }
+                    },
+                    "layers": {},
+                    "low_memory_mode": false
+                },
+                "Meditation Vista": {
+                    "elevators": [],
+                    "docks": {
+                        "Docks_South": {
+                            "old_door_type": "Normal",
+                            "new_door_type": "SuperMissile"
+                        }
+                    },
+                    "layers": {},
+                    "low_memory_mode": false
+                },
+                "Dark Torvus Temple": {
+                    "elevators": [],
+                    "docks": {
+                        "East": {
+                            "old_door_type": "Light",
+                            "new_door_type": "Annihilator"
+                        },
+                        "West": {
+                            "old_door_type": "SuperMissile",
+                            "new_door_type": "Normal"
+                        }
+                    },
+                    "layers": {},
+                    "low_memory_mode": false
+                },
+                "Transport to Agon Wastes": {
+                    "elevators": [
+                        {
+                            "instance_id": 2162826,
+                            "target_assets": {
+                                "world_asset_id": 464164546,
+                                "area_asset_id": 900285955
+                            },
+                            "target_strg": 218734126,
+                            "target_name": "Sanctuary Spider side"
+                        }
+                    ],
+                    "docks": {
+                        "North": {
+                            "old_door_type": "SeekerMissile",
+                            "new_door_type": "SeekerMissile"
+                        }
+                    },
+                    "layers": {},
+                    "low_memory_mode": false,
+                    "new_name": "Transport to Sanctuary Spider side"
+                },
+                "Underground Transport": {
+                    "elevators": [],
+                    "docks": {
+                        "East_04 (Top)": {
+                            "old_door_type": "Normal",
+                            "new_door_type": "Annihilator"
+                        },
+                        "East_07 (Bottom)": {
+                            "old_door_type": "Normal",
+                            "new_door_type": "Light"
+                        }
+                    },
+                    "layers": {},
+                    "low_memory_mode": false
+                },
+                "Controller Access": {
+                    "elevators": [],
+                    "docks": {
+                        "East1": {
+                            "old_door_type": "Normal",
+                            "new_door_type": "Dark"
+                        },
+                        "docks_docks_West": {
+                            "old_door_type": "Normal",
+                            "new_door_type": "PowerBomb"
+                        }
+                    },
+                    "layers": {},
+                    "low_memory_mode": false
+                },
+                "Hydrodynamo Station": {
+                    "elevators": [],
+                    "docks": {
+                        "West_0J": {
+                            "old_door_type": "Normal",
+                            "new_door_type": "Light"
+                        },
+                        "East_Save": {
+                            "old_door_type": "Missile",
+                            "new_door_type": "Normal"
+                        },
+                        "West_0L": {
+                            "old_door_type": "Light",
+                            "new_door_type": "Normal"
+                        },
+                        "East_0M": {
+                            "old_door_type": "Dark",
+                            "new_door_type": "PowerBomb"
+                        },
+                        "North_OK": {
+                            "old_door_type": "SeekerMissile",
+                            "new_door_type": "Normal"
+                        }
+                    },
+                    "layers": {},
+                    "low_memory_mode": false
+                },
+                "Torvus Energy Controller": {
+                    "elevators": [],
+                    "docks": {
+                        "group6_East": {
+                            "old_door_type": "Normal",
+                            "new_door_type": "PowerBomb"
+                        }
+                    },
+                    "layers": {},
+                    "low_memory_mode": false
+                },
+                "Undertemple Shaft": {
+                    "elevators": [],
+                    "docks": {
+                        "West_0L": {
+                            "old_door_type": "Light",
+                            "new_door_type": "Normal"
+                        },
+                        "East_0M1 (Floor to 0q)": {
+                            "old_door_type": "PowerBomb",
+                            "new_door_type": "Light"
+                        },
+                        "Docks_Docks_East_Save": {
+                            "old_door_type": "Missile",
+                            "new_door_type": "Normal"
+                        }
+                    },
+                    "layers": {},
+                    "low_memory_mode": false
+                },
+                "Gathering Access": {
+                    "elevators": [],
+                    "docks": {
+                        "East": {
+                            "old_door_type": "Light",
+                            "new_door_type": "Normal"
+                        }
+                    },
+                    "layers": {},
+                    "low_memory_mode": false
+                },
+                "Catacombs Access": {
+                    "elevators": [],
+                    "docks": {
+                        "West": {
+                            "old_door_type": "Dark",
+                            "new_door_type": "PowerBomb"
+                        },
+                        "East": {
+                            "old_door_type": "Dark",
+                            "new_door_type": "Annihilator"
+                        }
+                    },
+                    "layers": {},
+                    "low_memory_mode": false
+                },
+                "Save Station B": {
+                    "elevators": [],
+                    "docks": {
+                        "Docks_Docks_Docks_West": {
+                            "old_door_type": "Normal",
+                            "new_door_type": "Normal"
+                        }
+                    },
+                    "layers": {},
+                    "low_memory_mode": false
+                },
+                "Hydrodynamo Shaft": {
+                    "elevators": [],
+                    "docks": {
+                        "Docks_North": {
+                            "old_door_type": "Normal",
+                            "new_door_type": "Sunburst"
+                        }
+                    },
+                    "layers": {},
+                    "low_memory_mode": false
+                },
+                "Crypt Tunnel": {
+                    "elevators": [],
+                    "docks": {
+                        "East": {
+                            "old_door_type": "Light",
+                            "new_door_type": "Normal"
+                        },
+                        "West": {
+                            "old_door_type": "Light",
+                            "new_door_type": "Darkburst"
+                        }
+                    },
+                    "layers": {},
+                    "low_memory_mode": false
+                },
+                "Sacrificial Chamber Tunnel": {
+                    "elevators": [],
+                    "docks": {
+                        "North": {
+                            "old_door_type": "Normal",
+                            "new_door_type": "Darkburst"
+                        }
+                    },
+                    "layers": {},
+                    "low_memory_mode": false
+                },
+                "Save Station 2": {
+                    "elevators": [],
+                    "docks": {
+                        "Docks_Docks_Docks_West": {
+                            "old_door_type": "Normal",
+                            "new_door_type": "Normal"
+                        }
+                    },
+                    "layers": {},
+                    "low_memory_mode": false
+                },
+                "Undertemple Access": {
+                    "elevators": [],
+                    "docks": {
+                        "Docks_North": {
+                            "old_door_type": "PowerBomb",
+                            "new_door_type": "Normal"
+                        },
+                        "West": {
+                            "old_door_type": "PowerBomb",
+                            "new_door_type": "Light"
+                        }
+                    },
+                    "layers": {},
+                    "low_memory_mode": false
+                },
+                "Gathering Hall": {
+                    "elevators": [],
+                    "docks": {
+                        "North": {
+                            "old_door_type": "Normal",
+                            "new_door_type": "SonicBoom"
+                        },
+                        "East_0P": {
+                            "old_door_type": "Annihilator",
+                            "new_door_type": "Darkburst"
+                        }
+                    },
+                    "layers": {},
+                    "low_memory_mode": false
+                },
+                "Training Chamber": {
+                    "elevators": [],
+                    "docks": {
+                        "East": {
+                            "old_door_type": "Dark",
+                            "new_door_type": "Light"
+                        },
+                        "North": {
+                            "old_door_type": "PowerBomb",
+                            "new_door_type": "Annihilator"
+                        }
+                    },
+                    "layers": {},
+                    "low_memory_mode": false
+                },
+                "Catacombs": {
+                    "elevators": [],
+                    "docks": {
+                        "North": {
+                            "old_door_type": "Normal",
+                            "new_door_type": "Missile"
+                        },
+                        "West (West)": {
+                            "old_door_type": "Annihilator",
+                            "new_door_type": "SuperMissile"
+                        },
+                        "West": {
+                            "old_door_type": "Dark",
+                            "new_door_type": "Annihilator"
+                        }
+                    },
+                    "layers": {},
+                    "low_memory_mode": false
+                },
+                "Main Hydrochamber": {
+                    "elevators": [],
+                    "docks": {
+                        "South2": {
+                            "old_door_type": "Normal",
+                            "new_door_type": "Sunburst"
+                        }
+                    },
+                    "layers": {},
+                    "low_memory_mode": false
+                },
+                "Crypt": {
+                    "elevators": [],
+                    "docks": {
+                        "North": {
+                            "old_door_type": "Normal",
+                            "new_door_type": "PowerBomb"
+                        },
+                        "East_A": {
+                            "old_door_type": "Light",
+                            "new_door_type": "Darkburst"
+                        }
+                    },
+                    "layers": {},
+                    "low_memory_mode": false
+                },
+                "Sacrificial Chamber": {
+                    "elevators": [],
+                    "docks": {
+                        "East": {
+                            "old_door_type": "Dark",
+                            "new_door_type": "Disabled"
+                        },
+                        "South": {
+                            "old_door_type": "Normal",
+                            "new_door_type": "Darkburst"
+                        },
+                        "West1": {
+                            "old_door_type": "Light",
+                            "new_door_type": "Normal"
+                        }
+                    },
+                    "layers": {},
+                    "low_memory_mode": false
+                },
+                "Undertemple": {
+                    "elevators": [],
+                    "docks": {
+                        "South2": {
+                            "old_door_type": "PowerBomb",
+                            "new_door_type": "Normal"
+                        }
+                    },
+                    "layers": {},
+                    "low_memory_mode": false
+                },
+                "Transit Tunnel South": {
+                    "elevators": [],
+                    "docks": {
+                        "East": {
+                            "old_door_type": "Annihilator",
+                            "new_door_type": "SuperMissile"
+                        },
+                        "West": {
+                            "old_door_type": "Annihilator",
+                            "new_door_type": "Darkburst"
+                        }
+                    },
+                    "layers": {},
+                    "low_memory_mode": false
+                },
+                "Transit Tunnel West": {
+                    "elevators": [],
+                    "docks": {
+                        "South": {
+                            "old_door_type": "Normal",
+                            "new_door_type": "SonicBoom"
+                        }
+                    },
+                    "layers": {},
+                    "low_memory_mode": false
+                },
+                "Transit Tunnel East": {
+                    "elevators": [],
+                    "docks": {
+                        "West": {
+                            "old_door_type": "Dark",
+                            "new_door_type": "Light"
+                        },
+                        "South": {
+                            "old_door_type": "Normal",
+                            "new_door_type": "Missile"
+                        }
+                    },
+                    "layers": {},
+                    "low_memory_mode": false
+                },
+                "Fortress Transport Access": {
+                    "elevators": [],
+                    "docks": {
+                        "South": {
+                            "old_door_type": "PowerBomb",
+                            "new_door_type": "Annihilator"
+                        },
+                        "North": {
+                            "old_door_type": "Normal",
+                            "new_door_type": "Missile"
+                        }
+                    },
+                    "layers": {},
+                    "low_memory_mode": false
+                },
+                "Dungeon": {
+                    "elevators": [],
+                    "docks": {
+                        "North": {
+                            "old_door_type": "Normal",
+                            "new_door_type": "Dark"
+                        }
+                    },
+                    "layers": {},
+                    "low_memory_mode": false
+                },
+                "Undertransit One": {
+                    "elevators": [],
+                    "docks": {
+                        "South": {
+                            "old_door_type": "Normal",
+                            "new_door_type": "PowerBomb"
+                        },
+                        "East": {
+                            "old_door_type": "Light",
+                            "new_door_type": "Normal"
+                        }
+                    },
+                    "layers": {},
+                    "low_memory_mode": false
+                },
+                "Undertransit Two": {
+                    "elevators": [],
+                    "docks": {
+                        "West": {
+                            "old_door_type": "Dark",
+                            "new_door_type": "Disabled"
+                        },
+                        "South": {
+                            "old_door_type": "Normal",
+                            "new_door_type": "Dark"
+                        }
+                    },
+                    "layers": {},
+                    "low_memory_mode": false
+                },
+                "Transport to Sanctuary Fortress": {
+                    "elevators": [
+                        {
+                            "instance_id": 4522032,
+                            "target_assets": {
+                                "world_asset_id": 2252328306,
+                                "area_asset_id": 2399252740
+                            },
+                            "target_strg": 2728448996,
+                            "target_name": "Temple Transport Violet"
+                        }
+                    ],
+                    "docks": {
+                        "South": {
+                            "old_door_type": "Normal",
+                            "new_door_type": "Missile"
+                        }
+                    },
+                    "layers": {},
+                    "low_memory_mode": false,
+                    "new_name": "Transport to Temple Transport Violet"
+                }
+            }
+        },
+        "Sanctuary Fortress": {
+            "areas": {
+                "Sanctuary Entrance": {
+                    "elevators": [],
+                    "docks": {
+                        "North": {
+                            "old_door_type": "Light",
+                            "new_door_type": "Normal"
+                        }
+                    },
+                    "layers": {},
+                    "low_memory_mode": false
+                },
+                "Power Junction": {
+                    "elevators": [],
+                    "docks": {
+                        "South": {
+                            "old_door_type": "Light",
+                            "new_door_type": "Normal"
+                        }
+                    },
+                    "layers": {},
+                    "low_memory_mode": false
+                },
+                "Reactor Core": {
+                    "elevators": [],
+                    "docks": {
+                        "East": {
+                            "old_door_type": "Normal",
+                            "new_door_type": "Missile"
+                        },
+                        "North": {
+                            "old_door_type": "Missile",
+                            "new_door_type": "Normal"
+                        },
+                        "West": {
+                            "old_door_type": "PowerBomb",
+                            "new_door_type": "Normal"
+                        }
+                    },
+                    "layers": {},
+                    "low_memory_mode": false
+                },
+                "Save Station A": {
+                    "elevators": [],
+                    "docks": {
+                        "South": {
+                            "old_door_type": "Normal",
+                            "new_door_type": "Normal"
+                        }
+                    },
+                    "layers": {},
+                    "low_memory_mode": false
+                },
+                "Minigyro Chamber": {
+                    "elevators": [],
+                    "docks": {
+                        "East": {
+                            "old_door_type": "Normal",
+                            "new_door_type": "Dark"
+                        },
+                        "West": {
+                            "old_door_type": "Normal",
+                            "new_door_type": "Missile"
+                        }
+                    },
+                    "layers": {},
+                    "low_memory_mode": false
+                },
+                "Transit Station": {
+                    "elevators": [],
+                    "docks": {
+                        "East": {
+                            "old_door_type": "PowerBomb",
+                            "new_door_type": "Normal"
+                        }
+                    },
+                    "layers": {},
+                    "low_memory_mode": false
+                },
+                "Hall of Combat Mastery": {
+                    "elevators": [],
+                    "docks": {
+                        "EastElevator": {
+                            "old_door_type": "Normal",
+                            "new_door_type": "SuperMissile"
+                        },
+                        "West": {
+                            "old_door_type": "Normal",
+                            "new_door_type": "Dark"
+                        }
+                    },
+                    "layers": {},
+                    "low_memory_mode": false
+                },
+                "Main Research": {
+                    "elevators": [],
+                    "docks": {
+                        "West to 0l_cliff_hall": {
+                            "old_door_type": "Normal",
+                            "new_door_type": "Sunburst"
+                        },
+                        "West1 to 0p_cliff_hall": {
+                            "old_door_type": "PowerBomb",
+                            "new_door_type": "Normal"
+                        }
+                    },
+                    "layers": {},
+                    "low_memory_mode": true
+                },
+                "Central Area Transport East": {
+                    "elevators": [],
+                    "docks": {
+                        "group1_West_07 (Bottom)": {
+                            "old_door_type": "Normal",
+                            "new_door_type": "SuperMissile"
+                        }
+                    },
+                    "layers": {},
+                    "low_memory_mode": false
+                },
+                "Culling Chamber": {
+                    "elevators": [],
+                    "docks": {
+                        "EastHall": {
+                            "old_door_type": "Normal",
+                            "new_door_type": "Darkburst"
+                        },
+                        "West": {
+                            "old_door_type": "Normal",
+                            "new_door_type": "SonicBoom"
+                        },
+                        "EastElevator": {
+                            "old_door_type": "Dark",
+                            "new_door_type": "SeekerMissile"
+                        }
+                    },
+                    "layers": {},
+                    "low_memory_mode": false
+                },
+                "Central Area Transport West": {
+                    "elevators": [],
+                    "docks": {
+                        "East_Bottom": {
+                            "old_door_type": "Normal",
+                            "new_door_type": "Sunburst"
+                        },
+                        "East_Top": {
+                            "old_door_type": "Normal",
+                            "new_door_type": "SonicBoom"
+                        }
+                    },
+                    "layers": {},
+                    "low_memory_mode": false
+                },
+                "Torvus Transport Access": {
+                    "elevators": [],
+                    "docks": {
+                        "East": {
+                            "old_door_type": "PowerBomb",
+                            "new_door_type": "Normal"
+                        }
+                    },
+                    "layers": {},
+                    "low_memory_mode": false
+                },
+                "Staging Area": {
+                    "elevators": [],
+                    "docks": {
+                        "West": {
+                            "old_door_type": "Normal",
+                            "new_door_type": "Annihilator"
+                        }
+                    },
+                    "layers": {},
+                    "low_memory_mode": false
+                },
+                "Dynamo Works": {
+                    "elevators": [],
+                    "docks": {
+                        "East2 00_Pickup C": {
+                            "old_door_type": "PowerBomb",
+                            "new_door_type": "Normal"
+                        },
+                        "West1 0F": {
+                            "old_door_type": "Dark",
+                            "new_door_type": "Normal"
+                        }
+                    },
+                    "layers": {},
+                    "low_memory_mode": true
+                },
+                "Hazing Cliff": {
+                    "elevators": [],
+                    "docks": {
+                        "West": {
+                            "old_door_type": "Normal",
+                            "new_door_type": "Darkburst"
+                        }
+                    },
+                    "layers": {},
+                    "low_memory_mode": false
+                },
+                "Central Hive East Transport": {
+                    "elevators": [],
+                    "docks": {
+                        "group1_West_07 (Bottom)": {
+                            "old_door_type": "Dark",
+                            "new_door_type": "SeekerMissile"
+                        },
+                        "group1_West_04 (Top)": {
+                            "old_door_type": "Dark",
+                            "new_door_type": "Normal"
+                        }
+                    },
+                    "layers": {},
+                    "low_memory_mode": false
+                },
+                "Unseen Way": {
+                    "elevators": [],
+                    "docks": {
+                        "East": {
+                            "old_door_type": "Normal",
+                            "new_door_type": "SonicBoom"
+                        }
+                    },
+                    "layers": {},
+                    "low_memory_mode": false
+                },
+                "Watch Station": {
+                    "elevators": [],
+                    "docks": {
+                        "East": {
+                            "old_door_type": "Light",
+                            "new_door_type": "Missile"
+                        },
+                        "WestDown": {
+                            "old_door_type": "Normal",
+                            "new_door_type": "SonicBoom"
+                        },
+                        "South": {
+                            "old_door_type": "Normal",
+                            "new_door_type": "Sunburst"
+                        }
+                    },
+                    "layers": {},
+                    "low_memory_mode": false
+                },
+                "Central Hive West Transport": {
+                    "elevators": [],
+                    "docks": {
+                        "East_Top": {
+                            "old_door_type": "Normal",
+                            "new_door_type": "SeekerMissile"
+                        },
+                        "East_Bottom": {
+                            "old_door_type": "Normal",
+                            "new_door_type": "Annihilator"
+                        }
+                    },
+                    "layers": {},
+                    "low_memory_mode": false
+                },
+                "Dynamo Access": {
+                    "elevators": [],
+                    "docks": {
+                        "East": {
+                            "old_door_type": "Dark",
+                            "new_door_type": "Normal"
+                        },
+                        "West": {
+                            "old_door_type": "Dark",
+                            "new_door_type": "Normal"
+                        }
+                    },
+                    "layers": {},
+                    "low_memory_mode": false
+                },
+                "Hive Dynamo Works": {
+                    "elevators": [],
+                    "docks": {
+                        "West1": {
+                            "old_door_type": "Light",
+                            "new_door_type": "Normal"
+                        },
+                        "East": {
+                            "old_door_type": "Dark",
+                            "new_door_type": "Normal"
+                        }
+                    },
+                    "layers": {},
+                    "low_memory_mode": false
+                },
+                "Hive Reactor": {
+                    "elevators": [],
+                    "docks": {
+                        "North": {
+                            "old_door_type": "Missile",
+                            "new_door_type": "Normal"
+                        },
+                        "South": {
+                            "old_door_type": "PowerBomb",
+                            "new_door_type": "Normal"
+                        }
+                    },
+                    "layers": {},
+                    "low_memory_mode": false
+                },
+                "Sentinel's Path": {
+                    "elevators": [],
+                    "docks": {
+                        "North": {
+                            "old_door_type": "Normal",
+                            "new_door_type": "Sunburst"
+                        },
+                        "East": {
+                            "old_door_type": "Annihilator",
+                            "new_door_type": "Missile"
+                        }
+                    },
+                    "layers": {},
+                    "low_memory_mode": false
+                },
+                "Watch Station Access": {
+                    "elevators": [],
+                    "docks": {
+                        "West": {
+                            "old_door_type": "Light",
+                            "new_door_type": "Missile"
+                        },
+                        "East": {
+                            "old_door_type": "Light",
+                            "new_door_type": "SonicBoom"
+                        }
+                    },
+                    "layers": {},
+                    "low_memory_mode": false
+                },
+                "Aerial Training Site": {
+                    "elevators": [],
+                    "docks": {
+                        "South": {
+                            "old_door_type": "Annihilator",
+                            "new_door_type": "Normal"
+                        },
+                        "West_0L": {
+                            "old_door_type": "Normal",
+                            "new_door_type": "SeekerMissile"
+                        }
+                    },
+                    "layers": {},
+                    "low_memory_mode": false
+                },
+                "Main Gyro Chamber": {
+                    "elevators": [],
+                    "docks": {
+                        "East1": {
+                            "old_door_type": "Dark",
+                            "new_door_type": "Normal"
+                        },
+                        "West_Save": {
+                            "old_door_type": "Missile",
+                            "new_door_type": "Normal"
+                        },
+                        "West21": {
+                            "old_door_type": "Light",
+                            "new_door_type": "SonicBoom"
+                        },
+                        "North1": {
+                            "old_door_type": "PowerBomb",
+                            "new_door_type": "Normal"
+                        }
+                    },
+                    "layers": {},
+                    "low_memory_mode": false
+                },
+                "Sanctuary Temple": {
+                    "elevators": [],
+                    "docks": {
+                        "North": {
+                            "old_door_type": "Normal",
+                            "new_door_type": "SeekerMissile"
+                        },
+                        "West": {
+                            "old_door_type": "Annihilator",
+                            "new_door_type": "Missile"
+                        }
+                    },
+                    "layers": {},
+                    "low_memory_mode": false
+                },
+                "Hive Dynamo Access": {
+                    "elevators": [],
+                    "docks": {
+                        "West": {
+                            "old_door_type": "Light",
+                            "new_door_type": "Normal"
+                        },
+                        "East": {
+                            "old_door_type": "Light",
+                            "new_door_type": "Normal"
+                        }
+                    },
+                    "layers": {},
+                    "low_memory_mode": false
+                },
+                "Hive Save Station 1": {
+                    "elevators": [],
+                    "docks": {
+                        "South": {
+                            "old_door_type": "Normal",
+                            "new_door_type": "Normal"
+                        }
+                    },
+                    "layers": {},
+                    "low_memory_mode": false
+                },
+                "Hive Reactor Access": {
+                    "elevators": [],
+                    "docks": {
+                        "South": {
+                            "old_door_type": "Normal",
+                            "new_door_type": "Dark"
+                        },
+                        "North": {
+                            "old_door_type": "PowerBomb",
+                            "new_door_type": "Normal"
+                        }
+                    },
+                    "layers": {},
+                    "low_memory_mode": false
+                },
+                "Temple Security Access": {
+                    "elevators": [],
+                    "docks": {
+                        "North": {
+                            "old_door_type": "Annihilator",
+                            "new_door_type": "Normal"
+                        },
+                        "East": {
+                            "old_door_type": "Annihilator",
+                            "new_door_type": "Normal"
+                        }
+                    },
+                    "layers": {},
+                    "low_memory_mode": false
+                },
+                "Temple Access": {
+                    "elevators": [],
+                    "docks": {
+                        "South": {
+                            "old_door_type": "Normal",
+                            "new_door_type": "SeekerMissile"
+                        }
+                    },
+                    "layers": {},
+                    "low_memory_mode": false
+                },
+                "Save Station B": {
+                    "elevators": [],
+                    "docks": {
+                        "East": {
+                            "old_door_type": "Normal",
+                            "new_door_type": "Normal"
+                        }
+                    },
+                    "layers": {},
+                    "low_memory_mode": false
+                },
+                "Controller Access": {
+                    "elevators": [],
+                    "docks": {
+                        "South1": {
+                            "old_door_type": "Normal",
+                            "new_door_type": "SeekerMissile"
+                        }
+                    },
+                    "layers": {},
+                    "low_memory_mode": false
+                },
+                "Hive Gyro Chamber": {
+                    "elevators": [],
+                    "docks": {
+                        "East1": {
+                            "old_door_type": "Light",
+                            "new_door_type": "Normal"
+                        },
+                        "West_Save": {
+                            "old_door_type": "Missile",
+                            "new_door_type": "Normal"
+                        }
+                    },
+                    "layers": {},
+                    "low_memory_mode": false
+                },
+                "Entrance Defense Hall": {
+                    "elevators": [],
+                    "docks": {
+                        "North2": {
+                            "old_door_type": "Normal",
+                            "new_door_type": "Dark"
+                        },
+                        "South": {
+                            "old_door_type": "Normal",
+                            "new_door_type": "Annihilator"
+                        }
+                    },
+                    "layers": {},
+                    "low_memory_mode": false
+                },
+                "Hive Temple": {
+                    "elevators": [],
+                    "docks": {
+                        "South": {
+                            "old_door_type": "Annihilator",
+                            "new_door_type": "Normal"
+                        },
+                        "West": {
+                            "old_door_type": "Annihilator",
+                            "new_door_type": "Normal"
+                        }
+                    },
+                    "layers": {},
+                    "low_memory_mode": false
+                },
+                "Sanctuary Energy Controller": {
+                    "elevators": [],
+                    "docks": {
+                        "North": {
+                            "old_door_type": "Normal",
+                            "new_door_type": "SeekerMissile"
+                        }
+                    },
+                    "layers": {},
+                    "low_memory_mode": false
+                },
+                "Hive Gyro Access": {
+                    "elevators": [],
+                    "docks": {
+                        "North": {
+                            "old_door_type": "Normal",
+                            "new_door_type": "Sunburst"
+                        }
+                    },
+                    "layers": {},
+                    "low_memory_mode": false
+                },
+                "Hive Save Station 2": {
+                    "elevators": [],
+                    "docks": {
+                        "East": {
+                            "old_door_type": "Normal",
+                            "new_door_type": "Normal"
+                        }
+                    },
+                    "layers": {},
+                    "low_memory_mode": false
+                },
+                "Hive Entrance": {
+                    "elevators": [],
+                    "docks": {
+                        "North": {
+                            "old_door_type": "Normal",
+                            "new_door_type": "Annihilator"
+                        }
+                    },
+                    "layers": {},
+                    "low_memory_mode": false
+                },
+                "Hive Controller Access": {
+                    "elevators": [],
+                    "docks": {
+                        "North": {
+                            "old_door_type": "Annihilator",
+                            "new_door_type": "Normal"
+                        }
+                    },
+                    "layers": {},
+                    "low_memory_mode": false
+                },
+                "Hive Ammo Station": {
+                    "elevators": [],
+                    "docks": {
+                        "South": {
+                            "old_door_type": "Normal",
+                            "new_door_type": "Sunburst"
+                        }
+                    },
+                    "layers": {},
+                    "low_memory_mode": false
+                },
+                "Transport to Temple Grounds": {
+                    "elevators": [
+                        {
+                            "instance_id": 38,
+                            "target_assets": {
+                                "world_asset_id": 1006255871,
+                                "area_asset_id": 3455543403
+                            },
+                            "target_strg": 585469310,
+                            "target_name": "Sanctuary Gate"
+                        }
+                    ],
+                    "docks": {},
+                    "layers": {},
+                    "new_name": "Transport to Sanctuary Gate"
+                },
+                "Transport to Agon Wastes": {
+                    "elevators": [
+                        {
+                            "instance_id": 1245332,
+                            "target_assets": {
+                                "world_asset_id": 1039999561,
+                                "area_asset_id": 3479543630
+                            },
+                            "target_strg": 3282119661,
+                            "target_name": "Torvus Temple Access"
+                        }
+                    ],
+                    "docks": {},
+                    "layers": {},
+                    "new_name": "Transport to Torvus Temple Access"
+                },
+                "Transport to Torvus Bog": {
+                    "elevators": [
+                        {
+                            "instance_id": 1638535,
+                            "target_assets": {
+                                "world_asset_id": 2252328306,
+                                "area_asset_id": 2556480432
+                            },
+                            "target_strg": 158293345,
+                            "target_name": "Temple Transport Amber"
+                        }
+                    ],
+                    "docks": {},
+                    "layers": {},
+                    "new_name": "Transport to Temple Transport Amber"
+                },
+                "Aerie Transport Station": {
+                    "elevators": [
+                        {
+                            "instance_id": 204865660,
+                            "target_assets": {
+                                "world_asset_id": 464164546,
+                                "area_asset_id": 1564082177
+                            },
+                            "target_strg": null,
+                            "target_name": "Sanctuary Fortress - Aerie"
+                        }
+                    ],
+                    "docks": {},
+                    "layers": {},
+                    "new_name": "Aerie Transport Station"
+                },
+                "Aerie": {
+                    "elevators": [
+                        {
+                            "instance_id": 4260106,
+                            "target_assets": {
+                                "world_asset_id": 464164546,
+                                "area_asset_id": 3136899603
+                            },
+                            "target_strg": null,
+                            "target_name": "Sanctuary Fortress - Aerie Transport Station"
+                        }
+                    ],
+                    "docks": {},
+                    "layers": {},
+                    "new_name": "Aerie"
+                }
+            }
+        }
+    },
+    "area_patches": {
+        "torvus_temple": true
+    },
+    "small_randomizations": {
+        "seed": 663117400,
+        "echo_locks": true,
+        "minigyro_chamber": true,
+        "rubiks": true
+    },
+    "inverted": false
+}

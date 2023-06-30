@@ -127,6 +127,7 @@ def patch_paks(file_provider: FileProvider,
                configuration: dict,
                status_update: Callable[[str, float], None] = lambda s, _: LOG.info(s)):
     status_update(f"Will patch files at {file_provider}", 0)
+    output_path.joinpath("files").mkdir(parents=True, exist_ok=True)
     output_path.joinpath("files", "opr_patcher_data.json").write_text(json.dumps(configuration))
 
     editor = PatcherEditor(file_provider, Game.ECHOES)
