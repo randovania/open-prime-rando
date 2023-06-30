@@ -1,0 +1,333 @@
+{
+    "worlds": {
+        "Temple Grounds": {
+            "areas": {
+                "Dynamo Chamber": {
+                    "layers": {
+                        "1st Pass Scripting": false,
+                        "2nd Pass Scripting": true
+                    }
+                },
+                "Trooper Security Station": {
+                    "layers": {
+                        "1st Pass": false,
+                        "2nd Pass": true
+                    }
+                },
+                "Hall of Eyes": {
+                    "docks": {
+                        "Docks_VirtualNorth": {
+                            "connect_to": {
+                                "area": "Abandoned Base",
+                                "dock": "VirtualNorth"
+                            }
+                        }
+                    }
+                },
+                "Base Access": {
+                    "docks": {
+                        "Docks_VirtualNorth": {
+                            "connect_to": {
+                                "area": "Grand Windchamber",
+                                "dock": "VirtualNorth1"
+                            }
+                        }
+                    }
+                },
+                "Path of Eyes": {
+                    "docks": {
+                        "VirtualNorth": {
+                            "connect_to": {
+                                "area": "Ing Windchamber",
+                                "dock": "VirtualNorth1"
+                            }
+                        }
+                    }
+                },
+                "Temple Assembly Site": {
+                    "docks": {
+                        "VirtualNorth": {
+                            "connect_to": {
+                                "area": "Profane Path",
+                                "dock": "VirtualNorth1"
+                            }
+                        }
+                    }
+                },
+                "Plain of Dark Worship": {
+                    "docks": {
+                        "VirtualNorth": {
+                            "connect_to": {
+                                "area": "Sacred Path",
+                                "dock": "VirtualNorth1"
+                            }
+                        }
+                    }
+                },
+                "Sky Temple Gateway": {
+                    "docks": {
+                        "VirtualNorth": {
+                            "connect_to": {
+                                "area": "game_end_part3",
+                                "dock": "cinema_dock"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "Agon Wastes": {
+            "areas": {
+                "Mining Station B": {
+                    "docks": {
+                        "VirtualNorth": {
+                            "connect_to": {
+                                "area": "Dark Oasis",
+                                "dock": "VirtualEast"
+                            }
+                        }
+                    }
+                },
+                "Transport Center": {
+                    "docks": {
+                        "VirtualNorth": {
+                            "connect_to": {
+                                "area": "Trial Grounds",
+                                "dock": "VirtualNorth"
+                            }
+                        }
+                    }
+                },
+                "Crossroads": {
+                    "docks": {
+                        "VirtualNorth": {
+                            "connect_to": {
+                                "area": "Command Center",
+                                "dock": "VirtualNorth"
+                            }
+                        }
+                    }
+                },
+                "Main Reactor": {
+                    "docks": {
+                        "VirtualEast": {
+                            "connect_to": {
+                                "area": "Doomed Entry",
+                                "dock": "VirtualNorth"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "Torvus Bog": {
+            "areas": {
+                "Portal Chamber (Light)": {
+                    "docks": {
+                        "VirtualNorth": {
+                            "connect_to": {
+                                "area": "Gloom Vista",
+                                "dock": "VirtualNorth"
+                            }
+                        }
+                    }
+                },
+                "Forgotten Bridge": {
+                    "docks": {
+                        "VirtualNorth": {
+                            "connect_to": {
+                                "area": "Portal Chamber (Dark)",
+                                "dock": "VirtualNorth"
+                            }
+                        }
+                    }
+                },
+                "Dark Forgotten Bridge": {
+                    "docks": {
+                        "VirtualNorth": {
+                            "connect_to": {
+                                "area": "Main Hydrochamber",
+                                "dock": "VirtualNorth"
+                            }
+                        }
+                    }
+                },
+                "Meditation Vista": {
+                    "docks": {
+                        "VirtualNorth": {
+                            "connect_to": {
+                                "area": "Dungeon",
+                                "dock": "VirtualNorth1"
+                            }
+                        }
+                    }
+                },
+                "Hydrodynamo Shaft": {
+                    "docks": {
+                        "Docks_VirtualNorth": {
+                            "connect_to": {
+                                "area": "Crypt",
+                                "dock": "VirtualNorth"
+                            }
+                        }
+                    }
+                },
+                "Undertemple Access": {
+                    "docks": {
+                        "Docks_VirtualNorth": {
+                            "connect_to": {
+                                "area": "Catacombs",
+                                "dock": "VirtualNorth1"
+                            }
+                        }
+                    }
+                },
+                "Gathering Hall": {
+                    "docks": {
+                        "VirtualNorth": {
+                            "connect_to": {
+                                "area": "Undertemple",
+                                "dock": "VirtualNorth"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "Sanctuary Fortress": {
+            "areas": {
+                "Transit Station": {
+                    "docks": {
+                        "VirtualDock_North_Right": {
+                            "connect_to": {
+                                "area": "Staging Area",
+                                "dock": "VirtualNorth"
+                            }
+                        },
+                        "VirtualDock_North_Middle": {
+                            "connect_to": {
+                                "area": "Vault Attack Portal",
+                                "dock": "VirtualEast"
+                            }
+                        },
+                        "VirtualDock_North_Left": {
+                            "connect_to": {
+                                "area": "Hive Portal Chamber",
+                                "dock": "VirtualDock_North_Right"
+                            }
+                        },
+                        "VirtualDock_South": {
+                            "connect_to": {
+                                "area": "Hive Summit",
+                                "dock": "VirtualArenaDock"
+                            }
+                        }
+                    }
+                },
+                "Hall of Combat Mastery": {
+                    "docks": {
+                        "VirtualNorth": {
+                            "connect_to": {
+                                "area": "Hive Portal Chamber",
+                                "dock": "VirtualDock_North_Middle"
+                            }
+                        }
+                    }
+                },
+                "Main Research": {
+                    "docks": {
+                        "VirtualNorth": {
+                            "connect_to": {
+                                "area": "Staging Area",
+                                "dock": "VirtualNorth1"
+                            }
+                        },
+                        "VirtualNorth1": {
+                            "connect_to": {
+                                "area": "Hive Portal Chamber",
+                                "dock": "VirtualDock_South"
+                            }
+                        }
+                    }
+                },
+                "Hive Portal Chamber": {
+                    "docks": {
+                        "VirtualDock_North_Left": {
+                            "connect_to": {
+                                "area": "Watch Station",
+                                "dock": "VirtualNorth1"
+                            }
+                        }
+                    }
+                },
+                "Culling Chamber": {
+                    "docks": {
+                        "VirtualNorth": {
+                            "connect_to": {
+                                "area": "Vault",
+                                "dock": "VirtualEast"
+                            }
+                        }
+                    }
+                },
+                "Dynamo Works": {
+                    "docks": {
+                        "VirtualNorth": {
+                            "connect_to": {
+                                "area": "Hive Summit",
+                                "dock": "VirtualUnderStatueDock"
+                            }
+                        }
+                    }
+                },
+                "Dynamo Storage": {
+                    "docks": {
+                        "VirtualWest": {
+                            "connect_to": {
+                                "area": "Aerial Training Site",
+                                "dock": "VirtualNorth1"
+                            }
+                        }
+                    }
+                },
+                "Hive Dynamo Works": {
+                    "docks": {
+                        "VirtualNorth": {
+                            "connect_to": {
+                                "area": "Aerie",
+                                "dock": "VirtualArenaDock"
+                            }
+                        }
+                    }
+                },
+                "Grand Abyss": {
+                    "docks": {
+                        "VirtualNorth": {
+                            "connect_to": {
+                                "area": "Hive Cache 3",
+                                "dock": "VirtualWest"
+                            }
+                        }
+                    }
+                },
+                "Judgment Drop": {
+                    "docks": {
+                        "VirtualNorth": {
+                            "connect_to": {
+                                "area": "Aerie",
+                                "dock": "VirtualUnderStatueDock"
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "small_randomizations": {
+        "seed": 1353963683,
+        "echo_locks": true,
+        "minigyro_chamber": true,
+        "rubiks": true
+    },
+    "inverted": false
+}
