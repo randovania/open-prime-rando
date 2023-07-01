@@ -40,7 +40,6 @@ def rebalance_patches(editor: PatcherEditor):
     agon_temple(editor)
     temple_sanctuary(editor)
     main_reactor(editor)
-    main_research(editor)
     dynamo_works(editor)
     torvus_temple(editor)
     gfmc_compound(editor)
@@ -194,25 +193,6 @@ def main_reactor(editor: PatcherEditor):
         )
     ))
     layer_switcher.add_connection(State.Zero, Message.Decrement, layer_controller)
-
-
-def main_research(editor: PatcherEditor):
-    editor.get_area(SANCTUARY_FORTRESS_MLVL, sanctuary_fortress.MAIN_RESEARCH_MREA)
-
-    # TODO: claris patcher removes a few instances and
-    # combines a few conditionalrelays into one. instead,
-    # we should disable the contraption layer altogether
-    # unless fighting caretaker
-
-    # to_remove = (
-    #     0x0b01ea, 0x0b032f, 0x0b0214, 0x0b032d, 0x0b0213, 0x0b0326,
-    #     0x0b0211, 0x0b032a, 0x0b020b, 0x0b032c, 0x0b0210, 0x0b02dd,
-    #     0x0b02f8, 0x0b030c, 0x0b02e0, 0x0b02f1, 0x0b0306, 0x0b032f,
-    #     0x0b0214, 0x0b032d, 0x0b0213, 0x0b0326, 0x0b0211, 0x0b032a,
-    #     0x0b020b, 0x0b032c, 0x0b0210,
-    # )
-    # for inst in to_remove:
-    #     area.remove_instance(inst)
 
 
 def dynamo_works(editor: PatcherEditor):

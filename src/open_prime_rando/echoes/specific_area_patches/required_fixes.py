@@ -5,12 +5,14 @@ from retro_data_structures.enums.echoes import Message, State
 from retro_data_structures.formats.mrea import Area
 from retro_data_structures.formats.script_object import InstanceIdRef
 from retro_data_structures.properties.echoes.archetypes.EditorProperties import EditorProperties
+from retro_data_structures.properties.echoes.archetypes.LayerSwitch import LayerSwitch
 from retro_data_structures.properties.echoes.archetypes.Transform import Transform
 from retro_data_structures.properties.echoes.core.Vector import Vector
 from retro_data_structures.properties.echoes.objects import (
     HUDMemo,
     Pickup,
     Relay,
+    ScriptLayerController,
     SpawnPoint,
     Switch,
     Timer,
@@ -113,7 +115,11 @@ def aerie(editor: PatcherEditor):
 
 
 def main_research(editor: PatcherEditor):
-    "Patches an echo gate softlock."
+    """
+    Patches an echo gate softlock.
+    Disables the Contraption layer by default, activating it dynamically when exiting the lower portal.
+    This hopefully prevents OOM/object list full crashes.
+    """
     area = editor.get_area(SANCTUARY_FORTRESS_MLVL, sanctuary_fortress.MAIN_RESEARCH_MREA)
 
     relays = (
@@ -122,6 +128,37 @@ def main_research(editor: PatcherEditor):
         (0x0B02F6, 0x0B02FA)
     )
     _patch_echo_gate_softlock(area, 0x0B0315, relays)
+
+    area.get_layer("Contraption").active = False
+    portal_spawn = area.get_instance(0x0B0056)
+    spawn_xfm = portal_spawn.get_properties_as(SpawnPoint).editor_properties.transform
+
+    contraption_controller = area.get_layer("Default").add_instance_with(ScriptLayerController(
+        editor_properties=EditorProperties(
+            name="Dynamic Increment Contraption",
+            transform=spawn_xfm
+        ),
+        layer=LayerSwitch(
+            area_id=sanctuary_fortress.MAIN_RESEARCH_INTERNAL_ID,
+            layer_number=6
+        ),
+        is_dynamic=True
+    ))
+    spider_controller = area.get_layer("Default").add_instance_with(ScriptLayerController(
+        editor_properties=EditorProperties(
+            name="Dynamic Increment Column Spiderball",
+            transform=spawn_xfm
+        ),
+        layer=LayerSwitch(
+            area_id=sanctuary_fortress.MAIN_RESEARCH_INTERNAL_ID,
+            layer_number=9
+        ),
+        is_dynamic=True
+    ))
+
+    for controller in (contraption_controller, spider_controller):
+        portal_spawn.add_connection(State.Arrived, Message.Load, controller)
+        controller.add_connection(State.Arrived, Message.Play, controller)
 
 
 def hive_chamber_b(editor: PatcherEditor):
@@ -201,4 +238,3 @@ def torvus_temple(editor: PatcherEditor):
 
     for obj in to_remove:
         area.remove_instance(obj)
-
