@@ -6,6 +6,6 @@ from open_prime_rando.patcher_editor import PatcherEditor
 
 def specific_patches(editor: PatcherEditor, area_patches: dict):
     required_fixes(editor)
-    patch_version_differences(editor, EchoesVersion.NTSC_U)
+    patch_version_differences(editor, EchoesVersion.NTSC_U) # TODO: detect version
     if area_patches["rebalance_world"]:
         rebalance_patches(editor)

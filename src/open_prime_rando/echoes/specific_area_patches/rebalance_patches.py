@@ -169,8 +169,7 @@ def temple_sanctuary(editor: PatcherEditor):
     area = editor.get_area(GREAT_TEMPLE_MLVL, great_temple.TEMPLE_SANCTUARY_MREA)
 
     with area.get_instance("MEGA Splinter Light").edit_properties(Splinter) as alpha:
-        # TODO: custom asset
-        custom_rule = editor.add_or_replace_custom_asset("custom_knockback.RULE", None)
+        custom_rule = editor._resolve_asset_id("custom_knockback.RULE")
         alpha.patterned.knockback_rules = custom_rule
         alpha.ing_possession_data.ing_vulnerability.power_bomb.damage_multiplier = 3000.0
 
@@ -223,8 +222,7 @@ def dynamo_works(editor: PatcherEditor):
     area = editor.get_area(SANCTUARY_FORTRESS_MLVL, sanctuary_fortress.DYNAMO_WORKS_MREA)
 
     with area.get_instance("IngSpiderballGuardian 001").edit_properties(IngSpiderballGuardian) as spider:
-        # TODO: custom asset
-        custom_rule = editor.add_or_replace_custom_asset("custom_knockback.RULE", None)
+        custom_rule = editor._resolve_asset_id("custom_knockback.RULE")
         spider.patterned.knockback_rules = custom_rule
 
 

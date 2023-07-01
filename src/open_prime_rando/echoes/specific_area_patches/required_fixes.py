@@ -77,7 +77,7 @@ def main_reactor(editor: PatcherEditor):
 
 def sacrificial_chamber(editor: PatcherEditor):
     """
-    Unknown purpose.
+    Makes the pickup persistent, even if you exit the area and reload.
     """
     area = editor.get_area(TORVUS_BOG_MLVL, torvus_bog.SACRIFICIAL_CHAMBER_MREA)
 
