@@ -52,7 +52,7 @@
                 "rebalance_world": {
                     "type": "boolean",
                     "description": "Apply patches that rebalance aspects of the game for a better rando experience",
-                    "default": false
+                    "default": true
                 }
             },
             "description": "Pre-written patches for specific areas",
