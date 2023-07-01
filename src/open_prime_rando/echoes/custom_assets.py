@@ -130,7 +130,7 @@ def _import_premade_assets(editor: AssetManager):
         name = f.name
         asset_type = f.suffix[1:].upper() # remove leading period, force uppercase
         raw = f.read_bytes()
-        editor.add_new_asset(name, RawResource(asset_type, raw))
+        editor.add_new_asset(name, RawResource(asset_type, raw), ())
 
 
 def create_custom_assets(editor: AssetManager):
