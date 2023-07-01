@@ -49,9 +49,9 @@
         "area_patches": {
             "type": "object",
             "properties": {
-                "torvus_temple": {
+                "rebalance_world": {
                     "type": "boolean",
-                    "description": "Remove objects to minimize the chance of alloc failure",
+                    "description": "Apply patches that rebalance aspects of the game for a better rando experience",
                     "default": false
                 }
             },

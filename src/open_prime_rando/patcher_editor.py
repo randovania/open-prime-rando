@@ -5,10 +5,11 @@ from pathlib import Path
 
 from ppc_asm.dol_file import DolEditor, DolHeader
 from retro_data_structures.asset_manager import AssetManager, FileProvider
-from retro_data_structures.base_resource import AssetId, BaseResource, NameOrAssetId, RawResource, Resource
+from retro_data_structures.base_resource import AssetId, BaseResource, NameOrAssetId, Resource
 from retro_data_structures.crc import crc32
 from retro_data_structures.formats.mlvl import Mlvl
 from retro_data_structures.formats.mrea import Area
+from retro_data_structures.formats.strg import Strg
 from retro_data_structures.game_check import Game
 
 T = typing.TypeVar("T")
@@ -59,13 +60,19 @@ class PatcherEditor(AssetManager):
 
     def add_file(self,
                  name: str,
-                 asset: RawResource | BaseResource,
+                 asset: Resource,
                  paks: typing.Iterable[str] = ()
                  ) -> AssetId:
         asset_id = crc32(name)
         self.register_custom_asset_name(name, asset_id)
         self.add_new_asset(name, asset, paks)
         return asset_id
+
+    def duplicate_file(self, name: str, old_asset: AssetId, in_paks: typing.Iterable[str] | None = None) -> AssetId:
+        asset = self.get_raw_asset(old_asset)
+        if in_paks is None:
+            in_paks = self.find_paks(old_asset)
+        return self.add_or_replace_custom_asset(name, asset, in_paks)
 
     def save_modifications(self, output_path: Path):
         super().save_modifications(output_path)
@@ -83,3 +90,29 @@ class PatcherEditor(AssetManager):
         else:
             asset_id = self.add_file(name, new_data, in_paks)
         return asset_id
+
+    def create_strg(self,
+                    name: str,
+                    strings: str | typing.Iterable[str] = (),
+                    in_paks: typing.Iterable[str] = ()
+                    ) -> tuple[AssetId, Strg]:
+        template_id = None
+        if self.target_game == Game.ECHOES:
+            # Strings/Worlds/TempleHub/01_Temple_LandingSite.STRG
+            template_id = 0x2E681FEF
+
+        if template_id is None:
+            raise NotImplementedError()
+
+        asset_id = self.duplicate_file(name, template_id, in_paks)
+
+        strg = self.get_file(asset_id, Strg)
+
+        if isinstance(strings, str):
+            strings = strings
+        strings = list(strings)
+
+        for lang in strg.languages:
+            strg.set_strings(lang, strings)
+
+        return asset_id, strg
