@@ -224,14 +224,14 @@ def gfmc_compound(editor: PatcherEditor):
     area = editor.get_area(TEMPLE_GROUNDS_MLVL, temple_grounds.GFMC_COMPOUND_MREA)
 
     gate_instances = (
-        0x2b0281, 0x2b0286, 0x2b0283, 0x2b0282, 0x2b0238, 0x2b00dc,
-        0x2b0101, 0x2b0288, 0x2b0284, 0x2b013c, 0x2b00db, 0x2b027c,
-        0x2b027f, 0x2b027d, 0x2b0278, 0x2b027b, 0x2b0277, 0x2b027a,
-        0x2b0285, 0x2b02e9, 0x2b00ff, 0x2b0280, 0x2b027e,
+        0x2b00db, 0x2b00dc, 0x2b00ff, 0x2b0101,
+        0x2b013c, 0x2b0238, 0x2b0288, 0x2b02e9,
     )
+    gate_instances += tuple(range(0x2b0277, 0x2b0287))
     for raw_id in gate_instances:
+        # TODO: implement a function to move an instance from one layer to another in RDS
         inst_id = InstanceId(raw_id)
         old_inst = area.get_instance(inst_id)
         new_inst = area.get_layer("Default").add_instance_with(old_inst.get_properties())
-        area.remove_instance(inst_id)
-        new_inst.id.instance = inst_id.instance
+        area.remove_instance(old_inst)
+        new_inst.id = InstanceId.new(new_inst.id.layer, new_inst.id.area, inst_id.instance)

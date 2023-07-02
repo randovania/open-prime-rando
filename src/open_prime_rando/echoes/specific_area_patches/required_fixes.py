@@ -140,7 +140,7 @@ def main_research(editor: PatcherEditor):
         ),
         layer=LayerSwitch(
             area_id=sanctuary_fortress.MAIN_RESEARCH_INTERNAL_ID,
-            layer_number=6
+            layer_number=area.get_layer("Contraption").index
         ),
         is_dynamic=True
     ))
@@ -151,7 +151,7 @@ def main_research(editor: PatcherEditor):
         ),
         layer=LayerSwitch(
             area_id=sanctuary_fortress.MAIN_RESEARCH_INTERNAL_ID,
-            layer_number=9
+            layer_number=area.get_layer("Column Spiderball").index
         ),
         is_dynamic=True
     ))
