@@ -124,9 +124,7 @@ def _create_split_ammo(editor: AssetManager):
 
 def _import_premade_assets(editor: AssetManager):
     assets = Path(__file__).parent.joinpath("custom_assets", "general")
-    for f in assets.glob("*"):
-        if f.is_dir():
-            continue
+    for f in assets.glob("*.*"):
         name = f.name
         asset_type = f.suffix[1:].upper() # remove leading period, force uppercase
         raw = f.read_bytes()
