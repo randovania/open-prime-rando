@@ -547,7 +547,6 @@ class EchoVisorDoorType(VisorDoorType):
 
         actors.relay.add_connection(State.Active, Message.Deactivate, hud_hint)
 
-        dependencies = [0x36B1CB06] # hud hint TXTR
 
         if not low_memory:
             beacon_loop = default.add_instance_with(Sound(
