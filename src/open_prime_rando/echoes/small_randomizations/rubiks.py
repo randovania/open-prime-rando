@@ -75,7 +75,7 @@ def randomize_rubiks_puzzles(editor: PatcherEditor, rng: random.Random):
 
     # Add custom textures so colorblind players can distinguish the cubes
     for color in COLORS.values():
-        txtr_id = editor.add_file(color.txtr_name, color.txtr, editor.find_paks(MAIN_GYRO_CHAMBER_MREA))
+        txtr_id = editor.add_file(color.txtr_name, color.txtr)
 
         cmdl = editor.get_file(color.cmdl, Cmdl)
         file_ids = cmdl.raw.material_sets[0].texture_file_ids

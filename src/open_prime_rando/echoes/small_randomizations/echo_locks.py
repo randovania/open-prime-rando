@@ -28,10 +28,6 @@ def randomize_echo_locks(editor: PatcherEditor, rng: random.Random):
     scan_info = key_scan.scannable_object_info.get_properties_as(ScannableObjectInfo)
     key_strg = editor.get_parsed_asset(0x43894960, type_hint=Strg)
 
-    all_paks = set()
-    for _, mrea in ECHO_LOCK_MREAS:
-        all_paks.update(editor.find_paks(mrea))
-
     key_scans = []
     for pitch in ["low", "medium", "high"]:
         key_strg.set_string(
@@ -40,11 +36,11 @@ def randomize_echo_locks(editor: PatcherEditor, rng: random.Random):
             " Shoot the Echo Key Beam emitter with a sonic pulse to activate it."
             f" It will then fire a blast of &push;&main-color=#FF3333;{pitch}-pitched&pop; sound at an Echo Gate lock."
         )
-        strg_id = editor.add_file(f"accessible_echo_lock_{pitch}.STRG", key_strg, all_paks)
+        strg_id = editor.add_file(f"accessible_echo_lock_{pitch}.STRG", key_strg)
 
         scan_info.string = strg_id
         key_scan.scannable_object_info.set_properties(scan_info)
-        scan_id = editor.add_file(f"accessible_echo_lock_{pitch}.SCAN", key_scan, all_paks)
+        scan_id = editor.add_file(f"accessible_echo_lock_{pitch}.SCAN", key_scan)
 
         key_scans.append(scan_id)
 
@@ -87,11 +83,11 @@ def randomize_echo_locks(editor: PatcherEditor, rng: random.Random):
                          "The combination of its sonic locks is:\n")
         solution_text += ", ".join(["Low", "Medium", "High"][key] for key in solution)
         gate_strg.set_string(1, solution_text)
-        strg_id = editor.add_file(f"accessible_echo_gate_{mrea_id}.STRG", gate_strg, all_paks)
+        strg_id = editor.add_file(f"accessible_echo_gate_{mrea_id}.STRG", gate_strg)
 
         gate_scan_info.string = strg_id
         gate_scan.scannable_object_info.set_properties(gate_scan_info)
-        scan_id = editor.add_file(f"accessible_echo_gate_{mrea_id}.SCAN", gate_scan, all_paks)
+        scan_id = editor.add_file(f"accessible_echo_gate_{mrea_id}.SCAN", gate_scan)
 
         with gate_poi.edit_properties(PointOfInterest) as poi:
             poi.scan_info.scannable_info0 = scan_id

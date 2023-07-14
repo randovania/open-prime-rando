@@ -59,10 +59,6 @@ class DoorType:
 
     patched_scan: AssetId | None = None
 
-    def get_paks(self, editor: PatcherEditor, world_name: str, area_name: str):
-        world_file = world.load_dedicated_file(world_name)
-        return editor.find_paks(world_file.NAME_TO_ID_MREA[area_name])
-
     def get_files(self, editor: PatcherEditor, world_name: str, area_name: str) -> tuple[Area, Mapa]:
         world_file = world.load_dedicated_file(world_name)
         area = editor.get_area(world.NAME_TO_ID_MLVL[world_name], world_file.NAME_TO_ID_MREA[area_name])
@@ -107,22 +103,19 @@ class DoorType:
         return scan, strg
 
     def get_patched_scan(self, editor: PatcherEditor, world_name: str, area_name: str) -> AssetId:
-        paks = self.get_paks(editor, world_name, area_name)
         if self.patched_scan is None or not editor.does_asset_exists(self.patched_scan):
             scan, strg = DoorType.get_scan_templates(editor)
             for i, text in enumerate(self.scan_text):
                 strg.set_string(i, text)
 
-            strg_id = editor.add_or_replace_custom_asset(f"custom_door_{self.name}.STRG", strg, paks)
+            strg_id = editor.add_or_replace_custom_asset(f"custom_door_{self.name}.STRG", strg)
 
             with scan.scannable_object_info.edit_properties(ScannableObjectInfo) as scan_info:
                 scan_info.string = strg_id
 
-            scan_id = editor.add_or_replace_custom_asset(f"custom_door_{self.name}.SCAN", scan, paks)
+            scan_id = editor.add_or_replace_custom_asset(f"custom_door_{self.name}.SCAN", scan)
             self.patched_scan = scan_id
 
-        for pak in paks:
-            editor.ensure_present(pak, self.patched_scan)
         return self.patched_scan
 
     def patch_door(self, editor: PatcherEditor, world_name: str, area_name: str, dock_name: str, low_memory: bool):
@@ -139,9 +132,6 @@ class DoorType:
                 door_props.alt_scannable.scannable_info0 = self.get_patched_scan(editor, world_name, area_name)
             else:
                 door_props.alt_scannable.scannable_info0 = 0xFFFFFFFF
-
-        for pak in self.get_paks(editor, world_name, area_name):
-            editor.ensure_present(pak, shell_model)
 
 
 @dataclasses.dataclass(kw_only=True)
@@ -280,8 +270,6 @@ class BlastShieldDoorType(DoorType):
 
         door.add_connection(State.Open, Message.Activate, relay)
 
-        dependencies = [model]
-
         gibs = None
         sound = None
         streamed = None
@@ -324,13 +312,6 @@ class BlastShieldDoorType(DoorType):
             lock.add_connection(State.Dead, Message.Play, sound)
             lock.add_connection(State.Dead, Message.Play, streamed)
             lock.add_connection(State.Dead, Message.Activate, gibs)
-
-            dependencies.append(particle)
-            dependencies.append(0x8B4CD966) # MetalDoorLockBreak AGSC
-
-        for pak in self.get_paks(editor, world_name, area_name):
-            for asset in dependencies:
-                editor.ensure_present(pak, asset)
 
         return BlastShieldActors(door, sound, streamed, lock, relay, gibs)
 
@@ -566,7 +547,6 @@ class EchoVisorDoorType(VisorDoorType):
 
         actors.relay.add_connection(State.Active, Message.Deactivate, hud_hint)
 
-        dependencies = [0x36B1CB06] # hud hint TXTR
 
         if not low_memory:
             beacon_loop = default.add_instance_with(Sound(
@@ -633,12 +613,6 @@ class EchoVisorDoorType(VisorDoorType):
             actors.relay.add_connection(State.Active, Message.Deactivate, beacon_loop)
             actors.relay.add_connection(State.Active, Message.Deactivate, timer)
             actors.relay.add_connection(State.Active, Message.Deactivate, disrupted)
-
-            dependencies.append(0x4FBCAC73) # DigitalGuardianBeacon.AGSC
-
-        for pak in self.get_paks(editor, world_name, area_name):
-            for asset in dependencies:
-                editor.ensure_present(pak, asset)
 
 
 @dataclasses.dataclass(kw_only=True)
