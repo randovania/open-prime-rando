@@ -10,7 +10,7 @@ from retro_data_structures.formats.strg import Strg
 from retro_data_structures.game_check import Game
 
 from open_prime_rando import dynamic_schema
-from open_prime_rando.echoes import asset_ids, dock_lock_rando, specific_area_patches
+from open_prime_rando.echoes import asset_ids, custom_assets, dock_lock_rando, specific_area_patches
 from open_prime_rando.echoes.elevators import auto_enabled_elevator_patches
 from open_prime_rando.echoes.elevators.elevator_rando import patch_elevator
 from open_prime_rando.echoes.inverted import apply_inverted
@@ -138,12 +138,15 @@ def patch_paks(file_provider: FileProvider,
     DefaultValidatingDraft7Validator(schema).validate(configuration)
 
     status_update("Applying small patches", 0)
+    custom_assets.create_custom_assets(editor)
     dock_lock_rando.add_custom_models(editor)
     if configuration["auto_enabled_elevators"]:
         auto_enabled_elevator_patches.apply_auto_enabled_elevators_patch(editor)
     specific_area_patches.specific_patches(editor, configuration["area_patches"])
     apply_small_randomizations(editor, configuration["small_randomizations"])
     apply_corrupted_memory_card_change(editor)
+
+    status_update("Modifying areas", 0)
     apply_area_modifications(editor, configuration["worlds"], status_update)
 
     if configuration["inverted"]:
