@@ -88,7 +88,6 @@ class PatcherEditor(AssetManager):
     def create_strg(self,
                     name: str,
                     strings: str | typing.Iterable[str] = (),
-                    in_paks: typing.Iterable[str] = ()
                     ) -> tuple[AssetId, Strg]:
         template_id = None
         if self.target_game == Game.ECHOES:
@@ -98,7 +97,7 @@ class PatcherEditor(AssetManager):
         if template_id is None:
             raise NotImplementedError()
 
-        asset_id = self.duplicate_file(name, template_id, in_paks)
+        asset_id = self.duplicate_file(name, template_id)
 
         strg = self.get_file(asset_id, Strg)
 
