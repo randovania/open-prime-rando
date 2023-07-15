@@ -61,18 +61,14 @@ class PatcherEditor(AssetManager):
     def add_file(self,
                  name: str,
                  asset: Resource,
-                 paks: typing.Iterable[str] = ()
                  ) -> AssetId:
         asset_id = crc32(name)
         self.register_custom_asset_name(name, asset_id)
-        self.add_new_asset(name, asset, paks)
+        self.add_new_asset(name, asset, ())
         return asset_id
 
-    def duplicate_file(self, name: str, old_asset: AssetId, in_paks: typing.Iterable[str] | None = None) -> AssetId:
-        asset = self.get_raw_asset(old_asset)
-        if in_paks is None:
-            in_paks = self.find_paks(old_asset)
-        return self.add_or_replace_custom_asset(name, asset, in_paks)
+    def duplicate_file(self, name: str, asset: AssetId) -> AssetId:
+        return self.add_file(name, self.get_raw_asset(asset))
 
     def save_modifications(self, output_path: Path):
         super().save_modifications(output_path)
@@ -82,13 +78,11 @@ class PatcherEditor(AssetManager):
             target_dol.parent.mkdir(exist_ok=True, parents=True)
             target_dol.write_bytes(self.dol.dol_file.getvalue())
 
-    def add_or_replace_custom_asset(self, name: str, new_data: Resource, in_paks: typing.Iterable[str] = ()) -> AssetId:
+    def add_or_replace_custom_asset(self, name: str, new_data: Resource) -> AssetId:
         if self.does_asset_exists(name):
             asset_id = self.replace_asset(name, new_data)
-            for pak in in_paks:
-                self.ensure_present(pak, asset_id)
         else:
-            asset_id = self.add_file(name, new_data, in_paks)
+            asset_id = self.add_file(name, new_data)
         return asset_id
 
     def create_strg(self,
