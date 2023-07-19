@@ -1,5 +1,5 @@
 {
-    "$schema": "http://json-schema.org/draft-07/schema#",
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
     "type": "object",
     "properties": {
         "$schema": {
@@ -219,6 +219,318 @@
                     "type": "integer"
                 }
             }
+        },
+        "pickup": {
+            "type": "object",
+            "properties": {
+                "location": {
+                    "$ref": "#/$defs/location_data"
+                },
+                "appearance": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "model": {
+                                "$ref": "#/$defs/model_data"
+                            },
+                            "sound": {
+                                "$ref": "#/$defs/asset_id",
+                                "$comment": "Actually a sound ID, but who's counting"
+                            },
+                            "jingle": {
+                                "type": "object",
+                                "properties": {
+                                    "file": {
+                                        "type": "string",
+                                        "pattern": "^.*?\\.dsp$"
+                                    },
+                                    "volume": {
+                                        "type": "number",
+                                        "minimum": 0.0,
+                                        "maximum": 100.0
+                                    }
+                                },
+                                "required": [
+                                    "file",
+                                    "volume"
+                                ],
+                                "additionalProperties": false
+                            },
+                            "hud_text": {
+                                "type": "string"
+                            },
+                            "scan": {
+                                "type": "string"
+                            }
+                        },
+                        "required": [
+                            "model",
+                            "sound",
+                            "jingle",
+                            "hud_text",
+                            "scan"
+                        ],
+                        "additionalProperties": false
+                    }
+                },
+                "resources": {
+                    "type": "object",
+                    "properties": {
+                        "progression": {
+                            "type": "array",
+                            "items": {
+                                "type": "object",
+                                "properties": {
+                                    "required_item": {
+                                        "type": ["integer", "null"],
+                                        "default": null
+                                    },
+                                    "resources": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "object",
+                                            "properties": {
+                                                "item": {
+                                                    "type": "int"
+                                                },
+                                                "amount": {
+                                                    "type": "int"
+                                                }
+                                            },
+                                            "required": [
+                                                "item",
+                                                "amount"
+                                            ],
+                                            "additionalProperties": false
+                                        },
+                                        "minItems": 1
+                                    }
+                                },
+                                "required": [
+                                    "required_item",
+                                    "resources"
+                                ]
+                            }
+                        },
+                        "converted": {
+                            "type": "array",
+                            "items": {
+                                "type": "object",
+                                "properties": {
+                                    "from_item": {
+                                        "type": "integer"
+                                    },
+                                    "to_item": {
+                                        "type": "integer"
+                                    },
+                                    "overwrite_target": {
+                                        "type": "boolean"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "required": [
+                        "progression",
+                        "converted"
+                    ],
+                    "additionalProperties": false
+                }
+            },
+            "required": [
+                "location",
+                "appearance",
+                "resources"
+            ],
+            "additionalProperties": false
+        },
+        "location_data": {
+            "type": "object",
+            "properties": {
+                "type": {
+                    "type": "string",
+                    "enum": [
+                        "standard",
+                        "custom"
+                    ]
+                },
+                "exclude_memo_from_removal": {
+                    "type": "boolean",
+                    "default": false
+                },
+                "original_model": {
+                    "$ref": "#/$defs/model_data"
+                },
+                "connections": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/$defs/connection"
+                    },
+                    "default": []
+                },
+                "removals": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/$defs/instance_id"
+                    },
+                    "default": []
+                },
+                "required": [
+                    "area",
+                    "type",
+                    "original_model"
+                ]
+            },
+            "if": {
+                "properties": { "type": { "const": "standard" } }
+            },
+            "then": {
+                "properties": {
+                    "instances": {
+                        "type": "object",
+                        "properties": {
+                            "pickup": {
+                                "$ref": "#/$defs/instance_id"
+                            },
+                            "hud_memo": {
+                                "$ref": "#/$defs/instance_id"
+                            },
+                            "streamed_audio": {
+                                "$ref": "#/$defs/instance_id"
+                            },
+                            "sound": {
+                                "$ref": "#/$defs/instance_id"
+                            },
+                            "audio_fade": {
+                                "$ref": "#/$defs/instance_id"
+                            }
+                        },
+                        "required": [
+                            "pickup",
+                            "hud_memo",
+                            "streamed_audio",
+                            "sound",
+                            "audio_fade"
+                        ],
+                        "additionalProperties": false
+                    }
+                },
+                "required": ["instances"]
+            },
+            "else": {
+                "properties": {
+                    "position": {
+                        "$ref": "#/$defs/vec3"
+                    },
+                    "collision_size": {
+                        "$ref": "#/$defs/vec3",
+                        "default": [1.0, 1.0, 1.0]
+                    },
+                    "collision_offset": {
+                        "$ref": "#/$defs/vec3",
+                        "default": [0.0, 0.0, 0.0]
+                    }
+                },
+                "required": ["position"]
+            },
+            "unevaluatedProperties": false
+        },
+        "model_data": {
+            "type": "string",
+            "enum": [
+                "PowerBeam",
+                "ChargeBeam",
+                "DarkBeam",
+                "LightBeam",
+                "AnnihilatorBeam",
+                "SuperMissile",
+                "Darkburst",
+                "Sunburst",
+                "SonicBoom",
+                "CombatVisor",
+                "ScanVisor",
+                "DarkVisor",
+                "EchoVisor",
+                "VariaSuit",
+                "DarkSuit",
+                "LightSuit",
+                "MorphBall",
+                "MorphBallBomb",
+                "BoostBall",
+                "SpiderBall",
+                "PowerBomb",
+                "PowerBombExpansion",
+                "MissileExpansion",
+                "MissileExpansionShiny",
+                "MissileExpansionPrime1",
+                "MissileLauncher",
+                "SeekerLauncher",
+                "ScrewAttack",
+                "EnergyTransferModule",
+                "BeamAmmoExpansion",
+                "AmberTranslator",
+                "CobaltTranslator",
+                "EmeraldTranslator",
+                "VioletTranslator",
+                "DarkTempleKey",
+                "AgonTempleKey",
+                "TorvusTempleKey",
+                "SanctuaryTempleKey",
+                "SkyTempleKey",
+                "DarkBeamAmmoExpansion",
+                "LightBeamAmmoExpansion",
+                "UnlimitedBeamAmmo",
+                "UnlimitedMissiles",
+                "MassiveDamage",
+                "CannonBall",
+                "MissileExpansionLarge",
+                "EnergyTankSmall",
+                "Offworld"
+            ]
+        },
+        "vec3": {
+            "type": "array",
+            "items": {
+                "type": "number"
+            },
+            "minItems": 3,
+            "maxItems": 3
+        },
+        "asset_id": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 4294967295,
+            "default": 4294967295
+        },
+        "instance_id": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 16777215
+        },
+        "fourcc": {
+            "type": "string",
+            "pattern": "^[A-Z0-9 !]{4}$"
+        },
+        "connection": {
+            "type": "object",
+            "properties": {
+                "target": {
+                    "$ref": "#/$defs/instance_id"
+                },
+                "state": {
+                    "$ref": "#/$defs/fourcc",
+                    "default": "ZERO"
+                },
+                "message": {
+                    "$ref": "#/$defs/fourcc"
+                }
+            },
+            "required": [
+                "target",
+                "message"
+            ],
+            "additionalProperties": false
         }
     }
 }

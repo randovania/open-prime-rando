@@ -16,7 +16,7 @@ from open_prime_rando.echoes.elevators.elevator_rando import patch_elevator
 from open_prime_rando.echoes.inverted import apply_inverted
 from open_prime_rando.echoes.small_randomizations import apply_small_randomizations
 from open_prime_rando.patcher_editor import PatcherEditor
-from open_prime_rando.validator_with_default import DefaultValidatingDraft7Validator
+from open_prime_rando.validator_with_default import DefaultValidatingDraft202012Validator
 
 LOG = logging.getLogger("echoes_patcher")
 
@@ -135,7 +135,7 @@ def patch_paks(file_provider: FileProvider,
     schema = dynamic_schema.expand_schema(_read_schema(), editor)
 
     status_update("Validating schema", 0)
-    DefaultValidatingDraft7Validator(schema).validate(configuration)
+    DefaultValidatingDraft202012Validator(schema).validate(configuration)
 
     status_update("Applying small patches", 0)
     custom_assets.create_custom_assets(editor)
