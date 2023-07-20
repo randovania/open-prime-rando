@@ -1,16 +1,23 @@
 import logging
+import struct
 
 from construct import Container
 from retro_data_structures.enums.echoes import Message, State
 from retro_data_structures.formats.script_object import ScriptInstance
 from retro_data_structures.game_check import Game
+from retro_data_structures.properties.echoes.archetypes.EditorProperties import EditorProperties
+from retro_data_structures.properties.echoes.archetypes.LayerSwitch import LayerSwitch
 from retro_data_structures.properties.echoes.objects.Counter import Counter
 from retro_data_structures.properties.echoes.objects.Relay import Relay
 from retro_data_structures.properties.echoes.objects.ScriptLayerController import ScriptLayerController
 
-from open_prime_rando.echoes.asset_ids.agon_wastes import MINING_STATION_B_MREA, PORTAL_TERMINAL_MREA
+from open_prime_rando.echoes.asset_ids.agon_wastes import (
+    COMMAND_CENTER_MREA,
+    MINING_STATION_B_MREA,
+    PORTAL_TERMINAL_MREA,
+)
 from open_prime_rando.echoes.asset_ids.torvus_bog import TORVUS_ENERGY_CONTROLLER_MREA, TORVUS_TEMPLE_MREA
-from open_prime_rando.echoes.asset_ids.world import TORVUS_BOG_MLVL
+from open_prime_rando.echoes.asset_ids.world import AGON_WASTES_MLVL, TORVUS_BOG_MLVL
 from open_prime_rando.patcher_editor import PatcherEditor
 
 LOG = logging.getLogger("echoes_patcher")
@@ -21,6 +28,7 @@ def specific_patches(editor: PatcherEditor, area_patches: dict):
     # torvus_generator(editor)
     if area_patches["torvus_temple"]:
         torvus_temple_crash(editor)
+    command_center_door(editor)
 
 
 def sand_mining(editor: PatcherEditor):
@@ -122,3 +130,38 @@ def agon_wastes_portal_terminal_puzzle_patch(editor: PatcherEditor):
     with counter.edit_properties(Counter) as props:
         props.editor_properties.unknown = 1
         props.max_count = 1
+
+
+def command_center_door(editor: PatcherEditor):
+    """
+    Opening the blast door normally requires a room reload after they've been closed.
+    The DS cutscene in Security Station B reloads the room, but that cutscene has been removed.
+    """
+    area = editor.get_area(AGON_WASTES_MLVL, COMMAND_CENTER_MREA)
+    default = area.get_layer("Default")
+    # committing a crime until RDS supports unsigned ints
+    internal_area_id = struct.unpack('>l', struct.pack('>L', 0xAA657163))[0]
+
+    poi = default.get_instance("Blast Door Activation")
+
+    # Deactivate layers
+    for layer in ("1st Pass Scripting", "1st pass parts"):
+        controller = default.add_instance_with(ScriptLayerController(
+            editor_properties=EditorProperties(
+                name=f"DYNAMIC Decrement {layer}",
+            ),
+            layer=LayerSwitch(
+                area_id=internal_area_id,
+                layer_number=area.get_layer(layer).index,
+            ),
+            is_dynamic=True,
+        ))
+        poi.add_connection(State.ScanDone, Message.Decrement, controller)
+
+    # Ensure the blast door instances are active for the cutscene
+    for instance in ("Upper Blast Door", "Lower Blast Door"):
+        poi.add_connection(
+            State.ScanDone,
+            Message.Activate,
+            default.get_instance(instance),
+        )
