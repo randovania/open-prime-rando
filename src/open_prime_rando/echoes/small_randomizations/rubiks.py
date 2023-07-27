@@ -102,6 +102,9 @@ def randomize_rubiks_puzzles(editor: PatcherEditor, rng: random.Random):
 
     patch_upstairs_puzzle_transform(editor)
 
+    area.update_all_dependencies()
+
+
 def patch_upstairs_puzzle_transform(editor: PatcherEditor):
     """
     The vanilla transform for these angles them with the glass, making the lock-on points
