@@ -75,8 +75,7 @@
                     "type": "object",
                     "properties": {
                         "varia": {
-                            "$ref": "#/$defs/suit_skin",
-                            "default": "player2"
+                            "$ref": "#/$defs/suit_skin"
                         },
                         "dark": {
                             "$ref": "#/$defs/suit_skin"
@@ -90,7 +89,13 @@
                 }
             },
             "additionalProperties": false,
-            "default": {}
+            "default": {
+                "suits": {
+                    "varia": "player2",
+                    "dark" : "player2",
+                    "light": "player2"
+                }
+            }
         }
     },
     "required": [
