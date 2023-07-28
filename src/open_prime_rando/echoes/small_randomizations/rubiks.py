@@ -1,6 +1,5 @@
 import random
 from dataclasses import dataclass
-from pathlib import Path
 
 from retro_data_structures.base_resource import RawResource
 from retro_data_structures.enums.echoes import Message, State
@@ -13,6 +12,7 @@ from retro_data_structures.properties.echoes.objects.Waypoint import Waypoint
 
 from open_prime_rando.echoes.asset_ids.sanctuary_fortress import MAIN_GYRO_CHAMBER_MREA
 from open_prime_rando.echoes.asset_ids.world import SANCTUARY_FORTRESS_MLVL
+from open_prime_rando.echoes.custom_assets import custom_asset_path
 from open_prime_rando.patcher_editor import PatcherEditor
 
 RUBIKS_CUBES = {
@@ -44,7 +44,7 @@ class RubiksColor:
     def txtr(self) -> RawResource:
         return RawResource(
             type="TXTR",
-            data=Path(__file__).parent.parent.joinpath("custom_assets", "rubiks", self.txtr_name).read_bytes()
+            data=custom_asset_path().joinpath("rubiks", self.txtr_name).read_bytes(),
         )
 
 

@@ -1,17 +1,17 @@
-from pathlib import Path
 
 from construct import Container
 from retro_data_structures.base_resource import AssetId, RawResource
 from retro_data_structures.formats.cmdl import Cmdl
 from retro_data_structures.game_check import Game
 
+from open_prime_rando.echoes.custom_assets import custom_asset_path
 from open_prime_rando.echoes.dock_lock_rando import dock_type
 from open_prime_rando.echoes.dock_lock_rando.dock_type_database import DOCK_TYPES
 from open_prime_rando.patcher_editor import PatcherEditor
 
 
 def add_custom_models(editor: PatcherEditor):
-    assets = Path(__file__).parent.parent.joinpath("custom_assets", "doors")
+    assets = custom_asset_path().joinpath("doors")
     def get_txtr(n: str, must_exist: bool = True) -> AssetId:
         f = assets.joinpath(n)
         if not must_exist and not f.exists():
