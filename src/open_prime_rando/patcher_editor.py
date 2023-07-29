@@ -8,7 +8,7 @@ from retro_data_structures.asset_manager import AssetManager, FileProvider
 from retro_data_structures.base_resource import AssetId, BaseResource, NameOrAssetId, RawResource, Resource
 from retro_data_structures.crc import crc32
 from retro_data_structures.formats.mlvl import Mlvl
-from retro_data_structures.formats.mrea import Area
+from retro_data_structures.formats.mrea import Area, Mrea
 from retro_data_structures.game_check import Game
 
 T = typing.TypeVar("T")
@@ -26,6 +26,20 @@ class MemoryDol(DolEditor):
     def _seek_and_write(self, seek: int, data: bytes):
         self.dol_file.seek(seek)
         self.dol_file.write(data)
+
+
+class AssetModifiedStatusReport:
+    def __init__(self, total: int, status_update: typing.Callable[[str, float], None]):
+        self.status_update = status_update
+        self.done = 0
+        self.total = total
+
+    def __call__(self, *args, **kwargs):
+        self.done += 1
+        self.status_update(
+            f"Finalizing modified files, {self.done} out of {self.total} done.",
+            self.done / self.total
+        )
 
 
 class PatcherEditor(AssetManager):
@@ -53,34 +67,50 @@ class PatcherEditor(AssetManager):
     def get_area(self, mlvl: NameOrAssetId, mrea: NameOrAssetId) -> Area:
         return self.get_mlvl(mlvl).get_area(mrea)
 
-    def flush_modified_assets(self, status_update: typing.Callable[[str, float], None]):
+    def _bulk_replace_asset(self, assets: typing.Iterable[tuple[NameOrAssetId, BaseResource]],
+                            on_done: typing.Callable[[typing.Any], None]):
+        with ThreadPoolExecutor() as executor:
+            for name, resource in assets:
+                executor.submit(self.replace_asset, name, resource).add_done_callback(on_done)
+
+    def _get_final_areas_to_update_dependencies(self) -> list[tuple[Area, bool]]:
         id_to_area: dict[int, tuple[Area, bool]] = {}
 
         for area, only_modified in self._areas_to_update_dependencies:
             if not only_modified or area.mrea_asset_id not in id_to_area:
                 id_to_area[area.mrea_asset_id] = (area, only_modified)
 
-        done = -1
-        total_assets = len(id_to_area) + len(self.memory_files)
+        return list(id_to_area.values())
 
-        def report_modified(_=None):
-            nonlocal done
-            done += 1
-            status_update(f"Finalizing modified files, {done} out of {total_assets} done.",
-                          done / total_assets)
+    def flush_modified_assets(self, status_update: typing.Callable[[str, float], None]):
+        areas_to_update = self._get_final_areas_to_update_dependencies()
 
-        report_modified()
+        modified_report = AssetModifiedStatusReport(
+            len(areas_to_update) + len(self.memory_files),
+            status_update
+        )
 
-        for area, only_modified in id_to_area.values():
+        modified_report()
+
+        non_mrea_mlvl = []
+        for name, resource in list(self.memory_files.items()):
+            if resource.resource_type() not in (Mlvl, Mrea):
+                non_mrea_mlvl.append((name, resource))
+                self.memory_files.pop(name)
+
+        self._bulk_replace_asset(non_mrea_mlvl, modified_report)
+
+        # Clear all previously calculated dependencies
+        # TODO: invalidate the dependency cache whenever we modify an asset, but do so smartly
+        self._cached_dependencies.clear()
+        self._cached_ancs_per_char_dependencies.clear()
+
+        for area, only_modified in areas_to_update:
             area.update_all_dependencies(only_modified=only_modified)
-            report_modified()
+            modified_report()
 
         self._areas_to_update_dependencies.clear()
-
-        with ThreadPoolExecutor() as executor:
-            for name, resource in self.memory_files.items():
-                executor.submit(self.replace_asset, name, resource).add_done_callback(report_modified)
-
+        self._bulk_replace_asset(self.memory_files.items(), modified_report)
         self.memory_files = {}
 
     def add_file(self,
