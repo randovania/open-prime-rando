@@ -98,7 +98,7 @@ def apply_area_modifications(editor: PatcherEditor, configuration: dict[str, dic
                 new_strg = editor.add_file(f"custom_name_for_{area.internal_name}.STRG", strg)
                 area._raw.area_name_id = new_strg
 
-            area.update_all_dependencies(only_modified=True)
+            editor.schedule_dependency_update(area, only_modified=True)
 
 
 def apply_corrupted_memory_card_change(editor: PatcherEditor):
@@ -144,13 +144,13 @@ def patch_paks(file_provider: FileProvider,
     specific_area_patches.specific_patches(editor, configuration["area_patches"])
     apply_small_randomizations(editor, configuration["small_randomizations"])
     apply_corrupted_memory_card_change(editor)
-    apply_area_modifications(editor, configuration["worlds"], status_update)
+    apply_area_modifications(editor, configuration["worlds"], lambda msg, progress: status_update(msg, progress / 2))
 
     if configuration["inverted"]:
         apply_inverted(editor)
 
     # Save our changes
-    editor.flush_modified_assets()
+    editor.flush_modified_assets(lambda msg, progress: status_update(msg, 0.5 + progress / 2))
 
     editor.save_modifications(output_path)
     status_update("Finished", 1.0)

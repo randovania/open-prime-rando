@@ -40,7 +40,6 @@ def randomize_echo_locks(editor: PatcherEditor, rng: random.Random):
 
         scan_info.string = strg_id
         key_scan.scannable_object_info.set_properties(scan_info)
-        key_scan.rebuild_dependencies()
         scan_id = editor.add_file(f"accessible_echo_lock_{pitch}.SCAN", key_scan)
 
         key_scans.append(scan_id)
@@ -93,5 +92,5 @@ def randomize_echo_locks(editor: PatcherEditor, rng: random.Random):
         with gate_poi.edit_properties(PointOfInterest) as poi:
             poi.scan_info.scannable_info0 = scan_id
 
-        area.update_all_dependencies()
+        editor.schedule_dependency_update(area)
 
