@@ -30,10 +30,12 @@ class MemoryDol(DolEditor):
 
 class PatcherEditor(AssetManager):
     memory_files: dict[NameOrAssetId, BaseResource]
+    _areas_to_update_dependencies: list[tuple[Area, bool]]
 
     def __init__(self, provider: FileProvider, game: Game):
         super().__init__(provider, game)
         self.memory_files = {}
+        self._areas_to_update_dependencies = []
 
         if game in [Game.PRIME, Game.ECHOES]:
             self.dol = MemoryDol(provider.get_dol())
@@ -51,10 +53,34 @@ class PatcherEditor(AssetManager):
     def get_area(self, mlvl: NameOrAssetId, mrea: NameOrAssetId) -> Area:
         return self.get_mlvl(mlvl).get_area(mrea)
 
-    def flush_modified_assets(self):
+    def flush_modified_assets(self, status_update: typing.Callable[[str, float], None]):
+        id_to_area: dict[int, tuple[Area, bool]] = {}
+
+        for area, only_modified in self._areas_to_update_dependencies:
+            if not only_modified or area.mrea_asset_id not in id_to_area:
+                id_to_area[area.mrea_asset_id] = (area, only_modified)
+
+        done = -1
+        total_assets = len(id_to_area) + len(self.memory_files)
+
+        def report_modified(_=None):
+            nonlocal done
+            done += 1
+            status_update(f"Finalizing modified files, {done} out of {total_assets} done.",
+                          done / total_assets)
+
+        report_modified()
+
+        for area, only_modified in id_to_area.values():
+            area.update_all_dependencies(only_modified=only_modified)
+            report_modified()
+
+        self._areas_to_update_dependencies.clear()
+
         with ThreadPoolExecutor() as executor:
             for name, resource in self.memory_files.items():
-                executor.submit(self.replace_asset, name, resource)
+                executor.submit(self.replace_asset, name, resource).add_done_callback(report_modified)
+
         self.memory_files = {}
 
     def add_file(self,
@@ -68,6 +94,9 @@ class PatcherEditor(AssetManager):
 
     def duplicate_file(self, name: str, asset: AssetId) -> AssetId:
         return self.add_file(name, self.get_parsed_asset(asset))
+
+    def schedule_dependency_update(self, area: Area, only_modified: bool = False):
+        self._areas_to_update_dependencies.append((area, only_modified))
 
     def save_modifications(self, output_path: Path):
         super().save_modifications(output_path)

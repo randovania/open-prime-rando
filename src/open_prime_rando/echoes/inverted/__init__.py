@@ -1,5 +1,5 @@
 
-from retro_data_structures.formats import Mapa, Mlvl
+from retro_data_structures.formats import Mapa
 from retro_data_structures.formats.mrea import Area
 from retro_data_structures.formats.script_layer import ScriptLayer
 from retro_data_structures.formats.script_object import InstanceId, ScriptInstance
@@ -93,7 +93,9 @@ def _copy_safe_zone_crystal(copied_crystal: ScriptInstance,
     return targets_special
 
 
-def _move_safe_zones(world: Mlvl, pairs: list[tuple[int, int]]):
+def _move_safe_zones(editor: PatcherEditor, world_mlvl: int, pairs: list[tuple[int, int]]):
+    world = editor.get_mlvl(world_mlvl)
+
     for light_id, dark_id in pairs:
         light = world.get_area(light_id)
         dark = world.get_area(dark_id)
@@ -119,12 +121,14 @@ def _move_safe_zones(world: Mlvl, pairs: list[tuple[int, int]]):
                 if not targets_special:
                     dark_layer.remove_instance(instance)
 
+        editor.schedule_dependency_update(light, only_modified=True)
+
 
 def apply_inverted(editor: PatcherEditor):
     _swap_dark_world(editor)
 
-    _move_safe_zones(editor.get_mlvl(world_ids.TEMPLE_GROUNDS_MLVL), area_pairs.TG_PAIRS)
-    _move_safe_zones(editor.get_mlvl(world_ids.AGON_WASTES_MLVL), area_pairs.AGON_PAIRS)
-    _move_safe_zones(editor.get_mlvl(world_ids.TORVUS_BOG_MLVL), area_pairs.TORVUS_PAIRS)
-    _move_safe_zones(editor.get_mlvl(world_ids.SANCTUARY_FORTRESS_MLVL), area_pairs.SANCTUARY_PAIRS)
-    _move_safe_zones(editor.get_mlvl(world_ids.GREAT_TEMPLE_MLVL), area_pairs.GREAT_TEMPLE_PAIRS)
+    _move_safe_zones(editor, world_ids.TEMPLE_GROUNDS_MLVL, area_pairs.TG_PAIRS)
+    _move_safe_zones(editor, world_ids.AGON_WASTES_MLVL, area_pairs.AGON_PAIRS)
+    _move_safe_zones(editor, world_ids.TORVUS_BOG_MLVL, area_pairs.TORVUS_PAIRS)
+    _move_safe_zones(editor, world_ids.SANCTUARY_FORTRESS_MLVL, area_pairs.SANCTUARY_PAIRS)
+    _move_safe_zones(editor, world_ids.GREAT_TEMPLE_MLVL, area_pairs.GREAT_TEMPLE_PAIRS)
