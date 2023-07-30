@@ -101,7 +101,8 @@ def randomize_rubiks_puzzles(editor: PatcherEditor, rng: random.Random):
                 props.model = color.cmdl
 
     patch_upstairs_puzzle_transform(editor)
-    editor.schedule_dependency_update(area)
+
+    area.update_all_dependencies()
 
 
 def patch_upstairs_puzzle_transform(editor: PatcherEditor):
