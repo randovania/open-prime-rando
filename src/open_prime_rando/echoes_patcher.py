@@ -95,7 +95,7 @@ def apply_area_modifications(editor: PatcherEditor, configuration: dict[str, dic
                 old_strg = area._raw.area_name_id
                 strg = editor.get_parsed_asset(old_strg, type_hint=Strg)
                 strg.set_string(0, area_config["new_name"])
-                new_strg = editor.add_file(f"custom_name_for_{area.internal_name}.STRG", strg)
+                new_strg = editor.add_new_asset(f"custom_name_for_{area.internal_name}.STRG", strg)
                 area._raw.area_name_id = new_strg
 
             area.update_all_dependencies(only_modified=True)
