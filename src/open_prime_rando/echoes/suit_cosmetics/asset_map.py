@@ -27,7 +27,7 @@ SUIT_ASSETS: dict[str, dict[AssetId, str]] = {
         0xA29AEF93: "samus_varia_morph_3_shell.TXTR",
         0x9643B175: "samus_varia_morph_3_shell_polish.TXTR",
         0x2F566CEC: "samus_morph_2_3_metallic.TXTR",
-        0x98D4E4B3: "samus_varia_armor_polish_2.TXTR",
+        0x9BD4E4B3: "samus_varia_armor_polish_2.TXTR",
         0xB29C1225: "samus_varia_left_arm_metallic.TXTR",
     },
     "dark": {

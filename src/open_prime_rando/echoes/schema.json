@@ -84,22 +84,18 @@
                             "$ref": "#/$defs/suit_skin"
                         }
                     },
-                    "additionalProperties": false,
-                    "default": {}
+                    "additionalProperties": false
                 }
             },
             "additionalProperties": false,
-            "default": {
-                "suits": {
-                    "varia": "player2",
-                    "dark" : "player2",
-                    "light": "player2"
-                }
-            }
+            "required": [
+                "suits"
+            ]
         }
     },
     "required": [
-        "small_randomizations"
+        "small_randomizations",
+        "cosmetics"
     ],
     "additionalProperties": false,
     "$defs": {
