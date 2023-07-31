@@ -75,12 +75,16 @@ def randomize_rubiks_puzzles(editor: PatcherEditor, rng: random.Random):
 
     # Add custom textures so colorblind players can distinguish the cubes
     for color in COLORS.values():
-        txtr_id = editor.add_file(color.txtr_name, color.txtr)
+        txtr_id = editor.add_new_asset(color.txtr_name, color.txtr)
 
-        cmdl = editor.get_file(color.cmdl, Cmdl)
+        # FIXME: we can't use get_file or else the dependencies break
+        cmdl = editor.get_parsed_asset(color.cmdl, type_hint=Cmdl)
         file_ids = cmdl.raw.material_sets[0].texture_file_ids
         old_txtr = file_ids.index(color.old_txtr)
         file_ids[old_txtr] = txtr_id
+        editor.replace_asset(color.cmdl, cmdl)
+        # FIXME: we should not need to do this manually
+        editor._cached_dependencies.pop(color.cmdl, None)
 
     for puzzle_name, cubes in RUBIKS_CUBES.items():
         solution = [
@@ -101,6 +105,9 @@ def randomize_rubiks_puzzles(editor: PatcherEditor, rng: random.Random):
                 props.model = color.cmdl
 
     patch_upstairs_puzzle_transform(editor)
+
+    area.update_all_dependencies()
+
 
 def patch_upstairs_puzzle_transform(editor: PatcherEditor):
     """

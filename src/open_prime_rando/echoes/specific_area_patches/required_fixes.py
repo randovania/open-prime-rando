@@ -1,4 +1,5 @@
 import logging
+import struct
 from collections.abc import Iterable
 
 from retro_data_structures.enums.echoes import Message, State
@@ -44,6 +45,7 @@ def required_fixes(editor: PatcherEditor):
     hive_chamber_b(editor)
     gfmc_compound(editor)
     torvus_temple(editor)
+    command_center(editor)
 
 
 def mining_station_b(editor: PatcherEditor):
@@ -238,3 +240,38 @@ def torvus_temple(editor: PatcherEditor):
 
     for obj in to_remove:
         area.remove_instance(obj)
+
+
+def command_center(editor: PatcherEditor):
+    """
+    Opening the blast door normally requires a room reload after they've been closed.
+    The DS cutscene in Security Station B reloads the room, but that cutscene has been removed.
+    """
+    area = editor.get_area(AGON_WASTES_MLVL, agon_wastes.COMMAND_CENTER_MREA)
+    default = area.get_layer("Default")
+    # committing a crime until RDS supports unsigned ints
+    internal_area_id = struct.unpack('>l', struct.pack('>L', 0xAA657163))[0]
+
+    poi = default.get_instance("Blast Door Activation")
+
+    # Deactivate layers
+    for layer in ("1st Pass Scripting", "1st pass parts"):
+        controller = default.add_instance_with(ScriptLayerController(
+            editor_properties=EditorProperties(
+                name=f"DYNAMIC Decrement {layer}",
+            ),
+            layer=LayerSwitch(
+                area_id=internal_area_id,
+                layer_number=area.get_layer(layer).index,
+            ),
+            is_dynamic=True,
+        ))
+        poi.add_connection(State.ScanDone, Message.Decrement, controller)
+
+    # Ensure the blast door instances are active for the cutscene
+    for instance in ("Upper Blast Door", "Lower Blast Door"):
+        poi.add_connection(
+            State.ScanDone,
+            Message.Activate,
+            default.get_instance(instance),
+        )
