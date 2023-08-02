@@ -84,7 +84,8 @@
                             "$ref": "#/$defs/suit_skin"
                         }
                     },
-                    "additionalProperties": false
+                    "additionalProperties": false,
+                    "$comment": "Choose from a number of custom suit textures"
                 }
             },
             "additionalProperties": false,
