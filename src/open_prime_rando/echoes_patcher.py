@@ -15,6 +15,7 @@ from open_prime_rando.echoes.elevators import auto_enabled_elevator_patches
 from open_prime_rando.echoes.elevators.elevator_rando import patch_elevator
 from open_prime_rando.echoes.inverted import apply_inverted
 from open_prime_rando.echoes.small_randomizations import apply_small_randomizations
+from open_prime_rando.echoes.suit_cosmetics import apply_custom_suits
 from open_prime_rando.patcher_editor import PatcherEditor
 from open_prime_rando.validator_with_default import DefaultValidatingDraft7Validator
 
@@ -148,6 +149,8 @@ def patch_paks(file_provider: FileProvider,
 
     if configuration["inverted"]:
         apply_inverted(editor)
+
+    apply_custom_suits(editor, configuration["cosmetics"]["suits"])
 
     # Save our changes
     editor.flush_modified_assets()

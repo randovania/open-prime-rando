@@ -67,10 +67,36 @@
             "type": "boolean",
             "description": "Set elevators to be activated on room load",
             "default": false
+        },
+        "cosmetics": {
+            "type": "object",
+            "properties": {
+                "suits": {
+                    "type": "object",
+                    "properties": {
+                        "varia": {
+                            "$ref": "#/$defs/suit_skin"
+                        },
+                        "dark": {
+                            "$ref": "#/$defs/suit_skin"
+                        },
+                        "light": {
+                            "$ref": "#/$defs/suit_skin"
+                        }
+                    },
+                    "additionalProperties": false,
+                    "$comment": "Choose from a number of custom suit textures"
+                }
+            },
+            "additionalProperties": false,
+            "required": [
+                "suits"
+            ]
         }
     },
     "required": [
-        "small_randomizations"
+        "small_randomizations",
+        "cosmetics"
     ],
     "additionalProperties": false,
     "$defs": {
@@ -219,6 +245,16 @@
                     "type": "integer"
                 }
             }
+        },
+        "suit_skin": {
+            "type": "string",
+            "enum": [
+                "player1",
+                "player2",
+                "player3",
+                "player4"
+            ],
+            "default": "player1"
         }
     }
 }
