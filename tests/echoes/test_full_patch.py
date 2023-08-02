@@ -10,7 +10,7 @@ def test_ntsc_paks(prime2_iso_provider, tmp_path, test_files_dir):
         output_path=output_path,
         configuration=configuration,
     )
-    assert len(list(output_path.rglob("*.pak"))) == 7
+    assert len(list(output_path.rglob("*.pak"))) == 11
 
 
 def test_pal_paks(pal_prime2_iso_provider, tmp_path, test_files_dir):
@@ -22,4 +22,4 @@ def test_pal_paks(pal_prime2_iso_provider, tmp_path, test_files_dir):
         output_path=output_path,
         configuration=configuration,
     )
-    assert len(list(output_path.rglob("*.pak"))) == 7
+    assert len(list(output_path.rglob("*.pak"))) == 11
