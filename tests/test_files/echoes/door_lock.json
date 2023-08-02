@@ -3323,8 +3323,8 @@
     "cosmetics": {
         "suits": {
             "varia": "player1",
-            "dark": "player1",
-            "light": "player1"
+            "dark": "player2",
+            "light": "player3"
         }
     }
 }
