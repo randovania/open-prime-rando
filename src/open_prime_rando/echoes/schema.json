@@ -425,11 +425,15 @@
                     },
                     "collision_size": {
                         "$ref": "#/$defs/vec3",
-                        "default": [1.0, 1.0, 1.0]
+                        "default": {"x": 1.0, "y": 1.0, "z": 1.0}
                     },
                     "collision_offset": {
                         "$ref": "#/$defs/vec3",
-                        "default": [0.0, 0.0, 0.0]
+                        "default": {"x": 0.0, "y": 0.0, "z": 0.0}
+                    },
+                    "layer": {
+                        "type": "string",
+                        "default": "Default"
                     }
                 },
                 "required": ["position"]
@@ -490,12 +494,20 @@
             ]
         },
         "vec3": {
-            "type": "array",
-            "items": {
-                "type": "number"
+            "type": "object",
+            "properties": {
+                "x": {
+                    "type": "number"
+                },
+                "y": {
+                    "type": "number"
+                },
+                "z": {
+                    "type": "number"
+                }
             },
-            "minItems": 3,
-            "maxItems": 3
+            "required": ["x", "y", "z"],
+            "additionalProperties": false
         },
         "asset_id": {
             "type": "integer",
