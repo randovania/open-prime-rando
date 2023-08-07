@@ -1,9 +1,15 @@
 import dataclasses
+import functools
 from pathlib import Path
 
 from retro_data_structures.asset_manager import AssetManager
 from retro_data_structures.base_resource import RawResource
 from retro_data_structures.formats import Ancs, Cmdl
+
+
+@functools.cache
+def custom_asset_path() -> Path:
+    return Path(__file__).parent
 
 
 @dataclasses.dataclass
@@ -123,7 +129,7 @@ def _create_split_ammo(editor: AssetManager):
 
 
 def _import_premade_assets(editor: AssetManager):
-    assets = Path(__file__).parent.joinpath("custom_assets", "general")
+    assets = custom_asset_path.joinpath("general")
     for f in assets.glob("*.*"):
         name = f.name
         asset_type = f.suffix[1:].upper() # remove leading period, force uppercase

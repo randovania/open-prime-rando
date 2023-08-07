@@ -3319,5 +3319,12 @@
         "minigyro_chamber": true,
         "rubiks": true
     },
-    "inverted": false
+    "inverted": false,
+    "cosmetics": {
+        "suits": {
+            "varia": "player1",
+            "dark": "player2",
+            "light": "player3"
+        }
+    }
 }
