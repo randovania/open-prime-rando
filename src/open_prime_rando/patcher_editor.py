@@ -1,3 +1,4 @@
+import contextlib
 import io
 import typing
 from concurrent.futures import ThreadPoolExecutor
@@ -44,6 +45,22 @@ class PatcherEditor(AssetManager):
         if path not in self.memory_files:
             self.memory_files[path] = self.get_parsed_asset(path, type_hint=type_hint)
         return self.memory_files[path]
+
+    @contextlib.contextmanager
+    def edit_file(self, asset_id: NameOrAssetId, type_hint: type[T] = BaseResource):
+        """
+        When it's necessary to update dependencies immediately instead of building at the end,
+        this function can be used instead of `get_file()`.
+        """
+        # FIXME: this function shouldn't be necessary
+        asset_id = self._resolve_asset_id(asset_id)
+        asset = self.get_parsed_asset(asset_id, type_hint=type_hint)
+
+        yield asset
+
+        self.replace_asset(asset_id, asset)
+        self._cached_dependencies.pop(asset_id, None)
+        self._cached_ancs_per_char_dependencies.pop(asset_id, None)
 
     def get_mlvl(self, name: NameOrAssetId) -> Mlvl:
         return self.get_file(name, Mlvl)

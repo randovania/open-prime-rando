@@ -1,9 +1,8 @@
 from retro_data_structures.enums.echoes import WorldLightingOptions
-from retro_data_structures.properties.echoes.core.AnimationParameters import AnimationParameters
 from retro_data_structures.properties.echoes.core.Color import Color
 from retro_data_structures.properties.echoes.core.Vector import Vector
 
-from open_prime_rando.echoes.pickups.models import ModelLighting, ModelTransform, PickupModel
+from open_prime_rando.echoes.pickups.models import ModelAnim, ModelLighting, ModelTransform, PickupModel
 
 PICKUP_MODELS = {
     "PowerBeam": PickupModel(
@@ -27,7 +26,7 @@ PICKUP_MODELS = {
     ),
     "DarkBeam": PickupModel(
         model=0x97F5CAAE,
-        animation=AnimationParameters(
+        animation=ModelAnim(
             ancs=0x842C0BCB,
         ),
         transform=ModelTransform(
@@ -36,7 +35,7 @@ PICKUP_MODELS = {
     ),
     "LightBeam": PickupModel(
         model=0x0ADC164A,
-        animation=AnimationParameters(
+        animation=ModelAnim(
             ancs=0x6E571BEB,
         ),
         transform=ModelTransform(
@@ -46,7 +45,7 @@ PICKUP_MODELS = {
     ),
     "AnnihilatorBeam": PickupModel(
         model=0x6FE2E8A0,
-        animation=AnimationParameters(
+        animation=ModelAnim(
             ancs=0x4C4B3D9D,
         ),
         transform=ModelTransform(
@@ -56,57 +55,55 @@ PICKUP_MODELS = {
     ),
     "SuperMissile": PickupModel(
         model=0x546A6490,
-        animation=AnimationParameters(
+        animation=ModelAnim(
             ancs=0x1CA5927A,
         )
     ),
     "Darkburst": PickupModel(
         model=0xF6510F11,
-        animation=AnimationParameters(
+        animation=ModelAnim(
             ancs=0x2EFD9A18,
         )
     ),
     "Sunburst": PickupModel(
         model=0x43BB4262,
-        animation=AnimationParameters(
+        animation=ModelAnim(
             ancs=0x20BB6D93,
         )
     ),
     "SonicBoom": PickupModel(
         model=0xF1207641,
-        animation=AnimationParameters(
+        animation=ModelAnim(
             ancs=0x345E7936,
         )
     ),
     "CombatVisor": PickupModel(
         model=0x0B7E6CA9,
-        animation=AnimationParameters(
-            ancs=0x851B526E,
-            character_index=1,
+        animation=ModelAnim(
+            ancs="combat_visor.ANCS",
         ),
     ),
     "ScanVisor": PickupModel(
         model=0xAFC70004,
-        animation=AnimationParameters(
-            ancs=0x851B526E,
-            character_index=2,
+        animation=ModelAnim(
+            ancs="scan_visor.ANCS",
         ),
     ),
     "DarkVisor": PickupModel(
         model=0x23B83F21,
-        animation=AnimationParameters(
+        animation=ModelAnim(
             ancs=0x851B526E,
         ),
     ),
     "EchoVisor": PickupModel(
         model=0x2ED9AD89,
-        animation=AnimationParameters(
+        animation=ModelAnim(
             ancs=0x89E3C4E4,
         )
     ),
     "VariaSuit": PickupModel(
         model=0xCD995C16,
-        animation=AnimationParameters(
+        animation=ModelAnim(
             ancs=0xA3E787B7,
         ),
         transform=ModelTransform(
@@ -116,7 +113,7 @@ PICKUP_MODELS = {
     ),
     "DarkSuit": PickupModel(
         model=0x485CF5DE,
-        animation=AnimationParameters(
+        animation=ModelAnim(
             ancs=0xA3E787B7,
             character_index=1,
         ),
@@ -126,7 +123,7 @@ PICKUP_MODELS = {
     ),
     "LightSuit": PickupModel(
         model=0xA26A5FBC,
-        animation=AnimationParameters(
+        animation=ModelAnim(
             ancs=0xA3E787B7,
             character_index=3,
         ),
@@ -136,7 +133,7 @@ PICKUP_MODELS = {
     ),
     "MassiveDamage": PickupModel(
         model=0xCD995C16,
-        animation=AnimationParameters(
+        animation=ModelAnim(
             ancs=0xA3E787B7,
         ),
         transform=ModelTransform(
@@ -150,7 +147,7 @@ PICKUP_MODELS = {
     ),
     "MorphBall": PickupModel(
         model=0xED3FCD53,
-        animation=AnimationParameters(
+        animation=ModelAnim(
             ancs=0x1965B86B,
         ),
         lighting=ModelLighting(
@@ -160,7 +157,7 @@ PICKUP_MODELS = {
     ),
     "BoostBall": PickupModel(
         model=0xED3FCD53,
-        animation=AnimationParameters(
+        animation=ModelAnim(
             ancs=0x1965B86B,
         ),
         transform=ModelTransform(
@@ -173,7 +170,7 @@ PICKUP_MODELS = {
     ),
     "CannonBall": PickupModel(
         model=0xED3FCD53,
-        animation=AnimationParameters(
+        animation=ModelAnim(
             ancs=0x1965B86B,
         ),
         transform=ModelTransform(
@@ -187,7 +184,7 @@ PICKUP_MODELS = {
     ),
     "SpiderBall": PickupModel(
         model=0x0303BA4C,
-        animation=AnimationParameters(
+        animation=ModelAnim(
             ancs=0x732E4CFF,
         ),
         lighting=ModelLighting(
@@ -197,7 +194,7 @@ PICKUP_MODELS = {
     ),
     "MorphBallBomb": PickupModel(
         model=0x2CF11C61,
-        animation=AnimationParameters(
+        animation=ModelAnim(
             ancs=0xC566DE95,
         ),
         transform=ModelTransform(
@@ -206,7 +203,7 @@ PICKUP_MODELS = {
     ),
     "PowerBomb": PickupModel(
         model=0xA42AE9AE,
-        animation=AnimationParameters(
+        animation=ModelAnim(
             ancs=0xD03D177C,
         ),
         transform=ModelTransform(
@@ -215,7 +212,7 @@ PICKUP_MODELS = {
     ),
     "PowerBombExpansion": PickupModel(
         model=0x5D17CE58,
-        animation=AnimationParameters(
+        animation=ModelAnim(
             ancs=0xEF3B8B2C,
         ),
         transform=ModelTransform(
@@ -224,7 +221,7 @@ PICKUP_MODELS = {
     ),
     "MissileExpansion": PickupModel(
         model=0x5E3C8794,
-        animation=AnimationParameters(
+        animation=ModelAnim(
             ancs=0x19FA37B1,
         ),
         transform=ModelTransform(
@@ -237,7 +234,7 @@ PICKUP_MODELS = {
     ),
     "MissileExpansionLarge": PickupModel(
         model=0x5E3C8794,
-        animation=AnimationParameters(
+        animation=ModelAnim(
             ancs=0x19FA37B1,
         ),
         transform=ModelTransform(
@@ -251,7 +248,7 @@ PICKUP_MODELS = {
     ),
     "MissileExpansionPrime1": PickupModel(
         model=0x2D7E6590,
-        animation=AnimationParameters(
+        animation=ModelAnim(
             ancs=0xA9B8E446,
         ),
         transform=ModelTransform(
@@ -264,7 +261,7 @@ PICKUP_MODELS = {
     ),
     "MissileLauncher": PickupModel(
         model=0x2D7E6590,
-        animation=AnimationParameters(
+        animation=ModelAnim(
             ancs=0xA9B8E446,
         ),
         transform=ModelTransform(
@@ -277,7 +274,7 @@ PICKUP_MODELS = {
     ),
     "SeekerLauncher": PickupModel(
         model=0x780437B1,
-        animation=AnimationParameters(
+        animation=ModelAnim(
             ancs=0x157041D6,
         ),
         lighting=ModelLighting(
@@ -287,7 +284,7 @@ PICKUP_MODELS = {
     ),
     "UnlimitedMissiles": PickupModel(
         model=0x2D7E6590,
-        animation=AnimationParameters(
+        animation=ModelAnim(
             ancs=0xA9B8E446,
         ),
         transform=ModelTransform(
@@ -301,7 +298,7 @@ PICKUP_MODELS = {
     ),
     "GrappleBeam": PickupModel(
         model=0xB95E4D08,
-        animation=AnimationParameters(
+        animation=ModelAnim(
             ancs=0xB3EED82D,
         ),
         transform=ModelTransform(
@@ -310,7 +307,7 @@ PICKUP_MODELS = {
     ),
     "SpaceJumpBoots": PickupModel(
         model=0xD47FE863,
-        animation=AnimationParameters(
+        animation=ModelAnim(
             ancs=0x9CF6CCDC,
         ),
         transform=ModelTransform(
@@ -319,7 +316,7 @@ PICKUP_MODELS = {
     ),
     "GravityBoost": PickupModel(
         model=0xB4568F1C,
-        animation=AnimationParameters(
+        animation=ModelAnim(
             ancs=0x94228333,
         ),
         transform=ModelTransform(
@@ -328,7 +325,7 @@ PICKUP_MODELS = {
     ),
     "ScrewAttack": PickupModel(
         model=0x2EB530B0,
-        animation=AnimationParameters(
+        animation=ModelAnim(
             ancs=0xF0562FF6,
         ),
         transform=ModelTransform(
@@ -345,25 +342,25 @@ PICKUP_MODELS = {
     ),
     "BeamAmmoExpansion": PickupModel(
         model=0x352C8B02,
-        animation=AnimationParameters(
+        animation=ModelAnim(
             ancs=0x4E00188C,
         ),
     ),
     "DarkBeamAmmoExpansion": PickupModel(
-        model="dark_ammo_expansion.CMDL",
-        animation=AnimationParameters(
-            ancs="dark_ammo_expansion.ANCS",
+        model="dark_ammo_cmdl",
+        animation=ModelAnim(
+            ancs="dark_ammo_ancs",
         ),
     ),
     "LightBeamAmmoExpansion": PickupModel(
-        model="light_ammo_expansion.CMDL",
-        animation=AnimationParameters(
-            ancs="light_ammo_expansion.ANCS",
+        model="light_ammo_cmdl",
+        animation=ModelAnim(
+            ancs="light_ammo_ancs",
         ),
     ),
     "UnlimitedBeamAmmo": PickupModel(
         model=0x352C8B02,
-        animation=AnimationParameters(
+        animation=ModelAnim(
             ancs=0x4E00188C,
         ),
         transform=ModelTransform(
@@ -372,41 +369,55 @@ PICKUP_MODELS = {
     ),
     "VioletTranslator": PickupModel(
         model="violet_translator.CMDL",
-        animation=AnimationParameters(
-            ancs=0x851B526E,
-            character_index=3,
+        animation=ModelAnim(
+            ancs="violet_translator.ANCS",
         ),
     ),
     "AmberTranslator": PickupModel(
         model="amber_translator.CMDL",
-        animation=AnimationParameters(
-            ancs=0x851B526E,
-            character_index=4,
+        animation=ModelAnim(
+            ancs="amber_translator.ANCS",
         ),
     ),
     "EmeraldTranslator": PickupModel(
         model="emerald_translator.CMDL",
-        animation=AnimationParameters(
-            ancs=0x851B526E,
-            character_index=5,
+        animation=ModelAnim(
+            ancs="emerald_translator.ANCS",
         ),
     ),
     "CobaltTranslator": PickupModel(
         model="cobalt_translator.CMDL",
-        animation=AnimationParameters(
-            ancs=0x851B526E,
-            character_index=6,
+        animation=ModelAnim(
+            ancs="cobalt_translator.ANCS",
+        ),
+    ),
+    "CrimsonTranslator": PickupModel(
+        model="crimson_translator.CMDL",
+        animation=ModelAnim(
+            ancs="crimson_translator.ANCS",
+        ),
+    ),
+    "ObsidianTranslator": PickupModel(
+        model="obsidian_translator.CMDL",
+        animation=ModelAnim(
+            ancs="obsidian_translator.ANCS",
+        ),
+    ),
+    "PearlTranslator": PickupModel(
+        model="pearl_translator.CMDL",
+        animation=ModelAnim(
+            ancs="pearl_translator.ANCS",
         ),
     ),
     "EnergyTank": PickupModel(
         model=0xAE3EC144,
-        animation=AnimationParameters(
+        animation=ModelAnim(
             ancs=0x43564B94,
         ),
     ),
     "EnergyTankSmall": PickupModel(
         model=0xAE3EC144,
-        animation=AnimationParameters(
+        animation=ModelAnim(
             ancs=0x43564B94,
         ),
         transform=ModelTransform(
@@ -415,7 +426,7 @@ PICKUP_MODELS = {
     ),
     "DarkTempleKey": PickupModel(
         model=0x5C8C5F22,
-        animation=AnimationParameters(
+        animation=ModelAnim(
             ancs=0x41C2513F,
             character_index=1,
         ),
@@ -429,7 +440,7 @@ PICKUP_MODELS = {
     ),
     "SkyTempleKey": PickupModel(
         model=0x5737A308,
-        animation=AnimationParameters(
+        animation=ModelAnim(
             ancs=0x41C2513F,
             character_index=0,
         ),
@@ -443,7 +454,7 @@ PICKUP_MODELS = {
     ),
     "AgonTempleKey": PickupModel(
         model="agon_temple_key.CMDL",
-        animation=AnimationParameters(
+        animation=ModelAnim(
             ancs=0x41C2513F,
             character_index=2,
         ),
@@ -457,7 +468,7 @@ PICKUP_MODELS = {
     ),
     "TorvusTempleKey": PickupModel(
         model="torvus_temple_key.CMDL",
-        animation=AnimationParameters(
+        animation=ModelAnim(
             ancs=0x41C2513F,
             character_index=3,
         ),
@@ -471,7 +482,7 @@ PICKUP_MODELS = {
     ),
     "HiveTempleKey": PickupModel(
         model="hive_temple_key.CMDL",
-        animation=AnimationParameters(
+        animation=ModelAnim(
             ancs=0x41C2513F,
             character_index=4,
         ),
