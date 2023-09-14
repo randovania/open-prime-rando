@@ -10,7 +10,7 @@ from retro_data_structures.formats.strg import Strg
 from retro_data_structures.game_check import Game
 
 from open_prime_rando import dynamic_schema
-from open_prime_rando.echoes import asset_ids, custom_assets, dock_lock_rando, specific_area_patches
+from open_prime_rando.echoes import asset_ids, custom_assets, dock_lock_rando, menu_mod, specific_area_patches
 from open_prime_rando.echoes.elevators import auto_enabled_elevator_patches
 from open_prime_rando.echoes.elevators.elevator_rando import patch_elevator
 from open_prime_rando.echoes.inverted import apply_inverted
@@ -191,6 +191,9 @@ def patch_paks(
         apply_inverted(editor)
 
     apply_custom_suits(editor, configuration["cosmetics"]["suits"])
+
+    # Menu mod last, so the extra objects/area don't break anything
+    menu_mod.add_menu_mod(editor)
 
     # Save our changes
     editor.flush_modified_assets()
