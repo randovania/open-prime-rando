@@ -43,6 +43,8 @@ def required_fixes(editor: PatcherEditor):
     main_research(editor)
     hive_chamber_b(editor)
     gfmc_compound(editor)
+    hive_chamber_a(editor)
+    dark_oasis(editor)
     torvus_temple(editor)
 
 
@@ -218,6 +220,91 @@ def gfmc_compound(editor: PatcherEditor):
     ))
     timer.add_connection(State.Zero, Message.Deactivate, ship_trigger)
 
+def hive_chamber_a(editor: PatcherEditor):
+    """
+    Add a HUDMemo for the dark missile trooper.
+    """
+    area = editor.get_area(TEMPLE_GROUNDS_MLVL, temple_grounds.HIVE_CHAMBER_A_MREA)
+
+    pickup_xfm = area.get_instance(0x060234).get_properties_as(Pickup).editor_properties.transform
+    dmt_trigger = area.get_layer("Default").add_instance_with(Trigger(
+        editor_properties=EditorProperties(
+            name="Show DMT Missile HudMemo",
+            transform=Transform(
+                position=pickup_xfm.position,
+                rotation=Vector(0.0, 0.0, 45.0),
+                scale=Vector(50.0, 50.0, 10.0)
+            )
+        ),
+        deactivate_on_enter=True
+    ))
+    strg_id, _ = editor.create_strg(
+        "dmt_hudmemo.STRG",
+        ["Defeating Bomb Guardian is required for Dark Missile Trooper to appear."]
+    )
+    hud_memo = area.get_layer("Default").add_instance_with(HUDMemo(
+        editor_properties=EditorProperties(
+            name="DMT HudMemo",
+            transform=pickup_xfm
+        ),
+        display_time=6.0,
+        display_type=0,
+        string=strg_id
+    ))
+    dmt_trigger.add_connection(State.Entered, Message.SetToZero, hud_memo)
+
+    timer = area.get_layer("Missile Trooper").add_instance_with(Timer(
+        editor_properties=EditorProperties(
+            name="Disable DMT Trigger",
+            transform=pickup_xfm
+        ),
+        time=0.1,
+        auto_start=True
+    ))
+    timer.add_connection(State.Zero, Message.Deactivate, dmt_trigger)
+
+def dark_oasis(editor: PatcherEditor):
+    """
+    Add a HUDMemo for the dark oasis ing cache.
+    """
+    area = editor.get_area(AGON_WASTES_MLVL, agon_wastes.DARK_OASIS_MREA)
+
+    pickup_xfm = area.get_instance(0x3500B5).get_properties_as(Pickup).editor_properties.transform
+    oasis_trigger = area.get_layer("Default").add_instance_with(Trigger(
+        editor_properties=EditorProperties(
+            name="Show Dark Oasis HudMemo",
+            transform=Transform(
+                position=pickup_xfm.position,
+                rotation=Vector(0.0, 0.0, 45.0),
+                scale=Vector(50.0, 50.0, 10.0)
+            )
+        ),
+        deactivate_on_enter=True
+    ))
+    strg_id, _ = editor.create_strg(
+        "dark_oasis_hudmemo.STRG",
+        ["Defeating Power Bomb Guardian is required for this Ing Cache to appear."]
+    )
+    hud_memo = area.get_layer("Default").add_instance_with(HUDMemo(
+        editor_properties=EditorProperties(
+            name="Dark Oasis HudMemo",
+            transform=pickup_xfm
+        ),
+        display_time=6.0,
+        display_type=0,
+        string=strg_id
+    ))
+    oasis_trigger.add_connection(State.Entered, Message.SetToZero, hud_memo)
+
+    timer = area.get_layer("Default").add_instance_with(Timer(
+        editor_properties=EditorProperties(
+            name="Disable Oasis Trigger",
+            transform=pickup_xfm
+        ),
+        time=0.1,
+        auto_start=True
+    ))
+    timer.add_connection(State.Zero, Message.Deactivate, oasis_trigger)
 
 def torvus_temple(editor: PatcherEditor):
     """
