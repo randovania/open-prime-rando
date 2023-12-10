@@ -15,13 +15,13 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
           submodules: 'recursive'
 
       - name: Set up Python
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v4
         with:
           python-version: "3.10"
 
@@ -32,7 +32,7 @@ jobs:
         run: PYTHONWARNINGS=error python -m build
 
       - name: Store the packages
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: python-package-distributions
           path: dist
@@ -52,7 +52,7 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: remove code outside of wheel
         run: rm -rf src
@@ -86,7 +86,7 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
           submodules: 'recursive'
@@ -119,7 +119,7 @@ jobs:
 
     steps:
       - name: Download all the dists
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v3
         with:
           name: python-package-distributions
           path: dist/
