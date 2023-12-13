@@ -1,13 +1,23 @@
 import dataclasses
+from typing import NamedTuple
 
-from retro_data_structures.enums.echoes import Message, State
+from retro_data_structures.enums.echoes import Function, Message, State
 from retro_data_structures.formats.mlvl import Area
 from retro_data_structures.formats.script_object import Connection, InstanceId, ScriptInstance
 from retro_data_structures.properties.echoes.archetypes.EditorProperties import EditorProperties
 from retro_data_structures.properties.echoes.archetypes.SurroundPan import SurroundPan
 from retro_data_structures.properties.echoes.archetypes.Transform import Transform
 from retro_data_structures.properties.echoes.core.Vector import Vector
-from retro_data_structures.properties.echoes.objects import HUDMemo, MemoryRelay, Pickup, Sound, StreamedAudio, Timer
+from retro_data_structures.properties.echoes.objects import (
+    HUDMemo,
+    MemoryRelay,
+    Pickup,
+    Relay,
+    Sound,
+    SpecialFunction,
+    StreamedAudio,
+    Timer,
+)
 from typing_extensions import Self
 
 from open_prime_rando.echoes.pickups.model_database import PICKUP_MODELS
@@ -21,7 +31,12 @@ class PickupInstances:
     streamed_audio: ScriptInstance
     sound: ScriptInstance
     audio_fade: ScriptInstance
+    post_pickup_relay: ScriptInstance
+    mappable_object: ScriptInstance
 
+class CutsceneModel(NamedTuple):
+    instance: InstanceId
+    layer: str
 
 @dataclasses.dataclass(frozen=True)
 class PickupLocation:
@@ -29,6 +44,11 @@ class PickupLocation:
     original_model: PickupModel
     connections: list[Connection]
     removals: list[InstanceId]
+    collision_offset: Vector
+    cutscene_model: CutsceneModel | None
+    # TODO: add to db
+    # dark torvus arena 0x200543, "Stage 2 -> Post Battle Cinematic"
+    # main gyro chamber 0x240111, "Cannon"
 
     @classmethod
     def from_json(cls, data: dict) -> Self:
@@ -41,6 +61,23 @@ class PickupLocation:
 
     def get_instances(self, area: Area) -> PickupInstances:
         raise NotImplementedError
+
+    def get_layer_name(self, area: Area) -> str:
+        raise NotImplementedError
+
+    def _add_mappable_obj(self, area: Area, relay: ScriptInstance) -> ScriptInstance:
+        layer = area.get_layer(self.get_layer_name())
+
+        mappable = layer.add_instance_with(SpecialFunction(
+            editor_properties=EditorProperties(name="Pickup Map Icon"),
+            function=Function.TranslatorDoorLocation,
+            sound1=-1,
+            sound2=-1,
+            sound3=-1,
+        ))
+
+        relay.add_connection(State.Zero, Message.Decrement, mappable)
+        return mappable
 
 
 @dataclasses.dataclass(frozen=True)
@@ -64,26 +101,45 @@ class StandardPickupLocation(PickupLocation):
             streamed_audio=InstanceId(instances["streamed_audio"]),
             sound=InstanceId(instances["sound"]),
             audio_fade=InstanceId(instances["audio_fade"]),
+            collision_offset=Vector.from_json(data["collision_offset"]),
+            cutscene_model=data.get("collision_offset", None),
         )
 
     def get_instances(self, area: Area) -> PickupInstances:
         def inst(ref):
             return area.get_instance(ref)
 
+        layer = area.get_layer(self.get_layer_name())
+        relay = layer.add_instance_with(Relay(
+            editor_properties=EditorProperties(name="Post-Pickup Relay"),
+            one_shot=False,
+        ))
+        pickup = inst(self.pickup)
+        pickup.add_connection(State.Arrived, Message.SetToZero, relay)
+
         return PickupInstances(
-            pickup=inst(self.pickup),
+            pickup=pickup,
             hud_memo=inst(self.hud_memo),
             streamed_audio=inst(self.streamed_audio),
             sound=inst(self.sound),
             audio_fade=inst(self.audio_fade),
+            post_pickup_relay=relay,
+            mappable_object=self._add_mappable_obj(area, relay),
         )
+
+    def get_layer_name(self, area: Area) -> str:
+        for layer in area.layers:
+            try:
+                layer.get_instance(self.pickup)
+            except KeyError:
+                continue
+            return layer.name
 
 
 @dataclasses.dataclass(frozen=True)
 class CustomPickupLocation(PickupLocation):
     position: Vector
     collision_size: Vector
-    collision_offset: Vector
     layer: str
 
     @classmethod
@@ -97,6 +153,7 @@ class CustomPickupLocation(PickupLocation):
             collision_size=Vector.from_json(data["collision_size"]),
             collision_offset=Vector.from_json(data["collision_offset"]),
             layer=data["layer"],
+            cutscene_model=data.get("collision_offset", None),
         )
 
     def get_instances(self, area: Area) -> PickupInstances:
@@ -170,10 +227,15 @@ class CustomPickupLocation(PickupLocation):
             time=1.0,
         ))
 
-        relay = layer.add_memory_relay("Deactivate Pickup")
-        with relay.edit_properties(MemoryRelay) as _relay:
-            _relay.editor_properties.transform.position = self.position
-            _relay.editor_properties.active = False
+        mem_relay = layer.add_memory_relay("Deactivate Pickup")
+        with mem_relay.edit_properties(MemoryRelay) as _mem_relay:
+            _mem_relay.editor_properties.transform.position = self.position
+            _mem_relay.editor_properties.active = False
+
+        relay = layer.add_instance_with(Relay(
+            editor_properties=EditorProperties(name="Post-Pickup Relay"),
+            one_shot=False,
+        ))
 
         # Add connections
         pickup.add_connection(State.Arrived, Message.SetToZero, hud_memo)
@@ -182,8 +244,9 @@ class CustomPickupLocation(PickupLocation):
         pickup.add_connection(State.Arrived, Message.Decrement, audio_fade)
         pickup.add_connection(State.Arrived, Message.ResetAndStart, timer)
         timer.add_connection(State.Zero, Message.Increment, audio_fade)
-        pickup.add_connection(State.Arrived, Message.Activate, relay)
-        relay.add_connection(State.Active, Message.Deactivate, pickup)
+        pickup.add_connection(State.Arrived, Message.Activate, mem_relay)
+        mem_relay.add_connection(State.Active, Message.Deactivate, pickup)
+        pickup.add_connection(State.Arrived, Message.SetToZero, relay)
 
         return PickupInstances(
             pickup,
@@ -191,4 +254,9 @@ class CustomPickupLocation(PickupLocation):
             streamed,
             sound,
             audio_fade,
+            relay,
+            self._add_mappable_obj(area, relay),
         )
+
+    def get_layer_name(self, area: Area) -> str:
+        return self.layer

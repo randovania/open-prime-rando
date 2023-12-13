@@ -252,122 +252,116 @@
                 "location": {
                     "$ref": "#/$defs/location_data"
                 },
-                "appearance": {
+                "stages": {
                     "type": "array",
                     "items": {
                         "type": "object",
                         "properties": {
-                            "model": {
-                                "$ref": "#/$defs/model_data"
+                            "required_item": {
+                                "type": ["integer", "null"],
+                                "default": null
                             },
-                            "sound": {
-                                "$ref": "#/$defs/asset_id",
-                                "$comment": "Actually a sound ID, but who's counting"
-                            },
-                            "jingle": {
-                                "type": "object",
-                                "properties": {
-                                    "file": {
-                                        "type": "string",
-                                        "pattern": "^.*?\\.dsp$"
+                            "resources": {
+                                "type": "array",
+                                "items": {
+                                    "type": "object",
+                                    "properties": {
+                                        "item": {
+                                            "type": "int"
+                                        },
+                                        "amount": {
+                                            "type": "int"
+                                        }
                                     },
-                                    "volume": {
-                                        "type": "number",
-                                        "minimum": 0.0,
-                                        "maximum": 100.0
-                                    }
+                                    "required": [
+                                        "item",
+                                        "amount"
+                                    ],
+                                    "additionalProperties": false
                                 },
-                                "required": [
-                                    "file",
-                                    "volume"
-                                ],
-                                "additionalProperties": false
+                                "minItems": 1
                             },
-                            "hud_text": {
-                                "type": "string"
-                            },
-                            "scan": {
-                                "type": "string"
-                            }
-                        },
-                        "required": [
-                            "model",
-                            "sound",
-                            "jingle",
-                            "hud_text",
-                            "scan"
-                        ],
-                        "additionalProperties": false
-                    }
-                },
-                "resources": {
-                    "type": "object",
-                    "properties": {
-                        "progression": {
-                            "type": "array",
-                            "items": {
-                                "type": "object",
-                                "properties": {
-                                    "required_item": {
-                                        "type": ["integer", "null"],
-                                        "default": null
-                                    },
-                                    "resources": {
-                                        "type": "array",
-                                        "items": {
+                            "appearance": {
+                                "type": "array",
+                                "items": {
+                                    "type": "object",
+                                    "properties": {
+                                        "model": {
+                                            "$ref": "#/$defs/model_data"
+                                        },
+                                        "sound": {
+                                            "$ref": "#/$defs/asset_id",
+                                            "$comment": "Actually a sound ID, but who's counting"
+                                        },
+                                        "jingle": {
                                             "type": "object",
                                             "properties": {
-                                                "item": {
-                                                    "type": "int"
+                                                "file": {
+                                                    "type": "string",
+                                                    "pattern": "^.*?\\.dsp$"
                                                 },
-                                                "amount": {
-                                                    "type": "int"
+                                                "volume": {
+                                                    "type": "number",
+                                                    "minimum": 0.0,
+                                                    "maximum": 100.0
                                                 }
                                             },
                                             "required": [
-                                                "item",
-                                                "amount"
+                                                "file",
+                                                "volume"
                                             ],
                                             "additionalProperties": false
                                         },
-                                        "minItems": 1
-                                    }
+                                        "hud_text": {
+                                            "type": "string"
+                                        },
+                                        "scan": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "required": [
+                                        "model",
+                                        "sound",
+                                        "jingle",
+                                        "hud_text",
+                                        "scan"
+                                    ],
+                                    "additionalProperties": false
+                                }
+                            },
+                            "converted": {
+                                "type": "array",
+                                "items": {
+                                    "type": "object",
+                                    "properties": {
+                                        "from_item": {
+                                            "type": "integer"
+                                        },
+                                        "to_item": {
+                                            "type": "integer"
+                                        }
+                                    },
+                                    "required": [
+                                        "from_item",
+                                        "to_item"
+                                    ],
+                                    "additionalProperties": false
                                 },
-                                "required": [
-                                    "required_item",
-                                    "resources"
-                                ]
+                                "default": []
                             }
                         },
-                        "converted": {
-                            "type": "array",
-                            "items": {
-                                "type": "object",
-                                "properties": {
-                                    "from_item": {
-                                        "type": "integer"
-                                    },
-                                    "to_item": {
-                                        "type": "integer"
-                                    },
-                                    "overwrite_target": {
-                                        "type": "boolean"
-                                    }
-                                }
-                            }
-                        }
+                        "required": [
+                            "resources",
+                            "appearance"
+                        ],
+                        "additionalProperties": false
                     },
-                    "required": [
-                        "progression",
-                        "converted"
-                    ],
-                    "additionalProperties": false
+                    "minItems": 1
                 }
             },
             "required": [
                 "location",
-                "appearance",
-                "resources"
+                "stages"
             ],
             "additionalProperties": false
         },
@@ -401,6 +395,23 @@
                         "$ref": "#/$defs/instance_id"
                     },
                     "default": []
+                },
+                "cutscene_model": {
+                    "type": ["object"],
+                    "properties": {
+                        "instance": {
+                            "$ref": "#/$defs/instance_id"
+                        },
+                        "layer": {
+                            "type": "string"
+                        }
+                    },
+                    "required": ["instance", "layer"],
+                    "additionalProperties": false
+                },
+                "collision_offset": {
+                    "$ref": "#/$defs/vec3",
+                    "default": {"x": 0.0, "y": 0.0, "z": 0.0}
                 },
                 "required": [
                     "area",
@@ -452,10 +463,6 @@
                     "collision_size": {
                         "$ref": "#/$defs/vec3",
                         "default": {"x": 1.0, "y": 1.0, "z": 1.0}
-                    },
-                    "collision_offset": {
-                        "$ref": "#/$defs/vec3",
-                        "default": {"x": 0.0, "y": 0.0, "z": 0.0}
                     },
                     "layer": {
                         "type": "string",
