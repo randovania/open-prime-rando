@@ -105,7 +105,7 @@ jobs:
           venv/bin/python -m pytest --cov src --cov-report=xml --durations=100
 
       - name: codecov
-        uses: codecov/codecov-action@v3
+        uses: codecov/codecov-action@v4
         with:
           fail_ci_if_error: false
           files: ./coverage.xml
