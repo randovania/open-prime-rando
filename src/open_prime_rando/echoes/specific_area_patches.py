@@ -2,7 +2,7 @@ import logging
 import struct
 
 from construct import Container
-from retro_data_structures.enums.echoes import Message, State
+from retro_data_structures.enums.echoes import Function, Message, State
 from retro_data_structures.formats.script_object import ScriptInstance
 from retro_data_structures.game_check import Game
 from retro_data_structures.properties.echoes.archetypes.EditorProperties import EditorProperties
@@ -10,12 +10,14 @@ from retro_data_structures.properties.echoes.archetypes.LayerSwitch import Layer
 from retro_data_structures.properties.echoes.objects.Counter import Counter
 from retro_data_structures.properties.echoes.objects.Relay import Relay
 from retro_data_structures.properties.echoes.objects.ScriptLayerController import ScriptLayerController
+from retro_data_structures.properties.echoes.objects.Trigger import Trigger
 
 from open_prime_rando.echoes.asset_ids.agon_wastes import (
     COMMAND_CENTER_MREA,
     MINING_STATION_B_MREA,
     PORTAL_TERMINAL_MREA,
 )
+from open_prime_rando.echoes.asset_ids.sanctuary_fortress import MINIGYRO_CHAMBER_MREA
 from open_prime_rando.echoes.asset_ids.torvus_bog import TORVUS_ENERGY_CONTROLLER_MREA, TORVUS_TEMPLE_MREA
 from open_prime_rando.echoes.asset_ids.world import AGON_WASTES_MLVL, TORVUS_BOG_MLVL
 from open_prime_rando.patcher_editor import PatcherEditor
@@ -165,3 +167,77 @@ def command_center_door(editor: PatcherEditor):
             Message.Activate,
             default.get_instance(instance),
         )
+
+
+def sanctuary_fortress_minigyro_chamber_cannon_ball_fix(editor: PatcherEditor):
+    """
+    Patches Sanctuary Fortress - Minigyro Chamber to prevent Cannon Ball from
+    going through the gyroscope damage force field
+    """
+    area = editor.get_mrea(MINIGYRO_CHAMBER_MREA)
+
+    """
+    Add special function to send player away from gyroscope
+    """
+    special_function = area.get_layer("Gyroscope puzzle").add_instance_with(SpecialFunction(
+        editor_properties=EditorProperties(
+            name="SpecialFunction - keep off gyroscope (Front)",
+            active=True
+        ),
+        function=Function.LaunchPlayer,
+        value_parm=-10.0,
+    ))
+
+    """
+    Link triggers that damages you to our special function
+    """
+    trigger_ids = [0x0C070005, 0x0C070009, 0x0C070034, 0x0C07003D]
+    for trigger_id in trigger_ids:
+        trigger = area.get_instance(trigger_id)
+
+        with trigger.edit_properties(Trigger) as props:
+            props.trigger.damage.di_damage = 0.0
+            props.trigger.damage.di_radius = 0.0
+            props.trigger.damage.di_knock_back_power = 0.0
+
+        trigger.add_connection(State.Entered, Message.Action, special_function)
+
+
+def sanctuary_fortress_minigyro_chamber_prevent_backward_traversal_patch(editor: PatcherEditor):
+    """
+    Patches Sanctuary Fortress - Minigyro Chamber to prevent coming from the back of the room
+    until the puzzle is solved
+    """
+    area = editor.get_mrea(MINIGYRO_CHAMBER_MREA)
+
+    """
+    Add special function to send player away from gyroscope
+    """
+    special_function = area.get_layer("Gyroscope puzzle").add_instance_with(SpecialFunction(
+        editor_properties=EditorProperties(
+            name="SpecialFunction - keep off gyroscope (Back)",
+            active=True
+        ),
+        function=Function.LaunchPlayer,
+        value_parm=10.0,
+    ))
+
+    """
+    Link triggers that damages you to our special function
+    """
+    trigger = area.get_layer("Gyroscope puzzle").add_instance_with(Trigger(
+        editor_properties=EditorProperties(
+            name="Trigger - keep off gyroscope (Back)",
+            active=True
+        ),
+    ))
+
+    with trigger.edit_properties(Trigger) as props:
+        props.editor_properties.position.x = 150.726303
+        props.editor_properties.position.y = 129.589584
+        props.editor_properties.position.z = -115.434067
+        props.editor_properties.scale.x = 2.6
+        props.editor_properties.scale.y = 1.0
+        props.editor_properties.scale.z = 2.0
+
+    trigger.add_connection(State.Entered, Message.Action, special_function)
