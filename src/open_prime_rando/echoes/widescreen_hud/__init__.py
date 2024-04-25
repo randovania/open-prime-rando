@@ -11,11 +11,11 @@ def apply_widescreen_hud(editor: PatcherEditor):
     elif editor.does_asset_exists(0xB5CF0C19) and editor.does_asset_exists(0xD9D58FA5):
         detectedversion = "pal"
     else:
-        print("Unsupported game region version, skipping Widescreen HUD patch...")
+        print("Unsupported game region/version, skipping Widescreen HUD patch...")
         return
     for assetversion, assets in WIDESCREEN_ASSETS.items():
         if detectedversion == assetversion:
-            widescreen_assets = custom_asset_path().joinpath("widescreen_hud", assetversion)
+            widescreen_assets = custom_asset_path().joinpath("widescreen_hud", detectedversion)
             for asset_id, filename in assets.items():
                 asset = widescreen_assets.joinpath(filename)
                 if not asset.exists():
