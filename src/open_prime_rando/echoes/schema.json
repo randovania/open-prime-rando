@@ -68,6 +68,11 @@
             "description": "Set elevators to be activated on room load",
             "default": false
         },
+        "widescreen_hud": {
+            "type": "boolean",
+            "description": "Enable 16:9 widescreen HUD patch",
+            "default": true
+        },
         "cosmetics": {
             "type": "object",
             "properties": {
