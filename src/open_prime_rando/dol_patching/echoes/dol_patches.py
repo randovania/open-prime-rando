@@ -513,7 +513,7 @@ def apply_widescreen_hack_ntsc(dol_file: DolFile):
     ])
 
     dol_file.write_instructions(0x8036D684, [
-        bl(0x80003748, relative=False)
+        b(0x80003748, relative=False)
     ])
 
     dol_file.write_instructions(0x80003748, [
@@ -523,7 +523,7 @@ def apply_widescreen_hack_ntsc(dol_file: DolFile):
         lfs(f19, 0, r2),
         fmuls(f9, f19, 0, f9),
         fdivs(f11,f10, f9, 0),
-        blr()
+        b(0x8036D688, relative=False)
     ])
 
 # ported from ralf's 16:9 gecko code
