@@ -1,8 +1,8 @@
 # https://github.com/Nystrata/EchoesWidescreenHUD/wiki#gguisyspak
 from retro_data_structures.base_resource import AssetId
 
-WIDESCREEN_ASSETS: dict[str, dict[AssetId, str]] = {
-    "ntsc": {
+WIDESCREEN_HUD_ASSETS: dict[str, dict[AssetId, str]] = {
+    "ntscu": {
         0xE6F37215: "FRME_Helmet.FRME",
         0x88738D60: "FRME_SamusHud1Ball.FRME",
         0xEEF43AA1: "FRME_SamusHud1Combat.FRME",

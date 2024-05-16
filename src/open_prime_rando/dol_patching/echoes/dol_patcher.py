@@ -60,11 +60,12 @@ def apply_patches(dol_file: DolFile, patches_data: EchoesDolPatchesData):
         dol_patches.apply_teleporter_sounds(version, dol_file, patches_data.teleporter_sounds)
 
         dol_patches.apply_game_options_patch(version.game_options_constructor_address,
-                                                    patches_data.user_preferences, dol_file)
-        dol_patches.apply_beam_cost_patch(version.beam_cost_addresses, patches_data.beam_configurations,
-                                                 dol_file)
+                                             patches_data.user_preferences, dol_file)
+        dol_patches.apply_beam_cost_patch(version.beam_cost_addresses, patches_data.beam_configurations, dol_file)
         dol_patches.apply_safe_zone_heal_patch(version.safe_zone, version.sda2_base,
-                                                      patches_data.safe_zone_heal_per_second, dol_file)
+                                               patches_data.safe_zone_heal_per_second, dol_file)
         dol_patches.apply_starting_visor_patch(version.starting_beam_visor, patches_data.default_items,
-                                                      dol_file)
+                                               dol_file)
         dol_patches.apply_map_door_changes(version.map_door_types, dol_file)
+
+        dol_patches.apply_widescreen_hack(version, dol_file)
