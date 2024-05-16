@@ -498,9 +498,9 @@ def apply_widescreen_hack(version: EchoesDolVersion, dol_file: DolFile):
         print("Unsupported game region/version, skipping Widescreen hack patch...")
 
 
+# ported from gamemasterplc's 16:9 gecko code
 def apply_widescreen_hack_ntsc(dol_file: DolFile):
     print("Widescreen Hack: NTSC")
-
     dol_file.write_instructions(0x8030256C, [
         bl(0x80418e8c, relative=False)
     ])
@@ -513,53 +513,20 @@ def apply_widescreen_hack_ntsc(dol_file: DolFile):
     ])
 
     dol_file.write_instructions(0x8036D684, [
-        bl(0x8000373f, relative=False)
+        bl(0x80003748, relative=False)
     ])
 
-    dol_file.write_instructions(0x8000373f, [
+    dol_file.write_instructions(0x80003748, [
         lis(r10, 0x3FAA),
         ori(r10, r10, 0xAAAB),
         stw(r10, 0, r2),
         lfs(f19, 0, r2),
         fmuls(f9, f19, 0, f9),
-        fdivs(f11,f10, 0, f9),
+        fdivs(f11,f10, f9, 0),
         blr()
     ])
 
-
-    # dol_file.write(0x8030256C, 0x48)
-    # dol_file.write(0x8030256C, [0x48, 0x0A, 0x31, 0x20])
-    # # dol_file.write(0x8030256D, [0x0A])
-    # # dol_file.write(0x8030256E, [0x31])
-    # # dol_file.write(0x8030256F, [0x20])
-    #
-    # dol_file.write(0x80003830, [0x3D])
-    # dol_file.write(0x80003831, [0xC0])
-    # dol_file.write(0x80003832, [0x40])
-    # dol_file.write(0x80003833, [0x00])
-    #
-    # dol_file.write(0x80003834, [0x91])
-    # dol_file.write(0x80003835, [0xC2])
-    # dol_file.write(0x80003836, [0x00])
-    # dol_file.write(0x80003837, [0x00])
-    #
-    # dol_file.write(0x80003838, [0xC3])
-    # dol_file.write(0x80003839, [0x42])
-    # dol_file.write(0x8000383A, [0x00])
-    # dol_file.write(0x8000383B, [0x00])
-    #
-    # dol_file.write(0x8000383C, [0x4B])
-    # dol_file.write(0x8000383D, [0xF5])
-    # dol_file.write(0x8000383E, [0xCE])
-    # dol_file.write(0x8000383F, [0xE4])
-
-    # dol_file.write_instructions(0x8030256C, [
-    #     lis(r12, 0x4000),
-    #     stw(r12, 0, r2),
-    #     lfs(f26, 0, r2)
-    # ])
-
-
+# ported from ralf's 16:9 gecko code
 def apply_widscreen_hack_pal(dol_file: DolFile):
     print("Widescreen Hack: PAL")
     # dol_file.write(0x80036EA0, [0x38])
