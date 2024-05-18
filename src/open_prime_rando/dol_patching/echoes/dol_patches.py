@@ -489,47 +489,77 @@ def apply_map_door_changes(door_symbols: MapDoorTypeAddresses, dol_file: DolFile
 
 def apply_widescreen_hack(version: EchoesDolVersion, dol_file: DolFile):
     description = str(version.description)
-    print(description)
     if description == "Gamecube NTSC":
-        apply_widescreen_hack_ntsc(dol_file)
+        apply_widescreen_hack_ntscu(dol_file)
     elif description == "Gamecube PAL":
         apply_widscreen_hack_pal(dol_file)
     else:
-        print("Unsupported game region/version, skipping Widescreen hack patch...")
+        raise NotImplementedError()
 
 
 # ported from gamemasterplc's 16:9 gecko code
-def apply_widescreen_hack_ntsc(dol_file: DolFile):
-    print("Widescreen Hack: NTSC")
-    dol_file.write_instructions(0x8030256C, [
-        bl(0x80418e8c, relative=False)
+def apply_widescreen_hack_ntscu(dol_file: DolFile):
+    print("Widescreen Hack: NTSC-U")
+    culling_replacement = 0x8030256C
+    culling_insertion = 0x80418E8C
+    viewport_replacement = 0x8036D684
+    viewport_insertion = 0x80003748
+
+    dol_file.write_instructions(culling_replacement, [
+        bl(culling_insertion, relative=False)
     ])
 
-    dol_file.write_instructions(0x80418e8c, [
+    dol_file.write_instructions(culling_insertion, [
         lis(r10, 0x4000),
         stw(r10, 0, r2),
         lfs(f26, 0, r2),
         blr()
     ])
 
-    dol_file.write_instructions(0x8036D684, [
-        b(0x80003748, relative=False)
+    dol_file.write_instructions(viewport_replacement, [
+        b(viewport_insertion, relative=False)
     ])
 
-    dol_file.write_instructions(0x80003748, [
+    dol_file.write_instructions(viewport_insertion, [
         lis(r10, 0x3FAA),
         ori(r10, r10, 0xAAAB),
         stw(r10, 0, r2),
         lfs(f19, 0, r2),
         fmuls(f9, f19, 0, f9),
         fdivs(f11,f10, f9, 0),
-        b(0x8036D688, relative=False)
+        b(viewport_replacement + 0x4, relative=False)
     ])
 
-# ported from ralf's 16:9 gecko code
+
+# ported from gamemasterplc's 16:9 gecko code
 def apply_widscreen_hack_pal(dol_file: DolFile):
     print("Widescreen Hack: PAL")
-    # dol_file.write(0x80036EA0, [0x38])
-    # dol_file.write(0x80036EA1, [0xA0])
-    # dol_file.write(0x80036EA2, [0x03])
-    # dol_file.write(0x80036EA3, [0x56])
+    culling_replacement = 0x803029E0
+    culling_insertion = 0x803c6c30
+    viewport_replacement = 0x8036dA9C
+    viewport_insertion = 0x803b1d60
+
+    dol_file.write_instructions(culling_replacement, [
+        bl(culling_insertion, relative=False)
+    ])
+
+    dol_file.write_instructions(culling_insertion, [
+        lis(r9, 0x4000),
+        stw(r9, 0, r2),
+        lfs(f26, 0, r2),
+        blr()
+    ])
+
+    dol_file.write_instructions(viewport_replacement, [
+        b(viewport_insertion, relative=False)
+    ])
+
+    dol_file.write_instructions(viewport_insertion, [
+        lis(r9, 0x3FAA),
+        ori(r9, r9, 0xAAAB),
+        stw(r9, 0, r2),
+        lfs(f19, 0, r2),
+        fmuls(f9, f19, 0, f9),
+        fdivs(f11,f10, f9, 0),
+        b(viewport_replacement + 0x4, relative=False)
+    ])
