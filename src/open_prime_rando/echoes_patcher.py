@@ -146,6 +146,7 @@ def patch_paks(file_provider: FileProvider,
     specific_area_patches.specific_patches(editor, configuration["area_patches"])
     apply_small_randomizations(editor, configuration["small_randomizations"])
     apply_corrupted_memory_card_change(editor)
+    apply_corrupted_memory_card_change(editor)
     apply_area_modifications(editor, configuration["worlds"], status_update)
 
     if configuration["inverted"]:
