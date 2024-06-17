@@ -36,11 +36,12 @@ def randomize_echo_locks(editor: PatcherEditor, rng: random.Random):
             " Shoot the Echo Key Beam emitter with a sonic pulse to activate it."
             f" It will then fire a blast of &push;&main-color=#FF3333;{pitch}-pitched&pop; sound at an Echo Gate lock."
         )
-        strg_id = editor.add_file(f"accessible_echo_lock_{pitch}.STRG", key_strg)
+        strg_id = editor.add_new_asset(f"accessible_echo_lock_{pitch}.STRG", key_strg)
 
         scan_info.string = strg_id
         key_scan.scannable_object_info.set_properties(scan_info)
-        scan_id = editor.add_file(f"accessible_echo_lock_{pitch}.SCAN", key_scan)
+        key_scan.rebuild_dependencies()
+        scan_id = editor.add_new_asset(f"accessible_echo_lock_{pitch}.SCAN", key_scan)
 
         key_scans.append(scan_id)
 
@@ -83,12 +84,14 @@ def randomize_echo_locks(editor: PatcherEditor, rng: random.Random):
                          "The combination of its sonic locks is:\n")
         solution_text += ", ".join(["Low", "Medium", "High"][key] for key in solution)
         gate_strg.set_string(1, solution_text)
-        strg_id = editor.add_file(f"accessible_echo_gate_{mrea_id}.STRG", gate_strg)
+        strg_id = editor.add_new_asset(f"accessible_echo_gate_{mrea_id}.STRG", gate_strg)
 
         gate_scan_info.string = strg_id
         gate_scan.scannable_object_info.set_properties(gate_scan_info)
-        scan_id = editor.add_file(f"accessible_echo_gate_{mrea_id}.SCAN", gate_scan)
+        scan_id = editor.add_new_asset(f"accessible_echo_gate_{mrea_id}.SCAN", gate_scan)
 
         with gate_poi.edit_properties(PointOfInterest) as poi:
             poi.scan_info.scannable_info0 = scan_id
+
+        area.update_all_dependencies()
 

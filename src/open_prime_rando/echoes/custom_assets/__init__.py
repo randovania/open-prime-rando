@@ -1,9 +1,15 @@
 import dataclasses
+import functools
 from pathlib import Path
 
 from retro_data_structures.asset_manager import AssetManager
 from retro_data_structures.base_resource import RawResource
 from retro_data_structures.formats import Ancs, Cmdl
+
+
+@functools.cache
+def custom_asset_path() -> Path:
+    return Path(__file__).parent
 
 
 @dataclasses.dataclass

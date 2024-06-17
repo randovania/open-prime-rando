@@ -385,6 +385,7 @@ class EchoesDolVersion(BasePrimeDolVersion):
     cworldtransmanager_sfxstart: int
     powerup_should_persist: int
     map_door_types: MapDoorTypeAddresses
+    double_damage_vfx: int
 
 
 def apply_fixes(version: EchoesDolVersion, dol_file: DolFile):
@@ -397,6 +398,11 @@ def apply_fixes(version: EchoesDolVersion, dol_file: DolFile):
 
     dol_file.write_instructions(version.rs_debugger_printf_loop_address, [
         nop(),
+    ])
+
+    # Disable Double Damage VFX by checking for an invalid item id
+    dol_file.write_instructions(version.double_damage_vfx, [
+        li(r4, 999),
     ])
 
 

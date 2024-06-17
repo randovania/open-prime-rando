@@ -15,6 +15,7 @@ from open_prime_rando.echoes.elevators import auto_enabled_elevator_patches
 from open_prime_rando.echoes.elevators.elevator_rando import patch_elevator
 from open_prime_rando.echoes.inverted import apply_inverted
 from open_prime_rando.echoes.small_randomizations import apply_small_randomizations
+from open_prime_rando.echoes.suit_cosmetics import apply_custom_suits
 from open_prime_rando.patcher_editor import PatcherEditor
 from open_prime_rando.validator_with_default import DefaultValidatingDraft7Validator
 
@@ -95,7 +96,7 @@ def apply_area_modifications(editor: PatcherEditor, configuration: dict[str, dic
                 old_strg = area._raw.area_name_id
                 strg = editor.get_parsed_asset(old_strg, type_hint=Strg)
                 strg.set_string(0, area_config["new_name"])
-                new_strg = editor.add_file(f"custom_name_for_{area.internal_name}.STRG", strg)
+                new_strg = editor.add_new_asset(f"custom_name_for_{area.internal_name}.STRG", strg)
                 area._raw.area_name_id = new_strg
 
             area.update_all_dependencies(only_modified=True)
@@ -151,6 +152,8 @@ def patch_paks(file_provider: FileProvider,
 
     if configuration["inverted"]:
         apply_inverted(editor)
+
+    apply_custom_suits(editor, configuration["cosmetics"]["suits"])
 
     # Save our changes
     editor.flush_modified_assets()

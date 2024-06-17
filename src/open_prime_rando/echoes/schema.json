@@ -67,10 +67,36 @@
             "type": "boolean",
             "description": "Set elevators to be activated on room load",
             "default": false
+        },
+        "cosmetics": {
+            "type": "object",
+            "properties": {
+                "suits": {
+                    "type": "object",
+                    "properties": {
+                        "varia": {
+                            "$ref": "#/$defs/suit_skin"
+                        },
+                        "dark": {
+                            "$ref": "#/$defs/suit_skin"
+                        },
+                        "light": {
+                            "$ref": "#/$defs/suit_skin"
+                        }
+                    },
+                    "additionalProperties": false,
+                    "$comment": "Choose from a number of custom suit textures"
+                }
+            },
+            "additionalProperties": false,
+            "required": [
+                "suits"
+            ]
         }
     },
     "required": [
-        "small_randomizations"
+        "small_randomizations",
+        "cosmetics"
     ],
     "additionalProperties": false,
     "$defs": {
@@ -111,17 +137,18 @@
                         }
                     },
                     "default": {},
+                    "description": "Change the default state of this area's layers.",
                     "$comment": "The list of layers is replaced in runtime with the existing layers of each specific area."
                 },
                 "low_memory_mode": {
                     "type": "boolean",
                     "default": false,
-                    "$comment": "Some areas are riding the memory/object limit. Certain patches will account for these limitations if this flag is set."
+                    "description": "Some areas are riding the memory/object limit. Certain patches will account for these limitations if this flag is set."
                 },
                 "new_name": {
                     "type": ["string", "null"],
                     "default": null,
-                    "$comment": "If set, rename the area to this value"
+                    "description": "If set, rename the area to this value"
                 },
                 "elevators": {
                     "type": "array",
@@ -129,17 +156,21 @@
                         "type": "object",
                         "properties": {
                             "instance_id": {
-                                "type": "integer"
+                                "type": "integer",
+                                "description": "The instance id of the WorldTeleporter object to be updated."
                             },
                             "target_assets": {
-                                "$ref": "#/$defs/area_identifier"
+                                "$ref": "#/$defs/area_identifier",
+                                "description": ""
                             },
                             "target_strg": {
                                 "type": ["integer", "null"],
-                                "default": null
+                                "default": null,
+                                "description": "The STRG of the Scan that unlocks the elevator. If set, it's updated with `target_name`."
                             },
                             "target_name": {
-                                "type": "string"
+                                "type": "string",
+                                "description": "The name of the destination of this connects to. Used by `target_strg`."
                             }
                         },
                         "required": [
@@ -149,7 +180,8 @@
                         ],
                         "additionalProperties": false
                     },
-                    "default": []
+                    "default": [],
+                    "description": "Change where WorldTeleporters in this Area connect to"
                 }
             },
             "additionalProperties": false
@@ -213,12 +245,24 @@
             "type": "object",
             "properties": {
                 "world_asset_id": {
-                    "type": "integer"
+                    "type": "integer",
+                    "description": "Asset ID of a MLVL"
                 },
                 "area_asset_id": {
-                    "type": "integer"
+                    "type": "integer",
+                    "description": "Asset ID of a MREA"
                 }
             }
+        },
+        "suit_skin": {
+            "type": "string",
+            "enum": [
+                "player1",
+                "player2",
+                "player3",
+                "player4"
+            ],
+            "default": "player1"
         }
     }
 }

@@ -62,3 +62,5 @@ def randomize_minigyro_chamber(editor: PatcherEditor, rng: random.Random):
     scan = editor.get_file(0xFBFF349D, Strg)
     solution_text = '\n'.join(gyro.text for gyro in solution)
     scan.set_string(1, f"Safety lockdown code is as follows:\n\n\n{solution_text}")
+
+    area.update_all_dependencies()

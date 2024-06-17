@@ -52,7 +52,7 @@ ALL_VERSIONS = [
         message_receiver_string_ref=0x803efc90,
     ),
     Prime1DolVersion(
-        version="jap",
+        version="jpn",
         description="GC NTSC-J",
         build_string_address=0x803b86cc,
         build_string=b"!#$MetroidBuildInfo!#$Build v1.111 2/11/2003 10:03:22",

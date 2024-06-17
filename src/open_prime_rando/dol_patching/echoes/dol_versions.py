@@ -83,7 +83,8 @@ ALL_VERSIONS = [
             map_area_commit_resources2=IsDoorAddr(0x8007fab0, 0x8007fab8, 3),
             get_door_color=0x802175b4,
             map_icon_jumptable=0x803b3638,
-        )
+        ),
+        double_damage_vfx=0x80017f28,
     ),
     EchoesDolVersion(
         game=Game.ECHOES,
@@ -152,6 +153,7 @@ ALL_VERSIONS = [
             map_area_commit_resources2=IsDoorAddr(0x8007fbec, 0x8007fbf4, 3),
             get_door_color=0x802178d4,
             map_icon_jumptable=0x803b4a80,
-        )
+        ),
+        double_damage_vfx=0x80017fc4,
     ),
 ]
