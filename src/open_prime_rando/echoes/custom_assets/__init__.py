@@ -137,7 +137,7 @@ def _import_premade_assets(editor: AssetManager):
         editor.add_new_asset(name, RawResource(asset_type, raw), ())
 
 
-def create_custom_assets(editor: AssetManager):
+def create_custom_assets(editor: AssetManager, include_premade: bool = False):
     _create_visor_derivatives(editor)
     _create_split_ammo(editor)
     _import_premade_assets(editor)

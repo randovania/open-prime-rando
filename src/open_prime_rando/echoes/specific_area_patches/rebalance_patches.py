@@ -28,7 +28,7 @@ from open_prime_rando.patcher_editor import PatcherEditor
 LOG = logging.getLogger("echoes_patcher")
 
 
-def rebalance_patches(editor: PatcherEditor):
+def apply_all(editor: PatcherEditor):
     """
     Applies patches that rebalance aspects of the game for a better rando experience.
     """

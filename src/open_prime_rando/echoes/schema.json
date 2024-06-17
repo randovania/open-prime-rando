@@ -6,6 +6,11 @@
             "type": "string",
             "format": "uri"
         },
+        "legacy_compatibility": {
+            "type": "boolean",
+            "default": false,
+            "description": "Operate assuming that Claris' Randomizer was already used in the input files"
+        },
         "worlds": {
             "type": "object",
             "properties": {

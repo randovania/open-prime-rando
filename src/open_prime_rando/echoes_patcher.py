@@ -138,12 +138,16 @@ def patch_paks(file_provider: FileProvider,
     status_update("Validating schema", 0)
     DefaultValidatingDraft7Validator(schema).validate(configuration)
 
+    legacy_compatibility: bool = configuration["legacy_compatibility"]
+
     status_update("Applying small patches", 0)
-    custom_assets.create_custom_assets(editor)
+    if not legacy_compatibility:
+        custom_assets.create_custom_assets(editor, include_premade=True)
+
     dock_lock_rando.add_custom_models(editor)
     if configuration["auto_enabled_elevators"]:
         auto_enabled_elevator_patches.apply_auto_enabled_elevators_patch(editor)
-    specific_area_patches.specific_patches(editor, configuration["area_patches"])
+    specific_area_patches.specific_patches(editor, configuration["area_patches"], legacy_compatibility)
     apply_small_randomizations(editor, configuration["small_randomizations"])
     apply_corrupted_memory_card_change(editor)
 

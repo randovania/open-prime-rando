@@ -33,7 +33,7 @@ from open_prime_rando.patcher_editor import PatcherEditor
 LOG = logging.getLogger("echoes_patcher")
 
 
-def required_fixes(editor: PatcherEditor):
+def apply_all(editor: PatcherEditor):
     """
     Applies changes necessary for the game to function properly.
     """
