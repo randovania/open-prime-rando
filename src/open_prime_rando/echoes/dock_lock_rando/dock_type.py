@@ -144,6 +144,7 @@ class NormalDoorType(DoorType):
         with door.edit_properties(Door) as door_props:
             door_props.vulnerability = self.vulnerability
 
+
 @dataclasses.dataclass
 class BlastShieldActors:
     door: ScriptInstance
@@ -173,9 +174,9 @@ class BlastShieldDoorType(DoorType):
         raise TypeError(f"No {name} connected to {source}")
 
     def get_spline(self) -> Spline:
-        return Spline(
-            data=b'\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x00\x02'
-                 b'\x02A \x00\x00?\x80\x00\x00\x02\x02\x01\x00\x00\x00\x00?\x80\x00\x00'
+        return Spline.from_bytes(
+            b'\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x00\x02'
+            b'\x02A \x00\x00?\x80\x00\x00\x02\x02\x01\x00\x00\x00\x00?\x80\x00\x00'
         )
 
     def create_trigger(self,
@@ -186,7 +187,7 @@ class BlastShieldDoorType(DoorType):
                        active: bool = True,
                        seeker_lock_on: bool = True,
                        orbitable: bool = False,
-    ):
+                       ):
         pos = Vector(
             door_xfm.position.x,
             door_xfm.position.y,
@@ -460,7 +461,6 @@ class VisorDoorType(BlastShieldDoorType):
             door.vulnerability = resist_all_vuln
             door_xfm = door.editor_properties.transform
 
-
         with actors.lock.edit_properties(Actor) as lock:
             lock.vulnerability = resist_all_vuln
 
@@ -546,7 +546,6 @@ class EchoVisorDoorType(VisorDoorType):
             lock.echo_information.is_echo_emitter = True
 
         actors.relay.add_connection(State.Active, Message.Deactivate, hud_hint)
-
 
         if not low_memory:
             beacon_loop = default.add_instance_with(Sound(
