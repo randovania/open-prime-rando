@@ -3,6 +3,7 @@ import functools
 from pathlib import Path
 
 from retro_data_structures.asset_manager import AssetManager
+from retro_data_structures.base_resource import RawResource
 from retro_data_structures.formats import Ancs, Cmdl
 
 
@@ -127,6 +128,16 @@ def _create_split_ammo(editor: AssetManager):
         editor.add_new_asset(f"{ammo.name}_ancs", ancs, editor.find_paks(BEAM_AMMO_EXPANSION_ANCS))
 
 
-def create_custom_assets(editor: AssetManager):
+def _import_premade_assets(editor: AssetManager):
+    assets = Path(__file__).parent.joinpath("custom_assets", "general")
+    for f in assets.glob("*.*"):
+        name = f.name
+        asset_type = f.suffix[1:].upper() # remove leading period, force uppercase
+        raw = f.read_bytes()
+        editor.add_new_asset(name, RawResource(asset_type, raw), ())
+
+
+def create_custom_assets(editor: AssetManager, include_premade: bool = False):
     _create_visor_derivatives(editor)
     _create_split_ammo(editor)
+    _import_premade_assets(editor)
