@@ -97,6 +97,43 @@
             "required": [
                 "suits"
             ]
+        },
+        "tweaks": {
+            "type": "object",
+            "description": "Allows arbitrary changes to the tweaks",
+            "propertyNames": {
+                "enum": [
+                    "TweakGui",
+                    "TweakTargeting",
+                    "TweakPlayerRes",
+                    "TweakPlayerControls2",
+                    "TweakParticle",
+                    "TweakGuiColors",
+                    "TweakGame",
+                    "TweakPlayer2",
+                    "TweakSlideShow",
+                    "TweakBall",
+                    "TweakAutoMapper",
+                    "TweakPlayerControls",
+                    "TweakPlayerGunMuli",
+                    "TweakPlayerGun",
+                    "TweakCameraBob",
+                    "TweakPlayer"
+                ]
+            },
+            "additionalProperties": {
+                "type": "object",
+                "description": "Mapping of full property path to new value. For nested properties, include parent property names split with .",
+                "additionalProperties": true
+            },
+            "examples": [
+                {
+                    "TweakPlayer": {
+                        "collision.ball_radius": 0.5,
+                        "dark_world.damage_per_second.di_damage": 1
+                    }
+                }
+            ]
         }
     },
     "required": [
