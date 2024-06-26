@@ -14,8 +14,9 @@ from open_prime_rando.echoes.asset_ids import world
 from open_prime_rando.patcher_editor import PatcherEditor
 
 
-def _draw_component(dot: graphviz.Digraph, instances: list[ScriptInstance],
-                    namer: typing.Callable[[ScriptInstance], str]):
+def _draw_component(
+    dot: graphviz.Digraph, instances: list[ScriptInstance], namer: typing.Callable[[ScriptInstance], str]
+):
     for instance in instances:
         dot.node(name=str(instance.id), label=namer(instance))
 
@@ -24,6 +25,7 @@ def _draw_component(dot: graphviz.Digraph, instances: list[ScriptInstance],
             dot.edge(str(instance.id), str(con.target), label=f"{con.state.name} - {con.message.name}")
 
     dot.render(cleanup=True, format="png")
+
 
 def draw_objects(editor: PatcherEditor, world_name: str, area_name: str):
     mlvl = editor.get_mlvl(world.NAME_TO_ID_MLVL[world_name])
@@ -68,17 +70,17 @@ def main():
 
     parser = argparse.ArgumentParser()
     parser.add_argument("--game", required=False, default="echoes", choices=["echoes"])
-    parser.add_argument("--iso", required=iso is None, type=Path, default=iso,
-                        help="Path to where the ISO.")
+    parser.add_argument("--iso", required=iso is None, type=Path, default=iso, help="Path to where the ISO.")
     parser.add_argument("world", help="Name of the world to check, as used in the schema")
     parser.add_argument("area", help="Name of the area to check, as used in the schema")
     args = parser.parse_args()
 
     draw_objects(
         PatcherEditor(IsoFileProvider(args.iso), Game.ECHOES),
-        args.world, args.area,
+        args.world,
+        args.area,
     )
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

@@ -91,9 +91,7 @@ def sacrificial_chamber(editor: PatcherEditor):
 
 
 def _patch_echo_gate_softlock(
-        area: Area,
-        counter: InstanceIdRef,
-        relays: Iterable[tuple[InstanceIdRef, InstanceIdRef]]
+    area: Area, counter: InstanceIdRef, relays: Iterable[tuple[InstanceIdRef, InstanceIdRef]]
 ):
     for shot_relay_id, memory_relay_id in relays:
         shot_relay = area.get_instance(shot_relay_id)
@@ -109,11 +107,7 @@ def aerie(editor: PatcherEditor):
     """
     area = editor.get_area(SANCTUARY_FORTRESS_MLVL, sanctuary_fortress.AERIE_MREA)
 
-    relays = (
-        (0x410094, 0x41008D),
-        (0x410077, 0x41007F),
-        (0x4100B5, 0x4100B6)
-    )
+    relays = ((0x410094, 0x41008D), (0x410077, 0x41007F), (0x4100B5, 0x4100B6))
     _patch_echo_gate_softlock(area, 0x4100BE, relays)
 
 
@@ -125,39 +119,32 @@ def main_research(editor: PatcherEditor):
     """
     area = editor.get_area(SANCTUARY_FORTRESS_MLVL, sanctuary_fortress.MAIN_RESEARCH_MREA)
 
-    relays = (
-        (0x0B02E6, 0x0B02DE),
-        (0x0B0303, 0x0B030D),
-        (0x0B02F6, 0x0B02FA)
-    )
+    relays = ((0x0B02E6, 0x0B02DE), (0x0B0303, 0x0B030D), (0x0B02F6, 0x0B02FA))
     _patch_echo_gate_softlock(area, 0x0B0315, relays)
 
     area.get_layer("Contraption").active = False
     portal_spawn = area.get_instance(0x0B0056)
     spawn_xfm = portal_spawn.get_properties_as(SpawnPoint).editor_properties.transform
 
-    contraption_controller = area.get_layer("Default").add_instance_with(ScriptLayerController(
-        editor_properties=EditorProperties(
-            name="Dynamic Increment Contraption",
-            transform=spawn_xfm
-        ),
-        layer=LayerSwitch(
-            area_id=sanctuary_fortress.MAIN_RESEARCH_INTERNAL_ID,
-            layer_number=area.get_layer("Contraption").index
-        ),
-        is_dynamic=True
-    ))
-    spider_controller = area.get_layer("Default").add_instance_with(ScriptLayerController(
-        editor_properties=EditorProperties(
-            name="Dynamic Increment Column Spiderball",
-            transform=spawn_xfm
-        ),
-        layer=LayerSwitch(
-            area_id=sanctuary_fortress.MAIN_RESEARCH_INTERNAL_ID,
-            layer_number=area.get_layer("Column Spiderball").index
-        ),
-        is_dynamic=True
-    ))
+    contraption_controller = area.get_layer("Default").add_instance_with(
+        ScriptLayerController(
+            editor_properties=EditorProperties(name="Dynamic Increment Contraption", transform=spawn_xfm),
+            layer=LayerSwitch(
+                area_id=sanctuary_fortress.MAIN_RESEARCH_INTERNAL_ID, layer_number=area.get_layer("Contraption").index
+            ),
+            is_dynamic=True,
+        )
+    )
+    spider_controller = area.get_layer("Default").add_instance_with(
+        ScriptLayerController(
+            editor_properties=EditorProperties(name="Dynamic Increment Column Spiderball", transform=spawn_xfm),
+            layer=LayerSwitch(
+                area_id=sanctuary_fortress.MAIN_RESEARCH_INTERNAL_ID,
+                layer_number=area.get_layer("Column Spiderball").index,
+            ),
+            is_dynamic=True,
+        )
+    )
 
     for controller in (contraption_controller, spider_controller):
         portal_spawn.add_connection(State.Arrived, Message.Load, controller)
@@ -185,40 +172,37 @@ def gfmc_compound(editor: PatcherEditor):
     area = editor.get_area(TEMPLE_GROUNDS_MLVL, temple_grounds.GFMC_COMPOUND_MREA)
 
     pickup_xfm = area.get_instance(0x2B0324).get_properties_as(Pickup).editor_properties.transform
-    ship_trigger = area.get_layer("Default").add_instance_with(Trigger(
-        editor_properties=EditorProperties(
-            name="Show Ship Missile HudMemo",
-            transform=Transform(
-                position=pickup_xfm.position,
-                rotation=Vector(0.0, 0.0, 45.0),
-                scale=Vector(50.0, 50.0, 10.0)
-            )
-        ),
-        deactivate_on_enter=True
-    ))
-    strg_id, _ = editor.create_strg(
-        "gfmc_jump_hudmemo.STRG",
-        ["Defeating Jump Guardian is required for this item to appear."]
+    ship_trigger = area.get_layer("Default").add_instance_with(
+        Trigger(
+            editor_properties=EditorProperties(
+                name="Show Ship Missile HudMemo",
+                transform=Transform(
+                    position=pickup_xfm.position, rotation=Vector(0.0, 0.0, 45.0), scale=Vector(50.0, 50.0, 10.0)
+                ),
+            ),
+            deactivate_on_enter=True,
+        )
     )
-    hud_memo = area.get_layer("Default").add_instance_with(HUDMemo(
-        editor_properties=EditorProperties(
-            name="Ship Missile HudMemo",
-            transform=pickup_xfm
-        ),
-        display_time=6.0,
-        display_type=0,
-        string=strg_id
-    ))
+    strg_id, _ = editor.create_strg(
+        "gfmc_jump_hudmemo.STRG", ["Defeating Jump Guardian is required for this item to appear."]
+    )
+    hud_memo = area.get_layer("Default").add_instance_with(
+        HUDMemo(
+            editor_properties=EditorProperties(name="Ship Missile HudMemo", transform=pickup_xfm),
+            display_time=6.0,
+            display_type=0,
+            string=strg_id,
+        )
+    )
     ship_trigger.add_connection(State.Entered, Message.SetToZero, hud_memo)
 
-    timer = area.get_layer("Space Jump").add_instance_with(Timer(
-        editor_properties=EditorProperties(
-            name="Disable Ship Missile Trigger",
-            transform=pickup_xfm
-        ),
-        time=0.1,
-        auto_start=True
-    ))
+    timer = area.get_layer("Space Jump").add_instance_with(
+        Timer(
+            editor_properties=EditorProperties(name="Disable Ship Missile Trigger", transform=pickup_xfm),
+            time=0.1,
+            auto_start=True,
+        )
+    )
     timer.add_connection(State.Zero, Message.Deactivate, ship_trigger)
 
 
@@ -251,22 +235,24 @@ def command_center_door(editor: PatcherEditor):
     area = editor.get_area(AGON_WASTES_MLVL, COMMAND_CENTER_MREA)
     default = area.get_layer("Default")
     # committing a crime until RDS supports unsigned ints
-    internal_area_id = struct.unpack('>l', struct.pack('>L', 0xAA657163))[0]
+    internal_area_id = struct.unpack(">l", struct.pack(">L", 0xAA657163))[0]
 
     poi = default.get_instance("Blast Door Activation")
 
     # Deactivate layers
     for layer in ("1st Pass Scripting", "1st pass parts"):
-        controller = default.add_instance_with(ScriptLayerController(
-            editor_properties=EditorProperties(
-                name=f"DYNAMIC Decrement {layer}",
-            ),
-            layer=LayerSwitch(
-                area_id=internal_area_id,
-                layer_number=area.get_layer(layer).index,
-            ),
-            is_dynamic=True,
-        ))
+        controller = default.add_instance_with(
+            ScriptLayerController(
+                editor_properties=EditorProperties(
+                    name=f"DYNAMIC Decrement {layer}",
+                ),
+                layer=LayerSwitch(
+                    area_id=internal_area_id,
+                    layer_number=area.get_layer(layer).index,
+                ),
+                is_dynamic=True,
+            )
+        )
         poi.add_connection(State.ScanDone, Message.Decrement, controller)
 
     # Ensure the blast door instances are active for the cutscene

@@ -16,7 +16,7 @@ from open_prime_rando.patcher_editor import PatcherEditor
 ECHO_LOCK_MREAS = [
     (SANCTUARY_FORTRESS_MLVL, MAIN_GYRO_CHAMBER_MREA),
     (SANCTUARY_FORTRESS_MLVL, SENTINELS_PATH_MREA),
-    (TEMPLE_GROUNDS_MLVL, PROFANE_PATH_MREA)
+    (TEMPLE_GROUNDS_MLVL, PROFANE_PATH_MREA),
 ]
 ECHO_LOCK_STATES = [State.Zero, State.InternalState00, State.InternalState01, State.InternalState02]
 ECHO_LOCK_SOUNDS = [1005, 1006, 1007]
@@ -34,7 +34,7 @@ def randomize_echo_locks(editor: PatcherEditor, rng: random.Random):
             1,
             "Sonic detection gear needed to interface with this system."
             " Shoot the Echo Key Beam emitter with a sonic pulse to activate it."
-            f" It will then fire a blast of &push;&main-color=#FF3333;{pitch}-pitched&pop; sound at an Echo Gate lock."
+            f" It will then fire a blast of &push;&main-color=#FF3333;{pitch}-pitched&pop; sound at an Echo Gate lock.",
         )
         strg_id = editor.add_new_asset(f"accessible_echo_lock_{pitch}.STRG", key_strg)
 
@@ -80,8 +80,9 @@ def randomize_echo_locks(editor: PatcherEditor, rng: random.Random):
                 props.is_open = i == solution[0]
 
         # edit scan to indicate the solution
-        solution_text = ("Sonic detection gear needed to interface with this system. "
-                         "The combination of its sonic locks is:\n")
+        solution_text = (
+            "Sonic detection gear needed to interface with this system. " "The combination of its sonic locks is:\n"
+        )
         solution_text += ", ".join(["Low", "Medium", "High"][key] for key in solution)
         gate_strg.set_string(1, solution_text)
         strg_id = editor.add_new_asset(f"accessible_echo_gate_{mrea_id}.STRG", gate_strg)
@@ -94,4 +95,3 @@ def randomize_echo_locks(editor: PatcherEditor, rng: random.Random):
             poi.scan_info.scannable_info0 = scan_id
 
         area.update_all_dependencies()
-
