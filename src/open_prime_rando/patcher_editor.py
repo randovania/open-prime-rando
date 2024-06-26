@@ -4,7 +4,7 @@ from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 
 from ppc_asm.dol_file import DolEditor, DolHeader
-from retro_data_structures.asset_manager import AssetManager, FileProvider
+from retro_data_structures.asset_manager import AssetManager, FileProvider, PathFileProvider
 from retro_data_structures.base_resource import AssetId, BaseResource, NameOrAssetId, Resource
 from retro_data_structures.crc import crc32
 from retro_data_structures.formats.mlvl import Mlvl
@@ -42,7 +42,11 @@ class PatcherEditor(AssetManager):
         if game in [Game.PRIME, Game.ECHOES]:
             self.dol = MemoryDol(provider.get_dol())
         if game == Game.ECHOES:
-            with provider.open_binary("files/Standard.ntwk") as f:
+            file_path = "Standard.ntwk"
+            if isinstance(provider, PathFileProvider):
+                file_path = f"files/{file_path}"
+
+            with provider.open_binary(file_path) as f:
                 self.tweaks = Ntwk.parse(f.read(), game)
 
     def get_file(self, path: NameOrAssetId, type_hint: type[T] = BaseResource) -> T:
