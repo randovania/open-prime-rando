@@ -9,17 +9,17 @@ test_versions = [
     dol_version.DolVersion(
         game=Game.ECHOES,
         description="Gamecube NTSC",
-        build_string_address=0x803ac3b0,
+        build_string_address=0x803AC3B0,
         build_string=b"!#$MetroidBuildInfo!#$Build v1.028 10/18/2004 10:44:32",
-        sda2_base=0x804223c0,
-        sda13_base=0x8041fd80,
+        sda2_base=0x804223C0,
+        sda13_base=0x8041FD80,
     ),
     dol_version.DolVersion(
         game=Game.ECHOES,
         description="Gamecube PAL",
-        build_string_address=0x803ad710,
+        build_string_address=0x803AD710,
         build_string=b"!#$MetroidBuildInfo!#$Build v1.035 10/27/2004 19:48:17",
-        sda2_base=0x804223c0,
+        sda2_base=0x804223C0,
         sda13_base=0x80421060,
     ),
 ]

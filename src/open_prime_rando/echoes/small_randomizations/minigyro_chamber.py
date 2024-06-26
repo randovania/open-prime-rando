@@ -30,6 +30,7 @@ class GyroColor(Enum):
     def text(self) -> str:
         return f"&push;&main-color={self.color};{self.name}&pop;"
 
+
 GYRO_STATES = [
     State.InternalState00,
     State.InternalState01,
@@ -60,7 +61,7 @@ def randomize_minigyro_chamber(editor: PatcherEditor, rng: random.Random):
     stop_gyros[solution[3].value].add_connection(State.Zero, Message.Play, jingle)
 
     scan = editor.get_file(0xFBFF349D, Strg)
-    solution_text = '\n'.join(gyro.text for gyro in solution)
+    solution_text = "\n".join(gyro.text for gyro in solution)
     scan.set_string(1, f"Safety lockdown code is as follows:\n\n\n{solution_text}")
 
     area.update_all_dependencies()

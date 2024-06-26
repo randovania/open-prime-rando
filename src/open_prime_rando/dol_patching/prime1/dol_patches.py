@@ -18,9 +18,17 @@ class Prime1DolVersion(BasePrimeDolVersion):
     state_for_world: int
     set_layer_active: int
 
-    def __init__(self, version: str, description: str, build_string_address: int,
-                 build_string: bytes, sda2_base: int, sda13_base: int, cplayer_vtable: int,
-                 message_receiver_string_ref: int):
+    def __init__(
+        self,
+        version: str,
+        description: str,
+        build_string_address: int,
+        build_string: bytes,
+        sda2_base: int,
+        sda13_base: int,
+        cplayer_vtable: int,
+        message_receiver_string_ref: int,
+    ):
         symbols = py_randomprime.symbols_for_version(version)
 
         super().__init__(
@@ -50,8 +58,11 @@ class Prime1DolVersion(BasePrimeDolVersion):
         object.__setattr__(self, "set_layer_active", symbols["SetLayerActive__16CWorldLayerStateFiib"])
 
 
-def set_artifact_layer_active_patch(addresses: Prime1DolVersion, layer_id: int, active: bool,
-                                    ) -> list[assembler.BaseInstruction]:
+def set_artifact_layer_active_patch(
+    addresses: Prime1DolVersion,
+    layer_id: int,
+    active: bool,
+) -> list[assembler.BaseInstruction]:
     # g_GameState->StateForWorld(0x39F2DE28)->GetLayerState()->SetLayerActive(templeAreaIndex, artifactLayer, true)
     result = []
 
@@ -63,35 +74,31 @@ def set_artifact_layer_active_patch(addresses: Prime1DolVersion, layer_id: int, 
         lwz(r3, 0x14, r3),  # worldState->layerState
     ]
 
-    result.extend([
-        # Get the LayerState of current db. We'll overwrite if it's another db, it's just 1 instruction bigger
-        lwz(r3, 0x8c8, r31),  # mgr->worldLayerState
-
-        # Tallon Overworld asset id
-        custom_ppc.load_unsigned_32bit(r4, 0x39f2de28),
-
-        # Load current asset id in r5
-        lwz(r5, 0x850, r31),  # mgr->db
-        lwz(r5, 0x8, r5),  # db->mlvlId
-
-        cmpw(0, r4, r5),  # compare asset ids
-        beq(4 + assembler.byte_count(for_another_world), relative=True),
-        *for_another_world,
-        lwz(r3, 0x0, r3),
-
-        # Set layer
-        li(r4, 16),  # Artifact Layer
-        stw(r4, 0x10, r1),
-
-        # Set layer
-        li(r5, layer_id),  # Artifact Layer
-        stw(r5, 0x14, r1),
-
-        # Make the layer change via SetLayerActive
-        addi(r4, r1, 0x10),
-        addi(r5, r1, 0x14),
-        li(r6, int(active)),
-        bl(addresses.set_layer_active),  # CWorldLayerState::SetLayerActive
-    ])
+    result.extend(
+        [
+            # Get the LayerState of current db. We'll overwrite if it's another db, it's just 1 instruction bigger
+            lwz(r3, 0x8C8, r31),  # mgr->worldLayerState
+            # Tallon Overworld asset id
+            custom_ppc.load_unsigned_32bit(r4, 0x39F2DE28),
+            # Load current asset id in r5
+            lwz(r5, 0x850, r31),  # mgr->db
+            lwz(r5, 0x8, r5),  # db->mlvlId
+            cmpw(0, r4, r5),  # compare asset ids
+            beq(4 + assembler.byte_count(for_another_world), relative=True),
+            *for_another_world,
+            lwz(r3, 0x0, r3),
+            # Set layer
+            li(r4, 16),  # Artifact Layer
+            stw(r4, 0x10, r1),
+            # Set layer
+            li(r5, layer_id),  # Artifact Layer
+            stw(r5, 0x14, r1),
+            # Make the layer change via SetLayerActive
+            addi(r4, r1, 0x10),
+            addi(r5, r1, 0x14),
+            li(r6, int(active)),
+            bl(addresses.set_layer_active),  # CWorldLayerState::SetLayerActive
+        ]
+    )
 
     return result

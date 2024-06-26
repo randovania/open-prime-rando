@@ -43,6 +43,7 @@ class PowerupFunctionsAddresses:
     incr_pickup: Increments the given item amount
     decr_pickup: Decrements the given item amount
     """
+
     add_power_up: int
     incr_pickup: int
     decr_pickup: int
@@ -75,7 +76,7 @@ def remote_execution_patch_start(game: Game) -> list[BaseInstruction]:
         ]
     elif game == Game.ECHOES:
         cutscene_check = [
-            lwz(r0, 0x16fc, r31),
+            lwz(r0, 0x16FC, r31),
         ]
     else:
         raise ValueError(f"Unsupported game: {game}")
@@ -87,15 +88,12 @@ def remote_execution_patch_start(game: Game) -> list[BaseInstruction]:
         stw(r0, _remote_execution_stack_size, r1),
         stmw(GeneralRegister(32 - _registers_to_save), _remote_execution_stack_size - 4 - _registers_to_save * 4, r1),
         or_(r31, r3, r3),
-
         # return if no pending op
         lbz(r4, 0x2, r31),
         cmpwi(r4, 0x0),
         bne((len(return_code) + 1) * 4, relative=True),
-
         # clean return if flag is not set
         *return_code,
-
         # if camera count > 0 then we're in a cutscene so we return as we don't want
         # to handle receiving items during a cutscene
         *cutscene_check,
@@ -109,12 +107,10 @@ def remote_execution_patch_start(game: Game) -> list[BaseInstruction]:
 
     return [
         *intro,
-
         # fetch the instructions again, since they're being overwritten externally
         # this clears Dolphin's JIT cache
         custom_ppc.load_current_address(r30, 8),
         li(r4, num_bytes_to_invalidate),
-
         icbi(4, 30),  # invalidate using r30 + r4
         cmpwi(r4, 0x0),
         addi(r4, r4, -32),
@@ -157,12 +153,10 @@ def call_display_hud_patch(patch_addresses: StringDisplayPatchAddresses) -> list
         stb(r6, 0x16, r1),  # hint memo
         stb(r7, 0x17, r1),  # fade in text
         stw(r9, 0x18, r1),  # unk
-
         # setup wstring
         addi(r3, r1, 0x1C),
         custom_ppc.load_unsigned_32bit(r4, patch_addresses.message_receiver_string_ref),
         bl(patch_addresses.wstring_constructor),
-
         # r4 = CHUDMemoParms
         addi(r4, r1, 0x10),
         bl(patch_addresses.display_hud_memo),
@@ -172,19 +166,22 @@ def call_display_hud_patch(patch_addresses: StringDisplayPatchAddresses) -> list
 def _load_player_state(game: Game, target_register: GeneralRegister, state_mgr: GeneralRegister = r31):
     if game == Game.PRIME:
         return [
-            lwz(target_register, 0x8b8, state_mgr),
+            lwz(target_register, 0x8B8, state_mgr),
             lwz(target_register, 0, target_register),
         ]
     elif game == Game.ECHOES:
         return [
-            lwz(target_register, 0x150c, state_mgr),
+            lwz(target_register, 0x150C, state_mgr),
         ]
     else:
         raise ValueError(f"Unsupported game {game}")
 
 
 def adjust_item_amount_and_capacity_patch(
-        patch_addresses: PowerupFunctionsAddresses, game: Game, item_id: int, delta: int,
+    patch_addresses: PowerupFunctionsAddresses,
+    game: Game,
+    item_id: int,
+    delta: int,
 ) -> list[BaseInstruction]:
     # r31 = CStateManager
     if game == Game.PRIME and item_id in ARTIFACT_ITEMS:
@@ -203,7 +200,10 @@ def adjust_item_amount_and_capacity_patch(
 
 
 def increment_item_capacity_patch(
-        patch_addresses: PowerupFunctionsAddresses, game: Game, item_id: int, delta: int = 1,
+    patch_addresses: PowerupFunctionsAddresses,
+    game: Game,
+    item_id: int,
+    delta: int = 1,
 ) -> list[BaseInstruction]:
     return [
         *_load_player_state(game, r3, r31),
@@ -214,7 +214,10 @@ def increment_item_capacity_patch(
 
 
 def adjust_item_amount_patch(
-        patch_addresses: PowerupFunctionsAddresses, game: Game, item_id: int, delta: int,
+    patch_addresses: PowerupFunctionsAddresses,
+    game: Game,
+    item_id: int,
+    delta: int,
 ) -> list[BaseInstruction]:
     return [
         *_load_player_state(game, r3, r31),
@@ -236,9 +239,9 @@ def apply_remote_execution_patch(game: Game, patch_addresses: StringDisplayPatch
     dol_file.write_instructions(patch_addresses.update_hint_state, remote_execution_patch(game))
 
 
-def create_remote_execution_body(game: Game,
-                                 patch_addresses: StringDisplayPatchAddresses,
-                                 instructions: list[BaseInstruction]) -> tuple[int, bytes]:
+def create_remote_execution_body(
+    game: Game, patch_addresses: StringDisplayPatchAddresses, instructions: list[BaseInstruction]
+) -> tuple[int, bytes]:
     """
     Return the address and the bytes for executing the given instructions via remote code execution.
     """
@@ -254,14 +257,15 @@ def create_remote_execution_body(game: Game,
     body_bytes = bytes(assembler.assemble_instructions(body_address, body_instructions))
 
     if len(body_bytes) > _remote_execution_max_byte_count - remote_start_byte_count:
-        raise ValueError(f"Received {len(body_instructions)} instructions with total {len(body_bytes)} bytes, "
-                         f"but limit is {_remote_execution_max_byte_count - remote_start_byte_count}.")
+        raise ValueError(
+            f"Received {len(body_instructions)} instructions with total {len(body_bytes)} bytes, "
+            f"but limit is {_remote_execution_max_byte_count - remote_start_byte_count}."
+        )
 
     return body_address, body_bytes
 
 
-def apply_energy_tank_capacity_patch(patch_addresses: HealthCapacityAddresses, energy_per_tank: int,
-                                     dol_file: DolFile):
+def apply_energy_tank_capacity_patch(patch_addresses: HealthCapacityAddresses, energy_per_tank: int, dol_file: DolFile):
     """
     Patches the base health capacity and the energy tank capacity with matching values.
     """
@@ -271,19 +275,20 @@ def apply_energy_tank_capacity_patch(patch_addresses: HealthCapacityAddresses, e
     dol_file.write(patch_addresses.energy_tank_capacity, struct.pack(">f", tank_capacity))
 
 
-def apply_reverse_energy_tank_heal_patch(sd2_base: int,
-                                         addresses: DangerousEnergyTankAddresses,
-                                         active: bool,
-                                         game: Game,
-                                         dol_file: DolFile,
-                                         ):
+def apply_reverse_energy_tank_heal_patch(
+    sd2_base: int,
+    addresses: DangerousEnergyTankAddresses,
+    active: bool,
+    game: Game,
+    dol_file: DolFile,
+):
     if game == Game.ECHOES:
         health_offset = 0x14
         refill_item = 0x29
         patch_offset = 0x90
 
     elif game == Game.CORRUPTION:
-        health_offset = 0xc
+        health_offset = 0xC
         refill_item = 0x12
         patch_offset = 0x138
 
