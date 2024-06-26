@@ -58,10 +58,11 @@ class PatcherEditor(AssetManager):
                 executor.submit(self.replace_asset, name, resource)
         self.memory_files = {}
 
-    def add_file(self,
-                 name: str,
-                 asset: Resource,
-                 ) -> AssetId:
+    def add_file(
+        self,
+        name: str,
+        asset: Resource,
+    ) -> AssetId:
         asset_id = crc32(name)
         self.register_custom_asset_name(name, asset_id)
         self.add_new_asset(name, asset, ())
@@ -85,24 +86,27 @@ class PatcherEditor(AssetManager):
             asset_id = self.add_file(name, new_data)
         return asset_id
 
-    def create_strg(self,
-                    name: str,
-                    strings: str | typing.Iterable[str] = (),
-                    ) -> tuple[AssetId, Strg]:
+    def create_strg(
+        self,
+        name: str,
+        strings: str | typing.Iterable[str] = (),
+    ) -> tuple[AssetId, Strg]:
         template_id = None
         if self.target_game == Game.ECHOES:
             # Strings/Worlds/TempleHub/01_Temple_LandingSite.STRG
             template_id = 0x2E681FEF
 
         if template_id is None:
-            raise NotImplementedError()
+            raise NotImplementedError
 
         asset_id = self.duplicate_file(name, template_id)
 
         strg = self.get_file(asset_id, Strg)
 
-        if isinstance(strings, str):
-            strings = strings
+        # TODO: ???
+        # if isinstance(strings, str):
+        #     strings = strings
+
         strings = list(strings)
 
         for lang in strg.languages:

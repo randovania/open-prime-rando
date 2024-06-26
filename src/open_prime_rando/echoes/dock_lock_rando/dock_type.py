@@ -74,11 +74,9 @@ class DoorType:
 
     def get_door_from_dock_index(self, area: Area, dock_index: int) -> ScriptInstance:
         dock = next(
-            inst for inst in area.all_instances
-            if (
-                    inst.type == Dock and
-                    inst.get_properties_as(Dock).dock_number == dock_index
-            )
+            inst
+            for inst in area.all_instances
+            if (inst.type == Dock and inst.get_properties_as(Dock).dock_number == dock_index)
         )
         for instance in area.all_instances:
             if instance.type != Door:
@@ -162,8 +160,13 @@ class BlastShieldDoorType(DoorType):
     shield_collision_offset: Vector = dataclasses.field(default_factory=lambda: Vector(-2 / 3, 0, 2.0))
 
     def find_attached_instance(
-            self, area: Area, source: ScriptInstance, state: State, message: Message,
-            target_type: type[BaseObjectType], target_name: str | None = None
+        self,
+        area: Area,
+        source: ScriptInstance,
+        state: State,
+        message: Message,
+        target_type: type[BaseObjectType],
+        target_name: str | None = None,
     ) -> ScriptInstance:
         for connection in source.connections:
             if connection.state == state and connection.message == message:
@@ -175,42 +178,33 @@ class BlastShieldDoorType(DoorType):
 
     def get_spline(self) -> Spline:
         return Spline.from_bytes(
-            b'\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x00\x02'
-            b'\x02A \x00\x00?\x80\x00\x00\x02\x02\x01\x00\x00\x00\x00?\x80\x00\x00'
+            b"\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x00\x02"
+            b"\x02A \x00\x00?\x80\x00\x00\x02\x02\x01\x00\x00\x00\x00?\x80\x00\x00"
         )
 
-    def create_trigger(self,
-                       name: str,
-                       door_xfm: Transform,
-                       health: float,
-                       visor_flags: VisorFlags = VisorFlags.Combat | VisorFlags.Dark,
-                       active: bool = True,
-                       seeker_lock_on: bool = True,
-                       orbitable: bool = False,
-                       ):
-        pos = Vector(
-            door_xfm.position.x,
-            door_xfm.position.y,
-            door_xfm.position.z + 1.8
-        )
+    def create_trigger(
+        self,
+        name: str,
+        door_xfm: Transform,
+        health: float,
+        visor_flags: VisorFlags = VisorFlags.Combat | VisorFlags.Dark,
+        active: bool = True,
+        seeker_lock_on: bool = True,
+        orbitable: bool = False,
+    ):
+        pos = Vector(door_xfm.position.x, door_xfm.position.y, door_xfm.position.z + 1.8)
 
         return DamageableTriggerOrientated(
             editor_properties=EditorProperties(
                 name=name,
-                transform=Transform(
-                    position=pos,
-                    rotation=door_xfm.rotation,
-                    scale=Vector(4.0, 4.0, 1.5)
-                ),
-                active=active
+                transform=Transform(position=pos, rotation=door_xfm.rotation, scale=Vector(4.0, 4.0, 1.5)),
+                active=active,
             ),
             health=HealthInfo(health=health),
             vulnerability=self.vulnerability,
             enable_seeker_lock_on=seeker_lock_on,
             orbitable=orbitable,
-            visor=VisorParameters(
-                visor_flags=visor_flags
-            )
+            visor=VisorParameters(visor_flags=visor_flags),
         )
 
     def patch_door(self, editor: PatcherEditor, world_name: str, area_name: str, dock_name: str, low_memory: bool):
@@ -243,21 +237,18 @@ class BlastShieldDoorType(DoorType):
             shield_model = f"custom_door_lock_{shield_model}.CMDL"
         model = editor._resolve_asset_id(shield_model)
 
-        lock = default.add_instance_with(Actor(
-            editor_properties=EditorProperties(
-                name=f"{self.name} Blast Shield Lock",
-                transform=door_transform
-            ),
-            collision_box=self.shield_collision_box,
-            collision_offset=self.shield_collision_offset,
-            vulnerability=self.vulnerability,
-            model=model,
-            actor_information=ActorParameters(
-                scannable=ScannableParameters(
-                    scannable_info0=self.get_patched_scan(editor, world_name, area_name)
-                )
+        lock = default.add_instance_with(
+            Actor(
+                editor_properties=EditorProperties(name=f"{self.name} Blast Shield Lock", transform=door_transform),
+                collision_box=self.shield_collision_box,
+                collision_offset=self.shield_collision_offset,
+                vulnerability=self.vulnerability,
+                model=model,
+                actor_information=ActorParameters(
+                    scannable=ScannableParameters(scannable_info0=self.get_patched_scan(editor, world_name, area_name))
+                ),
             )
-        ))
+        )
 
         relay = default.add_memory_relay("Lock Cleared")
         with relay.edit_properties(MemoryRelay) as _relay:
@@ -278,37 +269,34 @@ class BlastShieldDoorType(DoorType):
         if not low_memory:
             particle = 0xCDCBDF04
 
-            gibs = default.add_instance_with(Effect(
-                editor_properties=EditorProperties(
-                    transform=door_transform,
-                    active=False
-                ),
-                particle_effect=particle,
-                restart_on_activate=True,
-                motion_control_spline=self.get_spline(),
-            ))
+            gibs = default.add_instance_with(
+                Effect(
+                    editor_properties=EditorProperties(transform=door_transform, active=False),
+                    particle_effect=particle,
+                    restart_on_activate=True,
+                    motion_control_spline=self.get_spline(),
+                )
+            )
 
-            sound = default.add_instance_with(Sound(
-                editor_properties=EditorProperties(
-                    name="Metal Door Lock Breaking",
-                    transform=door_transform
-                ),
-                sound=948,
-                max_audible_distance=150.0,
-                surround_pan=SurroundPan(surround_pan=1.0)
-            ))
+            sound = default.add_instance_with(
+                Sound(
+                    editor_properties=EditorProperties(name="Metal Door Lock Breaking", transform=door_transform),
+                    sound=948,
+                    max_audible_distance=150.0,
+                    surround_pan=SurroundPan(surround_pan=1.0),
+                )
+            )
 
-            streamed = default.add_instance_with(StreamedAudio(
-                editor_properties=EditorProperties(
-                    name="StreamedAudio - Event Jingle",
-                    transform=door_transform
-                ),
-                song_file="/audio/evt_x_event_00.dsp",
-                fade_in_time=0.01,
-                volume=65,
-                software_channel=1,
-                unknown=False
-            ))
+            streamed = default.add_instance_with(
+                StreamedAudio(
+                    editor_properties=EditorProperties(name="StreamedAudio - Event Jingle", transform=door_transform),
+                    song_file="/audio/evt_x_event_00.dsp",
+                    fade_in_time=0.01,
+                    volume=65,
+                    software_channel=1,
+                    unknown=False,
+                )
+            )
 
             lock.add_connection(State.Dead, Message.Play, sound)
             lock.add_connection(State.Dead, Message.Play, streamed)
@@ -348,40 +336,27 @@ class SeekerBlastShieldDoorType(VanillaBlastShieldDoorType):
         door_transform = actors.door.get_properties_as(Door).editor_properties.transform
 
         # TODO: try using a sequencetimer to squeeze one fewer instance out of this
-        timer = default.add_instance_with(Timer(
-            editor_properties=EditorProperties(
-                name="Button Control",
-                transform=door_transform
-            ),
-            time=0.75
-        ))
+        timer = default.add_instance_with(
+            Timer(editor_properties=EditorProperties(name="Button Control", transform=door_transform), time=0.75)
+        )
 
-        timer_reset = default.add_instance_with(Timer(
-            editor_properties=EditorProperties(
-                name="Button Reset",
-                transform=door_transform
-            ),
-            time=0.01
-        ))
+        timer_reset = default.add_instance_with(
+            Timer(editor_properties=EditorProperties(name="Button Reset", transform=door_transform), time=0.01)
+        )
 
         # create 5 triggers so that you can have 5 lock-ons
         # TODO: only use 2 triggers in low memory mode and just accept it being more jank?
         # 30.01 health because splash damage is inconsistent. missiles do 30 damage
         # so this guarantees you need at least 2 missiles at once to break it
         triggers = [
-            default.add_instance_with(self.create_trigger(
-                f"Bridge Button {i}",
-                door_transform, 30.01)
-            ) for i in range(5)
+            default.add_instance_with(self.create_trigger(f"Bridge Button {i}", door_transform, 30.01))
+            for i in range(5)
         ]
         main_trigger = triggers[0]
         # TODO: repurpose one of the big triggers for this to save an instance
-        mini_trigger = default.add_instance_with(self.create_trigger(
-            "Bridge Button Mini",
-            door_transform,
-            1.0,
-            seeker_lock_on=False
-        ))
+        mini_trigger = default.add_instance_with(
+            self.create_trigger("Bridge Button Mini", door_transform, 1.0, seeker_lock_on=False)
+        )
 
         # start a timer when the tiny trigger dies. stop it if the main trigger dies
         mini_trigger.add_connection(State.Dead, Message.ResetAndStart, timer)
@@ -398,11 +373,7 @@ class SeekerBlastShieldDoorType(VanillaBlastShieldDoorType):
         # move the lock's connections to the trigger, since it's the thing that dies now
         for connection in actors.lock.connections:
             actors.lock.remove_connection(connection)
-            main_trigger.add_connection(
-                connection.state,
-                connection.message,
-                connection.target
-            )
+            main_trigger.add_connection(connection.state, connection.message, connection.target)
 
         for trigger in triggers:
             actors.relay.add_connection(State.Active, Message.Deactivate, trigger)
@@ -432,13 +403,13 @@ class PlanetaryEnergyDoorType(DoorType):
     planetary_energy_item_id: int
 
     def patch_door(self, editor: PatcherEditor, world_name: str, area_name: str, dock_name: str, low_memory: bool):
-        raise NotImplementedError()
+        raise NotImplementedError
 
 
 @dataclasses.dataclass(kw_only=True)
 class GrappleDoorType(BlastShieldDoorType):
     def patch_door(self, editor: PatcherEditor, world_name: str, area_name: str, dock_name: str, low_memory: bool):
-        raise NotImplementedError()
+        raise NotImplementedError
 
 
 @dataclasses.dataclass
@@ -464,38 +435,32 @@ class VisorDoorType(BlastShieldDoorType):
         with actors.lock.edit_properties(Actor) as lock:
             lock.vulnerability = resist_all_vuln
 
-        trigger = default.add_instance_with(self.create_trigger(
-            "Door Button", door_xfm, 1.0, self.visor_flags,
-            active=False, seeker_lock_on=False, orbitable=True
-        ))
+        trigger = default.add_instance_with(
+            self.create_trigger(
+                "Door Button", door_xfm, 1.0, self.visor_flags, active=False, seeker_lock_on=False, orbitable=True
+            )
+        )
 
-        visor_detector = default.add_instance_with(PlayerController(
-            editor_properties=EditorProperties(
-                name="Detect Visor",
-                transform=door_xfm
-            ),
-            unknown_0xe71de331=1,
-            proxy_type=self.player_controller_proxy
-        ))
+        visor_detector = default.add_instance_with(
+            PlayerController(
+                editor_properties=EditorProperties(name="Detect Visor", transform=door_xfm),
+                unknown_0xe71de331=1,
+                proxy_type=self.player_controller_proxy,
+            )
+        )
 
         visor_detector.add_connection(State.Entered, Message.Activate, trigger)
         visor_detector.add_connection(State.Exited, Message.Deactivate, trigger)
 
         for connection in actors.lock.connections:
             actors.lock.remove_connection(connection)
-            trigger.add_connection(
-                connection.state,
-                connection.message,
-                connection.target
-            )
+            trigger.add_connection(connection.state, connection.message, connection.target)
 
         actors.relay.add_connection(State.Active, Message.Deactivate, trigger)
         actors.relay.add_connection(State.Active, Message.Deactivate, visor_detector)
 
         return VisorBlastShieldActors(
-            actors.door, actors.sound, actors.streamed,
-            actors.lock, actors.relay, actors.gibs,
-            trigger, visor_detector
+            actors.door, actors.sound, actors.streamed, actors.lock, actors.relay, actors.gibs, trigger, visor_detector
         )
 
 
@@ -519,28 +484,26 @@ class EchoVisorDoorType(VisorDoorType):
 
         door_xfm = actors.door.get_properties_as(Door).editor_properties.transform
 
-        center_pos = Vector(
-            door_xfm.position.x,
-            door_xfm.position.y,
-            door_xfm.position.z + 1.8
-        )
+        center_pos = Vector(door_xfm.position.x, door_xfm.position.y, door_xfm.position.z + 1.8)
 
-        hud_hint = default.add_instance_with(HUDHint(
-            editor_properties=EditorProperties(
-                name="Echo Target Icon",
-                transform=Transform(
-                    center_pos,
-                    door_xfm.rotation,
+        hud_hint = default.add_instance_with(
+            HUDHint(
+                editor_properties=EditorProperties(
+                    name="Echo Target Icon",
+                    transform=Transform(
+                        center_pos,
+                        door_xfm.rotation,
+                    ),
+                    active=True,
                 ),
-                active=True
-            ),
-            hud_texture=0x36B1CB06,
-            unknown_0x6078a651=24.0,
-            unknown_0xf00bb6bb=128.0,
-            animation_time=0.5,
-            animation_frames=4,
-            unknown_0xd993f97b=2
-        ))
+                hud_texture=0x36B1CB06,
+                unknown_0x6078a651=24.0,
+                unknown_0xf00bb6bb=128.0,
+                animation_time=0.5,
+                animation_frames=4,
+                unknown_0xd993f97b=2,
+            )
+        )
 
         with actors.lock.edit_properties(Actor) as lock:
             lock.echo_information.is_echo_emitter = True
@@ -548,58 +511,50 @@ class EchoVisorDoorType(VisorDoorType):
         actors.relay.add_connection(State.Active, Message.Deactivate, hud_hint)
 
         if not low_memory:
-            beacon_loop = default.add_instance_with(Sound(
-                editor_properties=EditorProperties(
-                    name="Echo Beacon Sound Loop",
-                    transform=Transform(
-                        position=center_pos
+            beacon_loop = default.add_instance_with(
+                Sound(
+                    editor_properties=EditorProperties(
+                        name="Echo Beacon Sound Loop",
+                        transform=Transform(position=center_pos),
                     ),
-                ),
-                sound=1003,
-                max_audible_distance=75.0,
-                min_volume=0,
-                max_volume=60,
-                surround_pan=SurroundPan(
-                    pan=0.0,
-                    surround_pan=1.0
-                ),
-                loop=True,
-                play_always=True,
-                echo_visor_max_volume=127
-            ))
+                    sound=1003,
+                    max_audible_distance=75.0,
+                    min_volume=0,
+                    max_volume=60,
+                    surround_pan=SurroundPan(pan=0.0, surround_pan=1.0),
+                    loop=True,
+                    play_always=True,
+                    echo_visor_max_volume=127,
+                )
+            )
 
-            disrupted = default.add_instance_with(Sound(
-                editor_properties=EditorProperties(
-                    name="Echo Particle Disrupted",
-                    transform=Transform(
-                        position=center_pos
+            disrupted = default.add_instance_with(
+                Sound(
+                    editor_properties=EditorProperties(
+                        name="Echo Particle Disrupted",
+                        transform=Transform(position=center_pos),
                     ),
-                ),
-                sound=1004,
-                max_audible_distance=75.0,
-                min_volume=20,
-                max_volume=120,
-                surround_pan=SurroundPan(
-                    pan=0.0,
-                    surround_pan=1.0
-                ),
-            ))
+                    sound=1004,
+                    max_audible_distance=75.0,
+                    min_volume=20,
+                    max_volume=120,
+                    surround_pan=SurroundPan(pan=0.0, surround_pan=1.0),
+                )
+            )
 
-            timer = default.add_instance_with(Timer(
-                editor_properties=EditorProperties(
-                    name="Open Echo Door",
-                    transform=door_xfm,
-                ),
-                time=1.0
-            ))
+            timer = default.add_instance_with(
+                Timer(
+                    editor_properties=EditorProperties(
+                        name="Open Echo Door",
+                        transform=door_xfm,
+                    ),
+                    time=1.0,
+                )
+            )
 
             for connection in actors.trigger.connections:
                 actors.trigger.remove_connection(connection)
-                timer.add_connection(
-                    State.Zero,
-                    connection.message,
-                    connection.target
-                )
+                timer.add_connection(State.Zero, connection.message, connection.target)
 
             actors.trigger.add_connection(State.Dead, Message.ResetAndStart, timer)
             actors.trigger.add_connection(State.Dead, Message.InternalMessage00, hud_hint)
@@ -617,7 +572,7 @@ class EchoVisorDoorType(VisorDoorType):
 @dataclasses.dataclass(kw_only=True)
 class ScanVisorDoorType(BlastShieldDoorType):
     def patch_door(self, editor: PatcherEditor, world_name: str, area_name: str, dock_name: str, low_memory: bool):
-        raise NotImplementedError()
+        raise NotImplementedError
 
 
 @dataclasses.dataclass(kw_only=True)
@@ -625,4 +580,4 @@ class TranslatorDoorType(ScanVisorDoorType):
     translator_item_id: int
 
     def patch_door(self, editor: PatcherEditor, world_name: str, area_name: str, dock_name: str, low_memory: bool):
-        raise NotImplementedError()
+        raise NotImplementedError

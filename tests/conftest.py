@@ -11,7 +11,7 @@ from open_prime_rando.patcher_editor import PatcherEditor
 _FAIL_INSTEAD_OF_SKIP = True
 
 
-def get_env_or_skip(env_name, override_fail: bool | None = None):
+def get_env_or_skip(env_name: str, override_fail: bool | None = None) -> str:
     if override_fail is None:
         fail_or_skip = _FAIL_INSTEAD_OF_SKIP
     else:
@@ -42,22 +42,22 @@ def test_files_dir() -> TestFilesDir:
 
 
 @pytest.fixture(scope="module")
-def prime2_iso_provider():
+def prime2_iso_provider() -> IsoFileProvider:
     return IsoFileProvider(Path(get_env_or_skip("PRIME2_ISO")))
 
 
 @pytest.fixture(scope="module")
-def pal_prime2_iso_provider():
+def pal_prime2_iso_provider() -> IsoFileProvider:
     return IsoFileProvider(Path(get_env_or_skip("PRIME2_PAL_ISO", override_fail=False)))
 
 
 @pytest.fixture(scope="module")
-def raw_prime2_editor(prime2_iso_provider):
+def raw_prime2_editor(prime2_iso_provider: IsoFileProvider) -> PatcherEditor:
     return PatcherEditor(prime2_iso_provider, game=Game.ECHOES)
 
 
 @pytest.fixture()
-def prime2_editor(raw_prime2_editor):
+def prime2_editor(raw_prime2_editor: PatcherEditor):
     editor = raw_prime2_editor
     yield editor
     editor.memory_files = {}
@@ -67,11 +67,16 @@ def prime2_editor(raw_prime2_editor):
     editor._modified_resources = {}
 
 
-def pytest_addoption(parser):
-    parser.addoption('--skip-if-missing', action='store_false', dest="fail_if_missing",
-                     default=True, help="Skip tests instead of missing, in case any asset is missing")
+def pytest_addoption(parser) -> None:
+    parser.addoption(
+        "--skip-if-missing",
+        action="store_false",
+        dest="fail_if_missing",
+        default=True,
+        help="Skip tests instead of missing, in case any asset is missing",
+    )
 
 
-def pytest_configure(config: pytest.Config):
-    global _FAIL_INSTEAD_OF_SKIP
+def pytest_configure(config: pytest.Config) -> None:
+    global _FAIL_INSTEAD_OF_SKIP  # noqa: PLW0603
     _FAIL_INSTEAD_OF_SKIP = config.option.fail_if_missing
