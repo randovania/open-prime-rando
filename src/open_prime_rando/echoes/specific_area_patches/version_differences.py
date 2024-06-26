@@ -60,8 +60,7 @@ def path_of_eyes(editor: PatcherEditor, version: EchoesVersion):
         return
 
     LOG.warning(
-        "Path of Eyes version differences have not been patched! "
-        "Area collision edits are not yet implemented."
+        "Path of Eyes version differences have not been patched! " "Area collision edits are not yet implemented."
     )
 
 
@@ -78,7 +77,7 @@ def venomous_pond(editor: PatcherEditor, version: EchoesVersion):
         piggyplant.editor_properties.transform = Transform(
             position=Vector(17.589201, -148.844849, 37.929966),
             scale=Vector(1.5, 1.5, 1.5),
-            rotation=piggyplant.editor_properties.transform.rotation
+            rotation=piggyplant.editor_properties.transform.rotation,
         )
         piggyplant.collision_model = 0x8E4170D5
 

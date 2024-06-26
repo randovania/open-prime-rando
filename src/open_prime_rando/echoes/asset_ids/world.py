@@ -40,6 +40,7 @@ _DEDICATED_FILES = {
 
 def load_dedicated_file(world_name: str):
     import importlib
+
     return importlib.import_module(
         _DEDICATED_FILES[world_name],
         ".".join(__name__.split(".")[:-1]),
