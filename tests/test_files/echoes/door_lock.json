@@ -3326,5 +3326,10 @@
             "dark": "player2",
             "light": "player3"
         }
+    },
+    "tweaks": {
+        "TweakPlayer": {
+            "dark_world.damage_per_second.di_damage": 1
+        }
     }
 }
