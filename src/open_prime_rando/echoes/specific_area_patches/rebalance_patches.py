@@ -55,24 +55,12 @@ def landing_site(editor: PatcherEditor):
 
     # FIXME: use layers API
     area.get_layer("1st Pass - Intro Cinematic").active = not remove_intro
-    for layer_name in (
-        "Save Station Load",
-        "Ship Repair",
-        "Luminoth Key Bearer",
-        "WAR CHEST"
-    ):
+    for layer_name in ("Save Station Load", "Ship Repair", "Luminoth Key Bearer", "WAR CHEST"):
         area.get_layer(layer_name).active = remove_intro
 
     if remove_intro:
-        timer = area.get_layer("Default").add_instance_with(Timer(
-            time=0.01,
-            auto_start=True
-        ))
-        for inst in (
-            "Keep Samus Ship",
-            "Savestation Recharge Always Plays",
-            "Ambient Music Memory Relay"
-        ):
+        timer = area.get_layer("Default").add_instance_with(Timer(time=0.01, auto_start=True))
+        for inst in ("Keep Samus Ship", "Savestation Recharge Always Plays", "Ambient Music Memory Relay"):
             # TODO: unclear whether the timer is necessary, or if we can just activate these immediately
             timer.add_connection(State.Zero, Message.Activate, area.get_instance(inst))
 
@@ -84,8 +72,7 @@ def bionergy_production(editor: PatcherEditor):
     area = editor.get_area(AGON_WASTES_MLVL, agon_wastes.BIOENERGY_PRODUCTION_MREA)
 
     counter = area.get_instance("Dead Pirates")
-    counter.add_connection(State.MaxReached, Message.Deactivate,
-                           area.get_instance("Turn On Flying Pirates"))
+    counter.add_connection(State.MaxReached, Message.Deactivate, area.get_instance("Turn On Flying Pirates"))
 
 
 def _disable_layer_controllers(area: Area, layer_controllers: Iterable[InstanceRef]):
@@ -112,18 +99,20 @@ def remove_luminoth_barriers(editor: PatcherEditor):
 
     # Dark Torvus Energy Controller
     dark_torvus = editor.get_area(TORVUS_BOG_MLVL, torvus_bog.DARK_TORVUS_ENERGY_CONTROLLER_MREA)
-    _disable_layer_controllers(dark_torvus, (
-        "Increment - 0A_Swamp - Luminoth Barriers",
-        "Increment - 04_Swamp - Luminoth Barriers"
-    ))
+    _disable_layer_controllers(
+        dark_torvus, ("Increment - 0A_Swamp - Luminoth Barriers", "Increment - 04_Swamp - Luminoth Barriers")
+    )
 
     # Hive Energy Controller
     hive = editor.get_area(SANCTUARY_FORTRESS_MLVL, sanctuary_fortress.HIVE_ENERGY_CONTROLLER_MREA)
-    _disable_layer_controllers(hive, (
-        "Increment - 0P_Cliff - Luminoth Barriers",
-        "Increment - 0A_Cliff - Luminoth Barriers",
-        "Increment - 0Q_Cliff - Luminoth Barriers",
-    ))
+    _disable_layer_controllers(
+        hive,
+        (
+            "Increment - 0P_Cliff - Luminoth Barriers",
+            "Increment - 0A_Cliff - Luminoth Barriers",
+            "Increment - 0Q_Cliff - Luminoth Barriers",
+        ),
+    )
 
 
 def torvus_energy_controller(editor: PatcherEditor):
@@ -131,11 +120,14 @@ def torvus_energy_controller(editor: PatcherEditor):
     Don't remove the Torvus Temple fight.
     """
     area = editor.get_area(TORVUS_BOG_MLVL, torvus_bog.TORVUS_ENERGY_CONTROLLER_MREA)
-    _disable_layer_controllers(area, (
-        "DECREMENT 04_Swamp_Temple 1st Pass",
-        "Decrement - 04_Swamp_Temple - 1st Pass",
-        "Increment - 04_Swamp_Temple - 2ndPass"
-    ))
+    _disable_layer_controllers(
+        area,
+        (
+            "DECREMENT 04_Swamp_Temple 1st Pass",
+            "Decrement - 04_Swamp_Temple - 1st Pass",
+            "Increment - 04_Swamp_Temple - 2ndPass",
+        ),
+    )
 
 
 def hive_tunnel(editor: PatcherEditor):
@@ -156,7 +148,7 @@ def agon_temple(editor: PatcherEditor):
     """
     area = editor.get_area(AGON_WASTES_MLVL, agon_wastes.AGON_TEMPLE_MREA)
 
-    area.get_layer("Lock Doors").active = False # FIXME: use layers API
+    area.get_layer("Lock Doors").active = False  # FIXME: use layers API
 
 
 def temple_sanctuary(editor: PatcherEditor):
@@ -186,12 +178,14 @@ def main_reactor(editor: PatcherEditor):
     area = editor.get_area(AGON_WASTES_MLVL, agon_wastes.MAIN_REACTOR_MREA)
 
     layer_switcher = area.get_instance("Switch Layers To Post-Dark Samus")
-    layer_controller = area.get_layer("Default").add_instance_with(ScriptLayerController(
-        layer=LayerSwitch(
-            area_id=agon_wastes.BIOSTORAGE_STATION_INTERNAL_ID,
-            layer_number=3 # 1st Pass
+    layer_controller = area.get_layer("Default").add_instance_with(
+        ScriptLayerController(
+            layer=LayerSwitch(
+                area_id=agon_wastes.BIOSTORAGE_STATION_INTERNAL_ID,
+                layer_number=3,  # 1st Pass
+            )
         )
-    ))
+    )
     layer_switcher.add_connection(State.Zero, Message.Decrement, layer_controller)
 
 
@@ -224,10 +218,16 @@ def gfmc_compound(editor: PatcherEditor):
     area = editor.get_area(TEMPLE_GROUNDS_MLVL, temple_grounds.GFMC_COMPOUND_MREA)
 
     gate_instances = (
-        0x2b00db, 0x2b00dc, 0x2b00ff, 0x2b0101,
-        0x2b013c, 0x2b0238, 0x2b0288, 0x2b02e9,
+        0x2B00DB,
+        0x2B00DC,
+        0x2B00FF,
+        0x2B0101,
+        0x2B013C,
+        0x2B0238,
+        0x2B0288,
+        0x2B02E9,
     )
-    gate_instances += tuple(range(0x2b0277, 0x2b0287))
+    gate_instances += tuple(range(0x2B0277, 0x2B0287))
     for raw_id in gate_instances:
         # TODO: implement a function to move an instance from one layer to another in RDS
         inst_id = InstanceId(raw_id)
