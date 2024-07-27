@@ -1,4 +1,5 @@
 import dataclasses
+import json
 import uuid
 
 from ppc_asm.dol_file import DolFile
@@ -8,6 +9,7 @@ from open_prime_rando.dol_patching.echoes import dol_patches, dol_versions
 from open_prime_rando.dol_patching.echoes.beam_configuration import BeamAmmoConfiguration
 from open_prime_rando.dol_patching.echoes.user_preferences import OprEchoesUserPreferences
 
+import open_prime_rando.echoes_patcher
 
 @dataclasses.dataclass(frozen=True)
 class EchoesDolPatchesData:
@@ -68,4 +70,13 @@ def apply_patches(dol_file: DolFile, patches_data: EchoesDolPatchesData):
                                                dol_file)
         dol_patches.apply_map_door_changes(version.map_door_types, dol_file)
 
+        # dol_patches.apply_widescreen_hack(version, dol_file)
+
+
+def apply_widescreen_hack_patch(dol_file: DolFile, patches_data: EchoesDolPatchesData):
+    version = dol_version.find_version_for_dol(dol_file, dol_versions.ALL_VERSIONS)
+    assert isinstance(version, dol_patches.EchoesDolVersion)
+
+    dol_file.set_editable(True)
+    with dol_file:
         dol_patches.apply_widescreen_hack(version, dol_file)

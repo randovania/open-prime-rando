@@ -487,23 +487,22 @@ def apply_map_door_changes(door_symbols: MapDoorTypeAddresses, dol_file: DolFile
     dol_file.write("CTweakAutoMapper::GetDoorColor::DoorColorArray", DoorMapIcon.get_surface_colors_as_bytes())
 
 
-
 def apply_widescreen_hack(version: EchoesDolVersion, dol_file: DolFile):
     # Ported from gamemasterplc's 16:9 gecko code for NTSC-U
     description = str(version.description)
-    if description == "Gamecube NTSC":
-        print("Widescreen Hack: NTSC-U")
-        culling_replacement = 0x8030256C
-        culling_insertion = 0x80418E8C
-        viewport_replacement = 0x8036D684
-        viewport_insertion = 0x80003748
-    elif description == "Gamecube PAL":
-        culling_replacement = 0x803029E0
-        culling_insertion = 0x803c6c30
-        viewport_replacement = 0x8036DAA0
-        viewport_insertion = 0x803b1d60
-    else:
-        raise NotImplementedError()
+    match description:
+        case "Gamecube NTSC":
+            culling_replacement = 0x8030256C
+            culling_insertion = 0x80418E8C
+            viewport_replacement = 0x8036D684
+            viewport_insertion = 0x80003748
+        case "Gamecube PAL":
+            culling_replacement = 0x803029E0
+            culling_insertion = 0x803c6c30
+            viewport_replacement = 0x8036DAA0
+            viewport_insertion = 0x803b1d60
+        case _:
+            raise NotImplementedError()
 
     dol_file.write_instructions(culling_replacement, [bl(culling_insertion, relative=False)])
 
