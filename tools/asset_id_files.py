@@ -104,6 +104,7 @@ def create_asset_id_files(editor: PatcherEditor, output_path: Path):
         area_names = {}
         mapa_names = {}
         dock_names = {}
+        area_id_names = {}
 
         for area, mapa in zip(mlvl.raw.areas, mlvl.mapw.mapa_ids):
             try:
@@ -118,6 +119,7 @@ def create_asset_id_files(editor: PatcherEditor, output_path: Path):
             assert area_name not in area_names, area_name
             area_names[area_name] = area.area_mrea_id
             mapa_names[area_name] = mapa
+            area_id_names[area_name] = area.internal_area_id
             mrea = editor.get_file(area_names[area_name], type_hint=Mrea)
 
             docks = {}
@@ -136,6 +138,7 @@ def create_asset_id_files(editor: PatcherEditor, output_path: Path):
 
         world_file_body = generate_template(area_names, "_MREA")
         world_file_body += generate_template(mapa_names, "_MAPA")
+        world_file_body += generate_template(area_id_names, "_INTERNAL_ID")
         world_file_body += dock_name_templates(dock_names)
         output_path.joinpath(f"{filter_and_lower_name(world_name)}.py").write_text(world_file_body)
 

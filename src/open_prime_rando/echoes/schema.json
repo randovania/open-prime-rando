@@ -6,6 +6,11 @@
             "type": "string",
             "format": "uri"
         },
+        "legacy_compatibility": {
+            "type": "boolean",
+            "default": false,
+            "description": "Operate assuming that Claris' Randomizer was already used in the input files"
+        },
         "worlds": {
             "type": "object",
             "properties": {
@@ -49,10 +54,10 @@
         "area_patches": {
             "type": "object",
             "properties": {
-                "torvus_temple": {
+                "rebalance_world": {
                     "type": "boolean",
-                    "description": "Remove objects to minimize the chance of alloc failure",
-                    "default": false
+                    "description": "Apply patches that rebalance aspects of the game for a better rando experience",
+                    "default": true
                 }
             },
             "description": "Pre-written patches for specific areas",
