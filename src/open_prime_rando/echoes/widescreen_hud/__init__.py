@@ -1,4 +1,5 @@
 from retro_data_structures.base_resource import RawResource
+
 from open_prime_rando.echoes.custom_assets import custom_asset_path
 from open_prime_rando.echoes.widescreen_hud.asset_map import WIDESCREEN_HUD_ASSETS
 from open_prime_rando.patcher_editor import PatcherEditor

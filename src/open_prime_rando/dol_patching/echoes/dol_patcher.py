@@ -1,5 +1,4 @@
 import dataclasses
-import json
 import uuid
 
 from ppc_asm.dol_file import DolFile
@@ -9,7 +8,6 @@ from open_prime_rando.dol_patching.echoes import dol_patches, dol_versions
 from open_prime_rando.dol_patching.echoes.beam_configuration import BeamAmmoConfiguration
 from open_prime_rando.dol_patching.echoes.user_preferences import OprEchoesUserPreferences
 
-import open_prime_rando.echoes_patcher
 
 @dataclasses.dataclass(frozen=True)
 class EchoesDolPatchesData:
