@@ -7,10 +7,8 @@ from open_prime_rando.patcher_editor import PatcherEditor
 def apply_widescreen_hud(editor: PatcherEditor):
     if editor.does_asset_exists(0xEEF43AA1) and editor.does_asset_exists(0xF7EC0850):
         detectedversion = "ntscu"
-        print("Widescreen HUD: NTSC-U")
     elif editor.does_asset_exists(0xB5CF0C19) and editor.does_asset_exists(0xD9D58FA5):
         detectedversion = "pal"
-        print("Widescreen HUD: PAL")
     else:
         raise NotImplementedError()
 
@@ -25,5 +23,4 @@ def apply_widescreen_hud(editor: PatcherEditor):
                     type="FRME",
                     data=asset.read_bytes(),
                 )
-                print("Replacing: " + hex(asset_id) + " - " + str(filename))
                 editor.replace_asset(asset_id, res)
