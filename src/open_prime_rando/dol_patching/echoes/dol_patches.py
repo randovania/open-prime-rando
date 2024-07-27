@@ -487,7 +487,10 @@ def apply_map_door_changes(door_symbols: MapDoorTypeAddresses, dol_file: DolFile
     dol_file.write("CTweakAutoMapper::GetDoorColor::DoorColorArray", DoorMapIcon.get_surface_colors_as_bytes())
 
 
-def apply_widescreen_hack(version: EchoesDolVersion, dol_file: DolFile):
+def apply_widescreen_hack(version: EchoesDolVersion, dol_file: DolFile, enabled: bool):
+    if not enabled:
+        return
+
     # Ported from gamemasterplc's 16:9 gecko code for NTSC-U
     description = str(version.description)
     match description:
