@@ -70,8 +70,6 @@ def apply_patches(dol_file: DolFile, patches_data: EchoesDolPatchesData):
                                                dol_file)
         dol_patches.apply_map_door_changes(version.map_door_types, dol_file)
 
-        # dol_patches.apply_widescreen_hack(version, dol_file)
-
 
 def apply_widescreen_hack_patch(dol_file: DolFile, patches_data: EchoesDolPatchesData):
     version = dol_version.find_version_for_dol(dol_file, dol_versions.ALL_VERSIONS)

@@ -76,7 +76,7 @@
         "widescreen_hud": {
             "type": "boolean",
             "description": "Enable 16:9 widescreen HUD patch",
-            "default": true
+            "default": false
         },
         "cosmetics": {
             "type": "object",
