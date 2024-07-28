@@ -487,13 +487,15 @@ def apply_map_door_changes(door_symbols: MapDoorTypeAddresses, dol_file: DolFile
     dol_file.write("CTweakAutoMapper::GetDoorColor::DoorColorArray", DoorMapIcon.get_surface_colors_as_bytes())
 
 
-def apply_widescreen_hack(version: EchoesDolVersion, dol_file: DolFile, enabled: bool):
+def apply_widescreen_hack(version_description: str, dol_file: DolFile, enabled: bool):
+    """
+    Apply widescreen render hack to render the game in 16:9
+    """
     if not enabled:
         return
 
     # Ported from gamemasterplc's 16:9 gecko code for NTSC-U
-    description = str(version.description)
-    match description:
+    match version_description:
         case "Gamecube NTSC":
             culling_replacement = 0x8030256C
             culling_insertion = 0x80418E8C

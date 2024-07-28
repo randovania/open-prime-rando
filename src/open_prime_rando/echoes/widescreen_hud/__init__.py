@@ -6,6 +6,9 @@ from open_prime_rando.patcher_editor import PatcherEditor
 
 
 def apply_widescreen_hud(editor: PatcherEditor):
+    """
+    Replaces certain FRMEf files to adjust HUD/Visor widgets to better fit a 16:9 screen aspect ratio
+    """
     if editor.does_asset_exists(0xEEF43AA1) and editor.does_asset_exists(0xF7EC0850):
         detectedversion = "ntscu"
     elif editor.does_asset_exists(0xB5CF0C19) and editor.does_asset_exists(0xD9D58FA5):
