@@ -17,45 +17,45 @@ def create_parser():
     parser = argparse.ArgumentParser()
     parser.add_argument("--game", required=True, choices=sorted(_game_to_patcher.keys()))
     input_group = parser.add_mutually_exclusive_group(required=True)
-    input_group.add_argument("--input-paks", type=Path,
-                             help="Path to where the paks to randomize")
-    input_group.add_argument("--input-iso", type=Path,
-                             help="Path to a ISO to randomize")
-    parser.add_argument("--output-paks", required=True, type=Path,
-                        help="Path to where the modified paks will be written to.")
-    parser.add_argument("--input-json", type=Path, required=True,
-                        help="Path to the configuration json.")
+    input_group.add_argument("--input-paks", type=Path, help="Path to where the paks to randomize")
+    input_group.add_argument("--input-iso", type=Path, help="Path to a ISO to randomize")
+    parser.add_argument(
+        "--output-paks", required=True, type=Path, help="Path to where the modified paks will be written to."
+    )
+    parser.add_argument("--input-json", type=Path, required=True, help="Path to the configuration json.")
     return parser
 
 
 def setup_logging():
     handlers = {
-        'default': {
-            'level': 'DEBUG',
-            'formatter': 'default',
-            'class': 'logging.StreamHandler',
-            'stream': 'ext://sys.stdout',  # Default is stderr
+        "default": {
+            "level": "DEBUG",
+            "formatter": "default",
+            "class": "logging.StreamHandler",
+            "stream": "ext://sys.stdout",  # Default is stderr
         },
     }
-    logging.config.dictConfig({
-        'version': 1,
-        'formatters': {
-            'default': {
-                'format': '[%(asctime)s] [%(levelname)s] [%(name)s] %(funcName)s: %(message)s',
-            }
-        },
-        'handlers': handlers,
-        'disable_existing_loggers': False,
-        'loggers': {
-            'default': {
-                'level': 'DEBUG',
+    logging.config.dictConfig(
+        {
+            "version": 1,
+            "formatters": {
+                "default": {
+                    "format": "[%(asctime)s] [%(levelname)s] [%(name)s] %(funcName)s: %(message)s",
+                }
             },
-        },
-        'root': {
-            'level': 'DEBUG',
-            'handlers': list(handlers.keys()),
-        },
-    })
+            "handlers": handlers,
+            "disable_existing_loggers": False,
+            "loggers": {
+                "default": {
+                    "level": "DEBUG",
+                },
+            },
+            "root": {
+                "level": "DEBUG",
+                "handlers": list(handlers.keys()),
+            },
+        }
+    )
     logging.info("Hello world.")
 
 

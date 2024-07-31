@@ -1,4 +1,3 @@
-
 from construct import Container
 from retro_data_structures.base_resource import AssetId, RawResource
 from retro_data_structures.formats.cmdl import Cmdl
@@ -12,24 +11,19 @@ from open_prime_rando.patcher_editor import PatcherEditor
 
 def add_custom_models(editor: PatcherEditor):
     assets = custom_asset_path().joinpath("doors")
+
     def get_txtr(n: str, must_exist: bool = True) -> AssetId:
         f = assets.joinpath(n)
         if not must_exist and not f.exists():
             return None
-        res = RawResource(
-            type="TXTR",
-            data=f.read_bytes()
-        )
+        res = RawResource(type="TXTR", data=f.read_bytes())
         return editor.add_new_asset(n, res)
 
     greyscale_emissive = get_txtr("custom_door_lock_greyscale_emissive.TXTR")
     template = editor.get_parsed_asset(0xF115F575, type_hint=Cmdl)
 
     for door_type in DOCK_TYPES.values():
-        if not (
-            isinstance(door_type, dock_type.BlastShieldDoorType)
-            and isinstance(door_type.shield_model, str)
-        ):
+        if not (isinstance(door_type, dock_type.BlastShieldDoorType) and isinstance(door_type.shield_model, str)):
             continue
         name = door_type.shield_model
         txtr = get_txtr(f"custom_door_lock_{name}.TXTR")
@@ -43,8 +37,15 @@ def add_custom_models(editor: PatcherEditor):
         editor.add_new_asset(f"custom_door_lock_{name}.CMDL", Cmdl(cmdl, Game.ECHOES, editor))
 
 
-def apply_door_rando(editor: PatcherEditor, world_name: str, area_name: str, dock_name: str,
-                     new_door_type: str, old_door_type: str | None, low_memory: bool):
+def apply_door_rando(
+    editor: PatcherEditor,
+    world_name: str,
+    area_name: str,
+    dock_name: str,
+    new_door_type: str,
+    old_door_type: str | None,
+    low_memory: bool,
+):
     if old_door_type is not None:
         old_door = DOCK_TYPES[old_door_type]
 
