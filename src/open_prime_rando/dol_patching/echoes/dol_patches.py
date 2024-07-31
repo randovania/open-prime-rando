@@ -491,9 +491,6 @@ def apply_widescreen_hack(version_description: str, dol_file: DolFile, enabled: 
     """
     Apply widescreen render hack to render the game in 16:9
     """
-    if not enabled:
-        return
-
     # Ported from gamemasterplc's 16:9 gecko code for NTSC-U
     match version_description:
         case "Gamecube NTSC":
@@ -509,24 +506,33 @@ def apply_widescreen_hack(version_description: str, dol_file: DolFile, enabled: 
         case _:
             raise NotImplementedError()
 
-    dol_file.write_instructions(culling_replacement, [bl(culling_insertion, relative=False)])
+    if enabled:
+        dol_file.write_instructions(culling_replacement, [bl(culling_insertion, relative=False)])
+        dol_file.write_instructions(culling_insertion, [
+            lis(r14, 0x4000),
+            stw(r14, 0, r2),
+            lfs(f26, 0, r2),
+            blr()
+        ])
 
-    dol_file.write_instructions(culling_insertion, [
-        lis(r14, 0x4000),
-        stw(r14, 0, r2),
-        lfs(f26, 0, r2),
-        blr()
-    ])
+        dol_file.write_instructions(viewport_replacement, [b(viewport_insertion, relative=False)])
+        dol_file.write_instructions(viewport_insertion, [
+            lis(r14, 0x3FAA),
+            ori(r14, r14, 0xAAAB),
+            stw(r14, 0, r2),
+            lfs(f19, 0, r2),
+            fmuls(f9, f19, 0, f9),
+            fdivs(f11,f10, f9, 0),
+            b(viewport_replacement + 0x4, relative=False)
+        ])
 
-    dol_file.write_instructions(viewport_replacement, [b(viewport_insertion, relative=False)])
+        return
 
-    dol_file.write_instructions(viewport_insertion, [
-        lis(r14, 0x3FAA),
-        ori(r14, r14, 0xAAAB),
-        stw(r14, 0, r2),
-        lfs(f19, 0, r2),
-        fmuls(f9, f19, 0, f9),
-        fdivs(f11,f10, f9, 0),
-        b(viewport_replacement + 0x4, relative=False)
-    ])
+    # Restore vanilla behavior when widescreen hack is disabled
+    # To be removed when RDV is updated to no longer cache patched DOL files
+    dol_file.write(culling_replacement, [0xff, 0x40, 0x10, 0x90])
+    dol_file.write(culling_insertion, (b'\0' * 16))
+    dol_file.write(viewport_replacement, [0xed, 0x6a, 0x48, 0x24])
+    dol_file.write(viewport_insertion, (b'\0' * 28))
+
 
