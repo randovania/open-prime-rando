@@ -7,7 +7,7 @@ from retro_data_structures.game_check import Game
 from open_prime_rando.dol_patching import all_prime_dol_patches
 
 
-@pytest.fixture()
+@pytest.fixture
 def string_display() -> all_prime_dol_patches.StringDisplayPatchAddresses:
     return all_prime_dol_patches.StringDisplayPatchAddresses(
         update_hint_state=0x80038020,
@@ -18,7 +18,7 @@ def string_display() -> all_prime_dol_patches.StringDisplayPatchAddresses:
     )
 
 
-@pytest.fixture()
+@pytest.fixture
 def powerup_address() -> all_prime_dol_patches.PowerupFunctionsAddresses:
     return all_prime_dol_patches.PowerupFunctionsAddresses(
         add_power_up=0x800758F0,
