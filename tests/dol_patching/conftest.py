@@ -2,7 +2,7 @@ import pytest
 from ppc_asm.dol_file import _NUM_SECTIONS, DolFile, DolHeader, Section
 
 
-@pytest.fixture()
+@pytest.fixture
 def dol_file(tmp_path):
     section_size = 0x1C2
     sections = [Section(0, 0, 0)] * _NUM_SECTIONS

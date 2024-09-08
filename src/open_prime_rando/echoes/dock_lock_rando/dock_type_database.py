@@ -9,8 +9,8 @@ from open_prime_rando.echoes.dock_lock_rando.map_icons import DoorMapIcon
 from open_prime_rando.echoes.vulnerabilities import normal_vuln, resist_all_vuln, vulnerable, vulnerable_no_splash
 
 normal_door_model = 0x6B78FD92
-dark_door_model = 0xbbcf134d
-annihilator_door_model = 0xa50c7238
+dark_door_model = 0xBBCF134D
+annihilator_door_model = 0xA50C7238
 
 blast_collision_box = Vector(0.35, 5.0, 4.0)
 blast_collision_offset = Vector(-2 / 3, 0, 2.0)
@@ -24,49 +24,49 @@ DOCK_TYPES: dict[str, dock_type.DoorType] = {
     ),
     "Dark": dock_type.NormalDoorType(
         name="Dark",
-        vulnerability=dataclasses.replace(resist_all_vuln, dark=vulnerable, entangler=vulnerable,
-                                          black_hole=vulnerable),
+        vulnerability=dataclasses.replace(
+            resist_all_vuln, dark=vulnerable, entangler=vulnerable, black_hole=vulnerable
+        ),
         shell_model=dark_door_model,
         shell_color=Color(1, 1, 1, 1),
         scan_text=(
             "There is a Blast Shield on the door blocking access. ",
-            "Analysis indicates that the Blast Shield is invulnerable to most weapons. Dark energy may damage it."
+            "Analysis indicates that the Blast Shield is invulnerable to most weapons. Dark energy may damage it.",
         ),
-        map_icon=DoorMapIcon.Dark
+        map_icon=DoorMapIcon.Dark,
     ),
     "Light": dock_type.NormalDoorType(
         name="Light",
-        vulnerability=dataclasses.replace(resist_all_vuln, light=vulnerable, light_blast=vulnerable,
-                                          sunburst=vulnerable),
+        vulnerability=dataclasses.replace(
+            resist_all_vuln, light=vulnerable, light_blast=vulnerable, sunburst=vulnerable
+        ),
         shell_color=Color(1, 1, 1, 1),
         scan_text=(
             "There is a Blast Shield on the door blocking access. ",
-            "Analysis indicates that the Blast Shield is invulnerable to most weapons. Light energy may damage it."
+            "Analysis indicates that the Blast Shield is invulnerable to most weapons. Light energy may damage it.",
         ),
-        map_icon=DoorMapIcon.Light
+        map_icon=DoorMapIcon.Light,
     ),
     "Annihilator": dock_type.NormalDoorType(
         name="Annihilator",
-        vulnerability=dataclasses.replace(resist_all_vuln, annihilator=vulnerable, sonic_boom=vulnerable,
-                                          imploder=vulnerable),
+        vulnerability=dataclasses.replace(
+            resist_all_vuln, annihilator=vulnerable, sonic_boom=vulnerable, imploder=vulnerable
+        ),
         shell_model=annihilator_door_model,
         shell_color=Color(1, 1, 1, 1),
         scan_text=(
             "There is a Blast Shield on the door blocking access. ",
             "Analysis indicates that the Blast Shield is invulnerable to most weapons. "
-            "A mix of light and dark energy may damage it."
+            "A mix of light and dark energy may damage it.",
         ),
-        map_icon=DoorMapIcon.Annihilator
+        map_icon=DoorMapIcon.Annihilator,
     ),
     "Disabled": dock_type.NormalDoorType(
         name="Disabled",
         vulnerability=resist_all_vuln,
         shell_color=Color(0, 0, 0, 0),
-        scan_text=(
-            "Door system access denied.",
-            "Unable to bypass security codes. Seek an alternate exit."
-        ),
-        map_icon=DoorMapIcon.Disabled
+        scan_text=("Door system access denied.", "Unable to bypass security codes. Seek an alternate exit."),
+        map_icon=DoorMapIcon.Disabled,
     ),
     "Missile": dock_type.VanillaBlastShieldDoorType(
         name="Missile",
@@ -74,7 +74,7 @@ DOCK_TYPES: dict[str, dock_type.DoorType] = {
         shell_color=Color(1, 0, 0, 1),
         scan_text=(
             "There is a Blast Shield on the door blocking access. ",
-            "Analysis indicates that the Blast Shield is invulnerable to most weapons. A Missile blast may damage it."
+            "Analysis indicates that the Blast Shield is invulnerable to most weapons. A Missile blast may damage it.",
         ),
         map_icon=DoorMapIcon.Missile,
         shield_model=0xBFB4A8EE,
@@ -86,7 +86,7 @@ DOCK_TYPES: dict[str, dock_type.DoorType] = {
         scan_text=(
             "There is a Blast Shield on the door blocking access. ",
             "Analysis indicates that the Blast Shield is invulnerable to most weapons. "
-            "A Super Missile blast may damage it."
+            "A Super Missile blast may damage it.",
         ),
         map_icon=DoorMapIcon.SuperMissile,
         shield_model=0xF115F575,
@@ -97,7 +97,7 @@ DOCK_TYPES: dict[str, dock_type.DoorType] = {
         shell_color=Color(1, 0.94, 0, 1),
         scan_text=(
             "There is a Blast Shield on the door blocking access. ",
-            "Analysis indicates that the Blast Shield is invulnerable to most weapons. A Power Bomb may damage it."
+            "Analysis indicates that the Blast Shield is invulnerable to most weapons. A Power Bomb may damage it.",
         ),
         map_icon=DoorMapIcon.PowerBomb,
         shield_model=0xC2E4F075,
@@ -109,7 +109,7 @@ DOCK_TYPES: dict[str, dock_type.DoorType] = {
         scan_text=(
             "There is a Blast Shield on the door blocking access. ",
             "Analysis indicates that the Blast Shield is invulnerable to most weapons. "
-            "Five simultaneous Missile blasts may damage it."
+            "Five simultaneous Missile blasts may damage it.",
         ),
         map_icon=DoorMapIcon.SeekerMissile,
         shield_model=0x56F4208B,
@@ -121,7 +121,7 @@ DOCK_TYPES: dict[str, dock_type.DoorType] = {
         shell_color=Color(0.93, 0.58, 0.83, 1),
         scan_text=(
             "There is a Blast Shield on the door blocking access. ",
-            "Analysis indicates that the Blast Shield is invulnerable to most weapons. The Screw Attack may damage it."
+            "Analysis indicates that the Blast Shield is invulnerable to most weapons. The Screw Attack may damage it.",
         ),
         map_icon=DoorMapIcon.ScrewAttack,
         shield_model="screw_attack",
@@ -130,27 +130,23 @@ DOCK_TYPES: dict[str, dock_type.DoorType] = {
         name="Bomb",
         vulnerability=dataclasses.replace(resist_all_vuln, bomb=vulnerable),
         shell_model=normal_door_model,
-        shell_color=Color(1/3, 1/3, 0.5, 1),
+        shell_color=Color(1 / 3, 1 / 3, 0.5, 1),
         scan_text=(
             "There is a Blast Shield on the door blocking access. ",
             "Analysis indicates that the Blast Shield is invulnerable to most weapons. "
-            "A Morph Ball Bomb blast may damage it."
+            "A Morph Ball Bomb blast may damage it.",
         ),
         map_icon=DoorMapIcon.Bomb,
         shield_model="morph_ball_bombs",
     ),
     "Boost": dock_type.BlastShieldDoorType(
         name="Boost",
-        vulnerability=dataclasses.replace(
-            resist_all_vuln,
-            boost_ball=vulnerable,
-            cannon_ball=vulnerable_no_splash
-        ),
+        vulnerability=dataclasses.replace(resist_all_vuln, boost_ball=vulnerable, cannon_ball=vulnerable_no_splash),
         shell_model=normal_door_model,
-        shell_color=Color(1, 1/3, 0, 1),
+        shell_color=Color(1, 1 / 3, 0, 1),
         scan_text=(
             "There is a Blast Shield on the door blocking access. ",
-            "Analysis indicates that the Blast Shield is invulnerable to most weapons. The Boost Ball may damage it."
+            "Analysis indicates that the Blast Shield is invulnerable to most weapons. The Boost Ball may damage it.",
         ),
         map_icon=DoorMapIcon.Boost,
         shield_model="boost_ball",
@@ -163,7 +159,7 @@ DOCK_TYPES: dict[str, dock_type.DoorType] = {
         scan_text=(
             "There is a Blast Shield on the door blocking access. ",
             "Analysis indicates that the Blast Shield is invulnerable to weapon fire, but is weakly secured. "
-            "The Grapple Beam may be able to remove it."
+            "The Grapple Beam may be able to remove it.",
         ),
         map_icon=DoorMapIcon.Grapple,
         shield_model=0x56F4208B,
@@ -176,7 +172,7 @@ DOCK_TYPES: dict[str, dock_type.DoorType] = {
         scan_text=(
             "There is a Blast Shield on the door blocking access. ",
             "Analysis indicates that the Blast Shield is invulnerable to most weapons. "
-            "A massive burst of dark energy may damage it."
+            "A massive burst of dark energy may damage it.",
         ),
         map_icon=DoorMapIcon.Dark,
         shield_model="darkburst",
@@ -189,7 +185,7 @@ DOCK_TYPES: dict[str, dock_type.DoorType] = {
         scan_text=(
             "There is a Blast Shield on the door blocking access. ",
             "Analysis indicates that the Blast Shield is invulnerable to most weapons. "
-            "A massive burst of light energy may damage it."
+            "A massive burst of light energy may damage it.",
         ),
         map_icon=DoorMapIcon.Light,
         shield_model="sunburst",
@@ -202,7 +198,7 @@ DOCK_TYPES: dict[str, dock_type.DoorType] = {
         scan_text=(
             "There is a Blast Shield on the door blocking access. ",
             "Analysis indicates that the Blast Shield is invulnerable to most weapons. "
-            "A massive burst of light and dark energy may damage it."
+            "A massive burst of light and dark energy may damage it.",
         ),
         map_icon=DoorMapIcon.Annihilator,
         shield_model="sonic_boom",
@@ -213,10 +209,11 @@ DOCK_TYPES: dict[str, dock_type.DoorType] = {
         shell_color=Color(0.64, 0.34, 0, 1),
         scan_text=(
             "There is a Luminoth barrier on the door blocking access. ",
-            "Analysis indicates that the barrier is linked to the energy of Agon. Return the energy to the Agon Temple."
+            "Analysis indicates that the barrier is linked to the energy of Agon. "
+            "Return the energy to the Agon Temple.",
         ),
         map_icon=DoorMapIcon.AgonEnergy,
-        planetary_energy_item_id=-1  # TODO
+        planetary_energy_item_id=-1,  # TODO
     ),
     "TorvusEnergy": dock_type.PlanetaryEnergyDoorType(
         name="TorvusEnergy",
@@ -225,10 +222,10 @@ DOCK_TYPES: dict[str, dock_type.DoorType] = {
         scan_text=(
             "There is a Luminoth barrier on the door blocking access. ",
             "Analysis indicates that the barrier is linked to the energy of Torvus. "
-            "Return the energy to the Torvus Temple."
+            "Return the energy to the Torvus Temple.",
         ),
         map_icon=DoorMapIcon.TorvusEnergy,
-        planetary_energy_item_id=-1  # TODO
+        planetary_energy_item_id=-1,  # TODO
     ),
     "SanctuaryEnergy": dock_type.PlanetaryEnergyDoorType(
         name="SanctuaryEnergy",
@@ -237,20 +234,20 @@ DOCK_TYPES: dict[str, dock_type.DoorType] = {
         scan_text=(
             "There is a Luminoth barrier on the door blocking access. ",
             "Analysis indicates that the barrier is linked to the energy of Sanctuary. "
-            "Return the energy to the Sanctuary Temple."
+            "Return the energy to the Sanctuary Temple.",
         ),
         map_icon=DoorMapIcon.AgonEnergy,
-        planetary_energy_item_id=-1  # TODO
+        planetary_energy_item_id=-1,  # TODO
     ),
     "EchoVisor": dock_type.EchoVisorDoorType(
         name="EchoVisor",
         vulnerability=normal_vuln,
         shell_model=dark_door_model,
-        shell_color=Color(1/16, 1/16, 1/16, 1),
+        shell_color=Color(1 / 16, 1 / 16, 1 / 16, 1),
         scan_text=(
             "There is a Blast Shield on the door blocking access. ",
             "Sonic detection gear needed to interface with this system. "
-            "Neutralizing the control emitter may disable it."
+            "Neutralizing the control emitter may disable it.",
         ),
         map_icon=DoorMapIcon.EchoVisor,
         shield_model="echo_visor",
@@ -265,7 +262,7 @@ DOCK_TYPES: dict[str, dock_type.DoorType] = {
         scan_text=(
             "There is a Blast Shield on the door blocking access. ",
             "Scans indicate presence of a control system. "
-            "Interface method unknown. Control units not present in the visible spectrum or current timespace. "
+            "Interface method unknown. Control units not present in the visible spectrum or current timespace. ",
         ),
         map_icon=DoorMapIcon.DarkVisor,
         shield_model="dark_visor",
@@ -274,15 +271,12 @@ DOCK_TYPES: dict[str, dock_type.DoorType] = {
     ),
     "Cannon": dock_type.BlastShieldDoorType(
         name="Cannon",
-        vulnerability=dataclasses.replace(
-            resist_all_vuln,
-            cannon_ball=vulnerable_no_splash
-        ),
+        vulnerability=dataclasses.replace(resist_all_vuln, cannon_ball=vulnerable_no_splash),
         shell_model=normal_door_model,
-        shell_color=Color(1, 1/3, 0, 1),
+        shell_color=Color(1, 1 / 3, 0, 1),
         scan_text=(
             "There is a Blast Shield on the door blocking access. ",
-            "Analysis indicates that the Blast Shield is invulnerable to most weapons. The Cannon Ball may damage it."
+            "Analysis indicates that the Blast Shield is invulnerable to most weapons. The Cannon Ball may damage it.",
         ),
         map_icon=DoorMapIcon.Boost,
         shield_model="cannon_ball",
@@ -301,10 +295,10 @@ DOCK_TYPES: dict[str, dock_type.DoorType] = {
         scan_text=(
             "There is a Blast Shield on the door blocing access. ",
             "Analysis indicates that the Blast Shield is invulnerable to normal beam fire. "
-            "The Charge Beam may damage it."
+            "The Charge Beam may damage it.",
         ),
         map_icon=DoorMapIcon.Normal,
-        shield_model="charge_beam"
+        shield_model="charge_beam",
     ),
     "Power": dock_type.NormalDoorType(
         name="Power",
@@ -313,8 +307,8 @@ DOCK_TYPES: dict[str, dock_type.DoorType] = {
         scan_text=(
             "There is a Blast Shield on the door blocking access. ",
             "Analysis indicates that the Blast Shield is invulnerable to light and dark energy. "
-            "The Power Beam may damage it."
+            "The Power Beam may damage it.",
         ),
-        map_icon=DoorMapIcon.PowerBomb # TODO: give it its own?
-    )
+        map_icon=DoorMapIcon.PowerBomb,  # TODO: give it its own?
+    ),
 }

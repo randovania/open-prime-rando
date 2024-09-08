@@ -17,15 +17,27 @@ from open_prime_rando.patcher_editor import PatcherEditor
 
 RUBIKS_CUBES = {
     "Puzzle 1": [
-        0x240013, 0x2401A4, 0x240145,
-        0x24010A, 0x24000E, 0x240192,
-        0x240139, 0x24013A, 0x240148,
+        0x240013,
+        0x2401A4,
+        0x240145,
+        0x24010A,
+        0x24000E,
+        0x240192,
+        0x240139,
+        0x24013A,
+        0x240148,
     ],
     "Puzzle 2": [
-        0x2402BA, 0x2402AD, 0x2402A6,
-        0x2401C6, 0x2401BE, 0x2401C0,
-        0x24028B, 0x2401C3, 0x240290,
-    ]
+        0x2402BA,
+        0x2402AD,
+        0x2402A6,
+        0x2401C6,
+        0x2401BE,
+        0x2401C0,
+        0x24028B,
+        0x2401C3,
+        0x240290,
+    ],
 }
 
 
@@ -66,7 +78,7 @@ COLORS = {
         state=State.InternalState02,
         cmdl=0x8F25F715,
         old_txtr=0xFED23B81,
-    )
+    ),
 }
 
 
@@ -88,9 +100,15 @@ def randomize_rubiks_puzzles(editor: PatcherEditor, rng: random.Random):
 
     for puzzle_name, cubes in RUBIKS_CUBES.items():
         solution = [
-            COLORS["RED"], COLORS["RED"], COLORS["RED"],
-            COLORS["GREEN"], COLORS["GREEN"], COLORS["GREEN"],
-            COLORS["BLUE"], COLORS["BLUE"], COLORS["BLUE"],
+            COLORS["RED"],
+            COLORS["RED"],
+            COLORS["RED"],
+            COLORS["GREEN"],
+            COLORS["GREEN"],
+            COLORS["GREEN"],
+            COLORS["BLUE"],
+            COLORS["BLUE"],
+            COLORS["BLUE"],
         ]
         rng.shuffle(solution)
 
@@ -150,40 +168,28 @@ def patch_upstairs_puzzle_transform(editor: PatcherEditor):
     big_lasers = {
         # red in
         0x2401C1: Transform(
-            position=Vector(60.9426, 250.63, 12.0627),
-            rotation=Vector(0.0, 0.1, 164.48),
-            scale=Vector(0.9, 1.0, 1.0)
+            position=Vector(60.9426, 250.63, 12.0627), rotation=Vector(0.0, 0.1, 164.48), scale=Vector(0.9, 1.0, 1.0)
         ),
         # red out
         0x24028A: Transform(
-            position=Vector(76.1287, 250.63, 12.0627),
-            rotation=Vector(0.0, -0.7, -164.08),
-            scale=Vector(0.9, 1.0, 1.0)
+            position=Vector(76.1287, 250.63, 12.0627), rotation=Vector(0.0, -0.7, -164.08), scale=Vector(0.9, 1.0, 1.0)
         ),
         # green in
         0x2401C2: Transform(
-            position=Vector(60.342598, 250.13, 12.3027),
-            rotation=Vector(0.0, 0.5, -187.5),
-            scale=Vector(1.0, 1.0, 1.0)
+            position=Vector(60.342598, 250.13, 12.3027), rotation=Vector(0.0, 0.5, -187.5), scale=Vector(1.0, 1.0, 1.0)
         ),
         # green out
         0x2402BB: Transform(
-            position=Vector(76.62867, 250.11, 12.2827),
-            rotation=Vector(0.0, -0.5, 188.0),
-            scale=Vector(0.9, 1.0, 1.0)
+            position=Vector(76.62867, 250.11, 12.2827), rotation=Vector(0.0, -0.5, 188.0), scale=Vector(0.9, 1.0, 1.0)
         ),
         # blue in
         0x24028F: Transform(
-            position=Vector(60.142597, 249.51, 12.5127),
-            rotation=Vector(0.0, 0.5, -180.0),
-            scale=Vector(1.0, 1.0, 1.0)
+            position=Vector(60.142597, 249.51, 12.5127), rotation=Vector(0.0, 0.5, -180.0), scale=Vector(1.0, 1.0, 1.0)
         ),
         # blue out
         0x2402B6: Transform(
-            position=Vector(77.1287, 249.51, 12.5127),
-            rotation=Vector(0.0, -0.5, -180.0),
-            scale=Vector(1.0, 1.0, 1.0)
-        )
+            position=Vector(77.1287, 249.51, 12.5127), rotation=Vector(0.0, -0.5, -180.0), scale=Vector(1.0, 1.0, 1.0)
+        ),
     }
 
     for laser_id, transform in big_lasers.items():

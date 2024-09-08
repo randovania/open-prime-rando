@@ -14,7 +14,7 @@ def apply_custom_suits(editor: PatcherEditor, configuration: dict):
         for asset_id, filename in assets.items():
             asset = custom_suit_assets.joinpath(filename)
             if not asset.exists():
-                continue # some skins leave a few assets vanilla
+                continue  # some skins leave a few assets vanilla
 
             res = RawResource(
                 type="TXTR",
