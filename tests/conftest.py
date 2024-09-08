@@ -56,7 +56,7 @@ def raw_prime2_editor(prime2_iso_provider: IsoFileProvider) -> PatcherEditor:
     return PatcherEditor(prime2_iso_provider, game=Game.ECHOES)
 
 
-@pytest.fixture()
+@pytest.fixture
 def prime2_editor(raw_prime2_editor: PatcherEditor):
     editor = raw_prime2_editor
     yield editor
