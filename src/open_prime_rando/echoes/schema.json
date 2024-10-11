@@ -130,7 +130,8 @@
                 {
                     "TweakPlayer": {
                         "collision.ball_radius": 0.5,
-                        "dark_world.damage_per_second.di_damage": 1
+                        "dark_world.damage_per_second.di_damage": 1,
+                        "dark_world.unknown_0x19275a97": 0.5
                     }
                 }
             ]
