@@ -105,7 +105,7 @@ jobs:
 
       - name: Run Tests
         run:
-          venv/bin/python -m pytest --cov src --cov-report=xml --durations=100
+          venv/bin/python -m pytest --cov src --cov-report=xml --durations=100 -n 4
 
       - name: codecov
         uses: codecov/codecov-action@v4

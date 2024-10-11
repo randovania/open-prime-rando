@@ -1,5 +1,6 @@
 import json
 import logging
+import typing
 from collections.abc import Callable
 from pathlib import Path
 from typing import TYPE_CHECKING
@@ -124,6 +125,30 @@ Randomizer ISO and must be deleted.""",
     table.set_string(name_to_index["ChoiceDeleteCorruptedFile"], "Delete Incompatible File")
 
 
+def apply_tweak_edits(editor: PatcherEditor, tweak_edits: dict[str, dict[str, typing.Any]]) -> None:
+    """
+    Edits the tweaks based on the generic schema api
+    :param editor:
+    :param tweak_edits:
+    :return:
+    """
+    for instance in editor.tweaks.instances:
+        properties = instance.get_properties().to_json()
+        if properties["instance_name"] in tweak_edits:
+            logging.debug("Editing %s", properties["instance_name"])
+
+            for name, value in tweak_edits[properties["instance_name"]].items():
+                parent = properties
+                spit_name = name.split(".")
+
+                for part in spit_name[:-1]:
+                    parent = parent[part]
+
+                parent[spit_name[-1]] = value
+
+            instance.set_properties(instance.type.from_json(properties))
+
+
 def patch_paks(
     file_provider: FileProvider,
     output_path: Path,
@@ -154,6 +179,10 @@ def patch_paks(
     specific_area_patches.specific_patches(editor, configuration["area_patches"], legacy_compatibility)
     apply_small_randomizations(editor, configuration["small_randomizations"])
     apply_corrupted_memory_card_change(editor)
+
+    if "tweaks" in configuration:
+        status_update("Modifying tweaks", 0)
+        apply_tweak_edits(editor, configuration["tweaks"])
 
     status_update("Modifying areas", 0)
     apply_area_modifications(editor, configuration["worlds"], status_update)
