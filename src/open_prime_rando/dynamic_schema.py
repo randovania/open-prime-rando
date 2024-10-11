@@ -17,10 +17,7 @@ def expand_schema(base_schema: dict, editor: PatcherEditor) -> dict:
         world_def["properties"]["areas"] = {"type": "object", "additionalProperties": False, "properties": area_props}
 
         world_details = open_prime_rando.echoes.asset_ids.world.load_dedicated_file(world)
-        mrea_to_name: dict[int, str] = {
-            mrea: name
-            for name, mrea in world_details.NAME_TO_ID_MREA.items()
-        }
+        mrea_to_name: dict[int, str] = {mrea: name for name, mrea in world_details.NAME_TO_ID_MREA.items()}
 
         for area in mlvl.areas:
             area_name = mrea_to_name[area.mrea_asset_id]
@@ -39,10 +36,7 @@ def expand_schema(base_schema: dict, editor: PatcherEditor) -> dict:
 
             area_def["properties"]["layers"] = {
                 "type": "object",
-                "properties": {
-                    layer.name: {"type": "boolean"}
-                    for layer in area.layers
-                },
+                "properties": {layer.name: {"type": "boolean"} for layer in area.layers},
                 "default": {},
                 "additionalProperties": False,
             }

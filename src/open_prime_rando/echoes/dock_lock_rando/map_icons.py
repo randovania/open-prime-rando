@@ -38,7 +38,7 @@ class DoorMapIcon(IntEnum):
 
     @property
     def colors(self) -> DoorIconColors:
-        return _ALL_COLORS.get(self, DoorIconColors(0xff00ffff))
+        return _ALL_COLORS.get(self, DoorIconColors(0xFF00FFFF))
 
     @staticmethod
     def get_surface_colors_as_bytes() -> bytes:
@@ -51,27 +51,23 @@ class DoorMapIcon(IntEnum):
 
 
 _ALL_COLORS = {
-    DoorMapIcon.Normal: DoorIconColors(0x3379bfff),
-    DoorMapIcon.Missile: DoorIconColors(0xd63333ff),
-    DoorMapIcon.Dark: DoorIconColors(0x000000ff, 0x898989ff),
-    DoorMapIcon.Annihilator: DoorIconColors(0x4b4b4bff),
-    DoorMapIcon.Light: DoorIconColors(0xffffffff),
-    DoorMapIcon.SuperMissile: DoorIconColors(0x50a148ff),
-    DoorMapIcon.SeekerMissile: DoorIconColors(0x794f77ff),
-    DoorMapIcon.PowerBomb: DoorIconColors(0xeae50bff),
-
-    DoorMapIcon.AgonEnergy: DoorIconColors(0xa45600ff),
-    DoorMapIcon.TorvusEnergy: DoorIconColors(0x4e9761ff),
-    DoorMapIcon.SanctuaryEnergy: DoorIconColors(0x56789dff),
-
-    DoorMapIcon.ScanVisor: DoorIconColors(0x007f7fff),
-    DoorMapIcon.DarkVisor: DoorIconColors(0x660000ff),
-    DoorMapIcon.EchoVisor: DoorIconColors(0xcc7a00ff),
-
-    DoorMapIcon.ScrewAttack: DoorIconColors(0xed94d4ff),
-    DoorMapIcon.Bomb: DoorIconColors(0x55557fff),
-    DoorMapIcon.Boost: DoorIconColors(0xff5500ff),
+    DoorMapIcon.Normal: DoorIconColors(0x3379BFFF),
+    DoorMapIcon.Missile: DoorIconColors(0xD63333FF),
+    DoorMapIcon.Dark: DoorIconColors(0x000000FF, 0x898989FF),
+    DoorMapIcon.Annihilator: DoorIconColors(0x4B4B4BFF),
+    DoorMapIcon.Light: DoorIconColors(0xFFFFFFFF),
+    DoorMapIcon.SuperMissile: DoorIconColors(0x50A148FF),
+    DoorMapIcon.SeekerMissile: DoorIconColors(0x794F77FF),
+    DoorMapIcon.PowerBomb: DoorIconColors(0xEAE50BFF),
+    DoorMapIcon.AgonEnergy: DoorIconColors(0xA45600FF),
+    DoorMapIcon.TorvusEnergy: DoorIconColors(0x4E9761FF),
+    DoorMapIcon.SanctuaryEnergy: DoorIconColors(0x56789DFF),
+    DoorMapIcon.ScanVisor: DoorIconColors(0x007F7FFF),
+    DoorMapIcon.DarkVisor: DoorIconColors(0x660000FF),
+    DoorMapIcon.EchoVisor: DoorIconColors(0xCC7A00FF),
+    DoorMapIcon.ScrewAttack: DoorIconColors(0xED94D4FF),
+    DoorMapIcon.Bomb: DoorIconColors(0x55557FFF),
+    DoorMapIcon.Boost: DoorIconColors(0xFF5500FF),
     # DoorMapIcon.Grapple: None,
-
-    DoorMapIcon.Disabled: DoorIconColors(0x202020ff),
+    DoorMapIcon.Disabled: DoorIconColors(0x202020FF),
 }
