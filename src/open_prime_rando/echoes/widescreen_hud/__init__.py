@@ -14,7 +14,7 @@ def apply_widescreen_hud(editor: PatcherEditor):
     elif editor.does_asset_exists(0xB5CF0C19) and editor.does_asset_exists(0xD9D58FA5):
         detectedversion = "pal"
     else:
-        raise NotImplementedError()
+        raise NotImplementedError
 
     for assetversion, assets in WIDESCREEN_HUD_ASSETS.items():
         if detectedversion == assetversion:

@@ -515,39 +515,35 @@ def apply_widescreen_hack(version_description: str, dol_file: DolFile, enabled: 
             viewport_insertion = 0x80003748
         case "Gamecube PAL":
             culling_replacement = 0x803029E0
-            culling_insertion = 0x803c6c30
+            culling_insertion = 0x803C6C30
             viewport_replacement = 0x8036DAA0
-            viewport_insertion = 0x803b1d60
+            viewport_insertion = 0x803B1D60
         case _:
-            raise NotImplementedError()
+            raise NotImplementedError
 
     if enabled:
         dol_file.write_instructions(culling_replacement, [bl(culling_insertion, relative=False)])
-        dol_file.write_instructions(culling_insertion, [
-            lis(r14, 0x4000),
-            stw(r14, 0, r2),
-            lfs(f26, 0, r2),
-            blr()
-        ])
+        dol_file.write_instructions(culling_insertion, [lis(r14, 0x4000), stw(r14, 0, r2), lfs(f26, 0, r2), blr()])
 
         dol_file.write_instructions(viewport_replacement, [b(viewport_insertion, relative=False)])
-        dol_file.write_instructions(viewport_insertion, [
-            lis(r14, 0x3FAA),
-            ori(r14, r14, 0xAAAB),
-            stw(r14, 0, r2),
-            lfs(f19, 0, r2),
-            fmuls(f9, f19, 0, f9),
-            fdivs(f11,f10, f9, 0),
-            b(viewport_replacement + 0x4, relative=False)
-        ])
+        dol_file.write_instructions(
+            viewport_insertion,
+            [
+                lis(r14, 0x3FAA),
+                ori(r14, r14, 0xAAAB),
+                stw(r14, 0, r2),
+                lfs(f19, 0, r2),
+                fmuls(f9, f19, 0, f9),
+                fdivs(f11, f10, f9, 0),
+                b(viewport_replacement + 0x4, relative=False),
+            ],
+        )
 
         return
 
     # Restore vanilla behavior when widescreen hack is disabled
     # To be removed when RDV is updated to no longer cache patched DOL files
-    dol_file.write(culling_replacement, [0xff, 0x40, 0x10, 0x90])
-    dol_file.write(culling_insertion, (b'\0' * 16))
-    dol_file.write(viewport_replacement, [0xed, 0x6a, 0x48, 0x24])
-    dol_file.write(viewport_insertion, (b'\0' * 28))
-
-
+    dol_file.write(culling_replacement, [0xFF, 0x40, 0x10, 0x90])
+    dol_file.write(culling_insertion, (b"\0" * 16))
+    dol_file.write(viewport_replacement, [0xED, 0x6A, 0x48, 0x24])
+    dol_file.write(viewport_insertion, (b"\0" * 28))

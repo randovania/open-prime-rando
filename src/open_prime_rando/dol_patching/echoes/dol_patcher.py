@@ -34,7 +34,7 @@ class EchoesDolPatchesData:
             unvisited_room_names=data["unvisited_room_names"],
             teleporter_sounds=data["teleporter_sounds"],
             dangerous_energy_tank=data["dangerous_energy_tank"],
-            widescreen_hack=data["widescreen_hack"]
+            widescreen_hack=data["widescreen_hack"],
         )
 
 
@@ -72,4 +72,3 @@ def apply_patches(dol_file: DolFile, patches_data: EchoesDolPatchesData):
 
         dol_patches.apply_map_door_changes(version.map_door_types, dol_file)
         dol_patches.apply_widescreen_hack(version.description, dol_file, patches_data.widescreen_hack)
-
