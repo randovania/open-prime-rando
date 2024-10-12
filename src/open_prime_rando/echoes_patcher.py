@@ -1,11 +1,11 @@
-
 import json
 import logging
+import typing
 from collections.abc import Callable
 from pathlib import Path
+from typing import TYPE_CHECKING
 
 from retro_data_structures.asset_manager import FileProvider
-from retro_data_structures.formats.mrea import Area
 from retro_data_structures.formats.strg import Strg
 from retro_data_structures.game_check import Game
 
@@ -20,6 +20,9 @@ from open_prime_rando.echoes.widescreen_hud import apply_widescreen_hud
 from open_prime_rando.patcher_editor import PatcherEditor
 from open_prime_rando.validator_with_default import DefaultValidatingDraft7Validator
 
+if TYPE_CHECKING:
+    from retro_data_structures.formats.mrea import Area
+
 LOG = logging.getLogger("echoes_patcher")
 
 
@@ -28,8 +31,9 @@ def _read_schema():
         return json.load(f)
 
 
-def apply_area_modifications(editor: PatcherEditor, configuration: dict[str, dict],
-                             status_update: Callable[[str, float], None]):
+def apply_area_modifications(
+    editor: PatcherEditor, configuration: dict[str, dict], status_update: Callable[[str, float], None]
+):
     num_areas = sum(len(world_config["areas"]) for world_config in configuration.values())
     areas_processed = 0.0
 
@@ -37,21 +41,15 @@ def apply_area_modifications(editor: PatcherEditor, configuration: dict[str, dic
         world_meta = asset_ids.world.load_dedicated_file(world_name)
         mlvl = editor.get_mlvl(asset_ids.world.NAME_TO_ID_MLVL[world_name])
 
-        mrea_to_name: dict[int, str] = {
-            mrea: name
-            for name, mrea in world_meta.NAME_TO_ID_MREA.items()
-        }
+        mrea_to_name: dict[int, str] = {mrea: name for name, mrea in world_meta.NAME_TO_ID_MREA.items()}
 
-        areas_by_name: dict[str, Area] = {
-            mrea_to_name[area.mrea_asset_id]: area
-            for area in mlvl.areas
-        }
+        areas_by_name: dict[str, Area] = {mrea_to_name[area.mrea_asset_id]: area for area in mlvl.areas}
 
         for i, (area_name, area) in enumerate(areas_by_name.items()):
             if area_name not in world_config["areas"]:
                 continue
 
-            status_update(f"Processing {world_name} - {area_name}...", areas_processed/num_areas)
+            status_update(f"Processing {world_name} - {area_name}...", areas_processed / num_areas)
             areas_processed += 1
 
             area_config = world_config["areas"][area_name]
@@ -68,15 +66,24 @@ def apply_area_modifications(editor: PatcherEditor, configuration: dict[str, dic
                         dock_name,
                         dock_config["new_door_type"],
                         dock_config.get("old_door_type"),
-                        low_memory
+                        low_memory,
                     )
 
                 if "connect_to" in dock_config:
                     dock_target = dock_config["connect_to"]
-                    LOG.debug("Connecting dock %s of %s - %s to %s - %s",
-                              dock_name, world_name, area_name, dock_target["area"], dock_target["dock"])
-                    area.connect_dock_to(dock_number, areas_by_name[dock_target["area"]],
-                                         world_meta.DOCK_NAMES[dock_target["area"]][dock_target["dock"]])
+                    LOG.debug(
+                        "Connecting dock %s of %s - %s to %s - %s",
+                        dock_name,
+                        world_name,
+                        area_name,
+                        dock_target["area"],
+                        dock_target["dock"],
+                    )
+                    area.connect_dock_to(
+                        dock_number,
+                        areas_by_name[dock_target["area"]],
+                        world_meta.DOCK_NAMES[dock_target["area"]][dock_target["dock"]],
+                    )
 
             for layer_name, layer_state in area_config["layers"].items():
                 LOG.debug("Setting layer %s of %s - %s to %s", layer_name, world_name, area_name, str(layer_state))
@@ -90,7 +97,7 @@ def apply_area_modifications(editor: PatcherEditor, configuration: dict[str, dic
                     elevator["target_assets"]["world_asset_id"],
                     elevator["target_assets"]["area_asset_id"],
                     elevator["target_strg"],
-                    elevator["target_name"]
+                    elevator["target_name"],
                 )
 
             if area_config["new_name"] is not None:
@@ -108,25 +115,47 @@ def apply_corrupted_memory_card_change(editor: PatcherEditor):
     table = editor.get_file(0x88E242D6, Strg)
 
     name_to_index = {
-        table.raw.name_table.name_array[entry.offset].string: entry.index
-        for entry in table.raw.name_table.name_entries
+        table.raw.name_table.name_array[entry.offset].string: entry.index for entry in table.raw.name_table.name_entries
     }
 
     table.set_string(
         name_to_index["CorruptedFile"],
         """The save file was created using a different
-Randomizer ISO and must be deleted."""
+Randomizer ISO and must be deleted.""",
     )
-    table.set_string(
-        name_to_index["ChoiceDeleteCorruptedFile"],
-        "Delete Incompatible File"
-    )
+    table.set_string(name_to_index["ChoiceDeleteCorruptedFile"], "Delete Incompatible File")
 
 
-def patch_paks(file_provider: FileProvider,
-               output_path: Path,
-               configuration: dict,
-               status_update: Callable[[str, float], None] = lambda s, _: LOG.info(s)):
+def apply_tweak_edits(editor: PatcherEditor, tweak_edits: dict[str, dict[str, typing.Any]]) -> None:
+    """
+    Edits the tweaks based on the generic schema api
+    :param editor:
+    :param tweak_edits:
+    :return:
+    """
+    for instance in editor.tweaks.instances:
+        properties = instance.get_properties().to_json()
+        if properties["instance_name"] in tweak_edits:
+            logging.debug("Editing %s", properties["instance_name"])
+
+            for name, value in tweak_edits[properties["instance_name"]].items():
+                parent = properties
+                spit_name = name.split(".")
+
+                for part in spit_name[:-1]:
+                    parent = parent[part]
+
+                parent[spit_name[-1]] = value
+
+            instance.set_properties(instance.type.from_json(properties))
+
+
+def patch_paks(
+    file_provider: FileProvider,
+    output_path: Path,
+    configuration: dict,
+    status_update: Callable[[str, float], None] = lambda s, _: LOG.info(s),
+):
     status_update(f"Will patch files at {file_provider}", 0)
     output_path.joinpath("files").mkdir(parents=True, exist_ok=True)
     output_path.joinpath("files", "opr_patcher_data.json").write_text(json.dumps(configuration))
@@ -151,6 +180,10 @@ def patch_paks(file_provider: FileProvider,
     specific_area_patches.specific_patches(editor, configuration["area_patches"], legacy_compatibility)
     apply_small_randomizations(editor, configuration["small_randomizations"])
     apply_corrupted_memory_card_change(editor)
+
+    if "tweaks" in configuration:
+        status_update("Modifying tweaks", 0)
+        apply_tweak_edits(editor, configuration["tweaks"])
 
     status_update("Modifying areas", 0)
     apply_area_modifications(editor, configuration["worlds"], status_update)

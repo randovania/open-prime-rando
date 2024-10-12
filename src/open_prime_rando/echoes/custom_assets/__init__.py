@@ -20,35 +20,35 @@ class TranslatorAssets:
     new_ancs: int
 
 
-SCAN_VISOR_CMDL = 0xafc70004
-DARK_VISOR_ANCS = 0x851b526e
+SCAN_VISOR_CMDL = 0xAFC70004
+DARK_VISOR_ANCS = 0x851B526E
 
-VIOLET_TXTR = 0x4be5342e
-AMBER_TXTR = 0xf5308558
-EMERALD_TXTR = 0xa9640fdf
-COBALT_TXTR = 0x2c56d2d4
+VIOLET_TXTR = 0x4BE5342E
+AMBER_TXTR = 0xF5308558
+EMERALD_TXTR = 0xA9640FDF
+COBALT_TXTR = 0x2C56D2D4
 
 VIOLET_TRANSLATOR = TranslatorAssets(
     name="violet_translator",
-    txtr=0x4be5342e,
+    txtr=0x4BE5342E,
     new_cmdl=1448365380,
     new_ancs=1448362318,
 )
 AMBER_TRANSLATOR = TranslatorAssets(
     name="amber_translator",
-    txtr=0xf5308558,
+    txtr=0xF5308558,
     new_cmdl=1096043844,
     new_ancs=1096040782,
 )
 EMERALD_TRANSLATOR = TranslatorAssets(
     name="emerald_translator",
-    txtr=0xa9640fdf,
+    txtr=0xA9640FDF,
     new_cmdl=1163152708,
     new_ancs=1163149646,
 )
 COBALT_TRANSLATOR = TranslatorAssets(
     name="cobalt_translator",
-    txtr=0x2c56d2d4,
+    txtr=0x2C56D2D4,
     new_cmdl=1129598276,
     new_ancs=1129595214,
 )
@@ -84,14 +84,14 @@ class BeamAmmoAssets:
     new_ancs: int
 
 
-BEAM_AMMO_EXPANSION_CMDL = 0x352c8b02
-BEAM_AMMO_EXPANSION_ANCS = 0x4e00188c
+BEAM_AMMO_EXPANSION_CMDL = 0x352C8B02
+BEAM_AMMO_EXPANSION_ANCS = 0x4E00188C
 
 DARK_AMMO = BeamAmmoAssets(
     name="dark_ammo",
     txtr_a=1385637646,
     txtr_b=3277274054,
-    particle=0x8e0c499d,
+    particle=0x8E0C499D,
     new_cmdl=1631670273,
     new_ancs=0x61415002,
 )
@@ -99,7 +99,7 @@ LIGHT_AMMO = BeamAmmoAssets(
     name="light_ammo",
     txtr_a=1815959726,
     txtr_b=2738959665,
-    particle=0xa180bb7f,
+    particle=0xA180BB7F,
     new_cmdl=1631670275,
     new_ancs=1631670276,
 )
@@ -132,7 +132,7 @@ def _import_premade_assets(editor: AssetManager):
     assets = Path(__file__).parent.joinpath("custom_assets", "general")
     for f in assets.glob("*.*"):
         name = f.name
-        asset_type = f.suffix[1:].upper() # remove leading period, force uppercase
+        asset_type = f.suffix[1:].upper()  # remove leading period, force uppercase
         raw = f.read_bytes()
         editor.add_new_asset(name, RawResource(asset_type, raw), ())
 

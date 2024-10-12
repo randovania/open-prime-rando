@@ -46,28 +46,30 @@ def apply_patches(dol_file: DolFile, patches_data: EchoesDolPatchesData):
     with dol_file:
         all_prime_dol_patches.apply_build_info_patch(dol_file, patches_data.world_uuid, version)
         all_prime_dol_patches.apply_remote_execution_patch(version.game, version.string_display, dol_file)
-        all_prime_dol_patches.apply_energy_tank_capacity_patch(version.health_capacity, patches_data.energy_per_tank,
-                                                               dol_file)
-        all_prime_dol_patches.apply_reverse_energy_tank_heal_patch(version.sda2_base, version.dangerous_energy_tank,
-                                                                   patches_data.dangerous_energy_tank,
-                                                                   version.game, dol_file)
+        all_prime_dol_patches.apply_energy_tank_capacity_patch(
+            version.health_capacity, patches_data.energy_per_tank, dol_file
+        )
+        all_prime_dol_patches.apply_reverse_energy_tank_heal_patch(
+            version.sda2_base, version.dangerous_energy_tank, patches_data.dangerous_energy_tank, version.game, dol_file
+        )
 
         dol_patches.apply_fixes(version, dol_file)
         dol_patches.change_powerup_should_persist(
-            version, dol_file,
-            ["Double Damage", "Unlimited Missiles", "Unlimited Beam Ammo"]
+            version, dol_file, ["Double Damage", "Unlimited Missiles", "Unlimited Beam Ammo"]
         )
 
         dol_patches.apply_unvisited_room_names(version, dol_file, patches_data.unvisited_room_names)
         dol_patches.apply_teleporter_sounds(version, dol_file, patches_data.teleporter_sounds)
 
-        dol_patches.apply_game_options_patch(version.game_options_constructor_address,
-                                             patches_data.user_preferences, dol_file)
+        dol_patches.apply_game_options_patch(
+            version.game_options_constructor_address, patches_data.user_preferences, dol_file
+        )
         dol_patches.apply_beam_cost_patch(version.beam_cost_addresses, patches_data.beam_configurations, dol_file)
-        dol_patches.apply_safe_zone_heal_patch(version.safe_zone, version.sda2_base,
-                                               patches_data.safe_zone_heal_per_second, dol_file)
-        dol_patches.apply_starting_visor_patch(version.starting_beam_visor, patches_data.default_items,
-                                               dol_file)
+        dol_patches.apply_safe_zone_heal_patch(
+            version.safe_zone, version.sda2_base, patches_data.safe_zone_heal_per_second, dol_file
+        )
+        dol_patches.apply_starting_visor_patch(version.starting_beam_visor, patches_data.default_items, dol_file)
+
         dol_patches.apply_map_door_changes(version.map_door_types, dol_file)
         dol_patches.apply_widescreen_hack(version.description, dol_file, patches_data.widescreen_hack)
 

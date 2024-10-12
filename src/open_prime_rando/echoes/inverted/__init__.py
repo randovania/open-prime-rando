@@ -1,4 +1,3 @@
-
 from retro_data_structures.formats import Mapa, Mlvl
 from retro_data_structures.formats.mrea import Area
 from retro_data_structures.formats.script_layer import ScriptLayer
@@ -12,17 +11,20 @@ from open_prime_rando.echoes.inverted import area_pairs
 from open_prime_rando.patcher_editor import PatcherEditor
 
 _WORLDS = [
-    world_ids.TEMPLE_GROUNDS_MLVL, world_ids.AGON_WASTES_MLVL, world_ids.TORVUS_BOG_MLVL,
-    world_ids.SANCTUARY_FORTRESS_MLVL, world_ids.GREAT_TEMPLE_MLVL,
+    world_ids.TEMPLE_GROUNDS_MLVL,
+    world_ids.AGON_WASTES_MLVL,
+    world_ids.TORVUS_BOG_MLVL,
+    world_ids.SANCTUARY_FORTRESS_MLVL,
+    world_ids.GREAT_TEMPLE_MLVL,
 ]
 _AREAS_TO_SKIP = {
-    0x775664a5,  # 00_scandummy
-    0x752b2850,  # game_end_part1
-    0x9d221f4a,  # game_end_part2
-    0xc5250dbc,  # game_end_part3
-    0x9641773f,  # game_end_part4
-    0xce4665c9,  # game_end_part5
-    0x4d4e5400,  # Menu
+    0x775664A5,  # 00_scandummy
+    0x752B2850,  # game_end_part1
+    0x9D221F4A,  # game_end_part2
+    0xC5250DBC,  # game_end_part3
+    0x9641773F,  # game_end_part4
+    0xCE4665C9,  # game_end_part5
+    0x4D4E5400,  # Menu
 }
 
 
@@ -48,8 +50,7 @@ def _swap_dark_world(editor: PatcherEditor):
             mapa.raw.type = not is_dark_world
 
 
-def _copy_safe_zones(dark: Area, dark_layer: ScriptLayer, light_layer: ScriptLayer,
-                     special_ids: set):
+def _copy_safe_zones(dark: Area, dark_layer: ScriptLayer, light_layer: ScriptLayer, special_ids: set):
     copied_safe_zones = {}
 
     for instance in list(dark_layer.instances):
@@ -68,11 +69,13 @@ def _copy_safe_zones(dark: Area, dark_layer: ScriptLayer, light_layer: ScriptLay
     return copied_safe_zones
 
 
-def _copy_safe_zone_crystal(copied_crystal: ScriptInstance,
-                            instance: ScriptInstance,
-                            copied_safe_zones: dict[InstanceId, ScriptInstance],
-                            dark: Area, special_ids: set[int],
-                            ):
+def _copy_safe_zone_crystal(
+    copied_crystal: ScriptInstance,
+    instance: ScriptInstance,
+    copied_safe_zones: dict[InstanceId, ScriptInstance],
+    dark: Area,
+    special_ids: set[int],
+):
     targets_special = False
 
     for conn in instance.connections:
@@ -86,7 +89,8 @@ def _copy_safe_zone_crystal(copied_crystal: ScriptInstance,
             weird_target = dark.get_instance(conn.target)
             print(
                 f"Crystal {instance.name} at {dark.name} has unexpected connections "
-                f"to {weird_target} ({weird_target.name})")
+                f"to {weird_target} ({weird_target.name})"
+            )
             continue
         copied_crystal.add_connection(conn.state, conn.message, target)
 
