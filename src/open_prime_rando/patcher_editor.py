@@ -76,7 +76,9 @@ class PatcherEditor(AssetManager):
         return self.add_file(name, self.get_raw_asset(asset))
 
     def save_modifications(self, output_path: Path):
-        super().save_modifications(output_path)
+        # AssetManager exports files relative to what FileProvider says
+        # Since the `files/` subpath is ignored by it, let's tell it to put all the files in there.
+        super().save_modifications(output_path.joinpath("files"))
 
         if self.dol is not None:
             target_dol = output_path.joinpath("sys/main.dol")
