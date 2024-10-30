@@ -4,6 +4,7 @@ from collections.abc import Iterable
 from enum import Enum
 from typing import NamedTuple
 
+from attr.setters import frozen
 from ppc_asm.assembler import custom_ppc
 from ppc_asm.assembler.ppc import *  # noqa: F403
 from ppc_asm.dol_file import DolFile
@@ -73,6 +74,12 @@ class StartingBeamVisorAddresses:
     start_transition_to_visor: int
     reset_visor: int
 
+@dataclasses.dataclass(frozen=True)
+class WidescreenRenderAddresses:
+    culling_replacement: int
+    culling_insertion: int
+    viewport_replacement: int
+    viewport_insertion: int
 
 _PREFERENCES_ORDER = (
     "sound_mode",
@@ -388,6 +395,7 @@ class EchoesDolVersion(BasePrimeDolVersion):
     powerup_should_persist: int
     map_door_types: MapDoorTypeAddresses
     double_damage_vfx: int
+    widescreen_render: WidescreenRenderAddresses
 
 
 def apply_fixes(version: EchoesDolVersion, dol_file: DolFile):
@@ -502,24 +510,14 @@ def apply_map_door_changes(door_symbols: MapDoorTypeAddresses, dol_file: DolFile
     dol_file.write("CTweakAutoMapper::GetDoorColor::DoorColorArray", DoorMapIcon.get_surface_colors_as_bytes())
 
 
-def apply_widescreen_hack(version_description: str, dol_file: DolFile, enabled: bool):
+def apply_widescreen_hack(widecreen_render_symbols: WidescreenRenderAddresses, dol_file: DolFile, enabled: bool):
     """
     Apply widescreen render hack to render the game in 16:9
     """
-    # Ported from gamemasterplc's 16:9 gecko code for NTSC-U
-    match version_description:
-        case "Gamecube NTSC":
-            culling_replacement = 0x8030256C
-            culling_insertion = 0x80418E8C
-            viewport_replacement = 0x8036D684
-            viewport_insertion = 0x80003748
-        case "Gamecube PAL":
-            culling_replacement = 0x803029E0
-            culling_insertion = 0x803C6C30
-            viewport_replacement = 0x8036DAA0
-            viewport_insertion = 0x803B1D60
-        case _:
-            raise NotImplementedError
+    culling_replacement = widecreen_render_symbols.culling_replacement
+    culling_insertion = widecreen_render_symbols.culling_insertion
+    viewport_replacement = widecreen_render_symbols.viewport_replacement
+    viewport_insertion = widecreen_render_symbols.viewport_insertion
 
     if enabled:
         dol_file.write_instructions(culling_replacement, [bl(culling_insertion, relative=False)])

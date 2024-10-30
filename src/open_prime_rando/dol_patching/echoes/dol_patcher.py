@@ -8,6 +8,8 @@ from open_prime_rando.dol_patching.echoes import dol_patches, dol_versions
 from open_prime_rando.dol_patching.echoes.beam_configuration import BeamAmmoConfiguration
 from open_prime_rando.dol_patching.echoes.user_preferences import OprEchoesUserPreferences
 
+from open_prime_rando.dol_patching.echoes.dol_patches import WidescreenRenderAddresses
+
 
 @dataclasses.dataclass(frozen=True)
 class EchoesDolPatchesData:
@@ -71,4 +73,4 @@ def apply_patches(dol_file: DolFile, patches_data: EchoesDolPatchesData):
         dol_patches.apply_starting_visor_patch(version.starting_beam_visor, patches_data.default_items, dol_file)
 
         dol_patches.apply_map_door_changes(version.map_door_types, dol_file)
-        dol_patches.apply_widescreen_hack(version.description, dol_file, patches_data.widescreen_hack)
+        dol_patches.apply_widescreen_hack(version.widescreen_render, dol_file, patches_data.widescreen_hack)
