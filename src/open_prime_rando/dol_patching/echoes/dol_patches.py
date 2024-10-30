@@ -511,14 +511,14 @@ def apply_map_door_changes(door_symbols: MapDoorTypeAddresses, dol_file: DolFile
     dol_file.write("CTweakAutoMapper::GetDoorColor::DoorColorArray", DoorMapIcon.get_surface_colors_as_bytes())
 
 
-def apply_widescreen_hack(widecreen_render_symbols: WidescreenRenderAddresses, dol_file: DolFile, enabled: bool):
+def apply_widescreen_hack(widescreen_render_symbols: WidescreenRenderAddresses, dol_file: DolFile, enabled: bool):
     """
     Apply widescreen render hack to render the game in 16:9
     """
-    culling_replacement = widecreen_render_symbols.culling_replacement
-    culling_insertion = widecreen_render_symbols.culling_insertion
-    viewport_replacement = widecreen_render_symbols.viewport_replacement
-    viewport_insertion = widecreen_render_symbols.viewport_insertion
+    culling_replacement = widescreen_render_symbols.culling_replacement
+    culling_insertion = widescreen_render_symbols.culling_insertion
+    viewport_replacement = widescreen_render_symbols.viewport_replacement
+    viewport_insertion = widescreen_render_symbols.viewport_insertion
 
     if enabled:
         dol_file.write_instructions(culling_replacement, [bl(culling_insertion, relative=False)])
