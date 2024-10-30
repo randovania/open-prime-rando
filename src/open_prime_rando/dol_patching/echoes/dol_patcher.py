@@ -8,8 +8,6 @@ from open_prime_rando.dol_patching.echoes import dol_patches, dol_versions
 from open_prime_rando.dol_patching.echoes.beam_configuration import BeamAmmoConfiguration
 from open_prime_rando.dol_patching.echoes.user_preferences import OprEchoesUserPreferences
 
-from open_prime_rando.dol_patching.echoes.dol_patches import WidescreenRenderAddresses
-
 
 @dataclasses.dataclass(frozen=True)
 class EchoesDolPatchesData:

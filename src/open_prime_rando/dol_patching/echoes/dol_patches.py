@@ -4,7 +4,6 @@ from collections.abc import Iterable
 from enum import Enum
 from typing import NamedTuple
 
-from attr.setters import frozen
 from ppc_asm.assembler import custom_ppc
 from ppc_asm.assembler.ppc import *  # noqa: F403
 from ppc_asm.dol_file import DolFile
@@ -74,12 +73,14 @@ class StartingBeamVisorAddresses:
     start_transition_to_visor: int
     reset_visor: int
 
+
 @dataclasses.dataclass(frozen=True)
 class WidescreenRenderAddresses:
     culling_replacement: int
     culling_insertion: int
     viewport_replacement: int
     viewport_insertion: int
+
 
 _PREFERENCES_ORDER = (
     "sound_mode",
