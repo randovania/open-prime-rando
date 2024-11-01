@@ -9,26 +9,10 @@ def apply_widescreen_hud(editor: PatcherEditor):
     """
     Replaces certain FRME files to adjust HUD/Visor widgets to better fit a 16:9 screen aspect ratio
     """
-
-    # TODO: Properly do version detection
-    # Currently detecting game version by existence of version-specific assets here, since PAK patching doesn't seem
-    # to have version detection, unlike DOL patching that does
-    if editor.does_asset_exists(0xEEF43AA1) and editor.does_asset_exists(0xF7EC0850):
-        detectedversion = "ntscu"
-    elif editor.does_asset_exists(0xB5CF0C19) and editor.does_asset_exists(0xD9D58FA5):
-        detectedversion = "pal"
-    else:
-        raise NotImplementedError
-
-    for assetversion, assets in WIDESCREEN_HUD_ASSETS.items():
-        if detectedversion == assetversion:
-            widescreen_assets = custom_asset_path().joinpath("widescreen_hud", detectedversion)
-            for asset_id, filename in assets.items():
-                asset = widescreen_assets.joinpath(filename)
-                if not asset.exists():
-                    continue
-                res = RawResource(
-                    type="FRME",
-                    data=asset.read_bytes(),
-                )
-                editor.replace_asset(asset_id, res)
+    for asset_id, filename in WIDESCREEN_HUD_ASSETS.items():
+        widescreen_assets = custom_asset_path().joinpath("widescreen_hud")
+        asset = widescreen_assets.joinpath(filename)
+        if not editor.does_asset_exists(asset_id):
+            continue
+        res = RawResource(type="FRME", data=asset.read_bytes())
+        editor.replace_asset(asset_id, res)
