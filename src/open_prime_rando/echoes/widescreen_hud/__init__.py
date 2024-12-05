@@ -9,8 +9,8 @@ def apply_widescreen_hud(editor: PatcherEditor):
     """
     Replaces certain FRME files to adjust HUD/Visor widgets to better fit a 16:9 screen aspect ratio
     """
+    widescreen_assets = custom_asset_path().joinpath("widescreen_hud")
     for asset_id, filename in WIDESCREEN_HUD_ASSETS.items():
-        widescreen_assets = custom_asset_path().joinpath("widescreen_hud")
         asset = widescreen_assets.joinpath(filename)
         if not editor.does_asset_exists(asset_id):
             continue
