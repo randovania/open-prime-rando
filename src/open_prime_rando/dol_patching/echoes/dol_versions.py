@@ -87,8 +87,7 @@ ALL_VERSIONS = [
         ),
         double_damage_vfx=0x80017F28,
         widescreen_render=WidescreenRenderAddresses(
-            frustum_culling_replacement=0x8030256C,
-            frustum_culling_insertion=0x80418E8C,
+            frustum_culling_value=0x8041E944,
             frustum_replacement=0x8036D684,
             frustum_insertion=0x80003748,
         ),
@@ -163,8 +162,7 @@ ALL_VERSIONS = [
         ),
         double_damage_vfx=0x80017FC4,
         widescreen_render=WidescreenRenderAddresses(
-            frustum_culling_replacement=0x803029E0,
-            frustum_culling_insertion=0x803C6C30,
+            frustum_culling_value=0x8041FC1C,
             frustum_replacement=0x8036DAA0,
             frustum_insertion=0x803B1D60,
         ),
