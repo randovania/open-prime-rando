@@ -521,7 +521,7 @@ def apply_widescreen_hack(widescreen_render_symbols: WidescreenRenderAddresses, 
 
     if enabled:
         # Expand frustum culling from the original 0.5f to prevent things popping in/out at the sides of screen
-        dol_file.write(frustum_culling_value, struct.pack('>f', 0.75))
+        dol_file.write(frustum_culling_value, struct.pack(">f", 0.75))
 
         # Expand frustum view cone to render more horizontally by patching C_MTXFrustum
         dol_file.write_instructions(
@@ -544,7 +544,7 @@ def apply_widescreen_hack(widescreen_render_symbols: WidescreenRenderAddresses, 
         # Restore vanilla behavior when widescreen hack is disabled
         # TODO Remove when RDV is updated to no longer cache patched DOL files
         # Restore original frustum culling size
-        dol_file.write(frustum_culling_value, struct.pack('>f', 0.5))
+        dol_file.write(frustum_culling_value, struct.pack(">f", 0.5))
         # Restore original instruction
         dol_file.write(frustum_replacement, [0xED, 0x6A, 0x48, 0x24])
         # Remove inserted code
