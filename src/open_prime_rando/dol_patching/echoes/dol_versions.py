@@ -13,6 +13,7 @@ from open_prime_rando.dol_patching.echoes.dol_patches import (
     MapDoorTypeAddresses,
     SafeZoneAddresses,
     StartingBeamVisorAddresses,
+    WidescreenRenderAddresses,
 )
 
 ALL_VERSIONS = [
@@ -85,6 +86,12 @@ ALL_VERSIONS = [
             map_icon_jumptable=0x803B3638,
         ),
         double_damage_vfx=0x80017F28,
+        widescreen_render=WidescreenRenderAddresses(
+            frustum_culling_value=0x8041E944,
+            frustum_function_instruction=0x8036D684,
+            frustum_function_insertion=0x80003748,
+            custom_frustum_value_offset=-0x4400,
+        ),
     ),
     EchoesDolVersion(
         game=Game.ECHOES,
@@ -155,5 +162,11 @@ ALL_VERSIONS = [
             map_icon_jumptable=0x803B4A80,
         ),
         double_damage_vfx=0x80017FC4,
+        widescreen_render=WidescreenRenderAddresses(
+            frustum_culling_value=0x8041FC1C,
+            frustum_function_instruction=0x8036DAA0,
+            frustum_function_insertion=0x803B1D60,
+            custom_frustum_value_offset=-0x4420,
+        ),
     ),
 ]
