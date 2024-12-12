@@ -5,10 +5,35 @@ from open_prime_rando.echoes.vulnerabilities import resist_all_vuln
 from retro_data_structures.formats.mrea import (
     Area,
 )
-from retro_data_structures.properties.echoes.archetypes import EditorProperties, ControllerActionStruct, Transform, LayerSwitch, ActorParameters, VisorParameters
-from retro_data_structures.properties.echoes.objects import SpecialFunction, ControllerAction, AdvancedCounter, Switch, Timer, Dock, Relay, ScriptLayerController, Door
-from retro_data_structures.properties.echoes.core import Vector, AnimationParameters
+from retro_data_structures.properties.echoes.archetypes import EditorProperties, ControllerActionStruct, Transform, LayerSwitch, ActorParameters, VisorParameters, TextProperties
+from retro_data_structures.properties.echoes.objects import SpecialFunction, ControllerAction, AdvancedCounter, Switch, Timer, Dock, Relay, ScriptLayerController, Door, GuiMenu, GuiWidget, TextPane, ColorModulate, WorldTeleporter, MemoryRelay
+from retro_data_structures.properties.echoes.core import Vector, AnimationParameters, Color, Spline
 from retro_data_structures.enums.echoes import Function, State, Message, VisorFlags
+
+
+TEXT_PANE_TEXT_PROPERTIES = TextProperties(
+    text_bounding_width=15,
+    text_bounding_height=15,
+    foreground_color=Color(a=1.0),
+    outline_color=Color(a=1.0),
+    geometry_color=Color(a=1.0),
+    default_font=227804281,
+    wrap_text=False,
+)
+
+
+def create_color_modulate(name: str) -> ColorModulate:
+    return ColorModulate(
+        editor_properties=EditorProperties(name=f"{name} ColorModulate", unknown=0),
+        color_a=Color(0.5882353186607361, 0.5882353186607361, 0.5882353186607361, 1.0),
+        color_b=Color(1.0),
+        time_a2_b=0.0,
+        time_b2_a=0.0,
+        control_spline=Spline(
+            maximum_amplitude=1.0,
+            clamp_mode=1,
+        ),
+    )
 
 
 def add_area_elements(area: Area) -> None:
@@ -131,10 +156,145 @@ def add_area_elements(area: Area) -> None:
 
     # 13970324 Switch Layer 2
 
-    # 13970325
-    is_layer_two_on = load_loader_layer.add_instance_with(Switch(
-        editor_properties=EditorProperties(name="Is Layer 2 on?", unknown=0),
+    layer_switch_layer = area.add_layer("Menu - Layer Switch Layer", active=False)
+
+    for layer in area.layers:
+        # Skip `Default` and `!No Load`, as well as our own layers
+        if layer.index < 2 or layer.name.startswith("Menu - "):
+            continue
+
+        # 13970324
+        switch_layer = layer_switch_layer.add_instance_with(ScriptLayerController(
+            editor_properties=EditorProperties(name=f"Switch Layer {layer.index}", unknown=0),
+            layer=LayerSwitch(
+                area_id=area.id,
+                layer_number=layer.index,
+            ),
+        ))
+
+        # 13970325
+        is_layer_on = load_loader_layer.add_instance_with(Switch(
+            editor_properties=EditorProperties(name=f"Is Layer {layer.index} on?", unknown=0),
+        ))
+
+        # 13970326
+        layer_is_on = layer.add_instance_with(Timer(
+            editor_properties=EditorProperties(name="Layer is on", unknown=0),
+            time=0.01,
+            auto_start=True,
+        ))
+        layer_is_on.add_connection(State.Zero, Message.Open, is_layer_on)
+
+    # 13970327
+    layer_menu = layer_switch_layer.add_instance_with(GuiMenu(
+        editor_properties=EditorProperties(name="Layer Menu", active=False),
+        selection_changed_sound=-1,
     ))
+
+    # 13970328
+    layer_menu_occlusion = layer_switch_layer.add_instance_with(SpecialFunction(
+        editor_properties=EditorProperties(name="Layer Menu Occlusion Relay", unknown=0),
+        function=Function.OcclusionRelay
+    ))
+    layer_menu_occlusion.add_connection(State.InternalState01, Message.Activate, layer_menu)
+
+    # 13970329
+    reload_widget = layer_switch_layer.add_instance_with(GuiWidget(
+        editor_properties=EditorProperties(name="Reload Widget", active=False),
+    ))
+    layer_menu.add_connection(State.Connect, Message.Attach, reload_widget)
+
+    # 13970330
+    reload_textpane = layer_switch_layer.add_instance_with(TextPane(
+        editor_properties=EditorProperties(
+            name="Reload TextPane",
+            transform=Transform(
+                position=Vector(4981.0, 4996.0, 5030.0),
+            ),
+            active=False,
+        ),
+        text_properties=TEXT_PANE_TEXT_PROPERTIES,
+        default_string=1296979444,  # TODO: probably create this strg?
+        default_string_name="1",
+    ))
+    layer_menu.add_connection(State.Active, Message.Activate, reload_textpane)
+    layer_menu.add_connection(State.Inactive, Message.Deactivate, reload_textpane)
+
+    # 13970331
+    reload_colormodulate = layer_switch_layer.add_instance_with(create_color_modulate("Reload"))
+    reload_colormodulate.add_connection(State.Play, Message.Activate, reload_textpane)
+    layer_menu_occlusion.add_connection(State.InternalState01, Message.Increment, reload_colormodulate)
+    reload_widget.add_connection(State.Entered, Message.Increment, reload_colormodulate)
+    reload_widget.add_connection(State.Exited, Message.Decrement, reload_colormodulate)
+
+    # 13970332
+    reload_area = layer_switch_layer.add_instance_with(WorldTeleporter(
+        editor_properties=EditorProperties(name="Reload area"),
+        world=mlvl_id,
+        area=area.mrea_asset_id,
+        elevator=-1,
+        is_teleport=True,
+        display_font=3082539188,
+        string=1296979444,  # TODO: probably create?
+        characters_per_second=16.0,
+        unknown_0x5657ca1c=True,
+    ))
+    reload_widget.add_connection(State.PressA, Message.SetToZero, reload_area)
+
+    # 13970333
+    memory_relay_widget = layer_switch_layer.add_instance_with(GuiWidget(
+        editor_properties=EditorProperties(name="Memry Relay Widget", active=False),
+    ))
+    layer_menu.add_connection(State.Connect, Message.Attach, memory_relay_widget)
+    # Reset all the relays
+    for layer in area.layers:
+        # Skip menu layers
+        if layer.name.startswith("Menu - "):
+            continue
+        for instance in layer.instances:
+            if instance.type is MemoryRelay:
+                memory_relay_widget.add_connection(State.PressA, Message.Deactivate, instance)
+
+    # 13970334
+    pre_reset_memory_relay_textpane = layer_switch_layer.add_instance_with(TextPane(
+        editor_properties=EditorProperties(
+            name="Pre-Reset Memory Relay TextPane",
+            transform=Transform(
+                position=Vector(4981.0, 4996.0, 5028.7001953125),
+            ),
+            active=False,
+        ),
+        text_properties=TEXT_PANE_TEXT_PROPERTIES,
+        default_string=1296979444,  # TODO: probably create this strg?
+        default_string_name="2",
+    ))
+    memory_relay_widget.add_connection(State.PressA, Message.Deactivate, pre_reset_memory_relay_textpane)
+
+    # 13970335
+    post_reset_memory_relay_textpane = layer_switch_layer.add_instance_with(TextPane(
+        editor_properties=EditorProperties(
+            name="Post-Reset Memory Relay TextPane",
+            transform=Transform(
+                position=Vector(4981.0, 4996.0, 5028.7001953125),
+            ),
+            active=False,
+        ),
+        text_properties=TEXT_PANE_TEXT_PROPERTIES,
+        default_string=1296979444,  # TODO: probably create this strg?
+        default_string_name="3",
+    ))
+    memory_relay_widget.add_connection(State.PressA, Message.Activate, post_reset_memory_relay_textpane)
+
+    # 13970336
+    memory_relay_colormodulate = layer_switch_layer.add_instance_with(create_color_modulate("Memory Relay"))
+    memory_relay_colormodulate.add_connection(State.Play, Message.Activate, pre_reset_memory_relay_textpane)
+    memory_relay_colormodulate.add_connection(State.Play, Message.Activate, post_reset_memory_relay_textpane)
+    layer_menu_occlusion.add_connection(State.InternalState01, Message.Decrement, memory_relay_colormodulate)
+    memory_relay_widget.add_connection(State.Entered, Message.Increment, memory_relay_colormodulate)
+    memory_relay_widget.add_connection(State.Exited, Message.Decrement, memory_relay_colormodulate)
+
+    # 13970337
+
 
 
 def add_menu_mod(editor: PatcherEditor) -> None:
