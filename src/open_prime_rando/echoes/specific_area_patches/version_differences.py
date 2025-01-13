@@ -59,9 +59,7 @@ def path_of_eyes(editor: PatcherEditor, version: EchoesVersion):
     if version == EchoesVersion.NTSC_U:
         return
 
-    LOG.warning(
-        "Path of Eyes version differences have not been patched! " "Area collision edits are not yet implemented."
-    )
+    LOG.warning("Path of Eyes version differences have not been patched! Area collision edits are not yet implemented.")
 
 
 def venomous_pond(editor: PatcherEditor, version: EchoesVersion):

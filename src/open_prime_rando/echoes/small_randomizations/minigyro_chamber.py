@@ -45,7 +45,7 @@ def randomize_minigyro_chamber(editor: PatcherEditor, rng: random.Random):
     rng.shuffle(solution)
 
     counter = area.get_instance("Stage gate activator")
-    stage_gates = [area.get_instance(f"Stage gate {i+1}") for i in range(4)]
+    stage_gates = [area.get_instance(f"Stage gate {i + 1}") for i in range(4)]
 
     for i, gate in enumerate(stage_gates):
         counter.remove_connections_from(gate)
@@ -54,7 +54,7 @@ def randomize_minigyro_chamber(editor: PatcherEditor, rng: random.Random):
             counter.add_connection(GYRO_STATES[j], message, gate)
 
     # play jingle on the final gyro
-    stop_gyros = [area.get_instance(f"[IN/OUT] Stop gyroscope {i+1}") for i in range(4)]
+    stop_gyros = [area.get_instance(f"[IN/OUT] Stop gyroscope {i + 1}") for i in range(4)]
     jingle = area.get_instance("StreamedAudio - Event Jingle")
 
     stop_gyros[3].remove_connections_from(jingle)
