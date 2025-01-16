@@ -74,6 +74,16 @@ class StartingBeamVisorAddresses:
     reset_visor: int
 
 
+@dataclasses.dataclass(frozen=True)
+class WidescreenRenderAddresses:
+    # culling_value_address: int
+    culling_original_instruction_address: int
+    culling_custom_frustum_value_offset: int
+    frustum_original_instruction_address: int
+    frustum_insertion_instructions_address: int
+    frustum_custom_frustum_value_offset: int
+
+
 _PREFERENCES_ORDER = (
     "sound_mode",
     "screen_brightness",
@@ -388,6 +398,7 @@ class EchoesDolVersion(BasePrimeDolVersion):
     powerup_should_persist: int
     map_door_types: MapDoorTypeAddresses
     double_damage_vfx: int
+    widescreen_render: WidescreenRenderAddresses
 
 
 def apply_fixes(version: EchoesDolVersion, dol_file: DolFile):
@@ -500,3 +511,50 @@ def apply_map_door_changes(door_symbols: MapDoorTypeAddresses, dol_file: DolFile
 
     dol_file.symbols["CTweakAutoMapper::GetDoorColor::DoorColorArray"] = door_color_array
     dol_file.write("CTweakAutoMapper::GetDoorColor::DoorColorArray", DoorMapIcon.get_surface_colors_as_bytes())
+
+
+def apply_widescreen_hack(widescreen_render_symbols: WidescreenRenderAddresses, dol_file: DolFile, enabled: bool):
+    """
+    Apply widescreen render hack to render the game in 16:9
+    """
+    # Ported from gamemasterplc's 16:9 Aspect Ratio Fix NTSC-U Gecko Code
+    culling_original_instruction_address = widescreen_render_symbols.culling_original_instruction_address
+    culling_custom_frustum_value_offset = widescreen_render_symbols.culling_custom_frustum_value_offset
+    frustum_original_instruction_address = widescreen_render_symbols.frustum_original_instruction_address
+    frustum_insertion_instructions_address = widescreen_render_symbols.frustum_insertion_instructions_address
+    frustum_custom_frustum_value_offset = widescreen_render_symbols.frustum_custom_frustum_value_offset
+
+    if enabled:
+        # Expand frustum culling to prevent things popping in/out at the sides of screen
+        dol_file.write_instructions(
+            culling_original_instruction_address,
+            [
+                lfs(f26, culling_custom_frustum_value_offset, r2)  # Load 2.0f from custom offset
+            ],
+        )
+
+        # Expand frustum view cone to render more horizontally by patching C_MTXFrustum
+        dol_file.write_instructions(
+            frustum_original_instruction_address,
+            [
+                b(
+                    frustum_insertion_instructions_address, relative=False
+                )  # Replace with branch to frustum_function_insertion
+            ],
+        )
+        dol_file.write_instructions(
+            frustum_insertion_instructions_address,
+            [
+                lfs(f19, frustum_custom_frustum_value_offset, r2),  # Load 1.3333334f from custom offset
+                fmuls(f9, f19, f9),
+                fdivs(f11, f10, f9),
+                b(frustum_original_instruction_address + 0x4),  # Return from branch
+            ],
+        )
+
+    else:
+        # TODO Remove when RDV is updated to no longer cache patched DOL files
+        # Restore vanilla behavior when widescreen hack is disabled
+        dol_file.write(culling_original_instruction_address, [0xFF, 0x40, 0x10, 0x90])  # Restore original instruction
+        dol_file.write(frustum_original_instruction_address, [0xED, 0x6A, 0x48, 0x24])  # Restore original instruction
+        dol_file.write(frustum_insertion_instructions_address, (b"\0" * 0x10))  # Remove inserted code
