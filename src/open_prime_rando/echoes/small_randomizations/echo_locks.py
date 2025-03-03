@@ -81,7 +81,7 @@ def randomize_echo_locks(editor: PatcherEditor, rng: random.Random):
 
         # edit scan to indicate the solution
         solution_text = (
-            "Sonic detection gear needed to interface with this system. " "The combination of its sonic locks is:\n"
+            "Sonic detection gear needed to interface with this system. The combination of its sonic locks is:\n"
         )
         solution_text += ", ".join(["Low", "Medium", "High"][key] for key in solution)
         gate_strg.set_string(1, solution_text)
