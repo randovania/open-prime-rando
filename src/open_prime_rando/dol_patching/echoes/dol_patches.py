@@ -531,7 +531,7 @@ def apply_widescreen_hack(
         dol_file.write_instructions(
             culling_original_instruction,
             [
-                lfs(f26, sda2_base - culling_custom_frustum_value, r2)  # Load 2.0f
+                lfs(f26, culling_custom_frustum_value - sda2_base, r2)  # Load 2.0f
             ],
         )
 
@@ -545,7 +545,7 @@ def apply_widescreen_hack(
         dol_file.write_instructions(
             frustum_insertion_instructions,
             [
-                lfs(f19, sda2_base - frustum_custom_frustum_value, r2),  # Load 1.3333334f
+                lfs(f19, frustum_custom_frustum_value - sda2_base, r2),  # Load 1.3333334f
                 fmuls(f9, f19, f9),
                 fdivs(f11, f10, f9),
                 b(frustum_original_instruction + 0x4),  # Return from branch

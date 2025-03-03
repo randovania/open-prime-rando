@@ -91,7 +91,7 @@ ALL_VERSIONS = [
             culling_custom_frustum_value=0x8041EF30,
             frustum_original_instruction=0x8036D684,
             frustum_insertion_instructions=0x80418E88,
-            frustum_custom_frustum_value=0x80414A88,
+            frustum_custom_frustum_value=0x8041DFC0,
         ),
     ),
     EchoesDolVersion(
