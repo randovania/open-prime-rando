@@ -87,11 +87,11 @@ ALL_VERSIONS = [
         ),
         double_damage_vfx=0x80017F28,
         widescreen_render=WidescreenRenderAddresses(
-            culling_original_instruction_address=0x8030256C,
-            culling_custom_frustum_value_offset=-0x3490,  # assume r2 = 0x804223c0
-            frustum_original_instruction_address=0x8036D684,
-            frustum_insertion_instructions_address=0x80418E88,
-            frustum_custom_frustum_value_offset=-0x4400,  # assume r2 = 0x804223c0
+            culling_original_instruction=0x8030256C,
+            culling_custom_frustum_value=0x8041EF30,
+            frustum_original_instruction=0x8036D684,
+            frustum_insertion_instructions=0x80418E88,
+            frustum_custom_frustum_value=0x80414A88,
         ),
     ),
     EchoesDolVersion(
@@ -164,11 +164,11 @@ ALL_VERSIONS = [
         ),
         double_damage_vfx=0x80017FC4,
         widescreen_render=WidescreenRenderAddresses(
-            culling_original_instruction_address=0x803029E0,
-            culling_custom_frustum_value_offset=-0x34B8,  # assume r2 = 0x804236c0
-            frustum_original_instruction_address=0x8036DAA0,
-            frustum_insertion_instructions_address=0x803B1D60,
-            frustum_custom_frustum_value_offset=-0x4420,  # assume r2 = 0x804236c0
+            culling_original_instruction=0x803029E0,
+            culling_custom_frustum_value=0x80420208,
+            frustum_original_instruction=0x8036DAA0,
+            frustum_insertion_instructions=0x803B1D60,
+            frustum_custom_frustum_value=0x8041F2A0,
         ),
     ),
 ]

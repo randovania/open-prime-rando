@@ -77,11 +77,11 @@ class StartingBeamVisorAddresses:
 @dataclasses.dataclass(frozen=True)
 class WidescreenRenderAddresses:
     # culling_value_address: int
-    culling_original_instruction_address: int
-    culling_custom_frustum_value_offset: int
-    frustum_original_instruction_address: int
-    frustum_insertion_instructions_address: int
-    frustum_custom_frustum_value_offset: int
+    culling_original_instruction: int
+    culling_custom_frustum_value: int
+    frustum_original_instruction: int
+    frustum_insertion_instructions: int
+    frustum_custom_frustum_value: int
 
 
 _PREFERENCES_ORDER = (
@@ -513,48 +513,48 @@ def apply_map_door_changes(door_symbols: MapDoorTypeAddresses, dol_file: DolFile
     dol_file.write("CTweakAutoMapper::GetDoorColor::DoorColorArray", DoorMapIcon.get_surface_colors_as_bytes())
 
 
-def apply_widescreen_hack(widescreen_render_symbols: WidescreenRenderAddresses, dol_file: DolFile, enabled: bool):
+def apply_widescreen_hack(
+    widescreen_render_symbols: WidescreenRenderAddresses, sda2_base: int, dol_file: DolFile, enabled: bool
+):
     """
     Apply widescreen render hack to render the game in 16:9
     """
     # Ported from gamemasterplc's 16:9 Aspect Ratio Fix NTSC-U Gecko Code
-    culling_original_instruction_address = widescreen_render_symbols.culling_original_instruction_address
-    culling_custom_frustum_value_offset = widescreen_render_symbols.culling_custom_frustum_value_offset
-    frustum_original_instruction_address = widescreen_render_symbols.frustum_original_instruction_address
-    frustum_insertion_instructions_address = widescreen_render_symbols.frustum_insertion_instructions_address
-    frustum_custom_frustum_value_offset = widescreen_render_symbols.frustum_custom_frustum_value_offset
+    culling_original_instruction = widescreen_render_symbols.culling_original_instruction
+    culling_custom_frustum_value = widescreen_render_symbols.culling_custom_frustum_value
+    frustum_original_instruction = widescreen_render_symbols.frustum_original_instruction
+    frustum_insertion_instructions = widescreen_render_symbols.frustum_insertion_instructions
+    frustum_custom_frustum_value = widescreen_render_symbols.frustum_custom_frustum_value
 
     if enabled:
         # Expand frustum culling to prevent things popping in/out at the sides of screen
         dol_file.write_instructions(
-            culling_original_instruction_address,
+            culling_original_instruction,
             [
-                lfs(f26, culling_custom_frustum_value_offset, r2)  # Load 2.0f from custom offset
+                lfs(f26, sda2_base - culling_custom_frustum_value, r2)  # Load 2.0f
             ],
         )
 
         # Expand frustum view cone to render more horizontally by patching C_MTXFrustum
         dol_file.write_instructions(
-            frustum_original_instruction_address,
+            frustum_original_instruction,
             [
-                b(
-                    frustum_insertion_instructions_address, relative=False
-                )  # Replace with branch to frustum_function_insertion
+                b(frustum_insertion_instructions, relative=False)  # Replace with branch to frustum_function_insertion
             ],
         )
         dol_file.write_instructions(
-            frustum_insertion_instructions_address,
+            frustum_insertion_instructions,
             [
-                lfs(f19, frustum_custom_frustum_value_offset, r2),  # Load 1.3333334f from custom offset
+                lfs(f19, sda2_base - frustum_custom_frustum_value, r2),  # Load 1.3333334f
                 fmuls(f9, f19, f9),
                 fdivs(f11, f10, f9),
-                b(frustum_original_instruction_address + 0x4),  # Return from branch
+                b(frustum_original_instruction + 0x4),  # Return from branch
             ],
         )
 
     else:
         # TODO Remove when RDV is updated to no longer cache patched DOL files
         # Restore vanilla behavior when widescreen hack is disabled
-        dol_file.write(culling_original_instruction_address, [0xFF, 0x40, 0x10, 0x90])  # Restore original instruction
-        dol_file.write(frustum_original_instruction_address, [0xED, 0x6A, 0x48, 0x24])  # Restore original instruction
-        dol_file.write(frustum_insertion_instructions_address, (b"\0" * 0x10))  # Remove inserted code
+        dol_file.write(culling_original_instruction, [0xFF, 0x40, 0x10, 0x90])  # Restore original instruction
+        dol_file.write(frustum_original_instruction, [0xED, 0x6A, 0x48, 0x24])  # Restore original instruction
+        dol_file.write(frustum_insertion_instructions, (b"\0" * 0x10))  # Remove inserted code

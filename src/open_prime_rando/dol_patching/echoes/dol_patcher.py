@@ -71,4 +71,6 @@ def apply_patches(dol_file: DolFile, patches_data: EchoesDolPatchesData):
         dol_patches.apply_starting_visor_patch(version.starting_beam_visor, patches_data.default_items, dol_file)
 
         dol_patches.apply_map_door_changes(version.map_door_types, dol_file)
-        dol_patches.apply_widescreen_hack(version.widescreen_render, dol_file, patches_data.widescreen_hack)
+        dol_patches.apply_widescreen_hack(
+            version.widescreen_render, version.sda2_base, dol_file, patches_data.widescreen_hack
+        )
