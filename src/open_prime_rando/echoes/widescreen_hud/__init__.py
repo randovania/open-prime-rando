@@ -9,6 +9,7 @@ def apply_widescreen_hud(editor: PatcherEditor):
     """
     Replaces certain FRME files to adjust HUD/Visor widgets to better fit a 16:9 screen aspect ratio
     """
+    # Check if our custom patched asset IDs matches the in-game asset ID. If so, replace it.
     widescreen_assets = custom_asset_path().joinpath("widescreen_hud")
     for asset_id, filename in WIDESCREEN_HUD_ASSETS.items():
         asset = widescreen_assets.joinpath(filename)

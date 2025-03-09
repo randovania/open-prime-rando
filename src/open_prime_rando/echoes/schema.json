@@ -75,7 +75,7 @@
         },
         "widescreen_hud": {
             "type": "boolean",
-            "description": "Enable 16:9 widescreen HUD patch",
+            "description": "Patch Visor HUD elements for 16:9 widescreen",
             "default": false
         },
         "cosmetics": {
