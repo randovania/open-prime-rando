@@ -24,7 +24,7 @@ dynamic = ["version"]
 dependencies = [
     "retro-data-structures>=0.28.0",
     "jsonschema>=4.0.0",
-    "ppc-asm",
+    "ppc-asm>=1.5.0",
     "py_randomprime",  # for Prime 1 symbols
 ]
 
