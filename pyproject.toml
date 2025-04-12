@@ -22,7 +22,7 @@ requires-python = ">=3.10"
 dynamic = ["version"]
 
 dependencies = [
-    "retro-data-structures>=0.28.0",
+    "retro-data-structures>=0.29.0",
     "jsonschema>=4.0.0",
     "ppc-asm",
     "py_randomprime",  # for Prime 1 symbols

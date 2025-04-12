@@ -1,6 +1,6 @@
 import random
 
-from retro_data_structures.enums.echoes import Message, ScanSpeed, State
+from retro_data_structures.enums.echoes import Message, ScanSpeedEnum, State
 from retro_data_structures.formats.scan import Scan
 from retro_data_structures.formats.strg import Strg
 from retro_data_structures.properties.echoes.objects.PointOfInterest import PointOfInterest
@@ -47,7 +47,7 @@ def randomize_echo_locks(editor: PatcherEditor, rng: random.Random):
 
     gate_scan = editor.get_parsed_asset(0x80A987AA, type_hint=Scan)
     gate_scan_info = gate_scan.scannable_object_info.get_properties_as(ScannableObjectInfo)
-    gate_scan_info.scan_speed = ScanSpeed.Slow
+    gate_scan_info.scan_speed = ScanSpeedEnum.Slow
     gate_strg = editor.get_parsed_asset(0x2820CC3D, type_hint=Strg)
 
     for mlvl_id, mrea_id in ECHO_LOCK_MREAS:
