@@ -1,28 +1,17 @@
 import argparse
 import importlib
-import json
 import logging
 import logging.config
-from pathlib import Path
-
-from retro_data_structures.asset_manager import IsoFileProvider, PathFileProvider
+import sys
 
 _game_to_patcher = {
-    "echoes": "open_prime_rando.echoes_patcher",
-    "prime_remastered": "open_prime_rando.p1r_patcher",
+    "echoes": "open_prime_rando.echoes.cli",
 }
 
 
 def create_parser():
     parser = argparse.ArgumentParser()
-    parser.add_argument("--game", required=True, choices=sorted(_game_to_patcher.keys()))
-    input_group = parser.add_mutually_exclusive_group(required=True)
-    input_group.add_argument("--input-paks", type=Path, help="Path to where the paks to randomize")
-    input_group.add_argument("--input-iso", type=Path, help="Path to a ISO to randomize")
-    parser.add_argument(
-        "--output-paks", required=True, type=Path, help="Path to where the modified paks will be written to."
-    )
-    parser.add_argument("--input-json", type=Path, required=True, help="Path to the configuration json.")
+    parser.add_argument("game", choices=sorted(_game_to_patcher.keys()))
     return parser
 
 
@@ -56,26 +45,12 @@ def setup_logging():
             },
         }
     )
-    logging.info("Hello world.")
 
 
 def main():
     setup_logging()
     parser = create_parser()
-    args = parser.parse_args()
-    print(args)
-
-    with args.input_json.open() as f:
-        configuration = json.load(f)
-
-    if args.input_paks is not None:
-        file_provider = PathFileProvider(args.input_paks)
-    else:
-        file_provider = IsoFileProvider(args.input_iso)
+    args = parser.parse_args(sys.argv[1:2])
 
     patcher_module = importlib.import_module(_game_to_patcher[args.game])
-    patcher_module.patch_paks(
-        file_provider,
-        args.output_paks,
-        configuration,
-    )
+    patcher_module.main(sys.argv[2:])
