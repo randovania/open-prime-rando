@@ -1,13 +1,12 @@
 import dataclasses
 
-from retro_data_structures.enums import echoes
 from retro_data_structures.properties.echoes.archetypes.DamageVulnerability import DamageVulnerability
-from retro_data_structures.properties.echoes.archetypes.WeaponVulnerability import WeaponVulnerability
+from retro_data_structures.properties.echoes.archetypes.WeaponVulnerability import Effect, WeaponVulnerability
 
-reflect = WeaponVulnerability(damage_multiplier=0, effect=echoes.Effect.Reflect)
-vulnerable = WeaponVulnerability(damage_multiplier=100, effect=echoes.Effect.Normal)
-immune = WeaponVulnerability(damage_multiplier=0, effect=echoes.Effect.Normal, ignore_radius=True)
-vulnerable_no_splash = WeaponVulnerability(damage_multiplier=100.0, effect=echoes.Effect.Normal, ignore_radius=True)
+reflect = WeaponVulnerability(damage_multiplier=0, effect=Effect.Reflect)
+vulnerable = WeaponVulnerability(damage_multiplier=100, effect=Effect.Normal)
+immune = WeaponVulnerability(damage_multiplier=0, effect=Effect.Normal, ignore_radius=True)
+vulnerable_no_splash = WeaponVulnerability(damage_multiplier=100.0, effect=Effect.Normal, ignore_radius=True)
 
 
 resist_all_vuln = DamageVulnerability(

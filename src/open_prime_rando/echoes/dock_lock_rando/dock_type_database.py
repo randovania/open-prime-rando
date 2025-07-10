@@ -1,6 +1,6 @@
 import dataclasses
 
-from retro_data_structures.enums.echoes import VisorFlags
+from retro_data_structures.properties.echoes.archetypes.VisorParameters import VisorFlags
 from retro_data_structures.properties.echoes.core.Color import Color
 from retro_data_structures.properties.echoes.core.Vector import Vector
 

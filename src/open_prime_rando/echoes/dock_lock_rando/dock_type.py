@@ -2,7 +2,7 @@ import dataclasses
 
 from retro_data_structures.asset_manager import NameOrAssetId
 from retro_data_structures.base_resource import AssetId
-from retro_data_structures.enums.echoes import Message, State, VisorFlags
+from retro_data_structures.enums.echoes import Message, State
 from retro_data_structures.formats.mapa import Mapa
 from retro_data_structures.formats.mrea import Area
 from retro_data_structures.formats.scan import Scan
@@ -16,7 +16,7 @@ from retro_data_structures.properties.echoes.archetypes.HealthInfo import Health
 from retro_data_structures.properties.echoes.archetypes.ScannableParameters import ScannableParameters
 from retro_data_structures.properties.echoes.archetypes.SurroundPan import SurroundPan
 from retro_data_structures.properties.echoes.archetypes.Transform import Transform
-from retro_data_structures.properties.echoes.archetypes.VisorParameters import VisorParameters
+from retro_data_structures.properties.echoes.archetypes.VisorParameters import VisorFlags, VisorParameters
 from retro_data_structures.properties.echoes.archetypes.WeaponVulnerability import WeaponVulnerability
 from retro_data_structures.properties.echoes.core.Color import Color
 from retro_data_structures.properties.echoes.core.Spline import Spline
