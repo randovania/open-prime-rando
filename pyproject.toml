@@ -10,7 +10,6 @@ name = "open-prime-rando"
 description = "An open source randomizer patcher for Metroid Prime 2 and 3."
 authors = [{name = "Henrique Gemignani"}]
 classifiers = [
-    "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
     "Development Status :: 3 - Alpha",
     "Intended Audience :: Developers",
     "Programming Language :: Python :: 3.10",
@@ -20,6 +19,7 @@ classifiers = [
 ]
 requires-python = ">=3.10"
 dynamic = ["version"]
+license = "GPL-3.0"
 
 dependencies = [
     "retro-data-structures>=0.29.0",
