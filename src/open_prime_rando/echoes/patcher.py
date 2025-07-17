@@ -3,7 +3,7 @@ from __future__ import annotations
 import logging
 from typing import TYPE_CHECKING
 
-from retro_data_structures.asset_manager import IsoFileProvider
+from retro_data_structures.asset_manager import IsoFileProvider, PathFileWriter
 from retro_data_structures.game_check import Game
 
 from open_prime_rando.patcher_editor import PatcherEditor
@@ -30,7 +30,10 @@ def patch_iso(
     :return:
     """
     file_provider = IsoFileProvider(input_iso)
+    output = PathFileWriter(output_iso)  # TODO: IsoFileWriter
+
     editor = PatcherEditor(file_provider, Game.ECHOES)
 
     # Save our changes
-    editor.flush_modified_assets()
+    editor.build_modified_files()
+    editor.save_modifications(output)

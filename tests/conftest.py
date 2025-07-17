@@ -53,14 +53,14 @@ def pal_prime2_iso_provider() -> IsoFileProvider:
 
 @pytest.fixture(scope="module")
 def raw_prime2_editor(prime2_iso_provider: IsoFileProvider) -> PatcherEditor:
-    return PatcherEditor(prime2_iso_provider, game=Game.ECHOES)
+    return PatcherEditor(prime2_iso_provider, target_game=Game.ECHOES)
 
 
 @pytest.fixture
 def prime2_editor(raw_prime2_editor: PatcherEditor):
     editor = raw_prime2_editor
     yield editor
-    editor.memory_files = {}
+    editor._memory_files = {}
     for custom_asset, asset_id in editor._custom_asset_ids.items():
         editor._paks_for_asset_id.pop(asset_id)
     editor._custom_asset_ids = {}

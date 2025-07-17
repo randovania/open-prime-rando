@@ -5,7 +5,7 @@ from collections.abc import Callable
 from pathlib import Path
 from typing import TYPE_CHECKING
 
-from retro_data_structures.asset_manager import FileProvider
+from retro_data_structures.asset_manager import FileProvider, PathFileWriter
 from retro_data_structures.formats.strg import Strg
 from retro_data_structures.game_check import Game
 
@@ -194,7 +194,7 @@ def patch_paks(
     apply_custom_suits(editor, configuration["cosmetics"]["suits"])
 
     # Save our changes
-    editor.flush_modified_assets()
+    editor.build_modified_files()
 
-    editor.save_modifications(output_path)
+    editor.save_modifications(PathFileWriter(output_path))
     status_update("Finished", 1.0)
