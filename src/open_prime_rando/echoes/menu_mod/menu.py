@@ -382,7 +382,10 @@ def add_area_elements(editor: PatcherEditor, mlvl_id: int, area: Area, menu_area
 
     add_menu, add_load_loader = should_add_menu(area, docks)
     if not add_menu:
+        print(f"Not adding menu to {area.name}")
         return
+
+    print(f"Adding menu to {area.name}")
 
     # Connect the area to the Menu
     dock_index = add_dock_to_menu(area, menu_area)
@@ -591,7 +594,9 @@ def create_layer_switch_menu(
     )
     occlusion_relay.add_connection(State.InternalState01, Message.Activate, gui_menu)
 
-    string_table_asset_id, string_table = editor.create_strg(f"menu_mod_{mlvl_id}_{area.name}.strg")
+    string_table_asset_id, string_table = editor.create_strg(
+        f"menu_mod_{mlvl_id}_{area.mrea_asset_id}_{area.name}.strg"
+    )
 
     create_area_menu(
         mlvl_id,
@@ -815,4 +820,4 @@ def create_area_menu(
                 occlusion_relay.add_connection(State.InternalState01, Message.Decrement, layer_controller)
             # FIXME: add notice that it's not working
 
-    string_table.strings = strings
+    string_table.set_string_list(strings)
