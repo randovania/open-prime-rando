@@ -6,6 +6,7 @@ from typing import TYPE_CHECKING
 from retro_data_structures.asset_manager import IsoFileProvider, PathFileWriter
 from retro_data_structures.game_check import Game
 
+from open_prime_rando.echoes import menu_mod
 from open_prime_rando.patcher_editor import PatcherEditor
 
 if TYPE_CHECKING:
@@ -33,6 +34,8 @@ def patch_iso(
     output = PathFileWriter(output_iso)  # TODO: IsoFileWriter
 
     editor = PatcherEditor(file_provider, Game.ECHOES)
+
+    menu_mod.add_menu_mod(editor)
 
     # Save our changes
     editor.build_modified_files()
