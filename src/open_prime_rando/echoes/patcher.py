@@ -10,7 +10,7 @@ from retro_data_structures.game_check import Game
 from open_prime_rando.dol_patching.echoes import dol_patcher
 from open_prime_rando.dol_patching.echoes.beam_configuration import BeamAmmoConfiguration
 from open_prime_rando.dol_patching.echoes.user_preferences import OprEchoesUserPreferences
-from open_prime_rando.echoes import inverted
+from open_prime_rando.echoes import inverted, menu_mod
 from open_prime_rando.echoes.elevators import auto_enabled_elevator_patches
 from open_prime_rando.patcher_editor import PatcherEditor
 
@@ -101,6 +101,8 @@ def patch_iso(
     if _ALL_FEATURES:
         auto_enabled_elevator_patches.apply_auto_enabled_elevators_patch(editor)
         inverted.apply_inverted(editor)
+
+    menu_mod.add_menu_mod(editor)
 
     # Save our changes
     editor.build_modified_files()

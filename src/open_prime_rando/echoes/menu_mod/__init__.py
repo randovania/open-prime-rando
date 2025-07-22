@@ -1,3 +1,4 @@
+import construct
 from retro_data_structures.formats import Mrea
 
 from open_prime_rando.echoes.asset_ids import world
@@ -17,6 +18,17 @@ def add_menu_mod(editor: PatcherEditor) -> None:
 
         editor_mrea_id = editor.add_new_asset(f"{world_name} Menu Area", mrea, editor.find_paks(world_id))
         menu_area = mlvl.add_area(editor_mrea_id, editor.target_game.invalid_asset_id, internal_name="Menu")
+        menu_area._raw.docks.append(
+            construct.Container(
+                connecting_dock=[],
+                dock_coordinates=[
+                    [0, 0, 0],
+                    [0, 5, 0],
+                    [5, 0, 0],
+                    [5, 5, 0],
+                ],
+            )
+        )
 
         for area in mlvl.areas:
             if area.index == menu_area.index:
@@ -29,3 +41,6 @@ def add_menu_mod(editor: PatcherEditor) -> None:
                 menu_area,
             )
             print(area.name, [layer.name for layer in area.layers])
+
+        for area in mlvl.areas:
+            area.update_all_dependencies()
