@@ -40,7 +40,8 @@ def add_menu_mod(editor: PatcherEditor) -> None:
                 area,
                 menu_area,
             )
-            print(area.name, [layer.name for layer in area.layers])
 
+    for world_name, world_id in world.NAME_TO_ID_MLVL.items():
+        mlvl = editor.get_mlvl(world_id)
         for area in mlvl.areas:
             area.update_all_dependencies()

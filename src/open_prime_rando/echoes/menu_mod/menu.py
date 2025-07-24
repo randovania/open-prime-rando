@@ -373,141 +373,6 @@ def create_load_loader(
     return load_loader_layer
 
 
-def add_area_elements(editor: PatcherEditor, mlvl_id: int, area: Area, menu_area: Area) -> None:
-    # string_table: Strg
-
-    docks, special_functions, script_layer_controllers, memory_relays, in_dark_world = _collect_details_from_instances(
-        area
-    )
-
-    add_menu, add_load_loader = should_add_menu(area, docks)
-    if not add_menu:
-        print(f"Not adding menu to {area.name}")
-        return
-
-    print(f"Adding menu to {area.name}")
-
-    # Connect the area to the Menu
-    dock_index = add_dock_to_menu(area, menu_area)
-
-    loader_layer = area.add_layer("Menu - Loader", active=False)
-
-    # 13970313
-    enable_controller = loader_layer.add_instance_with(
-        player_in_area_relay("Player In Area Relay - Enable ControllerAction")
-    )
-    # 13970314
-    check_for_dpad = loader_layer.add_instance_with(controller_action("Check for D-Pad Up press", 58, False))
-    # 13970315
-    dpad_count = loader_layer.add_instance_with(advanced_counter("Count D-Pad Up presses", 4))
-    # 13970316
-    load_menu = loader_layer.add_instance_with(Switch(editor_props("Load Menu"), is_open=True))
-    # 13970317
-    reset_dpad_counter = loader_layer.add_instance_with(
-        Timer(editor_props("Reset Counter if D-Pad not pressed quickly enough"), time=0.5)
-    )
-    # 13970318
-    stop_quick_counter = loader_layer.add_instance_with(
-        Timer(editor_props("Stop Counter increasing TOO quickly (cutscene skip workaround)"), time=0.1)
-    )
-    # 13970319
-    menu_dock = loader_layer.add_instance_with(create_dock("Menu Dock", dock_index, area.index))
-
-    # Exit Menu
-    exit_menu_relay = loader_layer.add_instance_with(Relay(EditorProperties(name="Exit Menu"), one_shot=False))
-    # TODO: use a static id so the menu can connect to it
-
-    enable_controller.add_connection(State.Entered, Message.Activate, check_for_dpad)
-    enable_controller.add_connection(State.Exited, Message.Deactivate, check_for_dpad)
-    check_for_dpad.add_connection(State.Open, Message.Increment, dpad_count)
-    check_for_dpad.add_connection(State.Open, Message.ResetAndStart, reset_dpad_counter)
-
-    dpad_count.add_connection(State.InternalState00, Message.Deactivate, load_menu)
-    dpad_count.add_connection(State.InternalState00, Message.ResetAndStart, stop_quick_counter)
-    dpad_count.add_connection(State.MaxReached, Message.SetToZero, load_menu)
-
-    load_menu.add_connection(State.Open, Message.Deactivate, check_for_dpad)
-
-    reset_dpad_counter.add_connection(State.Zero, Message.Reset, dpad_count)
-    stop_quick_counter.add_connection(State.Zero, Message.Activate, load_menu)
-
-    menu_dock.add_connection(State.MaxReached, Message.Increment, menu_dock)
-    # exit_menu_relay.add_connection(State.Zero, Message.Deactivate, CSettings.CameraID)  TODO
-    exit_menu_relay.add_connection(State.Zero, Message.SetToZero, menu_dock)
-    exit_menu_relay.add_connection(State.Zero, Message.Activate, check_for_dpad)
-
-    if add_load_loader:
-        menu_loader_layer = create_load_loader(
-            area,
-            loader_layer,
-            menu_dock,
-            load_menu,
-            exit_menu_relay,
-            {obj.id for obj in special_functions},
-        )
-    else:
-        for obj in docks:
-            load_menu.add_connection(State.Open, Message.SetToZero, obj)
-        load_menu.add_connection(State.Open, Message.SetToMax, menu_dock)
-
-        menu_loader_layer = loader_layer
-
-    layer_switch_menu = create_layer_switch_menu(
-        editor, mlvl_id, area, menu_loader_layer, script_layer_controllers, memory_relays
-    )
-
-    # Layer Menu ScriptLayerController
-    # Layer Menu Relay
-
-    layer_switch_controller = menu_loader_layer.add_instance_with(
-        ScriptLayerController(
-            editor_properties=EditorProperties(name="Layer Menu ScriptLayerController", unknown=0),
-            layer=LayerSwitch(
-                area_id=area.id,
-                layer_number=layer_switch_menu.index,
-            ),
-            is_dynamic=True,
-        )
-    )
-    relay = menu_loader_layer.add_instance_with(
-        Relay(
-            EditorProperties(name="Layer Menu Relay", unknown=0),
-        )
-    )
-    # relay.id = MenuLayerInstanceId
-
-    relay.add_connection(State.Zero, Message.Close, load_menu)
-    relay.add_connection(State.Zero, Message.Increment, layer_switch_controller)
-    # relay.add_connection(State.Zero, Message.Deactivate, kMainMenu)
-    # relay.add_connection(State.Zero, Message.Deactivate, kLoadingPane)
-    # layer_switch_controller.add_connection(State.Arrived, Message.Deactivate, kLoadingPane)
-    layer_switch_controller.add_connection(State.Arrived, Message.Play, layer_switch_controller)
-    layer_switch_controller.add_connection(State.Arrived, Message.Deactivate, layer_switch_controller)
-
-    if True:  # Do Exceptions
-        if area.mrea_asset_id == 0xDF073157:  # Aerie Access
-            exit_menu_relay.add_connection(State.Zero, Message.SetToMax, 3997706)
-            exit_menu_relay.add_connection(State.Zero, Message.Deactivate, 3997704)
-
-        elif area.mrea_asset_id == 0xC0113CE8:  # Dynamo Works
-            pass
-            # load_menu.add_connection(
-            #     State.Open, Message.Increment,
-            #     area.get_layer("Load during Spiderball Battle, Unload Post-Pickup Cinematic").add_instance_with(
-            #         kEnableMMULayer)
-            # )
-
-        elif area.mrea_asset_id == 0x5D3A0001:  # Aerie
-            pass
-            # load_menu.add_connection(
-            #     State.Open, Message.Increment,
-            #     area.get_layer("Dark Samus Battle 2").add_instance_with(kEnableMMULayer)
-            # )
-
-        elif area.mrea_asset_id == 1894024576:
-            area.get_layer("Echo Bot").active = False
-
-
 def _replicate_connections(
     area: Area, layer: ScriptLayer, target: ScriptInstance, message_mapping: dict[Message, Message]
 ) -> None:
@@ -821,3 +686,149 @@ def create_area_menu(
             # FIXME: add notice that it's not working
 
     string_table.set_string_list(strings)
+
+
+def add_area_elements(editor: PatcherEditor, mlvl_id: int, area: Area, menu_area: Area) -> None:
+    """
+    Edits the given area to link to menu mod and have menu mod features.
+    :param editor:
+    :param mlvl_id:
+    :param area:
+    :param menu_area:
+    :return:
+    """
+    # string_table: Strg
+
+    docks, special_functions, script_layer_controllers, memory_relays, in_dark_world = _collect_details_from_instances(
+        area
+    )
+
+    add_menu, add_load_loader = should_add_menu(area, docks)
+    if not add_menu:
+        print(f"Not adding menu to {area.name}")
+        return
+
+    print(f"Adding menu to {area.name}, with add_load_loader = {add_load_loader}")
+
+    # Connect the area to the Menu
+    dock_index = add_dock_to_menu(area, menu_area)
+
+    loader_layer = area.add_layer("Menu - Loader", active=False)
+
+    # 13970313
+    enable_controller = loader_layer.add_instance_with(
+        player_in_area_relay("Player In Area Relay - Enable ControllerAction")
+    )
+    # 13970314
+    check_for_dpad = loader_layer.add_instance_with(controller_action("Check for D-Pad Up press", 58, False))
+    # 13970315
+    dpad_count = loader_layer.add_instance_with(advanced_counter("Count D-Pad Up presses", 4))
+    # 13970316
+    load_menu = loader_layer.add_instance_with(Switch(editor_props("Load Menu"), is_open=True))
+    # 13970317
+    reset_dpad_counter = loader_layer.add_instance_with(
+        Timer(editor_props("Reset Counter if D-Pad not pressed quickly enough"), time=0.5)
+    )
+    # 13970318
+    stop_quick_counter = loader_layer.add_instance_with(
+        Timer(editor_props("Stop Counter increasing TOO quickly (cutscene skip workaround)"), time=0.1)
+    )
+    # 13970319
+    menu_dock = loader_layer.add_instance_with(create_dock("Menu Dock", dock_index, area.index))
+
+    # Exit Menu
+    exit_menu_relay = loader_layer.add_instance_with(Relay(EditorProperties(name="Exit Menu"), one_shot=False))
+    # TODO: use a static id so the menu can connect to it
+
+    # FIXME
+    # player_killer =
+
+    enable_controller.add_connection(State.Entered, Message.Activate, check_for_dpad)
+    enable_controller.add_connection(State.Exited, Message.Deactivate, check_for_dpad)
+    check_for_dpad.add_connection(State.Open, Message.Increment, dpad_count)
+    check_for_dpad.add_connection(State.Open, Message.ResetAndStart, reset_dpad_counter)
+
+    dpad_count.add_connection(State.InternalState00, Message.Deactivate, load_menu)
+    dpad_count.add_connection(State.InternalState00, Message.ResetAndStart, stop_quick_counter)
+    dpad_count.add_connection(State.MaxReached, Message.SetToZero, load_menu)
+
+    load_menu.add_connection(State.Open, Message.Deactivate, check_for_dpad)
+
+    reset_dpad_counter.add_connection(State.Zero, Message.Reset, dpad_count)
+    stop_quick_counter.add_connection(State.Zero, Message.Activate, load_menu)
+
+    menu_dock.add_connection(State.MaxReached, Message.Increment, menu_dock)
+    # exit_menu_relay.add_connection(State.Zero, Message.Deactivate, CSettings.CameraID)  TODO
+    exit_menu_relay.add_connection(State.Zero, Message.SetToZero, menu_dock)
+    exit_menu_relay.add_connection(State.Zero, Message.Activate, check_for_dpad)
+
+    if add_load_loader:
+        menu_loader_layer = create_load_loader(
+            area,
+            loader_layer,
+            menu_dock,
+            load_menu,
+            exit_menu_relay,
+            {obj.id for obj in special_functions},
+        )
+    else:
+        for obj in docks:
+            load_menu.add_connection(State.Open, Message.SetToZero, obj)
+        load_menu.add_connection(State.Open, Message.SetToMax, menu_dock)
+
+        menu_loader_layer = loader_layer
+
+    layer_switch_menu = create_layer_switch_menu(
+        editor, mlvl_id, area, menu_loader_layer, script_layer_controllers, memory_relays
+    )
+
+    # Layer Menu ScriptLayerController
+    # Layer Menu Relay
+
+    layer_switch_controller = menu_loader_layer.add_instance_with(
+        ScriptLayerController(
+            editor_properties=EditorProperties(name="Layer Menu ScriptLayerController", unknown=0),
+            layer=LayerSwitch(
+                area_id=area.id,
+                layer_number=layer_switch_menu.index,
+            ),
+            is_dynamic=True,
+        )
+    )
+    relay = menu_loader_layer.add_instance_with(
+        Relay(
+            EditorProperties(name="Layer Menu Relay", unknown=0),
+        )
+    )
+    # relay.id = MenuLayerInstanceId
+
+    relay.add_connection(State.Zero, Message.Close, load_menu)
+    relay.add_connection(State.Zero, Message.Increment, layer_switch_controller)
+    # relay.add_connection(State.Zero, Message.Deactivate, kMainMenu)
+    # relay.add_connection(State.Zero, Message.Deactivate, kLoadingPane)
+    # layer_switch_controller.add_connection(State.Arrived, Message.Deactivate, kLoadingPane)
+    layer_switch_controller.add_connection(State.Arrived, Message.Play, layer_switch_controller)
+    layer_switch_controller.add_connection(State.Arrived, Message.Deactivate, layer_switch_controller)
+
+    if True:  # Do Exceptions
+        if area.mrea_asset_id == 0xDF073157:  # Aerie Access
+            exit_menu_relay.add_connection(State.Zero, Message.SetToMax, 3997706)
+            exit_menu_relay.add_connection(State.Zero, Message.Deactivate, 3997704)
+
+        elif area.mrea_asset_id == 0xC0113CE8:  # Dynamo Works
+            pass
+            # load_menu.add_connection(
+            #     State.Open, Message.Increment,
+            #     area.get_layer("Load during Spiderball Battle, Unload Post-Pickup Cinematic").add_instance_with(
+            #         kEnableMMULayer)
+            # )
+
+        elif area.mrea_asset_id == 0x5D3A0001:  # Aerie
+            pass
+            # load_menu.add_connection(
+            #     State.Open, Message.Increment,
+            #     area.get_layer("Dark Samus Battle 2").add_instance_with(kEnableMMULayer)
+            # )
+
+        elif area.mrea_asset_id == 1894024576:
+            area.get_layer("Echo Bot").active = False
