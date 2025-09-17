@@ -2,9 +2,10 @@ name: Python Package
 
 on:
   pull_request:
+  merge_group:
   push:
     branches:
-      - '*'
+      - main
     tags:
       - '*'
 
@@ -20,27 +21,27 @@ jobs:
           fetch-depth: 0
           submodules: 'recursive'
 
-      - name: Set up Python
-        uses: actions/setup-python@v4
+      - name: Install uv
+        uses: astral-sh/setup-uv@v6
         with:
-          python-version: "3.10"
+          version: "0.7.20"
+          enable-cache: true
 
-      - name: Install Python packages
-        run: python -m pip install --upgrade pip setuptools build
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
 
       - name: build
-        run: PYTHONWARNINGS=error python -m build
+        run: PYTHONWARNINGS=error uv build
 
       - name: Store the packages
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: python-package-distributions
           path: dist
 
   test:
-    needs:
-      - build
-
     runs-on: ubuntu-latest
     name: Test Python ${{ matrix.python.version }}
     strategy:
@@ -49,35 +50,32 @@ jobs:
         python:
           - {version: '3.10', wheel: 'cp310-cp310'}
           - {version: '3.11', wheel: 'cp311-cp311'}
+          - {version: '3.12', wheel: 'cp312-cp312'}
+          - {version: '3.13', wheel: 'cp313-cp313'}
 
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          submodules: 'recursive'
 
-      - name: remove code outside of wheel
-        run: rm -rf src
-        shell: bash
+      - name: Install uv
+        uses: astral-sh/setup-uv@v6
+        with:
+          version: "0.7.20"
+          enable-cache: true
 
       - name: Set up Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python.version }}
 
-      - name: Download all the dists
-        uses: actions/download-artifact@v3
-        with:
-          name: python-package-distributions
-          path: dist/
-
-      - name: Install Python packages
-        run: python -m pip install --upgrade pip
-
-      - name: install built wheel
-        run: python -m pip install "$(ls dist/*.whl)[test]"
-        shell: bash
+      - name: install
+        run: uv sync --frozen --extra test
 
       - name: run pytest
-        run: python -m pytest --skip-if-missing
+        run: uv run pytest --skip-if-missing
 
   full_test:
     runs-on: self-hosted
@@ -91,21 +89,14 @@ jobs:
           fetch-depth: 0
           submodules: 'recursive'
 
-      - name: Create venv
-        run: python -m venv venv
-
-      - name: Install Python packages
-        run: venv/bin/python -m pip install --upgrade pip
-
-      - name: install built wheel
-        run: venv/bin/python -m pip install -e .[test]
+      - name: install
+        run: uv sync --frozen --extra test
 
       - name: Run Tests
-        run:
-          venv/bin/python -m pytest --cov src --cov-report=xml --durations=100
+        run: uv run pytest --cov src --cov-report=xml --durations=100 -n 4
 
       - name: codecov
-        uses: codecov/codecov-action@v3
+        uses: codecov/codecov-action@v5
         with:
           fail_ci_if_error: false
           files: ./coverage.xml
@@ -115,11 +106,12 @@ jobs:
   pypi:
     runs-on: 'ubuntu-latest'
     needs:
+      - build
       - test
 
     steps:
       - name: Download all the dists
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: python-package-distributions
           path: dist/
@@ -129,7 +121,8 @@ jobs:
         uses: pypa/gh-action-pypi-publish@release/v1
         with:
           password: ${{ secrets.testpypi_password }}
-          repository_url: https://test.pypi.org/legacy/
+          repository-url: https://test.pypi.org/legacy/
+          attestations: false
 
       - name: Publish 📦 to PyPI
         if: ${{ startsWith(github.ref, 'refs/tags/') }}

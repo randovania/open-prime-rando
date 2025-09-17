@@ -10,17 +10,19 @@ name = "open-prime-rando"
 description = "An open source randomizer patcher for Metroid Prime 2 and 3."
 authors = [{name = "Henrique Gemignani"}]
 classifiers = [
-    "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
     "Development Status :: 3 - Alpha",
     "Intended Audience :: Developers",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
 ]
 requires-python = ">=3.10"
 dynamic = ["version"]
+license = "GPL-3.0"
 
 dependencies = [
-    "retro-data-structures>=0.23.0",
+    "retro-data-structures>=0.29.0",
     "jsonschema>=4.0.0",
     "ppc-asm",
     "py_randomprime",  # for Prime 1 symbols
@@ -35,6 +37,7 @@ test = [
     "pytest",
     "pytest-cov",
     "pytest-mock",
+    "pytest-xdist",
     "pre-commit",
 ]
 
@@ -65,8 +68,29 @@ filterwarnings = [
 
 [tool.ruff]
 line-length = 120
-select = ["E", "F", "W", "C90", "I", "UP"]
+target-version = "py310"
 src = ["src"]
 
-# Version to target for generated code.
-target-version = "py310"
+[tool.ruff.lint]
+select = [
+    "E", "F", "W", "C90", "I", "UP", "C4",
+    "RSE",
+    "TCH",
+    "PTH",
+    "COM818", "COM819",
+    "ISC",
+    "PIE",
+    "PT",
+
+    "PLC",
+
+    "PLE",
+    "PLR0402", "PLR1711", "PLR1722", "PLR0206",
+    "PLR0133", "PLR0124",
+    "PLW",
+    "SIM101",
+]
+extend-ignore = [
+    "ISC001",  # may cause conflicts with formatter
+    "PLC0415",
+]

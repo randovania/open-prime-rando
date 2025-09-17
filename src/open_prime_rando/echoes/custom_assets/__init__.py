@@ -111,7 +111,7 @@ def _import_premade_assets(editor: PatcherEditor):
     assets = custom_asset_path().joinpath("general")
     for f in assets.rglob("*.*"):
         name = f.name
-        asset_type = f.suffix[1:].upper() # remove leading period, force uppercase
+        asset_type = f.suffix[1:].upper()  # remove leading period, force uppercase
         raw = f.read_bytes()
         editor.add_new_asset(name, RawResource(asset_type, raw), ())
 

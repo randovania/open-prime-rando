@@ -97,13 +97,13 @@ _FLAGS_ORDER = (
 )
 
 
-def apply_game_options_patch(game_options_constructor_offset: int, user_preferences: OprEchoesUserPreferences,
-                             dol_file: DolFile):
+def apply_game_options_patch(
+    game_options_constructor_offset: int, user_preferences: OprEchoesUserPreferences, dol_file: DolFile
+):
     patch = [
         # Unknown purpose, but keep for safety
-        stw(r31, 0x1c, r1),
+        stw(r31, 0x1C, r1),
         or_(r31, r3, r3),
-
         # For a later function call we don't touch
         addi(r3, r1, 0x8),
     ]
@@ -112,25 +112,27 @@ def apply_game_options_patch(game_options_constructor_offset: int, user_preferen
         value = getattr(user_preferences, preference_name)
         if isinstance(value, Enum):
             value = value.value
-        patch.extend([
-            li(r0, value),
-            stw(r0, (0x04 * i), r31),
-        ])
+        patch.extend(
+            [
+                li(r0, value),
+                stw(r0, (0x04 * i), r31),
+            ]
+        )
 
     flag_values = [
-        getattr(user_preferences, flag_name)
-        if flag_name is not None else False
-        for flag_name in _FLAGS_ORDER
+        getattr(user_preferences, flag_name) if flag_name is not None else False for flag_name in _FLAGS_ORDER
     ]
     bit_mask = int("".join(str(int(flag)) for flag in flag_values), 2)
-    patch.extend([
-        li(r0, bit_mask),
-        stb(r0, 0x04 * len(_PREFERENCES_ORDER), r31),
-        li(r0, 0),
-        stw(r0, 0x2c, r31),
-        stw(r0, 0x30, r31),
-        stw(r0, 0x34, r31),
-    ])
+    patch.extend(
+        [
+            li(r0, bit_mask),
+            stb(r0, 0x04 * len(_PREFERENCES_ORDER), r31),
+            li(r0, 0),
+            stw(r0, 0x2C, r31),
+            stw(r0, 0x30, r31),
+            stw(r0, 0x34, r31),
+        ]
+    )
 
     instructions_space = 34
     instructions_to_fill = instructions_space - len(patch)
@@ -159,31 +161,37 @@ def _is_out_of_ammo_patch(symbols: dict[str, int], ammo_types: list[tuple[int, i
                 instructions.append(bdnz(f"_before_get_ammo_type_{beam_index + 1}_{index}"))
 
             if beam_ammo_types[index] == -1:
-                instructions.extend([
-                    li(r3, 0),  # No ammo type, so load result
-                    b("_end"),  # and return
-                ])
+                instructions.extend(
+                    [
+                        li(r3, 0),  # No ammo type, so load result
+                        b("_end"),  # and return
+                    ]
+                )
             else:
-                instructions.extend([
-                    li(r4, beam_ammo_types[index]),
-                    b(label),
-                ])
+                instructions.extend(
+                    [
+                        li(r4, beam_ammo_types[index]),
+                        b(label),
+                    ]
+                )
 
             instructions[0].with_label(f"_before_get_ammo_type_{beam_index}_{index}")
             body.extend(instructions)
 
-        body.extend([
-            or_(r3, r31, r31).with_label(label),  # arg1 = playerState, arg2 is already there
-            li(r5, 1),  # arg3 = true, allow multiplayer ammo stuff
-            bl("CPlayerState::GetItemAmount"),  # r3 = ammoCount
-        ])
+        body.extend(
+            [
+                or_(r3, r31, r31).with_label(label),  # arg1 = playerState, arg2 is already there
+                li(r5, 1),  # arg3 = true, allow multiplayer ammo stuff
+                bl("CPlayerState::GetItemAmount"),  # r3 = ammoCount
+            ]
+        )
 
         return body
 
     get_uncharged_cost = [
         custom_ppc.load_unsigned_32bit(r4, symbols["BeamIdToChargedShotAmmoCost"]),
         lwz(r5, 0x774, r30),  # r5 = get current beam
-        rlwinm(r5, r5, 0x2, 0x0, 0x1d),  # r5 *= 4
+        rlwinm(r5, r5, 0x2, 0x0, 0x1D),  # r5 *= 4
         lwzx(r4, r4, r5),  # ammoCost_r4 = UnchargedCosts_r4[currentBeam]
     ]
     compare_count_to_cost = [
@@ -198,35 +206,28 @@ def _is_out_of_ammo_patch(symbols: dict[str, int], ammo_types: list[tuple[int, i
         stwu(r1, -0x10, r1),
         mfspr(r0, LR),
         stw(r0, 0x14, r1),
-
         # Save r31 and r30
-        stw(r31, 0xc, r1),
+        stw(r31, 0xC, r1),
         stw(r30, 0x8, r1),
-
         # Save a pointer to CPlayerGun
         or_(r30, r3, r3),
         bl("CPlayerGun::GetPlayer"),
-
         # Get and save a pointer to CPlayerState
         lwz(r31, 0x1314, r3),
-
         # check ammo type 1
         *get_beam_ammo_amount(0),  # r3 = ammo amount
         *get_uncharged_cost,  # r4 = uncharged_cost
         *compare_count_to_cost,
-
         # check ammo type 2
         *get_beam_ammo_amount(1),  # r3 = ammo amount
         *get_uncharged_cost,  # r4 = uncharged_cost
         *compare_count_to_cost,
-
         # All ammo types for this beam are fine!
         li(r3, 0),
         b("_end"),  # and return
-
         # end
         lwz(r0, 0x14, r1).with_label("_end"),
-        lwz(r31, 0xc, r1),
+        lwz(r31, 0xC, r1),
         lwz(r30, 0x8, r1),
         mtspr(LR, r0),
         addi(r1, r1, 0x10),
@@ -234,9 +235,9 @@ def _is_out_of_ammo_patch(symbols: dict[str, int], ammo_types: list[tuple[int, i
     ]
 
 
-def apply_beam_cost_patch(patch_addresses: BeamCostAddresses,
-                          beam_configurations: Iterable[BeamAmmoConfiguration],
-                          dol_file: DolFile):
+def apply_beam_cost_patch(
+    patch_addresses: BeamCostAddresses, beam_configurations: Iterable[BeamAmmoConfiguration], dol_file: DolFile
+):
     uncharged_costs = []
     charged_costs = []
     combo_costs = []
@@ -248,10 +249,12 @@ def apply_beam_cost_patch(patch_addresses: BeamCostAddresses,
         charged_costs.append(beam_config.charged_cost)
         combo_costs.append(beam_config.combo_ammo_cost)
         missile_costs.append(beam_config.combo_missile_cost)
-        ammo_types.append((
-            beam_config.ammo_a,
-            beam_config.ammo_b,
-        ))
+        ammo_types.append(
+            (
+                beam_config.ammo_a,
+                beam_config.ammo_b,
+            )
+        )
 
     # The following patch also changes the fact that the game doesn't check if there's enough ammo for Power Beam
     # we start our patch right after the `addi r3,r31,0x0`
@@ -259,41 +262,33 @@ def apply_beam_cost_patch(patch_addresses: BeamCostAddresses,
     offset_to_body_end = 0xB4
     ammo_type_patch = [
         lwz(r10, 0x774, r25),  # r10 = get current beam
-        rlwinm(r10, r10, 0x2, 0x0, 0x1d),  # r10 *= 4
-
+        rlwinm(r10, r10, 0x2, 0x0, 0x1D),  # r10 *= 4
         lwzx(r0, r3, r10),  # r0 = BeamIdToUnchargedShotAmmoCost[currentBeam]
         stw(r0, 0x0, r29),  # *outBeamAmmoCost = r0
-
         lwz(r10, 0x774, r25),  # r10 = get current beam
         addi(r10, r10, 0x1),  # r10 = r10 + 1
         mtspr(CTR, r10),  # count_register = r10
-
         # Power Beam
         bdnz("dark_beam"),  # if (--count_register > 0) goto
         li(r3, ammo_types[0][0]),
         li(r9, ammo_types[0][1]),
         b("update_out_beam_type"),
-
         # Dark Beam
         bdnz("light_beam").with_label("dark_beam"),  # if (--count_register > 0) goto
         li(r3, ammo_types[1][0]),
         li(r9, ammo_types[1][1]),
         b("update_out_beam_type"),
-
         # Light Beam
         bdnz("annihilator_beam").with_label("light_beam"),  # if (--count_register > 0) goto
         li(r3, ammo_types[2][0]),
         li(r9, ammo_types[2][1]),
         b("update_out_beam_type"),
-
         # Annihilator Beam
         li(r3, ammo_types[3][0]).with_label("annihilator_beam"),
         li(r9, ammo_types[3][1]),
-
         # update_out_beam_type
         stw(r3, 0x0, r27).with_label("update_out_beam_type"),  # *outBeamAmmoTypeA = r3
         stw(r9, 0x0, r28),  # *outBeamAmmoTypeB = r9
-
         b(patch_addresses.get_beam_ammo_type_and_costs + offset_to_body_end),
         # jump to the code for getting the charged/combo costs and then check if has ammo
         # The address in question is at 0x801ccd64 for NTSC
@@ -317,15 +312,13 @@ def apply_beam_cost_patch(patch_addresses: BeamCostAddresses,
     dol_file.write("BeamIdToUnchargedShotAmmoCost", charged_costs_patch)
     dol_file.write("BeamIdToChargeComboAmmoCost", combo_costs_patch)
     dol_file.write("g_ChargeComboMissileCosts", missile_costs_patch)
-    dol_file.write_instructions(patch_addresses.get_beam_ammo_type_and_costs + ammo_type_patch_offset,
-                                ammo_type_patch)
+    dol_file.write_instructions(patch_addresses.get_beam_ammo_type_and_costs + ammo_type_patch_offset, ammo_type_patch)
     dol_file.write_instructions("CPlayerGun::IsOutOfAmmoToShoot", _is_out_of_ammo_patch(dol_file.symbols, ammo_types))
 
 
-def apply_safe_zone_heal_patch(patch_addresses: SafeZoneAddresses,
-                               sda2_base: int,
-                               heal_per_second: float,
-                               dol_file: DolFile):
+def apply_safe_zone_heal_patch(
+    patch_addresses: SafeZoneAddresses, sda2_base: int, heal_per_second: float, dol_file: DolFile
+):
     offset = patch_addresses.heal_per_frame_constant - sda2_base
 
     dol_file.write(patch_addresses.heal_per_frame_constant, struct.pack(">f", heal_per_second / 60))
@@ -340,35 +333,44 @@ def apply_starting_visor_patch(addresses: StartingBeamVisorAddresses, default_it
     default_beam = beam_order.index(default_items["beam"])
 
     # Patch CPlayerState constructor with default values
-    dol_file.write_instructions(addresses.player_state_constructor_clean + 0x54, [
-        bl(addresses.health_info_constructor),
-
-        li(r0, default_beam),
-        stw(r0, 0xc, r30),  # xc_currentBeam
-
-        li(r0, default_visor),
-        stw(r0, 0x30, r30),  # x30_currentVisor
-        stw(r0, 0x34, r30),  # x34_transitioningVisor
-
-        li(r3, 0),
-    ])
+    dol_file.write_instructions(
+        addresses.player_state_constructor_clean + 0x54,
+        [
+            bl(addresses.health_info_constructor),
+            li(r0, default_beam),
+            stw(r0, 0xC, r30),  # xc_currentBeam
+            li(r0, default_visor),
+            stw(r0, 0x30, r30),  # x30_currentVisor
+            stw(r0, 0x34, r30),  # x34_transitioningVisor
+            li(r3, 0),
+        ],
+    )
 
     # Patch CPlayerState constructor for loading save files
-    dol_file.write_instructions(addresses.player_state_constructor_decode + 0x5C, [
-        li(r0, default_visor),
-        stw(r0, 0x30, r30),
-        stw(r0, 0x34, r30),
-    ])
+    dol_file.write_instructions(
+        addresses.player_state_constructor_decode + 0x5C,
+        [
+            li(r0, default_visor),
+            stw(r0, 0x30, r30),
+            stw(r0, 0x34, r30),
+        ],
+    )
 
     # Patch EnterMorphBallState's call for StartTransitionToVisor to use the new default visor
-    dol_file.write_instructions(addresses.enter_morph_ball_state + 0xE8, [
-        li(r4, default_visor),
-    ])
+    dol_file.write_instructions(
+        addresses.enter_morph_ball_state + 0xE8,
+        [
+            li(r4, default_visor),
+        ],
+    )
 
     # Patch CPlayerState::ResetVisor so elevators use the new default visor
-    dol_file.write_instructions(addresses.reset_visor, [
-        li(r0, default_visor),
-    ])
+    dol_file.write_instructions(
+        addresses.reset_visor,
+        [
+            li(r0, default_visor),
+        ],
+    )
 
 
 @dataclasses.dataclass(frozen=True)
@@ -385,19 +387,34 @@ class EchoesDolVersion(BasePrimeDolVersion):
     cworldtransmanager_sfxstart: int
     powerup_should_persist: int
     map_door_types: MapDoorTypeAddresses
+    double_damage_vfx: int
 
 
 def apply_fixes(version: EchoesDolVersion, dol_file: DolFile):
     dol_file.symbols["CMapWorldInfo::IsAnythingSet"] = version.anything_set_address
 
-    dol_file.write_instructions("CMapWorldInfo::IsAnythingSet", [
-        li(r3, 1),
-        blr(),
-    ])
+    dol_file.write_instructions(
+        "CMapWorldInfo::IsAnythingSet",
+        [
+            li(r3, 1),
+            blr(),
+        ],
+    )
 
-    dol_file.write_instructions(version.rs_debugger_printf_loop_address, [
-        nop(),
-    ])
+    dol_file.write_instructions(
+        version.rs_debugger_printf_loop_address,
+        [
+            nop(),
+        ],
+    )
+
+    # Disable Double Damage VFX by checking for an invalid item id
+    dol_file.write_instructions(
+        version.double_damage_vfx,
+        [
+            li(r4, 999),
+        ],
+    )
 
 
 def change_powerup_should_persist(version: EchoesDolVersion, dol_file: DolFile, powerups: list[str]):
@@ -409,9 +426,12 @@ def change_powerup_should_persist(version: EchoesDolVersion, dol_file: DolFile, 
 def apply_unvisited_room_names(version: EchoesDolVersion, dol_file: DolFile, enabled: bool):
     # In CAutoMapper::Update, the function checks for `mwInfo.IsMapped` then `mwInfo.IsAreaVisited` and if both are
     # false, sets a variable to false. This variable indicates if the room name is displayed used.
-    dol_file.write_instructions(version.unvisited_room_names_address, [
-        li(r28, 1 if enabled else 0),
-    ])
+    dol_file.write_instructions(
+        version.unvisited_room_names_address,
+        [
+            li(r28, 1 if enabled else 0),
+        ],
+    )
 
 
 def apply_teleporter_sounds(version: EchoesDolVersion, dol_file: DolFile, enabled: bool):
@@ -422,16 +442,14 @@ def apply_teleporter_sounds(version: EchoesDolVersion, dol_file: DolFile, enable
     else:
         inst = blr()
 
-    dol_file.write_instructions("CWorldTransManager::SfxStart", [
-        inst
-    ])
+    dol_file.write_instructions("CWorldTransManager::SfxStart", [inst])
 
 
 def freeze_player():
     return [
-        lfs(f1, -0x707c, r2),  # timeout = 5.0f
-        lwz(r3, 0x14fc, r31),  # player = manager->players[0]
-        lhz(r6, -0x40da, r2),  # sfxId = kInvalidSoundId
+        lfs(f1, -0x707C, r2),  # timeout = 5.0f
+        lwz(r3, 0x14FC, r31),  # player = manager->players[0]
+        lhz(r6, -0x40DA, r2),  # sfxId = kInvalidSoundId
         or_(r4, r31, r31),  # mgr
         li(r5, -0x1),  # steamTextureId
         li(r7, -0x1),  # iceTextureId
@@ -468,14 +486,17 @@ def apply_map_door_changes(door_symbols: MapDoorTypeAddresses, dol_file: DolFile
     _type = r5
     _out_color = r3
 
-    dol_file.write_instructions("CTweakAutoMapper::GetDoorColor", [
-        custom_ppc.load_unsigned_32bit(_colors, door_color_array),
-        addi(_type, _type, -door_min),
-        mulli(_type, _type, 4),
-        lwzx(r0, _colors, _type),
-        stw(r0, 0, _out_color),
-        blr()
-    ])
+    dol_file.write_instructions(
+        "CTweakAutoMapper::GetDoorColor",
+        [
+            custom_ppc.load_unsigned_32bit(_colors, door_color_array),
+            addi(_type, _type, -door_min),
+            mulli(_type, _type, 4),
+            lwzx(r0, _colors, _type),
+            stw(r0, 0, _out_color),
+            blr(),
+        ],
+    )
 
     dol_file.symbols["CTweakAutoMapper::GetDoorColor::DoorColorArray"] = door_color_array
     dol_file.write("CTweakAutoMapper::GetDoorColor::DoorColorArray", DoorMapIcon.get_surface_colors_as_bytes())

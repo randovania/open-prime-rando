@@ -6,6 +6,11 @@
             "type": "string",
             "format": "uri"
         },
+        "legacy_compatibility": {
+            "type": "boolean",
+            "default": false,
+            "description": "Operate assuming that Claris' Randomizer was already used in the input files"
+        },
         "worlds": {
             "type": "object",
             "properties": {
@@ -92,6 +97,44 @@
             "required": [
                 "suits"
             ]
+        },
+        "tweaks": {
+            "type": "object",
+            "description": "Allows arbitrary changes to the tweaks",
+            "propertyNames": {
+                "enum": [
+                    "TweakGui",
+                    "TweakTargeting",
+                    "TweakPlayerRes",
+                    "TweakPlayerControls2",
+                    "TweakParticle",
+                    "TweakGuiColors",
+                    "TweakGame",
+                    "TweakPlayer2",
+                    "TweakSlideShow",
+                    "TweakBall",
+                    "TweakAutoMapper",
+                    "TweakPlayerControls",
+                    "TweakPlayerGunMuli",
+                    "TweakPlayerGun",
+                    "TweakCameraBob",
+                    "TweakPlayer"
+                ]
+            },
+            "additionalProperties": {
+                "type": "object",
+                "description": "Mapping of full property path to new value. For nested properties, include parent property names split with .",
+                "additionalProperties": true
+            },
+            "examples": [
+                {
+                    "TweakPlayer": {
+                        "collision.ball_radius": 0.5,
+                        "dark_world.damage_per_second.di_damage": 1,
+                        "dark_world.unknown_0x19275a97": 0.5
+                    }
+                }
+            ]
         }
     },
     "required": [
@@ -137,17 +180,18 @@
                         }
                     },
                     "default": {},
+                    "description": "Change the default state of this area's layers.",
                     "$comment": "The list of layers is replaced in runtime with the existing layers of each specific area."
                 },
                 "low_memory_mode": {
                     "type": "boolean",
                     "default": false,
-                    "$comment": "Some areas are riding the memory/object limit. Certain patches will account for these limitations if this flag is set."
+                    "description": "Some areas are riding the memory/object limit. Certain patches will account for these limitations if this flag is set."
                 },
                 "new_name": {
                     "type": ["string", "null"],
                     "default": null,
-                    "$comment": "If set, rename the area to this value"
+                    "description": "If set, rename the area to this value"
                 },
                 "elevators": {
                     "type": "array",
@@ -155,17 +199,21 @@
                         "type": "object",
                         "properties": {
                             "instance_id": {
-                                "type": "integer"
+                                "type": "integer",
+                                "description": "The instance id of the WorldTeleporter object to be updated."
                             },
                             "target_assets": {
-                                "$ref": "#/$defs/area_identifier"
+                                "$ref": "#/$defs/area_identifier",
+                                "description": ""
                             },
                             "target_strg": {
                                 "type": ["integer", "null"],
-                                "default": null
+                                "default": null,
+                                "description": "The STRG of the Scan that unlocks the elevator. If set, it's updated with `target_name`."
                             },
                             "target_name": {
-                                "type": "string"
+                                "type": "string",
+                                "description": "The name of the destination of this connects to. Used by `target_strg`."
                             }
                         },
                         "required": [
@@ -175,7 +223,8 @@
                         ],
                         "additionalProperties": false
                     },
-                    "default": []
+                    "default": [],
+                    "description": "Change where WorldTeleporters in this Area connect to"
                 }
             },
             "additionalProperties": false
@@ -239,10 +288,12 @@
             "type": "object",
             "properties": {
                 "world_asset_id": {
-                    "type": "integer"
+                    "type": "integer",
+                    "description": "Asset ID of a MLVL"
                 },
                 "area_asset_id": {
-                    "type": "integer"
+                    "type": "integer",
+                    "description": "Asset ID of a MREA"
                 }
             }
         },
