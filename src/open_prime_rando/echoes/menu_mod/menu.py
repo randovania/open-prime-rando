@@ -1,7 +1,7 @@
 from collections.abc import Iterator
 
 from construct import Container
-from retro_data_structures.enums.echoes import Message, PlayerItemEnum, State
+from retro_data_structures.enums.echoes import Message, PlayerItemEnum, State, WeaponTypeEnum
 from retro_data_structures.formats import Strg
 from retro_data_structures.formats.mrea import (
     Area,
@@ -11,12 +11,15 @@ from retro_data_structures.formats.script_object import Connection, InstanceId, 
 from retro_data_structures.properties.echoes.archetypes import (
     ActorParameters,
     ControllerActionStruct,
+    DamageInfo,
     EditorProperties,
     LayerSwitch,
     TextProperties,
     Transform,
+    TriggerInfo,
     VisorParameters,
 )
+from retro_data_structures.properties.echoes.archetypes.TriggerInfo import FlagsTrigger
 from retro_data_structures.properties.echoes.archetypes.VisorParameters import VisorFlags
 from retro_data_structures.properties.echoes.core import AnimationParameters, Color, Spline, Vector
 from retro_data_structures.properties.echoes.objects import (
@@ -35,6 +38,7 @@ from retro_data_structures.properties.echoes.objects import (
     Switch,
     TextPane,
     Timer,
+    Trigger,
     WorldTeleporter,
 )
 from retro_data_structures.properties.echoes.objects.SpecialFunction import Function
@@ -64,6 +68,33 @@ def editor_props(name: str) -> EditorProperties:
     :return:
     """
     return EditorProperties(name=name, unknown=0)
+
+
+def create_player_killer() -> Trigger:
+    huge = 340282346638528859811704183484516925440.0
+    return Trigger(
+        editor_properties=EditorProperties(
+            name="Player Killer",
+            transform=Transform(scale=Vector(huge, huge, huge)),
+            active=False,
+        ),
+        trigger=TriggerInfo(
+            damage=DamageInfo(
+                di_weapon_type=WeaponTypeEnum.CannonBall,
+                di_damage=1.0,
+                di_radius=huge,
+                di_knock_back_power=1.0,
+            ),
+            flags_trigger=(
+                FlagsTrigger.DetectMorphedPlayer
+                | FlagsTrigger.DetectUnmorphedPlayer
+                | FlagsTrigger.DetectPlayer1Broken
+                | FlagsTrigger.DetectPlayer2Broken
+                | FlagsTrigger.DetectPlayer3Broken
+                | FlagsTrigger.DetectPlayer4Broken
+            ),
+        ),
+    )
 
 
 def _get_connections_to(area: Area, target: InstanceId) -> Iterator[tuple[ScriptInstance, Connection]]:
@@ -741,7 +772,8 @@ def add_area_elements(editor: PatcherEditor, mlvl_id: int, area: Area, menu_area
     # TODO: use a static id so the menu can connect to it
 
     # FIXME
-    # player_killer =
+    player_killer = loader_layer.add_instance_with(create_player_killer())
+    check_for_dpad.add_connection(State.Open, Message.Increment, player_killer)
 
     enable_controller.add_connection(State.Entered, Message.Activate, check_for_dpad)
     enable_controller.add_connection(State.Exited, Message.Deactivate, check_for_dpad)
