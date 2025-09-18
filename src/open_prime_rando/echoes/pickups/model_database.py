@@ -1,4 +1,4 @@
-from retro_data_structures.enums.echoes import WorldLightingOptions
+from retro_data_structures.properties.echoes.archetypes.LightParameters import WorldLightingOptions
 from retro_data_structures.properties.echoes.core.Color import Color
 from retro_data_structures.properties.echoes.core.Vector import Vector
 
@@ -12,9 +12,7 @@ PICKUP_MODELS = {
             scale=Vector(1.75, 1.75, 1.75),
             rotation=Vector(0.0, 0.0, -78.7218),
         ),
-        lighting=ModelLighting(
-            ambient_color=Color(1.0, 1.0, 0.0, 0.75)
-        ),
+        lighting=ModelLighting(ambient_color=Color(1.0, 1.0, 0.0, 0.75)),
         auto_spin=True,
     ),
     "ChargeBeam": PickupModel(
@@ -41,7 +39,7 @@ PICKUP_MODELS = {
         transform=ModelTransform(
             scale=Vector(4.0, 4.0, 4.0),
             orbit_offset=Vector(0.0, 0.0, 1.0),
-        )
+        ),
     ),
     "AnnihilatorBeam": PickupModel(
         model=0x6FE2E8A0,
@@ -51,31 +49,31 @@ PICKUP_MODELS = {
         transform=ModelTransform(
             scale=Vector(1.75, 1.75, 1.75),
             rotation=Vector(0.0, 0.0, -78.7218),
-        )
+        ),
     ),
     "SuperMissile": PickupModel(
         model=0x546A6490,
         animation=ModelAnim(
             ancs=0x1CA5927A,
-        )
+        ),
     ),
     "Darkburst": PickupModel(
         model=0xF6510F11,
         animation=ModelAnim(
             ancs=0x2EFD9A18,
-        )
+        ),
     ),
     "Sunburst": PickupModel(
         model=0x43BB4262,
         animation=ModelAnim(
             ancs=0x20BB6D93,
-        )
+        ),
     ),
     "SonicBoom": PickupModel(
         model=0xF1207641,
         animation=ModelAnim(
             ancs=0x345E7936,
-        )
+        ),
     ),
     "CombatVisor": PickupModel(
         model=0x0B7E6CA9,
@@ -99,7 +97,7 @@ PICKUP_MODELS = {
         model=0x2ED9AD89,
         animation=ModelAnim(
             ancs=0x89E3C4E4,
-        )
+        ),
     ),
     "VariaSuit": PickupModel(
         model=0xCD995C16,
@@ -217,7 +215,7 @@ PICKUP_MODELS = {
         ),
         transform=ModelTransform(
             scale=Vector(1.5, 1.5, 1.5),
-        )
+        ),
     ),
     "MissileExpansion": PickupModel(
         model=0x5E3C8794,
@@ -422,7 +420,7 @@ PICKUP_MODELS = {
         ),
         transform=ModelTransform(
             scale=Vector(0.5, 0.5, 0.5),
-        )
+        ),
     ),
     "DarkTempleKey": PickupModel(
         model=0x5C8C5F22,
@@ -436,7 +434,7 @@ PICKUP_MODELS = {
         lighting=ModelLighting(
             use_world_lighting=WorldLightingOptions.Unknown2,
             use_old_lighting=True,
-        )
+        ),
     ),
     "SkyTempleKey": PickupModel(
         model=0x5737A308,
@@ -450,7 +448,7 @@ PICKUP_MODELS = {
         lighting=ModelLighting(
             use_world_lighting=WorldLightingOptions.Unknown2,
             use_old_lighting=True,
-        )
+        ),
     ),
     "AgonTempleKey": PickupModel(
         model="agon_temple_key.CMDL",
@@ -464,7 +462,7 @@ PICKUP_MODELS = {
         lighting=ModelLighting(
             use_world_lighting=WorldLightingOptions.Unknown2,
             use_old_lighting=True,
-        )
+        ),
     ),
     "TorvusTempleKey": PickupModel(
         model="torvus_temple_key.CMDL",
@@ -478,7 +476,7 @@ PICKUP_MODELS = {
         lighting=ModelLighting(
             use_world_lighting=WorldLightingOptions.Unknown2,
             use_old_lighting=True,
-        )
+        ),
     ),
     "HiveTempleKey": PickupModel(
         model="hive_temple_key.CMDL",
@@ -492,6 +490,6 @@ PICKUP_MODELS = {
         lighting=ModelLighting(
             use_world_lighting=WorldLightingOptions.Unknown2,
             use_old_lighting=True,
-        )
+        ),
     ),
 }

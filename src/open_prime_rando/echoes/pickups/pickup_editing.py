@@ -1,12 +1,16 @@
 import dataclasses
 from typing import NamedTuple, Self
 
-from retro_data_structures.enums.echoes import AmountOrCapacity, Condition, Function, Message, PlayerItem, State
+from retro_data_structures.enums.echoes import Message, PlayerItemEnum, State
 from retro_data_structures.formats.mapa import Mapa, ObjectTypeMP2, ObjectVisibility
 from retro_data_structures.formats.mrea import Area
 from retro_data_structures.formats.script_layer import ScriptLayer
 from retro_data_structures.formats.script_object import ScriptInstance
-from retro_data_structures.properties.echoes.archetypes.ConditionalTest import ConditionalTest
+from retro_data_structures.properties.echoes.archetypes.ConditionalTest import (
+    AmountOrCapacity,
+    Condition,
+    ConditionalTest,
+)
 from retro_data_structures.properties.echoes.archetypes.EditorProperties import EditorProperties
 from retro_data_structures.properties.echoes.core.Spline import Spline
 from retro_data_structures.properties.echoes.objects import (
@@ -19,6 +23,7 @@ from retro_data_structures.properties.echoes.objects import (
     StreamedAudio,
 )
 from retro_data_structures.properties.echoes.objects.Pickup import Pickup as RDSPickup
+from retro_data_structures.properties.echoes.objects.SpecialFunction import Function
 
 from open_prime_rando.echoes.pickups.location import PickupInstances, PickupLocation
 from open_prime_rando.echoes.pickups.model_database import PICKUP_MODELS
@@ -74,10 +79,7 @@ class PickupStage:
     def from_json(cls, data: dict) -> Self:
         return cls(
             required_item=data["required_item"],
-            resources=[
-                ResourceGain(gain["item"], gain["amount"])
-                for gain in data["resources"]
-            ],
+            resources=[ResourceGain(gain["item"], gain["amount"]) for gain in data["resources"]],
             appearance=PickupAppearance.from_json(data["appearance"]),
             conversion=[
                 ResourceConversion(
@@ -98,10 +100,7 @@ class Pickup:
     def from_json(cls, data: dict) -> Self:
         return cls(
             location=PickupLocation.from_json(data["location"]),
-            stages=[
-                PickupStage.from_json(stage)
-                for stage in data["stages"]
-            ],
+            stages=[PickupStage.from_json(stage) for stage in data["stages"]],
         )
 
     def patch_pickup(self, editor: PatcherEditor, area: Area, mapa: Mapa):
@@ -122,71 +121,77 @@ class Pickup:
             etm.restart_on_activate = True
             etm.unknown_0xbe931927 = True
             etm.motion_spline_duration = 5.0
-            etm.motion_control_spline = Spline(bytes.fromhex(
-                    '00 00 00 00 00 03 00 00'
-                    '00 00 00 00 00 00 01 01'
-                    '3f 80 00 00 3c cb 9c b7'
-                    '05 05 40 3f ab 94 3e 33'
-                    'f9 65 40 3f ab 94 3e 33'
-                    'f9 65 40 a0 00 00 3f 80'
-                    '00 00 05 05 40 29 1f 0d'
-                    '3f b5 ca 7c 40 29 1f 0d'
-                    '3f b5 ca 7c 01 00 00 00'
-                    '00 3f 80 00 00'
-            ))
+            etm.motion_control_spline = Spline(
+                bytes.fromhex(
+                    "00 00 00 00 00 03 00 00"
+                    "00 00 00 00 00 00 01 01"
+                    "3f 80 00 00 3c cb 9c b7"
+                    "05 05 40 3f ab 94 3e 33"
+                    "f9 65 40 3f ab 94 3e 33"
+                    "f9 65 40 a0 00 00 3f 80"
+                    "00 00 05 05 40 29 1f 0d"
+                    "3f b5 ca 7c 40 29 1f 0d"
+                    "3f b5 ca 7c 01 00 00 00"
+                    "00 3f 80 00 00"
+                )
+            )
         target.add_connection(State.Active, Message.Activate, particle)
         target.add_connection(State.Inactive, Message.Deactivate, particle)
         target.add_connection(State.Arrived, Message.Deactivate, particle)
 
-        follow_sf = layer.add_instance_with(SpecialFunction(
-            editor_properties=EditorProperties(
-                name="ETM Follow Pickup",
-                transform=target_editor_properties.transform,
-            ),
-            function=Function.ObjectFollowObject,
-            sound1=-1,
-            sound2=-1,
-            sound3=-1,
-        ))
+        follow_sf = layer.add_instance_with(
+            SpecialFunction(
+                editor_properties=EditorProperties(
+                    name="ETM Follow Pickup",
+                    transform=target_editor_properties.transform,
+                ),
+                function=Function.ObjectFollowObject,
+                sound1=-1,
+                sound2=-1,
+                sound3=-1,
+            )
+        )
         follow_sf.add_connection(State.Play, Message.Deactivate, particle)
         follow_sf.add_connection(State.Play, Message.Activate, target)
 
     def _add_modify_inventory_sf(self, item: int, amount: int, layer: ScriptLayer) -> ScriptInstance:
-        return layer.add_instance_with(SpecialFunction(
-            editor_properties=EditorProperties(name="Modify Item Amount"),
-            function=Function.InventoryThing1,
-            int_parm2=amount,
-            inventory_item_parm=item,
-            sound1=-1,
-            sound2=-1,
-            sound3=-1,
-        ))
+        return layer.add_instance_with(
+            SpecialFunction(
+                editor_properties=EditorProperties(name="Modify Item Amount"),
+                function=Function.InventoryThing1,
+                int_parm2=amount,
+                inventory_item_parm=item,
+                sound1=-1,
+                sound2=-1,
+                sound3=-1,
+            )
+        )
 
     def _add_relay(self, layer: ScriptLayer) -> ScriptInstance:
-        return layer.add_instance_with(Relay(
-            editor_properties=EditorProperties(name="Relay"),
-            one_shot=False,
-        ))
+        return layer.add_instance_with(
+            Relay(
+                editor_properties=EditorProperties(name="Relay"),
+                one_shot=False,
+            )
+        )
 
     def _add_conditional_relay(self, item: int, immediate: bool, layer: ScriptLayer) -> ScriptInstance:
-        return layer.add_instance_with(ConditionalRelay(
-            editor_properties=EditorProperties(name="Conditional Relay"),
-            trigger_on_first_think=immediate,
-            conditional1=ConditionalTest(
-                player_item=item,
-                amount_or_capacity=AmountOrCapacity.Capacity,
-                condition=Condition.GreaterThan,
-                value=0,
-            ),
-        ))
+        return layer.add_instance_with(
+            ConditionalRelay(
+                editor_properties=EditorProperties(name="Conditional Relay"),
+                trigger_on_first_think=immediate,
+                conditional1=ConditionalTest(
+                    player_item=item,
+                    amount_or_capacity=AmountOrCapacity.Capacity,
+                    condition=Condition.GreaterThan,
+                    value=0,
+                ),
+            )
+        )
 
-    def _patch_single_pickup_stage_appearance(self,
-                                   editor: PatcherEditor,
-                                   area: Area,
-                                   stage: PickupStage,
-                                   instances: PickupInstances,
-                                   disable_hud_popup: bool
-                                   ):
+    def _patch_single_pickup_stage_appearance(
+        self, editor: PatcherEditor, area: Area, stage: PickupStage, instances: PickupInstances, disable_hud_popup: bool
+    ):
         model_data = stage.appearance.model_data
 
         # pickup
@@ -220,13 +225,14 @@ class Pickup:
 
             # scan
             pickup.actor_information.scannable.scannable_info0 = editor.get_pickup_scan(
-                stage.appearance.scan,
-                model_data.scan_model
+                stage.appearance.scan, model_data.scan_model
             )
-            area._parent_mlvl.savw.raw.scannable_objects.append({
-                "scan_asset_id": pickup.actor_information.scannable.scannable_info0,
-                "logbook_category": 0,
-            })
+            area._parent_mlvl.savw.raw.scannable_objects.append(
+                {
+                    "scan_asset_id": pickup.actor_information.scannable.scannable_info0,
+                    "logbook_category": 0,
+                }
+            )
 
         # ETM particle
         if model_data.model == ETM_MODEL:
@@ -270,26 +276,18 @@ class Pickup:
                 hud_memo.display_type = 4.0
                 hud_memo.display_type = 0
 
-    def _patch_single_pickup_stage_basic_resources(self,
-                                   editor: PatcherEditor,
-                                   area: Area,
-                                   stage: PickupStage,
-                                   instances: PickupInstances,
-                                   ):
+    def _patch_single_pickup_stage_basic_resources(
+        self,
+        editor: PatcherEditor,
+        area: Area,
+        stage: PickupStage,
+        instances: PickupInstances,
+    ):
         instances.pickup.add_connection(State.Arrived, Message.SetToZero, instances.post_pickup_relay)
 
-        percentage = next((
-            item for item in stage.resources
-            if item.item == PlayerItem.ItemPercentage
-        ), None)
-        first = next((
-            item for item in stage.resources
-            if item.item != percentage
-        ), None)
-        remaining = [
-            item for item in stage.resources
-            if item not in (percentage, first)
-        ]
+        percentage = next((item for item in stage.resources if item.item == PlayerItemEnum.ItemPercentage), None)
+        first = next((item for item in stage.resources if item.item != percentage), None)
+        remaining = [item for item in stage.resources if item not in (percentage, first)]
 
         with instances.pickup.edit_properties(RDSPickup) as pickup:
             if percentage is not None:
@@ -302,7 +300,7 @@ class Pickup:
                 pickup.amount = first.amount
                 pickup.capacity_increase = first.amount
             else:
-                pickup.item_to_give = PlayerItem.PowerBeam
+                pickup.item_to_give = PlayerItemEnum.PowerBeam
                 pickup.amount = 0
                 pickup.capacity_increase = 0
 
@@ -311,13 +309,13 @@ class Pickup:
             sf = self._add_modify_inventory_sf(item.item, item.amount, layer)
             instances.post_pickup_relay.add_connection(State.Zero, Message.Action, sf)
 
-
-    def _patch_single_pickup_stage_converted_resources(self,
-                                   editor: PatcherEditor,
-                                   area: Area,
-                                   stage: PickupStage,
-                                   instances: PickupInstances,
-                                   ):
+    def _patch_single_pickup_stage_converted_resources(
+        self,
+        editor: PatcherEditor,
+        area: Area,
+        stage: PickupStage,
+        instances: PickupInstances,
+    ):
         layer = area.get_layer(self.location.get_layer_name(area))
         for from_item, to_item in stage.conversion:
             relay = self._add_relay(layer)
@@ -338,14 +336,9 @@ class Pickup:
             relay.add_connection(State.Zero, Message.Action, add_to)
             relay.add_connection(State.Zero, Message.SetToZero, conditional)
 
-
-    def _patch_single_pickup_stage(self,
-                                   editor: PatcherEditor,
-                                   area: Area,
-                                   stage: PickupStage,
-                                   instances: PickupInstances,
-                                   disable_hud_popup: bool
-                                   ):
+    def _patch_single_pickup_stage(
+        self, editor: PatcherEditor, area: Area, stage: PickupStage, instances: PickupInstances, disable_hud_popup: bool
+    ):
         self._patch_single_pickup_stage_appearance(
             editor,
             area,
@@ -381,19 +374,29 @@ class Pickup:
             pos = pickup.editor_properties.transform.position
         padding = 0xFFFFFFFF
 
-        mapa.raw.mappable_objects.append({
-            "type": ObjectTypeMP2.TranslatorGate,
-            "visibility_mode": ObjectVisibility,
-            "editor_id": mappable_id,
-            "unk1": padding,
-            "transform": [
-                1.0, 0.0, 0.0, pos.x,
-                0.0, 1.0, 0.0, pos.y,
-                0.0, 0.0, 1.0, pos.z,
-            ],
-            "unk2": [padding] * 4,
-        })
-
+        mapa.raw.mappable_objects.append(
+            {
+                "type": ObjectTypeMP2.TranslatorGate,
+                "visibility_mode": ObjectVisibility,
+                "editor_id": mappable_id,
+                "unk1": padding,
+                "transform": [
+                    1.0,
+                    0.0,
+                    0.0,
+                    pos.x,
+                    0.0,
+                    1.0,
+                    0.0,
+                    pos.y,
+                    0.0,
+                    0.0,
+                    1.0,
+                    pos.z,
+                ],
+                "unk2": [padding] * 4,
+            }
+        )
 
     def _patch_simple_pickup(self, editor: PatcherEditor, area: Area, mapa: Mapa, disable_hud_popup: bool):
         instances = self.location.get_instances(area)

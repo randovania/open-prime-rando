@@ -1,7 +1,7 @@
 import dataclasses
 from typing import NamedTuple
 
-from retro_data_structures.enums.echoes import Function, Message, State
+from retro_data_structures.enums.echoes import Message, State
 from retro_data_structures.formats.mlvl import Area
 from retro_data_structures.formats.script_object import Connection, InstanceId, ScriptInstance
 from retro_data_structures.properties.echoes.archetypes.EditorProperties import EditorProperties
@@ -18,6 +18,7 @@ from retro_data_structures.properties.echoes.objects import (
     StreamedAudio,
     Timer,
 )
+from retro_data_structures.properties.echoes.objects.SpecialFunction import Function
 from typing_extensions import Self
 
 from open_prime_rando.echoes.pickups.model_database import PICKUP_MODELS
@@ -34,9 +35,11 @@ class PickupInstances:
     post_pickup_relay: ScriptInstance
     mappable_object: ScriptInstance
 
+
 class CutsceneModel(NamedTuple):
     instance: InstanceId
     layer: str
+
 
 @dataclasses.dataclass(frozen=True)
 class PickupLocation:
@@ -68,13 +71,15 @@ class PickupLocation:
     def _add_mappable_obj(self, area: Area, relay: ScriptInstance) -> ScriptInstance:
         layer = area.get_layer(self.get_layer_name())
 
-        mappable = layer.add_instance_with(SpecialFunction(
-            editor_properties=EditorProperties(name="Pickup Map Icon"),
-            function=Function.TranslatorDoorLocation,
-            sound1=-1,
-            sound2=-1,
-            sound3=-1,
-        ))
+        mappable = layer.add_instance_with(
+            SpecialFunction(
+                editor_properties=EditorProperties(name="Pickup Map Icon"),
+                function=Function.TranslatorDoorLocation,
+                sound1=-1,
+                sound2=-1,
+                sound3=-1,
+            )
+        )
 
         relay.add_connection(State.Zero, Message.Decrement, mappable)
         return mappable
@@ -110,10 +115,12 @@ class StandardPickupLocation(PickupLocation):
             return area.get_instance(ref)
 
         layer = area.get_layer(self.get_layer_name())
-        relay = layer.add_instance_with(Relay(
-            editor_properties=EditorProperties(name="Post-Pickup Relay"),
-            one_shot=False,
-        ))
+        relay = layer.add_instance_with(
+            Relay(
+                editor_properties=EditorProperties(name="Post-Pickup Relay"),
+                one_shot=False,
+            )
+        )
         pickup = inst(self.pickup)
         pickup.add_connection(State.Arrived, Message.SetToZero, relay)
 
@@ -160,82 +167,96 @@ class CustomPickupLocation(PickupLocation):
         layer = area.get_layer(self.layer)
 
         # Create instances
-        pickup = layer.add_instance_with(Pickup(
-            editor_properties=EditorProperties(
-                transform=Transform(
-                    position=self.position,
+        pickup = layer.add_instance_with(
+            Pickup(
+                editor_properties=EditorProperties(
+                    transform=Transform(
+                        position=self.position,
+                    ),
+                    name="Pickup",
                 ),
-                name="Pickup",
-            ),
-            collision_offset=self.collision_offset,
-            collision_size=self.collision_size,
-        ))
+                collision_offset=self.collision_offset,
+                collision_size=self.collision_size,
+            )
+        )
 
-        hud_memo = layer.add_instance_with(HUDMemo(
-            editor_properties=EditorProperties(
-                transform=Transform(
-                    position=self.position,
+        hud_memo = layer.add_instance_with(
+            HUDMemo(
+                editor_properties=EditorProperties(
+                    transform=Transform(
+                        position=self.position,
+                    ),
+                    name="Pickup Acquired",
                 ),
-                name="Pickup Acquired",
-            ),
-        ))
+            )
+        )
 
-        streamed = layer.add_instance_with(StreamedAudio(
-            editor_properties=EditorProperties(
-                transform=Transform(
-                    position=self.position,
+        streamed = layer.add_instance_with(
+            StreamedAudio(
+                editor_properties=EditorProperties(
+                    transform=Transform(
+                        position=self.position,
+                    ),
+                    name="Pickup Jingle",
                 ),
-                name="Pickup Jingle",
-            ),
-            fade_in_time=0.01,
-            software_channel=1,
-        ))
+                fade_in_time=0.01,
+                software_channel=1,
+            )
+        )
 
-        sound = layer.add_instance_with(Sound(
-            editor_properties=EditorProperties(
-                transform=Transform(
-                    position=self.position,
+        sound = layer.add_instance_with(
+            Sound(
+                editor_properties=EditorProperties(
+                    transform=Transform(
+                        position=self.position,
+                    ),
+                    name="Pickup Sound",
                 ),
-                name="Pickup Sound",
-            ),
-            surround_pan=SurroundPan(
-                surround_pan=1.0,
-            ),
-            ambient=True,
-            use_room_acoustics=False,
-        ))
+                surround_pan=SurroundPan(
+                    surround_pan=1.0,
+                ),
+                ambient=True,
+                use_room_acoustics=False,
+            )
+        )
 
-        audio_fade = layer.add_instance_with(StreamedAudio(
-            editor_properties=EditorProperties(
-                transform=Transform(
-                    position=self.position,
+        audio_fade = layer.add_instance_with(
+            StreamedAudio(
+                editor_properties=EditorProperties(
+                    transform=Transform(
+                        position=self.position,
+                    ),
+                    name="FadeIn/Out Long",
                 ),
-                name="FadeIn/Out Long",
-            ),
-            song_file='sw',
-            fade_in_time=2.0,
-            fade_out_time=2.0,
-        ))
+                song_file="sw",
+                fade_in_time=2.0,
+                fade_out_time=2.0,
+            )
+        )
 
-        timer = layer.add_instance_with(Timer(
-            editor_properties=EditorProperties(
-                transform=Transform(
-                    position=self.position,
+        timer = layer.add_instance_with(
+            Timer(
+                editor_properties=EditorProperties(
+                    transform=Transform(
+                        position=self.position,
+                    ),
+                    name="Fade In Music",
                 ),
-                name="Fade In Music",
-            ),
-            time=1.0,
-        ))
+                time=1.0,
+            )
+        )
 
         mem_relay = layer.add_memory_relay("Deactivate Pickup")
         with mem_relay.edit_properties(MemoryRelay) as _mem_relay:
             _mem_relay.editor_properties.transform.position = self.position
             _mem_relay.editor_properties.active = False
 
-        relay = layer.add_instance_with(Relay(
-            editor_properties=EditorProperties(name="Post-Pickup Relay"),
-            one_shot=False,
-        ))
+        relay = layer.add_instance_with(
+            Relay(
+                editor_properties=EditorProperties(name="Post-Pickup Relay"),
+                one_shot=False,
+            )
+        )
 
         # Add connections
         pickup.add_connection(State.Arrived, Message.SetToZero, hud_memo)

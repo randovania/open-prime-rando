@@ -1,8 +1,8 @@
 import dataclasses
 
 from retro_data_structures.asset_manager import NameOrAssetId
-from retro_data_structures.enums.echoes import WorldLightingOptions
 from retro_data_structures.formats.cmdl import Cmdl
+from retro_data_structures.properties.echoes.archetypes.LightParameters import WorldLightingOptions
 from retro_data_structures.properties.echoes.core.AnimationParameters import AnimationParameters
 from retro_data_structures.properties.echoes.core.AssetId import default_asset_id
 from retro_data_structures.properties.echoes.core.Color import Color
