@@ -55,8 +55,6 @@ class PatcherEditor(AssetManager):
         #     strings = strings
 
         strings = list(strings)
-
-        for lang in strg.languages:
-            strg.set_strings(lang, strings)
+        strg.set_string_list(strings)
 
         return asset_id, strg
