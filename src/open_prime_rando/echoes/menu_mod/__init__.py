@@ -1,3 +1,5 @@
+import logging
+
 import construct
 from retro_data_structures.formats import Mrea
 
@@ -44,4 +46,5 @@ def add_menu_mod(editor: PatcherEditor) -> None:
     for world_name, world_id in world.NAME_TO_ID_MLVL.items():
         mlvl = editor.get_mlvl(world_id)
         for area in mlvl.areas:
+            logging.info("Updating %s", area.name)
             area.update_all_dependencies()
