@@ -104,7 +104,7 @@ class DoorType:
         if self.patched_scan is None or not editor.does_asset_exists(self.patched_scan):
             scan, strg = DoorType.get_scan_templates(editor)
             for i, text in enumerate(self.scan_text):
-                strg.set_string(i, text)
+                strg.set_single_string(i, text)
 
             strg_id = editor.add_or_replace_custom_asset(f"custom_door_{self.name}.STRG", strg)
 

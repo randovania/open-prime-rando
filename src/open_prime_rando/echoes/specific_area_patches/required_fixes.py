@@ -1,5 +1,4 @@
 import logging
-import struct
 from collections.abc import Iterable
 
 from retro_data_structures.enums.echoes import Message, State
@@ -234,8 +233,6 @@ def command_center_door(editor: PatcherEditor):
     """
     area = editor.get_area(AGON_WASTES_MLVL, COMMAND_CENTER_MREA)
     default = area.get_layer("Default")
-    # committing a crime until RDS supports unsigned ints
-    internal_area_id = struct.unpack(">l", struct.pack(">L", 0xAA657163))[0]
 
     poi = default.get_instance("Blast Door Activation")
 
@@ -247,7 +244,7 @@ def command_center_door(editor: PatcherEditor):
                     name=f"DYNAMIC Decrement {layer}",
                 ),
                 layer=LayerSwitch(
-                    area_id=internal_area_id,
+                    area_id=0xAA657163,
                     layer_number=area.get_layer(layer).index,
                 ),
                 is_dynamic=True,

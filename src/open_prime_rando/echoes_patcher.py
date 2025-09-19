@@ -102,7 +102,7 @@ def apply_area_modifications(
             if area_config["new_name"] is not None:
                 old_strg = area._raw.area_name_id
                 strg = editor.get_parsed_asset(old_strg, type_hint=Strg)
-                strg.set_string(0, area_config["new_name"])
+                strg.set_single_string(0, area_config["new_name"])
                 new_strg = editor.add_new_asset(f"custom_name_for_{area.internal_name}.STRG", strg)
                 area._raw.area_name_id = new_strg
 
@@ -113,16 +113,12 @@ def apply_corrupted_memory_card_change(editor: PatcherEditor):
     # STRG_MemoryCard_0
     table = editor.get_file(0x88E242D6, Strg)
 
-    name_to_index = {
-        table.raw.name_table.name_array[entry.offset].string: entry.index for entry in table.raw.name_table.name_entries
-    }
-
-    table.set_string(
-        name_to_index["CorruptedFile"],
+    table.set_single_string(
+        table.raw.name_table["CorruptedFile"],
         """The save file was created using a different
 Randomizer ISO and must be deleted.""",
     )
-    table.set_string(name_to_index["ChoiceDeleteCorruptedFile"], "Delete Incompatible File")
+    table.set_single_string(table.raw.name_table["ChoiceDeleteCorruptedFile"], "Delete Incompatible File")
 
 
 def apply_tweak_edits(editor: PatcherEditor, tweak_edits: dict[str, dict[str, typing.Any]]) -> None:

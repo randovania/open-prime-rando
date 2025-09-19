@@ -21,7 +21,7 @@ def patch_elevator(
 
     if target_strg is not None:
         strg = editor.get_file(target_strg, Strg)
-        strg.set_string(
+        strg.set_single_string(
             1,
             f"Access to &push;&main-color=#FF3333;{target_name} &pop;granted. "
             f"Step into the hologram to activate elevator.",
