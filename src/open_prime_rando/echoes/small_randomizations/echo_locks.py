@@ -30,7 +30,7 @@ def randomize_echo_locks(editor: PatcherEditor, rng: random.Random):
 
     key_scans = []
     for pitch in ["low", "medium", "high"]:
-        key_strg.set_string(
+        key_strg.set_single_string(
             1,
             "Sonic detection gear needed to interface with this system."
             " Shoot the Echo Key Beam emitter with a sonic pulse to activate it."
@@ -84,7 +84,7 @@ def randomize_echo_locks(editor: PatcherEditor, rng: random.Random):
             "Sonic detection gear needed to interface with this system. The combination of its sonic locks is:\n"
         )
         solution_text += ", ".join(["Low", "Medium", "High"][key] for key in solution)
-        gate_strg.set_string(1, solution_text)
+        gate_strg.set_single_string(1, solution_text)
         strg_id = editor.add_new_asset(f"accessible_echo_gate_{mrea_id}.STRG", gate_strg)
 
         gate_scan_info.string = strg_id

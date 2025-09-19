@@ -22,11 +22,14 @@ dynamic = ["version"]
 license = "GPL-3.0"
 
 dependencies = [
-    "retro-data-structures>=0.29.0",
+    "retro-data-structures>=0.30.1",
     "jsonschema>=4.0.0",
     "ppc-asm",
     "py_randomprime",  # for Prime 1 symbols
 ]
+
+[project.scripts]
+open-prime-rando = "open_prime_rando.cli:main"
 
 # Entry Points for PyInstaller
 [project.entry-points.pyinstaller40]
