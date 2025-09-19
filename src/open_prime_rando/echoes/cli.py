@@ -31,3 +31,6 @@ def main(argv: list[str]) -> None:
             args.output_iso,
             configuration,
         )
+    else:
+        parser.print_help()
+        raise SystemExit(1)
