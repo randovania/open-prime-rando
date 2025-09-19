@@ -1,5 +1,5 @@
 version = 1
-revision = 2
+revision = 3
 requires-python = ">=3.10"
 
 [[package]]
@@ -253,7 +253,7 @@ requires-dist = [
     { name = "pytest-cov", marker = "extra == 'test'" },
     { name = "pytest-mock", marker = "extra == 'test'" },
     { name = "pytest-xdist", marker = "extra == 'test'" },
-    { name = "retro-data-structures", specifier = ">=0.29.0" },
+    { name = "retro-data-structures", specifier = ">=0.30.1" },
 ]
 provides-extras = ["test"]
 
@@ -481,17 +481,18 @@ wheels = [
 
 [[package]]
 name = "retro-data-structures"
-version = "0.29.0"
+version = "0.30.1"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "construct" },
     { name = "lzokay" },
+    { name = "ppc-asm" },
     { name = "pycryptodome" },
     { name = "typing-extensions" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/32/df/7a423a0089d44806e2b95e23b61f1eaa1548609e4bd8785c6766549d0b5d/retro_data_structures-0.29.0.tar.gz", hash = "sha256:af2a9be5dece1ae4f6136d1aa60f23dac88a8c08ea4edd4879f33644ef4baf5f", size = 2103443, upload-time = "2025-04-12T18:53:45.541Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/0e/a7/f9f45bab954d3bbe6896b9709b931becde6288f0f378fba45a087520a1ac/retro_data_structures-0.30.1.tar.gz", hash = "sha256:bea6157806ad809dd8851526aab4ea4a0766042a840e129c0cc6ecec488d091b", size = 2716053, upload-time = "2025-09-18T22:01:58.18Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/b9/28/50522a8e50ecfdc0767b50918fc380dd303ee21187e384a41a38c31e1d09/retro_data_structures-0.29.0-py3-none-any.whl", hash = "sha256:8a3b17729c2f52d7e50e1d371029db0d327a68ad9e679ae3342b1a5d487e9105", size = 3991255, upload-time = "2025-04-12T18:53:43.496Z" },
+    { url = "https://files.pythonhosted.org/packages/a3/cc/f6703faf01895a54fb1c65d43c42d70cfac52c386770ae0f9da289f4cde2/retro_data_structures-0.30.1-py3-none-any.whl", hash = "sha256:77ae75296ca11d544d4a555068f7b8f508b17ed235316affeabeb68284ff0955", size = 4005567, upload-time = "2025-09-18T22:01:56.262Z" },
 ]
 
 [[package]]
