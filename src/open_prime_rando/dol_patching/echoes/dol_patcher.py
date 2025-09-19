@@ -20,6 +20,7 @@ class EchoesDolPatchesData:
     unvisited_room_names: bool
     teleporter_sounds: bool
     dangerous_energy_tank: bool
+    widescreen_hack: bool
 
     @classmethod
     def from_json(cls, data: dict):
@@ -33,6 +34,7 @@ class EchoesDolPatchesData:
             unvisited_room_names=data["unvisited_room_names"],
             teleporter_sounds=data["teleporter_sounds"],
             dangerous_energy_tank=data["dangerous_energy_tank"],
+            widescreen_hack=data["widescreen_hack"],
         )
 
 
@@ -67,4 +69,8 @@ def apply_patches(dol_file: DolFile, patches_data: EchoesDolPatchesData):
             version.safe_zone, version.sda2_base, patches_data.safe_zone_heal_per_second, dol_file
         )
         dol_patches.apply_starting_visor_patch(version.starting_beam_visor, patches_data.default_items, dol_file)
+
         dol_patches.apply_map_door_changes(version.map_door_types, dol_file)
+        dol_patches.apply_widescreen_hack(
+            version.widescreen_render, version.sda2_base, dol_file, patches_data.widescreen_hack
+        )
