@@ -6,7 +6,7 @@ from typing import NamedTuple
 
 from ppc_asm.assembler import custom_ppc
 from ppc_asm.assembler.ppc import *  # noqa: F403
-from ppc_asm.dol_file import DolFile
+from ppc_asm.dol_file import DolEditor
 
 # ruff: noqa: F405
 from open_prime_rando.dol_patching.all_prime_dol_patches import (
@@ -98,7 +98,7 @@ _FLAGS_ORDER = (
 
 
 def apply_game_options_patch(
-    game_options_constructor_offset: int, user_preferences: OprEchoesUserPreferences, dol_file: DolFile
+    game_options_constructor_offset: int, user_preferences: OprEchoesUserPreferences, dol_editor: DolEditor
 ):
     patch = [
         # Unknown purpose, but keep for safety
@@ -142,7 +142,7 @@ def apply_game_options_patch(
 
     for i in range(instructions_to_fill):
         patch.append(nop())
-    dol_file.write_instructions(game_options_constructor_offset + 8 * 4, patch)
+    dol_editor.write_instructions(game_options_constructor_offset + 8 * 4, patch)
 
 
 def _is_out_of_ammo_patch(symbols: dict[str, int], ammo_types: list[tuple[int, int]]):
@@ -236,7 +236,7 @@ def _is_out_of_ammo_patch(symbols: dict[str, int], ammo_types: list[tuple[int, i
 
 
 def apply_beam_cost_patch(
-    patch_addresses: BeamCostAddresses, beam_configurations: Iterable[BeamAmmoConfiguration], dol_file: DolFile
+    patch_addresses: BeamCostAddresses, beam_configurations: Iterable[BeamAmmoConfiguration], dol_editor: DolEditor
 ):
     uncharged_costs = []
     charged_costs = []
@@ -295,37 +295,41 @@ def apply_beam_cost_patch(
     ]
 
     # FIXME: depend on version
-    dol_file.symbols["BeamIdToChargedShotAmmoCost"] = patch_addresses.uncharged_cost
-    dol_file.symbols["BeamIdToUnchargedShotAmmoCost"] = patch_addresses.charged_cost
-    dol_file.symbols["BeamIdToChargeComboAmmoCost"] = patch_addresses.charge_combo_ammo_cost
-    dol_file.symbols["g_ChargeComboMissileCosts"] = patch_addresses.charge_combo_missile_cost
-    dol_file.symbols["CPlayerGun::IsOutOfAmmoToShoot"] = patch_addresses.is_out_of_ammo_to_shoot
-    dol_file.symbols["CPlayerGun::GetPlayer"] = patch_addresses.gun_get_player
-    dol_file.symbols["CPlayerState::GetItemAmount"] = patch_addresses.get_item_amount
+    dol_editor.symbols["BeamIdToChargedShotAmmoCost"] = patch_addresses.uncharged_cost
+    dol_editor.symbols["BeamIdToUnchargedShotAmmoCost"] = patch_addresses.charged_cost
+    dol_editor.symbols["BeamIdToChargeComboAmmoCost"] = patch_addresses.charge_combo_ammo_cost
+    dol_editor.symbols["g_ChargeComboMissileCosts"] = patch_addresses.charge_combo_missile_cost
+    dol_editor.symbols["CPlayerGun::IsOutOfAmmoToShoot"] = patch_addresses.is_out_of_ammo_to_shoot
+    dol_editor.symbols["CPlayerGun::GetPlayer"] = patch_addresses.gun_get_player
+    dol_editor.symbols["CPlayerState::GetItemAmount"] = patch_addresses.get_item_amount
 
     uncharged_costs_patch = struct.pack(">llll", *uncharged_costs)
     charged_costs_patch = struct.pack(">llll", *charged_costs)
     combo_costs_patch = struct.pack(">llll", *combo_costs)
     missile_costs_patch = struct.pack(">llll", *missile_costs)
 
-    dol_file.write("BeamIdToChargedShotAmmoCost", uncharged_costs_patch)
-    dol_file.write("BeamIdToUnchargedShotAmmoCost", charged_costs_patch)
-    dol_file.write("BeamIdToChargeComboAmmoCost", combo_costs_patch)
-    dol_file.write("g_ChargeComboMissileCosts", missile_costs_patch)
-    dol_file.write_instructions(patch_addresses.get_beam_ammo_type_and_costs + ammo_type_patch_offset, ammo_type_patch)
-    dol_file.write_instructions("CPlayerGun::IsOutOfAmmoToShoot", _is_out_of_ammo_patch(dol_file.symbols, ammo_types))
+    dol_editor.write("BeamIdToChargedShotAmmoCost", uncharged_costs_patch)
+    dol_editor.write("BeamIdToUnchargedShotAmmoCost", charged_costs_patch)
+    dol_editor.write("BeamIdToChargeComboAmmoCost", combo_costs_patch)
+    dol_editor.write("g_ChargeComboMissileCosts", missile_costs_patch)
+    dol_editor.write_instructions(
+        patch_addresses.get_beam_ammo_type_and_costs + ammo_type_patch_offset, ammo_type_patch
+    )
+    dol_editor.write_instructions(
+        "CPlayerGun::IsOutOfAmmoToShoot", _is_out_of_ammo_patch(dol_editor.symbols, ammo_types)
+    )
 
 
 def apply_safe_zone_heal_patch(
-    patch_addresses: SafeZoneAddresses, sda2_base: int, heal_per_second: float, dol_file: DolFile
+    patch_addresses: SafeZoneAddresses, sda2_base: int, heal_per_second: float, dol_editor: DolEditor
 ):
     offset = patch_addresses.heal_per_frame_constant - sda2_base
 
-    dol_file.write(patch_addresses.heal_per_frame_constant, struct.pack(">f", heal_per_second / 60))
-    dol_file.write_instructions(patch_addresses.increment_health_fmr, [lfs(f1, offset, r2)])
+    dol_editor.write(patch_addresses.heal_per_frame_constant, struct.pack(">f", heal_per_second / 60))
+    dol_editor.write_instructions(patch_addresses.increment_health_fmr, [lfs(f1, offset, r2)])
 
 
-def apply_starting_visor_patch(addresses: StartingBeamVisorAddresses, default_items: dict, dol_file: DolFile):
+def apply_starting_visor_patch(addresses: StartingBeamVisorAddresses, default_items: dict, dol_editor: DolEditor):
     visor_order = ["Combat Visor", "Echo Visor", "Scan Visor", "Dark Visor"]
     beam_order = ["Power Beam", "Dark Beam", "Light Beam", "Annihilator Beam"]
 
@@ -333,7 +337,7 @@ def apply_starting_visor_patch(addresses: StartingBeamVisorAddresses, default_it
     default_beam = beam_order.index(default_items["beam"])
 
     # Patch CPlayerState constructor with default values
-    dol_file.write_instructions(
+    dol_editor.write_instructions(
         addresses.player_state_constructor_clean + 0x54,
         [
             bl(addresses.health_info_constructor),
@@ -347,7 +351,7 @@ def apply_starting_visor_patch(addresses: StartingBeamVisorAddresses, default_it
     )
 
     # Patch CPlayerState constructor for loading save files
-    dol_file.write_instructions(
+    dol_editor.write_instructions(
         addresses.player_state_constructor_decode + 0x5C,
         [
             li(r0, default_visor),
@@ -357,7 +361,7 @@ def apply_starting_visor_patch(addresses: StartingBeamVisorAddresses, default_it
     )
 
     # Patch EnterMorphBallState's call for StartTransitionToVisor to use the new default visor
-    dol_file.write_instructions(
+    dol_editor.write_instructions(
         addresses.enter_morph_ball_state + 0xE8,
         [
             li(r4, default_visor),
@@ -365,7 +369,7 @@ def apply_starting_visor_patch(addresses: StartingBeamVisorAddresses, default_it
     )
 
     # Patch CPlayerState::ResetVisor so elevators use the new default visor
-    dol_file.write_instructions(
+    dol_editor.write_instructions(
         addresses.reset_visor,
         [
             li(r0, default_visor),
@@ -390,10 +394,10 @@ class EchoesDolVersion(BasePrimeDolVersion):
     double_damage_vfx: int
 
 
-def apply_fixes(version: EchoesDolVersion, dol_file: DolFile):
-    dol_file.symbols["CMapWorldInfo::IsAnythingSet"] = version.anything_set_address
+def apply_fixes(version: EchoesDolVersion, dol_editor: DolEditor):
+    dol_editor.symbols["CMapWorldInfo::IsAnythingSet"] = version.anything_set_address
 
-    dol_file.write_instructions(
+    dol_editor.write_instructions(
         "CMapWorldInfo::IsAnythingSet",
         [
             li(r3, 1),
@@ -401,7 +405,7 @@ def apply_fixes(version: EchoesDolVersion, dol_file: DolFile):
         ],
     )
 
-    dol_file.write_instructions(
+    dol_editor.write_instructions(
         version.rs_debugger_printf_loop_address,
         [
             nop(),
@@ -409,7 +413,7 @@ def apply_fixes(version: EchoesDolVersion, dol_file: DolFile):
     )
 
     # Disable Double Damage VFX by checking for an invalid item id
-    dol_file.write_instructions(
+    dol_editor.write_instructions(
         version.double_damage_vfx,
         [
             li(r4, 999),
@@ -417,16 +421,16 @@ def apply_fixes(version: EchoesDolVersion, dol_file: DolFile):
     )
 
 
-def change_powerup_should_persist(version: EchoesDolVersion, dol_file: DolFile, powerups: list[str]):
+def change_powerup_should_persist(version: EchoesDolVersion, dol_editor: DolEditor, powerups: list[str]):
     for item in powerups:
         index = POWERUP_TO_INDEX[item]
-        dol_file.write(version.powerup_should_persist + index, b"\x01")
+        dol_editor.write(version.powerup_should_persist + index, b"\x01")
 
 
-def apply_unvisited_room_names(version: EchoesDolVersion, dol_file: DolFile, enabled: bool):
+def apply_unvisited_room_names(version: EchoesDolVersion, dol_editor: DolEditor, enabled: bool):
     # In CAutoMapper::Update, the function checks for `mwInfo.IsMapped` then `mwInfo.IsAreaVisited` and if both are
     # false, sets a variable to false. This variable indicates if the room name is displayed used.
-    dol_file.write_instructions(
+    dol_editor.write_instructions(
         version.unvisited_room_names_address,
         [
             li(r28, 1 if enabled else 0),
@@ -434,15 +438,15 @@ def apply_unvisited_room_names(version: EchoesDolVersion, dol_file: DolFile, ena
     )
 
 
-def apply_teleporter_sounds(version: EchoesDolVersion, dol_file: DolFile, enabled: bool):
-    dol_file.symbols["CWorldTransManager::SfxStart"] = version.cworldtransmanager_sfxstart
+def apply_teleporter_sounds(version: EchoesDolVersion, dol_editor: DolEditor, enabled: bool):
+    dol_editor.symbols["CWorldTransManager::SfxStart"] = version.cworldtransmanager_sfxstart
 
     if enabled:
         inst = stwu(r1, -0x20, r1)
     else:
         inst = blr()
 
-    dol_file.write_instructions("CWorldTransManager::SfxStart", [inst])
+    dol_editor.write_instructions("CWorldTransManager::SfxStart", [inst])
 
 
 def freeze_player():
@@ -457,7 +461,7 @@ def freeze_player():
     ]
 
 
-def apply_map_door_changes(door_symbols: MapDoorTypeAddresses, dol_file: DolFile):
+def apply_map_door_changes(door_symbols: MapDoorTypeAddresses, dol_editor: DolEditor):
     # This ends up being a slow import, don't do it early
     from open_prime_rando.echoes.dock_lock_rando.map_icons import DoorMapIcon
 
@@ -475,18 +479,18 @@ def apply_map_door_changes(door_symbols: MapDoorTypeAddresses, dol_file: DolFile
         door_symbols.map_area_commit_resources2,
     ]
     for symbol in is_door_symbols:
-        dol_file.write_instructions(symbol.low, [cmpwi(symbol.register, door_min)])
-        dol_file.write_instructions(symbol.high, [cmpwi(symbol.register, door_max)])
+        dol_editor.write_instructions(symbol.low, [cmpwi(symbol.register, door_min)])
+        dol_editor.write_instructions(symbol.high, [cmpwi(symbol.register, door_max)])
 
     # TODO: add colors to GetDoorColor
-    dol_file.symbols["CTweakAutoMapper::GetDoorColor"] = door_symbols.get_door_color
+    dol_editor.symbols["CTweakAutoMapper::GetDoorColor"] = door_symbols.get_door_color
     door_color_array = door_symbols.get_door_color + 32
 
     _colors = r6
     _type = r5
     _out_color = r3
 
-    dol_file.write_instructions(
+    dol_editor.write_instructions(
         "CTweakAutoMapper::GetDoorColor",
         [
             custom_ppc.load_unsigned_32bit(_colors, door_color_array),
@@ -498,5 +502,5 @@ def apply_map_door_changes(door_symbols: MapDoorTypeAddresses, dol_file: DolFile
         ],
     )
 
-    dol_file.symbols["CTweakAutoMapper::GetDoorColor::DoorColorArray"] = door_color_array
-    dol_file.write("CTweakAutoMapper::GetDoorColor::DoorColorArray", DoorMapIcon.get_surface_colors_as_bytes())
+    dol_editor.symbols["CTweakAutoMapper::GetDoorColor::DoorColorArray"] = door_color_array
+    dol_editor.write("CTweakAutoMapper::GetDoorColor::DoorColorArray", DoorMapIcon.get_surface_colors_as_bytes())

@@ -5,7 +5,7 @@ import uuid
 from ppc_asm import assembler
 from ppc_asm.assembler import custom_ppc
 from ppc_asm.assembler.ppc import *  # noqa: F403
-from ppc_asm.dol_file import DolFile
+from ppc_asm.dol_file import DolEditor
 from retro_data_structures.game_check import Game
 
 from open_prime_rando.dol_patching.dol_version import DolVersion
@@ -235,8 +235,8 @@ def remote_execution_patch(game: Game):
     ]
 
 
-def apply_remote_execution_patch(game: Game, patch_addresses: StringDisplayPatchAddresses, dol_file: DolFile):
-    dol_file.write_instructions(patch_addresses.update_hint_state, remote_execution_patch(game))
+def apply_remote_execution_patch(game: Game, patch_addresses: StringDisplayPatchAddresses, dol_editor: DolEditor):
+    dol_editor.write_instructions(patch_addresses.update_hint_state, remote_execution_patch(game))
 
 
 def create_remote_execution_body(
@@ -265,14 +265,16 @@ def create_remote_execution_body(
     return body_address, body_bytes
 
 
-def apply_energy_tank_capacity_patch(patch_addresses: HealthCapacityAddresses, energy_per_tank: int, dol_file: DolFile):
+def apply_energy_tank_capacity_patch(
+    patch_addresses: HealthCapacityAddresses, energy_per_tank: int, dol_editor: DolEditor
+):
     """
     Patches the base health capacity and the energy tank capacity with matching values.
     """
     tank_capacity = float(energy_per_tank)
 
-    dol_file.write(patch_addresses.base_health_capacity, struct.pack(">f", tank_capacity - 1))
-    dol_file.write(patch_addresses.energy_tank_capacity, struct.pack(">f", tank_capacity))
+    dol_editor.write(patch_addresses.base_health_capacity, struct.pack(">f", tank_capacity - 1))
+    dol_editor.write(patch_addresses.energy_tank_capacity, struct.pack(">f", tank_capacity))
 
 
 def apply_reverse_energy_tank_heal_patch(
@@ -280,7 +282,7 @@ def apply_reverse_energy_tank_heal_patch(
     addresses: DangerousEnergyTankAddresses,
     active: bool,
     game: Game,
-    dol_file: DolFile,
+    dol_editor: DolEditor,
 ):
     if game == Game.ECHOES:
         health_offset = 0x14
@@ -310,10 +312,10 @@ def apply_reverse_energy_tank_heal_patch(
             bl(addresses.incr_pickup),
         ]
 
-    dol_file.write_instructions(addresses.incr_pickup + patch_offset, patch)
+    dol_editor.write_instructions(addresses.incr_pickup + patch_offset, patch)
 
 
-def apply_build_info_patch(dol_file: DolFile, uid: uuid.UUID, version: DolVersion):
+def apply_build_info_patch(dol_file: DolEditor, uid: uuid.UUID, version: DolVersion):
     dol_file.write(
         version.build_string_address + 6,
         uid.bytes,
