@@ -18,12 +18,12 @@ class MemoryDol(DolEditor):
         self.dol_file = io.BytesIO(dol)
 
     def _seek_and_read(self, seek: int, size: int):
-        self.dol_file.seek(seek)
-        return self.dol_file.read(size)
+        self.dol_editor.seek(seek)
+        return self.dol_editor.read(size)
 
     def _seek_and_write(self, seek: int, data: bytes):
-        self.dol_file.seek(seek)
-        self.dol_file.write(data)
+        self.dol_editor.seek(seek)
+        self.dol_editor.write(data)
 
 
 class PatcherEditor(AssetManager):

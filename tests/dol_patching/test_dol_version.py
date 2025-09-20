@@ -27,12 +27,11 @@ test_versions = [
 
 @pytest.mark.parametrize("version", test_versions)
 def test_read_binary_version(version):
-    dol_file = MagicMock()
-    dol_file.read.return_value = version.build_string
+    dol_editor = MagicMock()
+    dol_editor.read.return_value = version.build_string
 
     # Run
-    result = dol_version.find_version_for_dol(dol_file, test_versions)
+    result = dol_version.find_version_for_dol(dol_editor, test_versions)
 
     # Assert
-    dol_file.set_editable.assert_called_once_with(False)
     assert result == version
