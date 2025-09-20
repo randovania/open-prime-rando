@@ -6,11 +6,6 @@
             "type": "string",
             "format": "uri"
         },
-        "legacy_compatibility": {
-            "type": "boolean",
-            "default": false,
-            "description": "Operate assuming that Claris' Randomizer was already used in the input files"
-        },
         "worlds": {
             "type": "object",
             "properties": {
@@ -50,28 +45,6 @@
             "required": [
                 "seed"
             ]
-        },
-        "area_patches": {
-            "type": "object",
-            "properties": {
-                "rebalance_world": {
-                    "type": "boolean",
-                    "description": "Apply patches that rebalance aspects of the game for a better rando experience",
-                    "default": true
-                }
-            },
-            "description": "Pre-written patches for specific areas",
-            "default": {}
-        },
-        "inverted": {
-            "type": "boolean",
-            "description": "Inverts Light and Dark Aether",
-            "default": false
-        },
-        "auto_enabled_elevators": {
-            "type": "boolean",
-            "description": "Set elevators to be activated on room load",
-            "default": false
         },
         "cosmetics": {
             "type": "object",
@@ -232,19 +205,6 @@
         "dock": {
             "type": "object",
             "properties": {
-                "connect_to": {
-                    "type": "object",
-                    "properties": {
-                        "area": {
-                            "type": "string"
-                        },
-                        "dock": {
-                            "type": "string"
-                        }
-                    },
-                    "required": ["area", "dock"],
-                    "additionalProperties": false
-                },
                 "old_door_type": {
                     "$ref": "#/$defs/dock_type"
                 },

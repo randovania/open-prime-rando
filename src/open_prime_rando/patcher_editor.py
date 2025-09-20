@@ -1,7 +1,5 @@
-import io
 import typing
 
-from ppc_asm.dol_file import DolEditor, DolHeader
 from retro_data_structures.asset_manager import AssetManager
 from retro_data_structures.base_resource import AssetId, NameOrAssetId
 from retro_data_structures.formats.mlvl import Mlvl
@@ -10,20 +8,6 @@ from retro_data_structures.formats.strg import Strg
 from retro_data_structures.game_check import Game
 
 T = typing.TypeVar("T")
-
-
-class MemoryDol(DolEditor):
-    def __init__(self, dol: bytes):
-        super().__init__(DolHeader.from_bytes(dol))
-        self.dol_file = io.BytesIO(dol)
-
-    def _seek_and_read(self, seek: int, size: int):
-        self.dol_editor.seek(seek)
-        return self.dol_editor.read(size)
-
-    def _seek_and_write(self, seek: int, data: bytes):
-        self.dol_editor.seek(seek)
-        self.dol_editor.write(data)
 
 
 class PatcherEditor(AssetManager):

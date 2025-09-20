@@ -10,6 +10,8 @@ from retro_data_structures.game_check import Game
 from open_prime_rando.dol_patching.echoes import dol_patcher
 from open_prime_rando.dol_patching.echoes.beam_configuration import BeamAmmoConfiguration
 from open_prime_rando.dol_patching.echoes.user_preferences import OprEchoesUserPreferences
+from open_prime_rando.echoes import inverted
+from open_prime_rando.echoes.elevators import auto_enabled_elevator_patches
 from open_prime_rando.patcher_editor import PatcherEditor
 
 if TYPE_CHECKING:
@@ -73,6 +75,9 @@ def _default_dol_patches() -> dol_patcher.EchoesDolPatchesData:
     )
 
 
+_ALL_FEATURES = False
+
+
 def patch_iso(
     input_iso: Path,
     output_iso: Path,
@@ -93,6 +98,9 @@ def patch_iso(
     editor = PatcherEditor(file_provider, Game.ECHOES)
 
     dol_patcher.apply_patches(editor.dol, _default_dol_patches())
+    if _ALL_FEATURES:
+        auto_enabled_elevator_patches.apply_auto_enabled_elevators_patch(editor)
+        inverted.apply_inverted(editor)
 
     # Save our changes
     editor.build_modified_files()
