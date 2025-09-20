@@ -42,13 +42,23 @@ def test_files_dir() -> TestFilesDir:
 
 
 @pytest.fixture(scope="module")
-def prime2_iso_provider() -> IsoFileProvider:
-    return IsoFileProvider(Path(get_env_or_skip("PRIME2_ISO")))
+def prime2_ntsc_iso_path() -> Path:
+    return Path(get_env_or_skip("PRIME2_ISO"))
 
 
 @pytest.fixture(scope="module")
-def pal_prime2_iso_provider() -> IsoFileProvider:
-    return IsoFileProvider(Path(get_env_or_skip("PRIME2_PAL_ISO", override_fail=False)))
+def prime2_pal_iso_path() -> Path:
+    return Path(get_env_or_skip("PRIME2_ISO", override_fail=False))
+
+
+@pytest.fixture(scope="module")
+def prime2_iso_provider(prime2_ntsc_iso_path) -> IsoFileProvider:
+    return IsoFileProvider(prime2_ntsc_iso_path)
+
+
+@pytest.fixture(scope="module")
+def pal_prime2_iso_provider(prime2_pal_iso_path) -> IsoFileProvider:
+    return IsoFileProvider(prime2_pal_iso_path)
 
 
 @pytest.fixture(scope="module")
