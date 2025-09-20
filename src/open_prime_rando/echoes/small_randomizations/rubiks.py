@@ -89,14 +89,10 @@ def randomize_rubiks_puzzles(editor: PatcherEditor, rng: random.Random):
     for color in COLORS.values():
         txtr_id = editor.add_new_asset(color.txtr_name, color.txtr)
 
-        # FIXME: we can't use get_file or else the dependencies break
-        cmdl = editor.get_parsed_asset(color.cmdl, type_hint=Cmdl)
+        cmdl = editor.get_file(color.cmdl, Cmdl)
         file_ids = cmdl.raw.material_sets[0].texture_file_ids
         old_txtr = file_ids.index(color.old_txtr)
         file_ids[old_txtr] = txtr_id
-        editor.replace_asset(color.cmdl, cmdl)
-        # FIXME: we should not need to do this manually
-        editor._cached_dependencies.pop(color.cmdl, None)
 
     for puzzle_name, cubes in RUBIKS_CUBES.items():
         solution = [
