@@ -452,17 +452,10 @@
                         "South": {
                             "old_door_type": "Normal",
                             "new_door_type": "SeekerMissile"
-                        },
-                        "Cinema_Dock": {
-                            "connect_to": {
-                                "area": "game_end_part3",
-                                "dock": "cinema_dock"
-                            }
                         }
                     },
                     "layers": {},
-                    "low_memory_mode": false,
-                    "new_name": "Transport to Credits"
+                    "low_memory_mode": false
                 },
                 "GFMC Compound": {
                     "elevators": [],
@@ -3310,16 +3303,12 @@
             }
         }
     },
-    "area_patches": {
-        "torvus_temple": true
-    },
     "small_randomizations": {
         "seed": 663117400,
         "echo_locks": true,
         "minigyro_chamber": true,
         "rubiks": true
     },
-    "inverted": false,
     "cosmetics": {
         "suits": {
             "varia": "player1",

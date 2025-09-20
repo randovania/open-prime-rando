@@ -11,16 +11,13 @@ from retro_data_structures.game_check import Game
 
 from open_prime_rando.echoes import (
     asset_ids,
-    custom_assets,
     dock_lock_rando,
     legacy_dynamic_schema,
-    specific_area_patches,
 )
-from open_prime_rando.echoes.elevators import auto_enabled_elevator_patches
 from open_prime_rando.echoes.elevators.elevator_rando import patch_elevator
 from open_prime_rando.echoes.general_changes import apply_corrupted_memory_card_change
-from open_prime_rando.echoes.inverted import apply_inverted
 from open_prime_rando.echoes.small_randomizations import apply_small_randomizations
+from open_prime_rando.echoes.specific_area_patches import required_fixes
 from open_prime_rando.echoes.suit_cosmetics import apply_custom_suits
 from open_prime_rando.patcher_editor import PatcherEditor
 from open_prime_rando.validator_with_default import DefaultValidatingDraft7Validator
@@ -32,7 +29,7 @@ LOG = logging.getLogger("echoes_patcher")
 
 
 def _read_legacy_schema():
-    with Path(__file__).parent.joinpath("echoes", "legacy_schema.json").open() as f:
+    with Path(__file__).parent.joinpath("legacy_schema.json").open() as f:
         return json.load(f)
 
 
@@ -61,8 +58,6 @@ def apply_area_modifications(
             low_memory = area_config["low_memory_mode"]
 
             for dock_name, dock_config in area_config["docks"].items():
-                dock_number = world_meta.DOCK_NAMES[area_name][dock_name]
-
                 if "new_door_type" in dock_config:
                     dock_lock_rando.apply_door_rando(
                         editor,
@@ -72,22 +67,6 @@ def apply_area_modifications(
                         dock_config["new_door_type"],
                         dock_config.get("old_door_type"),
                         low_memory,
-                    )
-
-                if "connect_to" in dock_config:
-                    dock_target = dock_config["connect_to"]
-                    LOG.debug(
-                        "Connecting dock %s of %s - %s to %s - %s",
-                        dock_name,
-                        world_name,
-                        area_name,
-                        dock_target["area"],
-                        dock_target["dock"],
-                    )
-                    area.connect_dock_to(
-                        dock_number,
-                        areas_by_name[dock_target["area"]],
-                        world_meta.DOCK_NAMES[dock_target["area"]][dock_target["dock"]],
                     )
 
             for layer_name, layer_state in area_config["layers"].items():
@@ -158,16 +137,10 @@ def patch_paks(
     status_update("Validating schema", 0)
     DefaultValidatingDraft7Validator(schema).validate(configuration)
 
-    legacy_compatibility: bool = configuration["legacy_compatibility"]
-
     status_update("Applying small patches", 0)
-    if not legacy_compatibility:
-        custom_assets.create_custom_assets(editor, include_premade=True)
-
     dock_lock_rando.add_custom_models(editor)
-    if configuration["auto_enabled_elevators"]:
-        auto_enabled_elevator_patches.apply_auto_enabled_elevators_patch(editor)
-    specific_area_patches.specific_patches(editor, configuration["area_patches"], legacy_compatibility)
+    required_fixes.torvus_temple(editor)
+    required_fixes.command_center_door(editor)
     apply_small_randomizations(editor, configuration["small_randomizations"])
     apply_corrupted_memory_card_change(editor)
 
@@ -177,10 +150,6 @@ def patch_paks(
 
     status_update("Modifying areas", 0)
     apply_area_modifications(editor, configuration["worlds"], status_update)
-
-    if configuration["inverted"]:
-        apply_inverted(editor)
-
     apply_custom_suits(editor, configuration["cosmetics"]["suits"])
 
     # Save our changes
