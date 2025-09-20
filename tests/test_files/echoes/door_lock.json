@@ -455,7 +455,8 @@
                         }
                     },
                     "layers": {},
-                    "low_memory_mode": false
+                    "low_memory_mode": false,
+                    "new_name": "Transport to Credits"
                 },
                 "GFMC Compound": {
                     "elevators": [],
