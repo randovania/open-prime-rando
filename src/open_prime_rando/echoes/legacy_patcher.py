@@ -9,10 +9,16 @@ from retro_data_structures.asset_manager import FileProvider, PathFileWriter
 from retro_data_structures.formats.strg import Strg
 from retro_data_structures.game_check import Game
 
-from open_prime_rando import dynamic_schema
-from open_prime_rando.echoes import asset_ids, custom_assets, dock_lock_rando, specific_area_patches
+from open_prime_rando.echoes import (
+    asset_ids,
+    custom_assets,
+    dock_lock_rando,
+    legacy_dynamic_schema,
+    specific_area_patches,
+)
 from open_prime_rando.echoes.elevators import auto_enabled_elevator_patches
 from open_prime_rando.echoes.elevators.elevator_rando import patch_elevator
+from open_prime_rando.echoes.general_changes import apply_corrupted_memory_card_change
 from open_prime_rando.echoes.inverted import apply_inverted
 from open_prime_rando.echoes.small_randomizations import apply_small_randomizations
 from open_prime_rando.echoes.suit_cosmetics import apply_custom_suits
@@ -109,18 +115,6 @@ def apply_area_modifications(
             area.update_all_dependencies(only_modified=True)
 
 
-def apply_corrupted_memory_card_change(editor: PatcherEditor):
-    # STRG_MemoryCard_0
-    table = editor.get_file(0x88E242D6, Strg)
-
-    table.set_single_string(
-        table.raw.name_table["CorruptedFile"],
-        """The save file was created using a different
-Randomizer ISO and must be deleted.""",
-    )
-    table.set_single_string(table.raw.name_table["ChoiceDeleteCorruptedFile"], "Delete Incompatible File")
-
-
 def apply_tweak_edits(editor: PatcherEditor, tweak_edits: dict[str, dict[str, typing.Any]]) -> None:
     """
     Edits the tweaks based on the generic schema api
@@ -159,7 +153,7 @@ def patch_paks(
     editor = PatcherEditor(file_provider, Game.ECHOES)
 
     status_update("Preparing schema", 0)
-    schema = dynamic_schema.expand_schema(_read_legacy_schema(), editor)
+    schema = legacy_dynamic_schema.expand_schema(_read_legacy_schema(), editor)
 
     status_update("Validating schema", 0)
     DefaultValidatingDraft7Validator(schema).validate(configuration)

@@ -3,7 +3,7 @@ from pathlib import Path
 
 import pytest
 
-from open_prime_rando import echoes_patcher
+from open_prime_rando.echoes import legacy_patcher
 
 
 @pytest.fixture(
@@ -73,7 +73,7 @@ def test_ntsc_paks(prime2_iso_provider, tmp_path, test_files_dir, is_legacy: boo
         },
     }
 
-    echoes_patcher.patch_paks(
+    legacy_patcher.patch_paks(
         file_provider=prime2_iso_provider,
         output_path=output_path,
         configuration=configuration,
@@ -86,7 +86,7 @@ def test_pal_paks(pal_prime2_iso_provider, tmp_path, test_files_dir):
     output_path = tmp_path.joinpath("out")
     configuration = test_files_dir.read_json("echoes", "door_lock.json")
 
-    echoes_patcher.patch_paks(
+    legacy_patcher.patch_paks(
         file_provider=pal_prime2_iso_provider,
         output_path=output_path,
         configuration=configuration,
