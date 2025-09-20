@@ -93,25 +93,29 @@ class DoorType:
                 return
 
     @staticmethod
-    def get_scan_templates(editor: PatcherEditor) -> tuple[Scan, Strg]:
+    def get_scan_templates(editor: PatcherEditor) -> tuple[AssetId, AssetId]:
         # Uncategorized/There is a Blast Shield on the door blocking acces_0.SCAN
-        scan = editor.get_parsed_asset(0x36DE1342, type_hint=Scan)
+        scan = 0x36DE1342
         # Strings/Uncategorized/There is a Blast Shield on the door blocking acces_0_0.STRG
-        strg = editor.get_parsed_asset(0x49DF4448, type_hint=Strg)
+        strg = 0x49DF4448
         return scan, strg
 
     def get_patched_scan(self, editor: PatcherEditor, world_name: str, area_name: str) -> AssetId:
         if self.patched_scan is None or not editor.does_asset_exists(self.patched_scan):
-            scan, strg = DoorType.get_scan_templates(editor)
+            template_scan_id, template_strg_id = DoorType.get_scan_templates(editor)
+
+            strg_id = editor.duplicate_asset(template_strg_id, f"custom_door_{self.name}.STRG")
+            strg = editor.get_file(strg_id, Strg)
+
             for i, text in enumerate(self.scan_text):
                 strg.set_single_string(i, text)
 
-            strg_id = editor.add_or_replace_custom_asset(f"custom_door_{self.name}.STRG", strg)
+            scan_id = editor.duplicate_asset(template_scan_id, f"custom_door_{self.name}.SCAN")
+            scan = editor.get_file(scan_id, Scan)
 
             with scan.scannable_object_info.edit_properties(ScannableObjectInfo) as scan_info:
                 scan_info.string = strg_id
 
-            scan_id = editor.add_or_replace_custom_asset(f"custom_door_{self.name}.SCAN", scan)
             self.patched_scan = scan_id
 
         return self.patched_scan

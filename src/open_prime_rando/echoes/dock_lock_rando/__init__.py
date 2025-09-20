@@ -1,7 +1,4 @@
-from construct import Container
 from retro_data_structures.base_resource import AssetId, RawResource
-from retro_data_structures.formats.cmdl import Cmdl
-from retro_data_structures.game_check import Game
 
 from open_prime_rando.echoes.custom_assets import custom_asset_path
 from open_prime_rando.echoes.dock_lock_rando import dock_type
@@ -20,7 +17,6 @@ def add_custom_models(editor: PatcherEditor):
         return editor.add_new_asset(n, res)
 
     greyscale_emissive = get_txtr("custom_door_lock_greyscale_emissive.TXTR")
-    template = editor.get_parsed_asset(0xF115F575, type_hint=Cmdl)
 
     for door_type in DOCK_TYPES.values():
         if not (isinstance(door_type, dock_type.BlastShieldDoorType) and isinstance(door_type.shield_model, str)):
@@ -31,10 +27,11 @@ def add_custom_models(editor: PatcherEditor):
         if emissive is None:
             emissive = greyscale_emissive
 
-        cmdl = Container(template.raw)
-        cmdl.material_sets[0].texture_file_ids[0] = txtr
-        cmdl.material_sets[0].texture_file_ids[1] = emissive
-        editor.add_new_asset(f"custom_door_lock_{name}.CMDL", Cmdl(cmdl, Game.ECHOES, editor))
+        cmdl_id = editor.duplicate_asset(0xF115F575, f"custom_door_lock_{name}.CMDL")
+        cmdl = editor.get_file(cmdl_id)
+
+        cmdl.raw.material_sets[0].texture_file_ids[0] = txtr
+        cmdl.raw.material_sets[0].texture_file_ids[1] = emissive
 
 
 def apply_door_rando(
