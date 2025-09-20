@@ -5,7 +5,7 @@ from collections.abc import Callable
 from pathlib import Path
 from typing import TYPE_CHECKING
 
-from retro_data_structures.asset_manager import FileProvider
+from retro_data_structures.asset_manager import FileProvider, PathFileWriter
 from retro_data_structures.formats.strg import Strg
 from retro_data_structures.game_check import Game
 
@@ -25,8 +25,8 @@ if TYPE_CHECKING:
 LOG = logging.getLogger("echoes_patcher")
 
 
-def _read_schema():
-    with Path(__file__).parent.joinpath("echoes", "schema.json").open() as f:
+def _read_legacy_schema():
+    with Path(__file__).parent.joinpath("echoes", "legacy_schema.json").open() as f:
         return json.load(f)
 
 
@@ -101,10 +101,10 @@ def apply_area_modifications(
 
             if area_config["new_name"] is not None:
                 old_strg = area._raw.area_name_id
-                strg = editor.get_parsed_asset(old_strg, type_hint=Strg)
-                strg.set_string(0, area_config["new_name"])
-                new_strg = editor.add_new_asset(f"custom_name_for_{area.internal_name}.STRG", strg)
-                area._raw.area_name_id = new_strg
+                new_strg_id = editor.duplicate_asset(old_strg, f"custom_name_for_{area.internal_name}.STRG")
+                strg = editor.get_file(new_strg_id, Strg)
+                strg.set_single_string(0, area_config["new_name"])
+                area._raw.area_name_id = new_strg_id
 
             area.update_all_dependencies(only_modified=True)
 
@@ -113,16 +113,12 @@ def apply_corrupted_memory_card_change(editor: PatcherEditor):
     # STRG_MemoryCard_0
     table = editor.get_file(0x88E242D6, Strg)
 
-    name_to_index = {
-        table.raw.name_table.name_array[entry.offset].string: entry.index for entry in table.raw.name_table.name_entries
-    }
-
-    table.set_string(
-        name_to_index["CorruptedFile"],
+    table.set_single_string(
+        table.raw.name_table["CorruptedFile"],
         """The save file was created using a different
 Randomizer ISO and must be deleted.""",
     )
-    table.set_string(name_to_index["ChoiceDeleteCorruptedFile"], "Delete Incompatible File")
+    table.set_single_string(table.raw.name_table["ChoiceDeleteCorruptedFile"], "Delete Incompatible File")
 
 
 def apply_tweak_edits(editor: PatcherEditor, tweak_edits: dict[str, dict[str, typing.Any]]) -> None:
@@ -155,6 +151,7 @@ def patch_paks(
     configuration: dict,
     status_update: Callable[[str, float], None] = lambda s, _: LOG.info(s),
 ):
+    """Applies the legacy patches, intended to be used alongside Claris' patcher."""
     status_update(f"Will patch files at {file_provider}", 0)
     output_path.joinpath("files").mkdir(parents=True, exist_ok=True)
     output_path.joinpath("files", "opr_patcher_data.json").write_text(json.dumps(configuration))
@@ -162,7 +159,7 @@ def patch_paks(
     editor = PatcherEditor(file_provider, Game.ECHOES)
 
     status_update("Preparing schema", 0)
-    schema = dynamic_schema.expand_schema(_read_schema(), editor)
+    schema = dynamic_schema.expand_schema(_read_legacy_schema(), editor)
 
     status_update("Validating schema", 0)
     DefaultValidatingDraft202012Validator(schema).validate(configuration)
@@ -193,7 +190,7 @@ def patch_paks(
     apply_custom_suits(editor, configuration["cosmetics"]["suits"])
 
     # Save our changes
-    editor.flush_modified_assets()
+    editor.build_modified_files()
 
-    editor.save_modifications(output_path)
+    editor.save_modifications(PathFileWriter(output_path))
     status_update("Finished", 1.0)
