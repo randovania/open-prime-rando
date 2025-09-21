@@ -385,8 +385,8 @@ def create_load_loader(
     load_dock_layer.add_connection(State.Arrived, Message.Decrement, load_dock_layer)
     increment_load_loader.add_connection(State.Entered, Message.Increment, load_dock_layer)
     increment_load_loader.add_connection(State.Entered, Message.Deactivate, increment_load_loader)
-    # door_to_menu_dock.add_connection(State.Closed, Message.Decrement, menu_dock)
-    # door_to_menu_dock.add_connection(State.Open, Message.Increment, menu_dock)
+    door_to_menu_dock.add_connection(State.Closed, Message.Decrement, menu_dock)
+    door_to_menu_dock.add_connection(State.Open, Message.Increment, menu_dock)
     load_menu.add_connection(State.Open, Message.Stop, disable_loading)
     load_menu.add_connection(State.Open, Message.Open, door_to_menu_dock)
     exit_menu_relay.add_connection(State.Zero, Message.Clear, door_to_menu_dock)
@@ -742,7 +742,7 @@ def add_area_elements(editor: PatcherEditor, mlvl_id: int, area: Area, menu_area
     print(f"Adding menu to {area.name}, with add_load_loader = {add_load_loader}")
 
     # Connect the area to the Menu
-    # dock_index = add_dock_to_menu(area, menu_area)
+    dock_index = add_dock_to_menu(area, menu_area)
 
     loader_layer = area.add_layer("Menu - Loader", active=False)
 
@@ -765,7 +765,7 @@ def add_area_elements(editor: PatcherEditor, mlvl_id: int, area: Area, menu_area
         Timer(editor_props("Stop Counter increasing TOO quickly (cutscene skip workaround)"), time=0.1)
     )
     # 13970319
-    # menu_dock = loader_layer.add_instance_with(create_dock("Menu Dock", dock_index, area.index))
+    menu_dock = loader_layer.add_instance_with(create_dock("Menu Dock", dock_index, area.index))
 
     # Exit Menu
     exit_menu_relay = loader_layer.add_instance_with(Relay(EditorProperties(name="Exit Menu"), one_shot=False))
@@ -789,17 +789,17 @@ def add_area_elements(editor: PatcherEditor, mlvl_id: int, area: Area, menu_area
     reset_dpad_counter.add_connection(State.Zero, Message.Reset, dpad_count)
     stop_quick_counter.add_connection(State.Zero, Message.Activate, load_menu)
 
-    # menu_dock.add_connection(State.MaxReached, Message.Increment, menu_dock)
+    menu_dock.add_connection(State.MaxReached, Message.Increment, menu_dock)
     # exit_menu_relay.add_connection(State.Zero, Message.Deactivate, CSettings.CameraID)  TODO
-    # exit_menu_relay.add_connection(State.Zero, Message.SetToZero, menu_dock)
+    exit_menu_relay.add_connection(State.Zero, Message.SetToZero, menu_dock)
     exit_menu_relay.add_connection(State.Zero, Message.Activate, check_for_dpad)
 
     if add_load_loader:
         menu_loader_layer = create_load_loader(
             area,
             loader_layer,
-            None,
-            # menu_dock,
+            # None,
+            menu_dock,
             load_menu,
             exit_menu_relay,
             {obj.id for obj in special_functions},
@@ -807,7 +807,7 @@ def add_area_elements(editor: PatcherEditor, mlvl_id: int, area: Area, menu_area
     else:
         for obj in docks:
             load_menu.add_connection(State.Open, Message.SetToZero, obj)
-        # load_menu.add_connection(State.Open, Message.SetToMax, menu_dock)
+        load_menu.add_connection(State.Open, Message.SetToMax, menu_dock)
 
         menu_loader_layer = loader_layer
 
