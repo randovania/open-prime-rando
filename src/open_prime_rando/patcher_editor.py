@@ -1,6 +1,6 @@
 import typing
 
-from retro_data_structures.asset_manager import AssetManager
+from retro_data_structures.asset_manager import AssetManager, FileProvider, FileWriter
 from retro_data_structures.base_resource import AssetId, NameOrAssetId
 from retro_data_structures.formats.mlvl import Mlvl
 from retro_data_structures.formats.mrea import Area
@@ -11,6 +11,12 @@ T = typing.TypeVar("T")
 
 
 class PatcherEditor(AssetManager):
+    custom_files: dict[str, bytes]
+
+    def __init__(self, provider: FileProvider, target_game: Game):
+        super().__init__(provider, target_game)
+        self.custom_files = {}
+
     def get_mlvl(self, name: NameOrAssetId) -> Mlvl:
         return self.get_file(name, Mlvl)
 
@@ -42,3 +48,9 @@ class PatcherEditor(AssetManager):
         strg.set_string_list(strings)
 
         return asset_id, strg
+
+    def save_modifications(self, output: FileWriter) -> None:
+        super().save_modifications(output)
+        for name, data in self.custom_files.items():
+            with output.open_binary(name) as f:
+                f.write(data)

@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import dataclasses
 import logging
 import uuid
 from typing import TYPE_CHECKING
@@ -76,7 +77,6 @@ def _default_dol_patches() -> dol_patcher.EchoesDolPatchesData:
 
 
 _ALL_FEATURES = False
-
 
 def patch_iso(
     input_iso: Path,
