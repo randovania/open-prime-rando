@@ -1,3 +1,4 @@
+from enum import Enum
 from typing import Annotated
 
 from annotated_types import Interval
@@ -11,6 +12,11 @@ class AreaReference(BaseModel):
     mrea_id: AssetId
 
 
+class PracticeModMode(str, Enum):
+    disabled = "disabled"
+    full = "full"
+
+
 class RandoConfiguration(BaseModel):
     """
     Configuration for randomizing Metroid Prime 2: Echoes.
@@ -18,3 +24,6 @@ class RandoConfiguration(BaseModel):
 
     starting_area: AreaReference | None = None
     """The game will start at the given area. When not set, starts at Landing Site."""
+
+    practice_mod: PracticeModMode = PracticeModMode.disabled
+    """How accessible is the Practice Mod."""
