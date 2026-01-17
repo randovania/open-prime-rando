@@ -84,9 +84,7 @@ _ALL_FEATURES = False
 
 
 def edit_starting_area_dol(editor: PatcherEditor, version: EchoesDolVersion, starting_area: AreaReference) -> None:
-    function_address = 0x80143548  # CGameState::SerializeNewForCleanSlot
-
-    # FIXME: support non-NTSC versions
+    function_address = version.starting_area_serialize_clean_slot_address  # CGameState::SerializeNewForCleanSlot
 
     def split_int(value: int) -> tuple[int, int]:
         high = value >> 16
