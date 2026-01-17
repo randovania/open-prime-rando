@@ -87,7 +87,7 @@ def create_asset_id_files(editor: PatcherEditor, output_path: Path):
 
         try:
             strg = editor.get_file(mlvl.raw.world_name_id, type_hint=Strg)
-            world_name = strg.raw.string_tables[0].strings[0].string
+            world_name = strg.strings[0]
         except retro_data_structures.exceptions.UnknownAssetId:
             if value not in custom_world_names:
                 raise
@@ -107,7 +107,7 @@ def create_asset_id_files(editor: PatcherEditor, output_path: Path):
         for area, mapa in zip(mlvl.raw.areas, mlvl.mapw.mapa_ids):
             try:
                 strg = editor.get_file(area.area_name_id, type_hint=Strg)
-                area_name = strg.raw.string_tables[0].strings[0].string
+                area_name = strg.strings[0]
             except retro_data_structures.exceptions.UnknownAssetId:
                 area_name = area.internal_area_name
             area_name = _CUSTOM_AREA_NAMES[editor.target_game].get(area.area_mrea_id, area_name)
@@ -151,6 +151,7 @@ def create_asset_id_files(editor: PatcherEditor, output_path: Path):
 
 def load_dedicated_file(world_name: str):
     import importlib
+
     return importlib.import_module(
         _DEDICATED_FILES[world_name],
         ".".join(__name__.split(".")[:-1]),
