@@ -7,12 +7,14 @@ from typing import TYPE_CHECKING
 
 from ppc_asm.assembler import ppc
 from retro_data_structures.asset_manager import IsoFileProvider, PathFileWriter
+from retro_data_structures.exceptions import UnknownAssetId
 from retro_data_structures.game_check import Game
+from retro_data_structures.properties.echoes.objects import WorldTeleporter
 
 from open_prime_rando.dol_patching.echoes import dol_patcher
 from open_prime_rando.dol_patching.echoes.beam_configuration import BeamAmmoConfiguration
 from open_prime_rando.dol_patching.echoes.user_preferences import OprEchoesUserPreferences
-from open_prime_rando.echoes import inverted
+from open_prime_rando.echoes import frontend_asset_ids, inverted
 from open_prime_rando.echoes.elevators import auto_enabled_elevator_patches
 from open_prime_rando.patcher_editor import PatcherEditor
 
@@ -113,9 +115,21 @@ def edit_starting_area_dol(editor: PatcherEditor, version: EchoesDolVersion, sta
     editor.dol.write_instructions(function_address + 21 * 4, [ppc.addi(ppc.r4, ppc.r4, area_low)])
 
 
+def edit_starting_area_teleporter(editor: PatcherEditor, starting_area: AreaReference) -> None:
+    try:
+        area = editor.get_area(frontend_asset_ids.FRONTEND_PAL_MLVL, frontend_asset_ids.FRONTEND_PAL_MREA)
+    except UnknownAssetId:
+        area = editor.get_area(frontend_asset_ids.FRONTEND_NTSC_MLVL, frontend_asset_ids.FRONTEND_NTSC_MREA)
+
+    elevator = area.get_instance("StartNewSinglePlayerGame")
+    with elevator.edit_properties(WorldTeleporter) as teleporter:
+        teleporter.world = starting_area.mlvl_id
+        teleporter.area = starting_area.mrea_id
+
+
 def edit_starting_area(editor: PatcherEditor, version: EchoesDolVersion, starting_area: AreaReference) -> None:
     edit_starting_area_dol(editor, version, starting_area)
-    # TODO: edit the WorldTeleporter in FrontEnd
+    edit_starting_area_teleporter(editor, starting_area)
 
 
 def patch_iso(
