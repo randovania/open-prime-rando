@@ -85,6 +85,7 @@ ALL_VERSIONS = [
             map_icon_jumptable=0x803B3638,
         ),
         double_damage_vfx=0x80017F28,
+        starting_area_serialize_clean_slot_address=0x80143548,
     ),
     EchoesDolVersion(
         game=Game.ECHOES,
@@ -155,5 +156,6 @@ ALL_VERSIONS = [
             map_icon_jumptable=0x803B4A80,
         ),
         double_damage_vfx=0x80017FC4,
+        starting_area_serialize_clean_slot_address=0x80143784,
     ),
 ]

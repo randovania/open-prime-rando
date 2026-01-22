@@ -1,8 +1,8 @@
 import argparse
-import json
 from pathlib import Path
 
 from open_prime_rando.echoes import patcher
+from open_prime_rando.echoes.rando_configuration import RandoConfiguration
 
 
 def create_parser():
@@ -23,8 +23,11 @@ def main(argv: list[str]) -> None:
     print(args)
 
     if args.command == "randomizer":
-        with args.input_json.open() as f:
-            configuration = json.load(f)
+        configuration_path: Path = args.input_json
+        configuration = RandoConfiguration.model_validate_json(
+            configuration_path.read_text(),
+            strict=True,
+        )
 
         patcher.patch_iso(
             args.input_iso,
