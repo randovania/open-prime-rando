@@ -36,7 +36,7 @@ class EchoesDolPatchesData:
         )
 
 
-def apply_patches(dol_editor: DolEditor, patches_data: EchoesDolPatchesData):
+def apply_patches(dol_editor: DolEditor, patches_data: EchoesDolPatchesData) -> dol_patches.EchoesDolVersion:
     version = dol_version.find_version_for_dol(dol_editor, dol_versions.ALL_VERSIONS)
     assert isinstance(version, dol_patches.EchoesDolVersion)
 
@@ -66,3 +66,5 @@ def apply_patches(dol_editor: DolEditor, patches_data: EchoesDolPatchesData):
     )
     dol_patches.apply_starting_visor_patch(version.starting_beam_visor, patches_data.default_items, dol_editor)
     dol_patches.apply_map_door_changes(version.map_door_types, dol_editor)
+
+    return version

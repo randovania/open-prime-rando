@@ -1,22 +1,29 @@
 from __future__ import annotations
 
 import logging
+import struct
 import uuid
 from typing import TYPE_CHECKING
 
+from ppc_asm.assembler import ppc
 from retro_data_structures.asset_manager import IsoFileProvider, PathFileWriter
+from retro_data_structures.exceptions import UnknownAssetId
 from retro_data_structures.game_check import Game
+from retro_data_structures.properties.echoes.objects import WorldTeleporter
 
 from open_prime_rando.dol_patching.echoes import dol_patcher
 from open_prime_rando.dol_patching.echoes.beam_configuration import BeamAmmoConfiguration
 from open_prime_rando.dol_patching.echoes.user_preferences import OprEchoesUserPreferences
-from open_prime_rando.echoes import inverted
+from open_prime_rando.echoes import frontend_asset_ids, inverted
 from open_prime_rando.echoes.elevators import auto_enabled_elevator_patches
 from open_prime_rando.patcher_editor import PatcherEditor
 
 if TYPE_CHECKING:
     from collections.abc import Callable
     from pathlib import Path
+
+    from open_prime_rando.dol_patching.echoes.dol_patches import EchoesDolVersion
+    from open_prime_rando.echoes.rando_configuration import AreaReference, RandoConfiguration
 
 LOG = logging.getLogger("echoes_patcher")
 
@@ -78,10 +85,57 @@ def _default_dol_patches() -> dol_patcher.EchoesDolPatchesData:
 _ALL_FEATURES = False
 
 
+def edit_starting_area_dol(editor: PatcherEditor, version: EchoesDolVersion, starting_area: AreaReference) -> None:
+    function_address = version.starting_area_serialize_clean_slot_address  # CGameState::SerializeNewForCleanSlot
+
+    def split_int(value: int) -> tuple[int, int]:
+        high = value >> 16
+        low = struct.unpack("h", struct.pack("H", value & 0xFFFF))[0]
+
+        if low < 0:
+            # When low_value is considered negative, adding it will subtract the overflow bit
+            # Add one to high_value to fix it
+            high += 1
+
+        return high, low
+
+    world_high, world_low = split_int(starting_area.mlvl_id)
+    area_high, area_low = split_int(starting_area.mrea_id)
+
+    # SetMLvlId argument
+    editor.dol.write_instructions(function_address + 12 * 4, [ppc.lis(ppc.r4, world_high)])
+    editor.dol.write_instructions(function_address + 14 * 4, [ppc.addi(ppc.r4, ppc.r4, world_low)])
+
+    # StateForWorld argument
+    editor.dol.write_instructions(function_address + 16 * 4, [ppc.lis(ppc.r4, world_high)])
+    editor.dol.write_instructions(function_address + 18 * 4, [ppc.addi(ppc.r4, ppc.r4, world_low)])
+
+    # SetDesiredAreaAssetId
+    editor.dol.write_instructions(function_address + 20 * 4, [ppc.lis(ppc.r4, area_high)])
+    editor.dol.write_instructions(function_address + 21 * 4, [ppc.addi(ppc.r4, ppc.r4, area_low)])
+
+
+def edit_starting_area_teleporter(editor: PatcherEditor, starting_area: AreaReference) -> None:
+    try:
+        area = editor.get_area(frontend_asset_ids.FRONTEND_PAL_MLVL, frontend_asset_ids.FRONTEND_PAL_MREA)
+    except UnknownAssetId:
+        area = editor.get_area(frontend_asset_ids.FRONTEND_NTSC_MLVL, frontend_asset_ids.FRONTEND_NTSC_MREA)
+
+    elevator = area.get_instance("StartNewSinglePlayerGame")
+    with elevator.edit_properties(WorldTeleporter) as teleporter:
+        teleporter.world = starting_area.mlvl_id
+        teleporter.area = starting_area.mrea_id
+
+
+def edit_starting_area(editor: PatcherEditor, version: EchoesDolVersion, starting_area: AreaReference) -> None:
+    edit_starting_area_dol(editor, version, starting_area)
+    edit_starting_area_teleporter(editor, starting_area)
+
+
 def patch_iso(
     input_iso: Path,
     output_iso: Path,
-    configuration: dict,
+    configuration: RandoConfiguration,
     status_update: Callable[[str, float], None] = lambda s, _: LOG.info(s),
 ) -> None:
     """
@@ -97,7 +151,11 @@ def patch_iso(
 
     editor = PatcherEditor(file_provider, Game.ECHOES)
 
-    dol_patcher.apply_patches(editor.dol, _default_dol_patches())
+    version = dol_patcher.apply_patches(editor.dol, _default_dol_patches())
+
+    if configuration.starting_area is not None:
+        edit_starting_area(editor, version, configuration.starting_area)
+
     if _ALL_FEATURES:
         auto_enabled_elevator_patches.apply_auto_enabled_elevators_patch(editor)
         inverted.apply_inverted(editor)
