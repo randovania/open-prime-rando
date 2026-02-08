@@ -1,9 +1,9 @@
 import logging
+import tomllib
 from pathlib import Path
 from typing import TYPE_CHECKING
 
 import elftools.elf.elffile
-import tomllib
 from ppc_asm.assembler import ppc
 from ppc_asm.dol_file import DolEditor
 
