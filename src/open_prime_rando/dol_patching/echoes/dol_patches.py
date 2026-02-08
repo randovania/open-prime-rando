@@ -379,6 +379,7 @@ def apply_starting_visor_patch(addresses: StartingBeamVisorAddresses, default_it
 
 @dataclasses.dataclass(frozen=True)
 class EchoesDolVersion(BasePrimeDolVersion):
+    practice_mod_elf_prefix: str
     health_capacity: HealthCapacityAddresses
     dangerous_energy_tank: DangerousEnergyTankAddresses
     game_options_constructor_address: int
