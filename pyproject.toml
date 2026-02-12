@@ -28,6 +28,7 @@ dependencies = [
     "py_randomprime", # for Prime 1 symbols
     "pydantic>=2.12.5",
     "pyelftools>=0.32",
+    "open-prime-rando-practice-mod>=0.1.0",
 ]
 
 [project.scripts]

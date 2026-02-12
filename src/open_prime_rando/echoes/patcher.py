@@ -2,9 +2,9 @@ from __future__ import annotations
 
 import logging
 import uuid
-from pathlib import Path
 from typing import TYPE_CHECKING
 
+import open_prime_rando_practice_mod
 from ppc_asm.assembler import ppc
 from retro_data_structures.asset_manager import IsoFileProvider, PathFileWriter
 from retro_data_structures.exceptions import UnknownAssetId
@@ -18,11 +18,11 @@ from open_prime_rando.dol_patching.echoes.beam_configuration import BeamAmmoConf
 from open_prime_rando.dol_patching.echoes.user_preferences import OprEchoesUserPreferences
 from open_prime_rando.echoes import frontend_asset_ids, inverted
 from open_prime_rando.echoes.elevators import auto_enabled_elevator_patches
-from open_prime_rando.echoes.rando_configuration import PracticeModMode
 from open_prime_rando.patcher_editor import PatcherEditor
 
 if TYPE_CHECKING:
     from collections.abc import Callable
+    from pathlib import Path
 
     from open_prime_rando.dol_patching.echoes.dol_patches import EchoesDolVersion
     from open_prime_rando.echoes.rando_configuration import AreaReference, RandoConfiguration
@@ -135,16 +135,6 @@ def edit_starting_area(editor: PatcherEditor, version: EchoesDolVersion, startin
     edit_starting_area_teleporter(editor, starting_area)
 
 
-def _get_practice_mod_elf_for(version: EchoesDolVersion, practice_mode: PracticeModMode) -> Path:
-    elf_path = Path(__file__).parent.joinpath(
-        "custom_assets", "practice_mod", version.practice_mod_elf_prefix + f"_{practice_mode.value}.elf"
-    )
-
-    if not elf_path.is_file():
-        raise ValueError(f"No practice mod available for combination {version.description} and {practice_mode}.")
-    return elf_path
-
-
 def patch_iso(
     input_iso: Path,
     output_iso: Path,
@@ -174,8 +164,11 @@ def patch_iso(
         auto_enabled_elevator_patches.apply_auto_enabled_elevators_patch(editor)
         inverted.apply_inverted(editor)
 
-    if configuration.practice_mod != PracticeModMode.disabled:
-        practice_mod.patch_dol(editor.dol, _get_practice_mod_elf_for(version, configuration.practice_mod))
+    if configuration.practice_mod != open_prime_rando_practice_mod.PracticeModMode.disabled:
+        practice_mod.patch_dol(
+            editor.dol,
+            open_prime_rando_practice_mod.get_elf_for(version.practice_mod_version, configuration.practice_mod),
+        )
 
     # Save our changes
     editor.build_modified_files()

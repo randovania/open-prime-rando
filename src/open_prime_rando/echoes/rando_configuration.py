@@ -1,7 +1,7 @@
-from enum import Enum
 from typing import Annotated
 
 from annotated_types import Interval
+from open_prime_rando_practice_mod import PracticeModMode
 from pydantic import BaseModel
 
 AssetId = Annotated[int, Interval(ge=0, le=0xFFFFFFFF)]
@@ -10,11 +10,6 @@ AssetId = Annotated[int, Interval(ge=0, le=0xFFFFFFFF)]
 class AreaReference(BaseModel):
     mlvl_id: AssetId
     mrea_id: AssetId
-
-
-class PracticeModMode(str, Enum):
-    disabled = "disabled"
-    full = "full"
 
 
 class RandoConfiguration(BaseModel):
