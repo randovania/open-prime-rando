@@ -1,6 +1,8 @@
-import dataclasses
+from __future__ import annotations
 
-from retro_data_structures.asset_manager import NameOrAssetId
+import dataclasses
+from typing import TYPE_CHECKING, NamedTuple
+
 from retro_data_structures.formats.cmdl import Cmdl
 from retro_data_structures.properties.echoes.archetypes.LightParameters import WorldLightingOptions
 from retro_data_structures.properties.echoes.core.AnimationParameters import AnimationParameters
@@ -8,9 +10,18 @@ from retro_data_structures.properties.echoes.core.AssetId import default_asset_i
 from retro_data_structures.properties.echoes.core.Color import Color
 from retro_data_structures.properties.echoes.core.Vector import Vector
 
-from open_prime_rando.patcher_editor import PatcherEditor
+if TYPE_CHECKING:
+    from retro_data_structures.asset_manager import NameOrAssetId
+    from retro_data_structures.formats.script_object import InstanceId
+
+    from open_prime_rando.patcher_editor import PatcherEditor
 
 ETM_MODEL = 0xDE702243
+
+
+class CutsceneModel(NamedTuple):
+    instance: InstanceId
+    layer: str
 
 
 @dataclasses.dataclass(frozen=True, kw_only=True)
@@ -19,17 +30,17 @@ class ModelLighting:
     unk_bool: bool = True
     use_world_lighting: WorldLightingOptions = WorldLightingOptions.NormalWorldLighting
     use_old_lighting: bool = False
-    ambient_color: Color = Color(1.0, 1.0, 1.0, 1.0)
+    ambient_color: Color = dataclasses.field(default_factory=lambda: Color(1.0, 1.0, 1.0, 1.0))
 
 
 @dataclasses.dataclass(frozen=True, kw_only=True)
 class ModelTransform:
-    rotation: Vector = Vector(0.0, 0.0, 0.0)
-    scale: Vector = Vector(1.0, 1.0, 1.0)
-    orbit_offset: Vector = Vector(0.0, 0.0, 0.0)
+    rotation: Vector = dataclasses.field(default_factory=lambda: Vector(0.0, 0.0, 0.0))
+    scale: Vector = dataclasses.field(default_factory=lambda: Vector(1.0, 1.0, 1.0))
+    orbit_offset: Vector = dataclasses.field(default_factory=lambda: Vector(0.0, 0.0, 0.0))
 
 
-@dataclasses.dataclass
+@dataclasses.dataclass(frozen=True, kw_only=True)
 class ModelAnim:
     ancs: NameOrAssetId = default_asset_id
     character_index: int = 0

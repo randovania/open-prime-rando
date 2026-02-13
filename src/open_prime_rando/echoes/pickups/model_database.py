@@ -1,3 +1,8 @@
+from __future__ import annotations
+
+from typing import Annotated, Any
+
+from pydantic import BeforeValidator, PlainSerializer, WithJsonSchema
 from retro_data_structures.properties.echoes.archetypes.LightParameters import WorldLightingOptions
 from retro_data_structures.properties.echoes.core.Color import Color
 from retro_data_structures.properties.echoes.core.Vector import Vector
@@ -450,46 +455,29 @@ PICKUP_MODELS = {
             use_old_lighting=True,
         ),
     ),
-    "AgonTempleKey": PickupModel(
-        model="agon_temple_key.CMDL",
-        animation=ModelAnim(
-            ancs=0x41C2513F,
-            character_index=2,
-        ),
-        transform=ModelTransform(
-            rotation=Vector(0.0, 0.0, -90.0),
-        ),
-        lighting=ModelLighting(
-            use_world_lighting=WorldLightingOptions.Unknown2,
-            use_old_lighting=True,
-        ),
-    ),
-    "TorvusTempleKey": PickupModel(
-        model="torvus_temple_key.CMDL",
-        animation=ModelAnim(
-            ancs=0x41C2513F,
-            character_index=3,
-        ),
-        transform=ModelTransform(
-            rotation=Vector(0.0, 0.0, -90.0),
-        ),
-        lighting=ModelLighting(
-            use_world_lighting=WorldLightingOptions.Unknown2,
-            use_old_lighting=True,
-        ),
-    ),
-    "HiveTempleKey": PickupModel(
-        model="hive_temple_key.CMDL",
-        animation=ModelAnim(
-            ancs=0x41C2513F,
-            character_index=4,
-        ),
-        transform=ModelTransform(
-            rotation=Vector(0.0, 0.0, -90.0),
-        ),
-        lighting=ModelLighting(
-            use_world_lighting=WorldLightingOptions.Unknown2,
-            use_old_lighting=True,
-        ),
-    ),
 }
+
+
+def _validate_pickup_model_name(value: Any) -> PickupModel:
+    if isinstance(value, PickupModel):
+        return value
+    if not isinstance(value, str):
+        raise ValueError(f"Expected string pickup model name, got {type(value).__name__}")
+    if value not in PICKUP_MODELS:
+        raise ValueError(f"Unknown pickup model: {value}. Valid options: {', '.join(PICKUP_MODELS.keys())}")
+    return PICKUP_MODELS[value]
+
+
+def _serialize_pickup_model_name(value: PickupModel) -> str:
+    for name, model in PICKUP_MODELS.items():
+        if model is value:
+            return name
+    raise ValueError("PickupModel not found in PICKUP_MODELS database")
+
+
+PickupModelByName = Annotated[
+    PickupModel,
+    BeforeValidator(_validate_pickup_model_name),
+    PlainSerializer(_serialize_pickup_model_name, return_type=str),
+    WithJsonSchema({"type": "string", "enum": list(PICKUP_MODELS.keys())}),
+]
