@@ -4,6 +4,8 @@ from annotated_types import Interval
 from open_prime_rando_practice_mod import PracticeModMode
 from pydantic import BaseModel, StringConstraints
 
+from open_prime_rando.echoes.pickups.schema import PickupModification
+
 AssetId = Annotated[int, Interval(ge=0, le=0xFFFFFFFF)]
 
 
@@ -17,6 +19,9 @@ class AreaChange(BaseModel):
 
     mrea_id: AssetId
     """The asset id of the MREA for this change."""
+
+    pickups: list[PickupModification]
+    """Either a modification for an existing pickup in this area, or a new pickup to add."""
 
 
 class WorldChange(BaseModel):

@@ -7,6 +7,7 @@ from typing import TYPE_CHECKING
 import open_prime_rando_practice_mod
 from PIL import Image
 from ppc_asm.assembler import ppc
+from retro_data_structures.formats import Mapa
 from retro_data_structures.formats.banner import Banner
 from retro_data_structures.game_check import Game
 
@@ -15,7 +16,7 @@ from open_prime_rando.dol_patching import ppc_helper
 from open_prime_rando.dol_patching.echoes import dol_patcher
 from open_prime_rando.dol_patching.echoes.beam_configuration import BeamAmmoConfiguration
 from open_prime_rando.dol_patching.echoes.user_preferences import OprEchoesUserPreferences
-from open_prime_rando.echoes import custom_assets, inverted, specific_area_patches
+from open_prime_rando.echoes import custom_assets, inverted, pickups, specific_area_patches
 from open_prime_rando.echoes.elevators import auto_enabled_elevator_patches
 from open_prime_rando.echoes.specific_area_patches import front_end
 from open_prime_rando.patcher_editor import IsoFileProvider, IsoFileWriter, PatcherEditor
@@ -186,6 +187,18 @@ def patch_iso(
 
     if configuration.starting_area is not None:
         edit_starting_area(editor, dol_version, configuration.starting_area)
+
+    disable_hud_popup = True
+    for world_change in configuration.world_changes:
+        mlvl = editor.get_mlvl(world_change.mlvl_id)
+
+        for area_change in world_change.area_changes:
+            area = mlvl.get_area(area_change.mrea_id)
+            mapa_id = mlvl.mapw.get_mapa_id(area.index)
+            mapa = editor.get_file(mapa_id, Mapa)
+
+            for pickup_change in area_change.pickups:
+                pickups.patch_pickup(editor, pickup_change, area, mapa, disable_hud_popup)
 
     if _ALL_FEATURES:
         auto_enabled_elevator_patches.apply_auto_enabled_elevators_patch(editor)
