@@ -1,7 +1,7 @@
 import pytest
 
 from open_prime_rando.echoes import patcher
-from open_prime_rando.echoes.rando_configuration import RandoConfiguration
+from open_prime_rando.echoes.rando_configuration import PracticeModMode, RandoConfiguration
 
 
 @pytest.fixture
@@ -15,4 +15,5 @@ def test_ntsc_export(prime2_ntsc_iso_path, tmp_path, configuration) -> None:
 
 
 def test_pal_export(prime2_pal_iso_path, tmp_path, configuration) -> None:
+    configuration.practice_mod = PracticeModMode.disabled
     patcher.patch_iso(prime2_pal_iso_path, tmp_path, configuration)
