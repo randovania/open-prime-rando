@@ -56,7 +56,7 @@ def _create_visor_derivatives(editor: PatcherEditor):
     }
 
     for name, assets in TRANSLATORS.items():
-        if assets.custom_name is not None and assets.new_ancs is not None and assets.new_cmdl is not None:
+        if assets.new_ancs is not None and assets.new_cmdl is not None:
             editor.register_custom_asset_name(f"{name}.CMDL", assets.new_cmdl)
             editor.register_custom_asset_name(f"{name}.ANCS", assets.new_ancs)
 
