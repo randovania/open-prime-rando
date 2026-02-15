@@ -18,7 +18,7 @@ COMBAT_VISOR_CMDL = 0x0B7E6CA9
 DARK_VISOR_ANCS = 0x851B526E
 
 
-@dataclasses.dataclass
+@dataclasses.dataclass(frozen=True)
 class TranslatorAssets:
     txtr: NameOrAssetId
     new_cmdl: int | None = None
