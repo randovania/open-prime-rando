@@ -14,7 +14,7 @@ from retro_data_structures.properties.echoes.objects import WorldTeleporter
 from open_prime_rando.dol_patching.echoes import dol_patcher
 from open_prime_rando.dol_patching.echoes.beam_configuration import BeamAmmoConfiguration
 from open_prime_rando.dol_patching.echoes.user_preferences import OprEchoesUserPreferences
-from open_prime_rando.echoes import frontend_asset_ids, inverted
+from open_prime_rando.echoes import custom_assets, frontend_asset_ids, inverted
 from open_prime_rando.echoes.elevators import auto_enabled_elevator_patches
 from open_prime_rando.patcher_editor import PatcherEditor
 
@@ -151,6 +151,7 @@ def patch_iso(
 
     editor = PatcherEditor(file_provider, Game.ECHOES)
 
+    custom_assets.create_custom_assets(editor)
     version = dol_patcher.apply_patches(editor.dol, _default_dol_patches())
 
     if configuration.starting_area is not None:
