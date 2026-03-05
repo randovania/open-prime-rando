@@ -4,6 +4,7 @@ from collections.abc import Iterable
 from enum import Enum
 from typing import NamedTuple
 
+import open_prime_rando_practice_mod
 from ppc_asm.assembler import custom_ppc
 from ppc_asm.assembler.ppc import *  # noqa: F403
 from ppc_asm.dol_file import DolEditor
@@ -379,6 +380,7 @@ def apply_starting_visor_patch(addresses: StartingBeamVisorAddresses, default_it
 
 @dataclasses.dataclass(frozen=True)
 class EchoesDolVersion(BasePrimeDolVersion):
+    practice_mod_version: open_prime_rando_practice_mod.GameVersion
     health_capacity: HealthCapacityAddresses
     dangerous_energy_tank: DangerousEnergyTankAddresses
     game_options_constructor_address: int

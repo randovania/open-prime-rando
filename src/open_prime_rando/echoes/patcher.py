@@ -1,16 +1,18 @@
 from __future__ import annotations
 
 import logging
-import struct
 import uuid
 from typing import TYPE_CHECKING
 
+import open_prime_rando_practice_mod
 from ppc_asm.assembler import ppc
 from retro_data_structures.asset_manager import IsoFileProvider, PathFileWriter
 from retro_data_structures.exceptions import UnknownAssetId
 from retro_data_structures.game_check import Game
 from retro_data_structures.properties.echoes.objects import WorldTeleporter
 
+from open_prime_rando import practice_mod
+from open_prime_rando.dol_patching import ppc_helper
 from open_prime_rando.dol_patching.echoes import dol_patcher
 from open_prime_rando.dol_patching.echoes.beam_configuration import BeamAmmoConfiguration
 from open_prime_rando.dol_patching.echoes.user_preferences import OprEchoesUserPreferences
@@ -88,31 +90,32 @@ _ALL_FEATURES = False
 def edit_starting_area_dol(editor: PatcherEditor, version: EchoesDolVersion, starting_area: AreaReference) -> None:
     function_address = version.starting_area_serialize_clean_slot_address  # CGameState::SerializeNewForCleanSlot
 
-    def split_int(value: int) -> tuple[int, int]:
-        high = value >> 16
-        low = struct.unpack("h", struct.pack("H", value & 0xFFFF))[0]
-
-        if low < 0:
-            # When low_value is considered negative, adding it will subtract the overflow bit
-            # Add one to high_value to fix it
-            high += 1
-
-        return high, low
-
-    world_high, world_low = split_int(starting_area.mlvl_id)
-    area_high, area_low = split_int(starting_area.mrea_id)
-
     # SetMLvlId argument
-    editor.dol.write_instructions(function_address + 12 * 4, [ppc.lis(ppc.r4, world_high)])
-    editor.dol.write_instructions(function_address + 14 * 4, [ppc.addi(ppc.r4, ppc.r4, world_low)])
+    ppc_helper.load_32bit_int(
+        editor.dol,
+        ppc.r4,
+        starting_area.mlvl_id,
+        function_address + 12 * 4,
+        function_address + 14 * 4,
+    )
 
     # StateForWorld argument
-    editor.dol.write_instructions(function_address + 16 * 4, [ppc.lis(ppc.r4, world_high)])
-    editor.dol.write_instructions(function_address + 18 * 4, [ppc.addi(ppc.r4, ppc.r4, world_low)])
+    ppc_helper.load_32bit_int(
+        editor.dol,
+        ppc.r4,
+        starting_area.mlvl_id,
+        function_address + 16 * 4,
+        function_address + 18 * 4,
+    )
 
     # SetDesiredAreaAssetId
-    editor.dol.write_instructions(function_address + 20 * 4, [ppc.lis(ppc.r4, area_high)])
-    editor.dol.write_instructions(function_address + 21 * 4, [ppc.addi(ppc.r4, ppc.r4, area_low)])
+    ppc_helper.load_32bit_int(
+        editor.dol,
+        ppc.r4,
+        starting_area.mrea_id,
+        function_address + 20 * 4,
+        function_address + 21 * 4,
+    )
 
 
 def edit_starting_area_teleporter(editor: PatcherEditor, starting_area: AreaReference) -> None:
@@ -147,6 +150,7 @@ def patch_iso(
     :return:
     """
     file_provider = IsoFileProvider(input_iso)
+
     output = PathFileWriter(output_iso)  # TODO: IsoFileWriter
 
     editor = PatcherEditor(file_provider, Game.ECHOES)
@@ -160,6 +164,13 @@ def patch_iso(
         auto_enabled_elevator_patches.apply_auto_enabled_elevators_patch(editor)
         inverted.apply_inverted(editor)
 
+    if configuration.practice_mod != open_prime_rando_practice_mod.PracticeModMode.disabled:
+        practice_mod.patch_dol(
+            editor.dol,
+            open_prime_rando_practice_mod.get_elf_for(version.practice_mod_version, configuration.practice_mod),
+        )
+
     # Save our changes
     editor.build_modified_files()
     editor.save_modifications(output)
+    status_update("Finished", 1.0)

@@ -48,7 +48,7 @@ def prime2_ntsc_iso_path() -> Path:
 
 @pytest.fixture(scope="module")
 def prime2_pal_iso_path() -> Path:
-    return Path(get_env_or_skip("PRIME2_ISO", override_fail=False))
+    return Path(get_env_or_skip("PRIME2_PAL_ISO", override_fail=False))
 
 
 @pytest.fixture(scope="module")

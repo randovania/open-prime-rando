@@ -1,3 +1,4 @@
+import open_prime_rando_practice_mod
 from retro_data_structures.game_check import Game
 
 from open_prime_rando.dol_patching.all_prime_dol_patches import (
@@ -38,6 +39,7 @@ ALL_VERSIONS = [
             incr_pickup=0x80085760,
             decr_pickup=0x800856C4,
         ),
+        practice_mod_version=open_prime_rando_practice_mod.GameVersion.GC_NTSC,
         health_capacity=HealthCapacityAddresses(
             base_health_capacity=0x8041ABE4,
             energy_tank_capacity=0x8041ABE0,
@@ -109,6 +111,7 @@ ALL_VERSIONS = [
             incr_pickup=0x8008589C,
             decr_pickup=0x80085800,
         ),
+        practice_mod_version=open_prime_rando_practice_mod.GameVersion.GC_PAL,
         health_capacity=HealthCapacityAddresses(
             base_health_capacity=0x8041BEDC,
             energy_tank_capacity=0x8041BED8,
