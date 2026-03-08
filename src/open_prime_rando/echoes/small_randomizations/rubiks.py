@@ -93,6 +93,7 @@ def randomize_rubiks_puzzles(editor: PatcherEditor, rng: random.Random):
         file_ids = cmdl.raw.material_sets[0].texture_file_ids
         old_txtr = file_ids.index(color.old_txtr)
         file_ids[old_txtr] = txtr_id
+        editor._clear_cached_dependencies_for_asset(color.cmdl)  # FIXME: this should be done by RDS
 
     for puzzle_name, cubes in RUBIKS_CUBES.items():
         solution = [
