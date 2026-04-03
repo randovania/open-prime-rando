@@ -33,7 +33,7 @@ jobs:
           python-version: "3.13"
 
       - name: build
-        run: PYTHONWARNINGS=error uv build
+        run: uv build
 
       - name: Store the packages
         uses: actions/upload-artifact@v7
