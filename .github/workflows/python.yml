@@ -96,7 +96,7 @@ jobs:
         run: uv run pytest --cov src --cov-report=xml --durations=100 -n 4
 
       - name: codecov
-        uses: codecov/codecov-action@v5
+        uses: codecov/codecov-action@v6
         with:
           fail_ci_if_error: false
           files: ./coverage.xml
