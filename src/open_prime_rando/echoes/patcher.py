@@ -6,7 +6,7 @@ from typing import TYPE_CHECKING
 
 import open_prime_rando_practice_mod
 from ppc_asm.assembler import ppc
-from retro_data_structures.asset_manager import IsoFileProvider, PathFileWriter
+from retro_data_structures.asset_manager import FileWriter, IsoFileProvider, PathFileWriter
 from retro_data_structures.exceptions import UnknownAssetId
 from retro_data_structures.game_check import Game
 from retro_data_structures.properties.echoes.objects import WorldTeleporter
@@ -135,6 +135,15 @@ def edit_starting_area(editor: PatcherEditor, version: EchoesDolVersion, startin
     edit_starting_area_teleporter(editor, starting_area)
 
 
+def remove_attract_videos(editor: PatcherEditor, output: FileWriter) -> None:
+    """
+    Replace all Attract THP files with 0-byte files, as that causes them to not be loaded.
+    """
+    for attract in list(editor.provider.rglob("Video/Attract*.thp")):
+        with output.open_binary(attract) as f:
+            f.write(b"")
+
+
 def patch_iso(
     input_iso: Path,
     output_iso: Path,
@@ -173,5 +182,6 @@ def patch_iso(
 
     # Save our changes
     editor.build_modified_files()
+    remove_attract_videos(editor, output)
     editor.save_modifications(output)
     status_update("Finished", 1.0)
