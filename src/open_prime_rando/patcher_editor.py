@@ -34,11 +34,19 @@ class PatcherEditor(AssetManager):
         name: str,
         strings: str | typing.Iterable[str] = (),
     ) -> tuple[AssetId, Strg]:
+
+        if isinstance(strings, str):
+            string_list = [strings]
+        else:
+            string_list = list(strings)
+
         if self.does_asset_exists(name):
             existing = self.get_file(name, Strg)
-            if existing.strings == strings:
-                return [self._resolve_asset_id(name), existing]
-            raise ValueError(f"STRG named {name} already exists with different contents")
+            if existing.strings == tuple(string_list):
+                return self._resolve_asset_id(name), existing
+            raise ValueError(
+                f"STRG named {name!r} already exists with contents `{existing.strings!r}`, expected `{string_list!r}`"
+            )
 
         template_id = None
         if self.target_game == Game.ECHOES:
@@ -52,12 +60,7 @@ class PatcherEditor(AssetManager):
 
         strg = self.get_file(asset_id, Strg)
 
-        # TODO: ???
-        # if isinstance(strings, str):
-        #     strings = strings
-
-        strings = list(strings)
-        strg.set_string_list(strings)
+        strg.set_string_list(string_list)
 
         return asset_id, strg
 
