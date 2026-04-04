@@ -2,9 +2,4076 @@
     "game_title": "Echoes Rando New Patcher",
     "title_screen_text": "Hello World!",
     "starting_area": {
-        "mlvl_id": 1119434212,
-        "mrea_id": 1090496759
+        "mlvl_id": 1006255871,
+        "mrea_id": 1655756413
     },
     "practice_mod": "full",
-    "world_changes": []
+    "world_changes": [
+        {
+            "mlvl_id": 1006255871,
+            "area_changes": [
+                {
+                    "mrea_id": 1353937573,
+                    "pickups": [
+                        {
+                            "location": {
+                                "type": "standard",
+                                "exclude_memo_from_removal": false,
+                                "original_model": "MissileLauncher",
+                                "connections": [],
+                                "removals": [
+                                    403046970
+                                ],
+                                "collision_offset": {
+                                    "x": 0.0,
+                                    "y": 0.0,
+                                    "z": 1.0
+                                },
+                                "pickup": 403046964,
+                                "hud_memo": 403046974,
+                                "streamed_audio": 403046966,
+                                "sound": 403046975,
+                                "audio_fade": 403046967
+                            },
+                            "stages": [
+                                {
+                                    "required_item": null,
+                                    "resources": [
+                                        {
+                                            "item": 47,
+                                            "amount": 1
+                                        },
+                                        {
+                                            "item": 27,
+                                            "amount": 1
+                                        }
+                                    ],
+                                    "appearance": {
+                                        "model_data": "ScrewAttack",
+                                        "sound": 0,
+                                        "jingle": {
+                                            "file_name": "/audio/itm_x_long_00.dsp",
+                                            "volume": 71
+                                        },
+                                        "hud_text": "Screw Attack acquired!",
+                                        "scan": "Screw Attack."
+                                    },
+                                    "conversion": []
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "mrea_id": 3098756660,
+                    "pickups": [
+                        {
+                            "location": {
+                                "type": "standard",
+                                "exclude_memo_from_removal": false,
+                                "original_model": "SeekerLauncher",
+                                "connections": [
+                                    {
+                                        "state": "ZERO",
+                                        "message": "ACTV",
+                                        "target": 201785715
+                                    },
+                                    {
+                                        "state": "ZERO",
+                                        "message": "ZERO",
+                                        "target": 201785715
+                                    }
+                                ],
+                                "removals": [
+                                    458849,
+                                    201785680,
+                                    458920
+                                ],
+                                "collision_offset": {
+                                    "x": 0.0,
+                                    "y": 0.0,
+                                    "z": 1.0
+                                },
+                                "pickup": 458839,
+                                "hud_memo": 458848,
+                                "streamed_audio": 458847,
+                                "sound": 458841,
+                                "audio_fade": 458851
+                            },
+                            "stages": [
+                                {
+                                    "required_item": null,
+                                    "resources": [
+                                        {
+                                            "item": 46,
+                                            "amount": 20
+                                        },
+                                        {
+                                            "item": 47,
+                                            "amount": 1
+                                        }
+                                    ],
+                                    "appearance": {
+                                        "model_data": "LightBeamAmmoExpansion",
+                                        "sound": 0,
+                                        "jingle": {
+                                            "file_name": "/audio/itm_x_short_00.dsp",
+                                            "volume": 55
+                                        },
+                                        "hud_text": "Light Ammo Expansion acquired!",
+                                        "scan": "Light Ammo Expansion. Provides 20 Light Ammo and 1 Item Percentage."
+                                    },
+                                    "conversion": []
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "mrea_id": 494654382,
+                    "pickups": [
+                        {
+                            "location": {
+                                "type": "standard",
+                                "exclude_memo_from_removal": false,
+                                "original_model": "MissileExpansion",
+                                "connections": [],
+                                "removals": [
+                                    269549875
+                                ],
+                                "collision_offset": {
+                                    "x": 0.0,
+                                    "y": 0.0,
+                                    "z": 1.0
+                                },
+                                "pickup": 269549883,
+                                "hud_memo": 269549873,
+                                "streamed_audio": 269549874,
+                                "sound": 269549881,
+                                "audio_fade": 269549879
+                            },
+                            "stages": [
+                                {
+                                    "required_item": null,
+                                    "resources": [
+                                        {
+                                            "item": 47,
+                                            "amount": 1
+                                        },
+                                        {
+                                            "item": 42,
+                                            "amount": 1
+                                        }
+                                    ],
+                                    "appearance": {
+                                        "model_data": "EnergyTank",
+                                        "sound": 0,
+                                        "jingle": {
+                                            "file_name": "/audio/itm_x_long_00.dsp",
+                                            "volume": 71
+                                        },
+                                        "hud_text": "Energy Tank acquired!",
+                                        "scan": "Energy Tank."
+                                    },
+                                    "conversion": []
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "mrea_id": 1966181726,
+                    "pickups": [
+                        {
+                            "location": {
+                                "type": "standard",
+                                "exclude_memo_from_removal": false,
+                                "original_model": "EnergyTank",
+                                "connections": [],
+                                "removals": [
+                                    1441962
+                                ],
+                                "collision_offset": {
+                                    "x": 0.0,
+                                    "y": 0.0,
+                                    "z": 0.0
+                                },
+                                "pickup": 1441995,
+                                "hud_memo": 1442006,
+                                "streamed_audio": 1442000,
+                                "sound": 1441994,
+                                "audio_fade": 1441998
+                            },
+                            "stages": [
+                                {
+                                    "required_item": null,
+                                    "resources": [
+                                        {
+                                            "item": 47,
+                                            "amount": 1
+                                        },
+                                        {
+                                            "item": 25,
+                                            "amount": 1
+                                        }
+                                    ],
+                                    "appearance": {
+                                        "model_data": "GravityBoost",
+                                        "sound": 0,
+                                        "jingle": {
+                                            "file_name": "/audio/itm_x_long_00.dsp",
+                                            "volume": 71
+                                        },
+                                        "hud_text": "Gravity Boost acquired!",
+                                        "scan": "Gravity Boost."
+                                    },
+                                    "conversion": []
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "mrea_id": 1660916974,
+                    "pickups": [
+                        {
+                            "location": {
+                                "type": "standard",
+                                "exclude_memo_from_removal": false,
+                                "original_model": "MissileExpansion",
+                                "connections": [],
+                                "removals": [
+                                    1573051
+                                ],
+                                "collision_offset": {
+                                    "x": 0.0,
+                                    "y": 0.0,
+                                    "z": 1.0
+                                },
+                                "pickup": 1573044,
+                                "hud_memo": 1573045,
+                                "streamed_audio": 1573046,
+                                "sound": 1573079,
+                                "audio_fade": 1573054
+                            },
+                            "stages": [
+                                {
+                                    "required_item": null,
+                                    "resources": [
+                                        {
+                                            "item": 47,
+                                            "amount": 1
+                                        },
+                                        {
+                                            "item": 24,
+                                            "amount": 1
+                                        }
+                                    ],
+                                    "appearance": {
+                                        "model_data": "SpaceJumpBoots",
+                                        "sound": 0,
+                                        "jingle": {
+                                            "file_name": "/audio/itm_x_long_00.dsp",
+                                            "volume": 71
+                                        },
+                                        "hud_text": "Space Jump Boots acquired!",
+                                        "scan": "Space Jump Boots."
+                                    },
+                                    "conversion": []
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "mrea_id": 1263425809,
+                    "pickups": [
+                        {
+                            "location": {
+                                "type": "standard",
+                                "exclude_memo_from_removal": false,
+                                "original_model": "MissileExpansion",
+                                "connections": [],
+                                "removals": [
+                                    1638494
+                                ],
+                                "collision_offset": {
+                                    "x": 0.0,
+                                    "y": 0.0,
+                                    "z": 1.0
+                                },
+                                "pickup": 1638564,
+                                "hud_memo": 1638495,
+                                "streamed_audio": 1638550,
+                                "sound": 1638487,
+                                "audio_fade": 1638558
+                            },
+                            "stages": [
+                                {
+                                    "required_item": null,
+                                    "resources": [
+                                        {
+                                            "item": 47,
+                                            "amount": 1
+                                        },
+                                        {
+                                            "item": 42,
+                                            "amount": 1
+                                        }
+                                    ],
+                                    "appearance": {
+                                        "model_data": "EnergyTank",
+                                        "sound": 0,
+                                        "jingle": {
+                                            "file_name": "/audio/itm_x_long_00.dsp",
+                                            "volume": 71
+                                        },
+                                        "hud_text": "Energy Tank acquired!",
+                                        "scan": "Energy Tank."
+                                    },
+                                    "conversion": []
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "mrea_id": 3197418796,
+                    "pickups": [
+                        {
+                            "location": {
+                                "type": "standard",
+                                "exclude_memo_from_removal": false,
+                                "original_model": "EnergyTank",
+                                "connections": [],
+                                "removals": [
+                                    2162723
+                                ],
+                                "collision_offset": {
+                                    "x": 0.0,
+                                    "y": 0.0,
+                                    "z": 0.0
+                                },
+                                "pickup": 2162716,
+                                "hud_memo": 2162707,
+                                "streamed_audio": 2162713,
+                                "sound": 2162717,
+                                "audio_fade": 2162709
+                            },
+                            "stages": [
+                                {
+                                    "required_item": null,
+                                    "resources": [
+                                        {
+                                            "item": 31,
+                                            "amount": 1
+                                        }
+                                    ],
+                                    "appearance": {
+                                        "model_data": "SkyTempleKey",
+                                        "sound": 1,
+                                        "jingle": {
+                                            "file_name": "/audio/skytenkey-jin-short32.dsp",
+                                            "volume": 110
+                                        },
+                                        "hud_text": "Sky Temple Key 3 acquired!",
+                                        "scan": "Sky Temple Key 3."
+                                    },
+                                    "conversion": []
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "mrea_id": 67496868,
+                    "pickups": [
+                        {
+                            "location": {
+                                "type": "standard",
+                                "exclude_memo_from_removal": false,
+                                "original_model": "MissileExpansion",
+                                "connections": [],
+                                "removals": [
+                                    2228237
+                                ],
+                                "collision_offset": {
+                                    "x": 0.0,
+                                    "y": 0.0,
+                                    "z": 1.0
+                                },
+                                "pickup": 2228303,
+                                "hud_memo": 2228309,
+                                "streamed_audio": 2228312,
+                                "sound": 2228304,
+                                "audio_fade": 2228311
+                            },
+                            "stages": [
+                                {
+                                    "required_item": null,
+                                    "resources": [
+                                        {
+                                            "item": 47,
+                                            "amount": 1
+                                        },
+                                        {
+                                            "item": 42,
+                                            "amount": 1
+                                        }
+                                    ],
+                                    "appearance": {
+                                        "model_data": "EnergyTank",
+                                        "sound": 0,
+                                        "jingle": {
+                                            "file_name": "/audio/itm_x_long_00.dsp",
+                                            "volume": 71
+                                        },
+                                        "hud_text": "Energy Tank acquired!",
+                                        "scan": "Energy Tank."
+                                    },
+                                    "conversion": []
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "mrea_id": 383850164,
+                    "pickups": [
+                        {
+                            "location": {
+                                "type": "standard",
+                                "exclude_memo_from_removal": false,
+                                "original_model": "SkyTempleKey",
+                                "connections": [],
+                                "removals": [
+                                    2293765,
+                                    2293975
+                                ],
+                                "collision_offset": {
+                                    "x": 0.0,
+                                    "y": 0.6,
+                                    "z": 0.0
+                                },
+                                "pickup": 2293888,
+                                "hud_memo": 2293884,
+                                "streamed_audio": 2293886,
+                                "sound": 2293891,
+                                "audio_fade": 2293887
+                            },
+                            "stages": [
+                                {
+                                    "required_item": null,
+                                    "resources": [
+                                        {
+                                            "item": 38,
+                                            "amount": 1
+                                        }
+                                    ],
+                                    "appearance": {
+                                        "model_data": "DarkTempleKey",
+                                        "sound": 1,
+                                        "jingle": {
+                                            "file_name": "/audio/skytenkey-jin-short32.dsp",
+                                            "volume": 110
+                                        },
+                                        "hud_text": "Ing Hive Key 1 acquired!",
+                                        "scan": "Ing Hive Key 1."
+                                    },
+                                    "conversion": []
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "mrea_id": 1667141025,
+                    "pickups": [
+                        {
+                            "location": {
+                                "type": "standard",
+                                "exclude_memo_from_removal": false,
+                                "original_model": "MissileExpansion",
+                                "connections": [],
+                                "removals": [
+                                    2556216
+                                ],
+                                "collision_offset": {
+                                    "x": 0.0,
+                                    "y": 0.0,
+                                    "z": 1.0
+                                },
+                                "pickup": 2556217,
+                                "hud_memo": 2556211,
+                                "streamed_audio": 2556215,
+                                "sound": 2556218,
+                                "audio_fade": 2556212
+                            },
+                            "stages": [
+                                {
+                                    "required_item": null,
+                                    "resources": [
+                                        {
+                                            "item": 33,
+                                            "amount": 1
+                                        }
+                                    ],
+                                    "appearance": {
+                                        "model_data": "DarkTempleKey",
+                                        "sound": 1,
+                                        "jingle": {
+                                            "file_name": "/audio/skytenkey-jin-short32.dsp",
+                                            "volume": 110
+                                        },
+                                        "hud_text": "Dark Agon Key 2 acquired!",
+                                        "scan": "Dark Agon Key 2."
+                                    },
+                                    "conversion": []
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "mrea_id": 1467316949,
+                    "pickups": [
+                        {
+                            "location": {
+                                "type": "standard",
+                                "exclude_memo_from_removal": false,
+                                "original_model": "MissileLauncher",
+                                "connections": [],
+                                "removals": [
+                                    606798322,
+                                    606798323
+                                ],
+                                "collision_offset": {
+                                    "x": 0.0,
+                                    "y": 0.0,
+                                    "z": 1.0
+                                },
+                                "pickup": 606798316,
+                                "hud_memo": 606798325,
+                                "streamed_audio": 606798326,
+                                "sound": 606798315,
+                                "audio_fade": 606798320
+                            },
+                            "stages": [
+                                {
+                                    "required_item": null,
+                                    "resources": [
+                                        {
+                                            "item": 47,
+                                            "amount": 1
+                                        },
+                                        {
+                                            "item": 42,
+                                            "amount": 1
+                                        }
+                                    ],
+                                    "appearance": {
+                                        "model_data": "EnergyTank",
+                                        "sound": 0,
+                                        "jingle": {
+                                            "file_name": "/audio/itm_x_long_00.dsp",
+                                            "volume": 71
+                                        },
+                                        "hud_text": "Energy Tank acquired!",
+                                        "scan": "Energy Tank."
+                                    },
+                                    "conversion": []
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "mrea_id": 1894115037,
+                    "pickups": [
+                        {
+                            "location": {
+                                "type": "standard",
+                                "exclude_memo_from_removal": false,
+                                "original_model": "EnergyTank",
+                                "connections": [],
+                                "removals": [
+                                    3145776
+                                ],
+                                "collision_offset": {
+                                    "x": 0.0,
+                                    "y": 0.0,
+                                    "z": 0.0
+                                },
+                                "pickup": 3145766,
+                                "hud_memo": 3145771,
+                                "streamed_audio": 3145772,
+                                "sound": 3145767,
+                                "audio_fade": 3145773
+                            },
+                            "stages": [
+                                {
+                                    "required_item": null,
+                                    "resources": [
+                                        {
+                                            "item": 46,
+                                            "amount": 20
+                                        },
+                                        {
+                                            "item": 47,
+                                            "amount": 1
+                                        }
+                                    ],
+                                    "appearance": {
+                                        "model_data": "LightBeamAmmoExpansion",
+                                        "sound": 0,
+                                        "jingle": {
+                                            "file_name": "/audio/itm_x_short_00.dsp",
+                                            "volume": 55
+                                        },
+                                        "hud_text": "Light Ammo Expansion acquired!",
+                                        "scan": "Light Ammo Expansion. Provides 20 Light Ammo and 1 Item Percentage."
+                                    },
+                                    "conversion": []
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "mrea_id": 1956545251,
+                    "pickups": [
+                        {
+                            "location": {
+                                "type": "standard",
+                                "exclude_memo_from_removal": false,
+                                "original_model": "SkyTempleKey",
+                                "connections": [],
+                                "removals": [
+                                    4063274,
+                                    4063322
+                                ],
+                                "collision_offset": {
+                                    "x": 0.0,
+                                    "y": 0.6,
+                                    "z": 0.0
+                                },
+                                "pickup": 4063266,
+                                "hud_memo": 4063271,
+                                "streamed_audio": 4063272,
+                                "sound": 4063277,
+                                "audio_fade": 4063270
+                            },
+                            "stages": [
+                                {
+                                    "required_item": null,
+                                    "resources": [
+                                        {
+                                            "item": 101,
+                                            "amount": 1
+                                        }
+                                    ],
+                                    "appearance": {
+                                        "model_data": "SkyTempleKey",
+                                        "sound": 1,
+                                        "jingle": {
+                                            "file_name": "/audio/skytenkey-jin-short32.dsp",
+                                            "volume": 110
+                                        },
+                                        "hud_text": "Sky Temple Key 4 acquired!",
+                                        "scan": "Sky Temple Key 4."
+                                    },
+                                    "conversion": []
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "mlvl_id": 2252328306,
+            "area_changes": [
+                {
+                    "mrea_id": 3885674414,
+                    "pickups": [
+                        {
+                            "location": {
+                                "type": "standard",
+                                "exclude_memo_from_removal": false,
+                                "original_model": "MissileExpansion",
+                                "connections": [],
+                                "removals": [
+                                    65678
+                                ],
+                                "collision_offset": {
+                                    "x": 0.0,
+                                    "y": 0.0,
+                                    "z": 1.0
+                                },
+                                "pickup": 65689,
+                                "hud_memo": 65681,
+                                "streamed_audio": 65676,
+                                "sound": 65686,
+                                "audio_fade": 65683
+                            },
+                            "stages": [
+                                {
+                                    "required_item": null,
+                                    "resources": [
+                                        {
+                                            "item": 45,
+                                            "amount": 20
+                                        },
+                                        {
+                                            "item": 47,
+                                            "amount": 1
+                                        }
+                                    ],
+                                    "appearance": {
+                                        "model_data": "DarkBeamAmmoExpansion",
+                                        "sound": 0,
+                                        "jingle": {
+                                            "file_name": "/audio/itm_x_short_00.dsp",
+                                            "volume": 55
+                                        },
+                                        "hud_text": "Dark Ammo Expansion acquired!",
+                                        "scan": "Dark Ammo Expansion. Provides 20 Dark Ammo and 1 Item Percentage."
+                                    },
+                                    "conversion": []
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "mrea_id": 4273454375,
+                    "pickups": [
+                        {
+                            "location": {
+                                "type": "standard",
+                                "exclude_memo_from_removal": false,
+                                "original_model": "MissileExpansion",
+                                "connections": [],
+                                "removals": [
+                                    327910
+                                ],
+                                "collision_offset": {
+                                    "x": 0.0,
+                                    "y": 0.0,
+                                    "z": 1.0
+                                },
+                                "pickup": 327887,
+                                "hud_memo": 327911,
+                                "streamed_audio": 327906,
+                                "sound": 327891,
+                                "audio_fade": 327904
+                            },
+                            "stages": [
+                                {
+                                    "required_item": null,
+                                    "resources": [
+                                        {
+                                            "item": 47,
+                                            "amount": 1
+                                        },
+                                        {
+                                            "item": 17,
+                                            "amount": 1
+                                        }
+                                    ],
+                                    "appearance": {
+                                        "model_data": "SpiderBall",
+                                        "sound": 0,
+                                        "jingle": {
+                                            "file_name": "/audio/itm_x_long_00.dsp",
+                                            "volume": 71
+                                        },
+                                        "hud_text": "Spider Ball acquired!",
+                                        "scan": "Spider Ball."
+                                    },
+                                    "conversion": []
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "mrea_id": 44045108,
+                    "pickups": [
+                        {
+                            "location": {
+                                "type": "custom",
+                                "exclude_memo_from_removal": false,
+                                "original_model": "VioletTranslator",
+                                "connections": [],
+                                "removals": [
+                                    459696,
+                                    459075,
+                                    134677499
+                                ],
+                                "collision_offset": {
+                                    "x": 0.0,
+                                    "y": 0.0,
+                                    "z": 1.0
+                                },
+                                "collision_size": {
+                                    "x": 1.0,
+                                    "y": 1.0,
+                                    "z": 2.0
+                                },
+                                "layer": "Default",
+                                "position": {
+                                    "x": -5.16,
+                                    "y": -53.49,
+                                    "z": 12.8
+                                }
+                            },
+                            "stages": [
+                                {
+                                    "required_item": null,
+                                    "resources": [
+                                        {
+                                            "item": 45,
+                                            "amount": 20
+                                        },
+                                        {
+                                            "item": 47,
+                                            "amount": 1
+                                        }
+                                    ],
+                                    "appearance": {
+                                        "model_data": "DarkBeamAmmoExpansion",
+                                        "sound": 0,
+                                        "jingle": {
+                                            "file_name": "/audio/itm_x_short_00.dsp",
+                                            "volume": 55
+                                        },
+                                        "hud_text": "Dark Ammo Expansion acquired!",
+                                        "scan": "Dark Ammo Expansion. Provides 20 Dark Ammo and 1 Item Percentage."
+                                    },
+                                    "conversion": []
+                                }
+                            ]
+                        },
+                        {
+                            "location": {
+                                "type": "standard",
+                                "exclude_memo_from_removal": false,
+                                "original_model": "LightSuit",
+                                "connections": [
+                                    {
+                                        "state": "ZERO",
+                                        "message": "INCR",
+                                        "target": 459647
+                                    },
+                                    {
+                                        "state": "ZERO",
+                                        "message": "ACTV",
+                                        "target": 537330382
+                                    },
+                                    {
+                                        "state": "ZERO",
+                                        "message": "ZERO",
+                                        "target": 537330382
+                                    },
+                                    {
+                                        "state": "ZERO",
+                                        "message": "STRT",
+                                        "target": 458813
+                                    },
+                                    {
+                                        "state": "ZERO",
+                                        "message": "ULCK",
+                                        "target": 459538
+                                    },
+                                    {
+                                        "state": "ZERO",
+                                        "message": "ACTV",
+                                        "target": 459661
+                                    }
+                                ],
+                                "removals": [
+                                    537330383,
+                                    537330343
+                                ],
+                                "collision_offset": {
+                                    "x": 0.0,
+                                    "y": 0.0,
+                                    "z": 0.0
+                                },
+                                "pickup": 537330375,
+                                "hud_memo": 537330376,
+                                "streamed_audio": 537330381,
+                                "sound": 537330373,
+                                "audio_fade": 537330384
+                            },
+                            "stages": [
+                                {
+                                    "required_item": null,
+                                    "resources": [
+                                        {
+                                            "item": 47,
+                                            "amount": 1
+                                        },
+                                        {
+                                            "item": 42,
+                                            "amount": 1
+                                        }
+                                    ],
+                                    "appearance": {
+                                        "model_data": "EnergyTank",
+                                        "sound": 0,
+                                        "jingle": {
+                                            "file_name": "/audio/itm_x_long_00.dsp",
+                                            "volume": 71
+                                        },
+                                        "hud_text": "Energy Tank acquired!",
+                                        "scan": "Energy Tank."
+                                    },
+                                    "conversion": []
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "mlvl_id": 1119434212,
+            "area_changes": [
+                {
+                    "mrea_id": 1115663770,
+                    "pickups": [
+                        {
+                            "location": {
+                                "type": "standard",
+                                "exclude_memo_from_removal": false,
+                                "original_model": "EnergyTank",
+                                "connections": [],
+                                "removals": [
+                                    131491
+                                ],
+                                "collision_offset": {
+                                    "x": 0.0,
+                                    "y": 0.0,
+                                    "z": 0.0
+                                },
+                                "pickup": 131456,
+                                "hud_memo": 131493,
+                                "streamed_audio": 131490,
+                                "sound": 131483,
+                                "audio_fade": 131489
+                            },
+                            "stages": [
+                                {
+                                    "required_item": null,
+                                    "resources": [
+                                        {
+                                            "item": 45,
+                                            "amount": 20
+                                        },
+                                        {
+                                            "item": 47,
+                                            "amount": 1
+                                        }
+                                    ],
+                                    "appearance": {
+                                        "model_data": "DarkBeamAmmoExpansion",
+                                        "sound": 0,
+                                        "jingle": {
+                                            "file_name": "/audio/itm_x_short_00.dsp",
+                                            "volume": 55
+                                        },
+                                        "hud_text": "Dark Ammo Expansion acquired!",
+                                        "scan": "Dark Ammo Expansion. Provides 20 Dark Ammo and 1 Item Percentage."
+                                    },
+                                    "conversion": []
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "mrea_id": 2373615500,
+                    "pickups": [
+                        {
+                            "location": {
+                                "type": "standard",
+                                "exclude_memo_from_removal": false,
+                                "original_model": "EnergyTank",
+                                "connections": [],
+                                "removals": [
+                                    393237
+                                ],
+                                "collision_offset": {
+                                    "x": 0.0,
+                                    "y": 0.0,
+                                    "z": 0.0
+                                },
+                                "pickup": 393247,
+                                "hud_memo": 393244,
+                                "streamed_audio": 393238,
+                                "sound": 393245,
+                                "audio_fade": 393239
+                            },
+                            "stages": [
+                                {
+                                    "required_item": null,
+                                    "resources": [
+                                        {
+                                            "item": 46,
+                                            "amount": 50
+                                        },
+                                        {
+                                            "item": 47,
+                                            "amount": 1
+                                        },
+                                        {
+                                            "item": 2,
+                                            "amount": 1
+                                        }
+                                    ],
+                                    "appearance": {
+                                        "model_data": "LightBeam",
+                                        "sound": 0,
+                                        "jingle": {
+                                            "file_name": "/audio/itm_x_long_00.dsp",
+                                            "volume": 71
+                                        },
+                                        "hud_text": "Light Beam acquired!",
+                                        "scan": "Light Beam."
+                                    },
+                                    "conversion": []
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "mrea_id": 3682282733,
+                    "pickups": [
+                        {
+                            "location": {
+                                "type": "standard",
+                                "exclude_memo_from_removal": false,
+                                "original_model": "Darkburst",
+                                "connections": [
+                                    {
+                                        "state": "ZERO",
+                                        "message": "ACTV",
+                                        "target": 403178312
+                                    },
+                                    {
+                                        "state": "ZERO",
+                                        "message": "ZERO",
+                                        "target": 403178312
+                                    }
+                                ],
+                                "removals": [
+                                    524569,
+                                    403178341
+                                ],
+                                "collision_offset": {
+                                    "x": 0.0,
+                                    "y": 0.0,
+                                    "z": 1.0
+                                },
+                                "pickup": 524567,
+                                "hud_memo": 524570,
+                                "streamed_audio": 524574,
+                                "sound": 524568,
+                                "audio_fade": 524573
+                            },
+                            "stages": [
+                                {
+                                    "required_item": null,
+                                    "resources": [
+                                        {
+                                            "item": 45,
+                                            "amount": 20
+                                        },
+                                        {
+                                            "item": 47,
+                                            "amount": 1
+                                        }
+                                    ],
+                                    "appearance": {
+                                        "model_data": "DarkBeamAmmoExpansion",
+                                        "sound": 0,
+                                        "jingle": {
+                                            "file_name": "/audio/itm_x_short_00.dsp",
+                                            "volume": 55
+                                        },
+                                        "hud_text": "Dark Ammo Expansion acquired!",
+                                        "scan": "Dark Ammo Expansion. Provides 20 Dark Ammo and 1 Item Percentage."
+                                    },
+                                    "conversion": []
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "mrea_id": 1272952761,
+                    "pickups": [
+                        {
+                            "location": {
+                                "type": "standard",
+                                "exclude_memo_from_removal": false,
+                                "original_model": "MissileExpansion",
+                                "connections": [],
+                                "removals": [
+                                    589911
+                                ],
+                                "collision_offset": {
+                                    "x": 0.0,
+                                    "y": 0.0,
+                                    "z": 1.0
+                                },
+                                "pickup": 589915,
+                                "hud_memo": 589912,
+                                "streamed_audio": 589906,
+                                "sound": 589917,
+                                "audio_fade": 589914
+                            },
+                            "stages": [
+                                {
+                                    "required_item": null,
+                                    "resources": [
+                                        {
+                                            "item": 45,
+                                            "amount": 20
+                                        },
+                                        {
+                                            "item": 47,
+                                            "amount": 1
+                                        }
+                                    ],
+                                    "appearance": {
+                                        "model_data": "DarkBeamAmmoExpansion",
+                                        "sound": 0,
+                                        "jingle": {
+                                            "file_name": "/audio/itm_x_short_00.dsp",
+                                            "volume": 55
+                                        },
+                                        "hud_text": "Dark Ammo Expansion acquired!",
+                                        "scan": "Dark Ammo Expansion. Provides 20 Dark Ammo and 1 Item Percentage."
+                                    },
+                                    "conversion": []
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "mrea_id": 3318204883,
+                    "pickups": [
+                        {
+                            "location": {
+                                "type": "standard",
+                                "exclude_memo_from_removal": false,
+                                "original_model": "MissileExpansion",
+                                "connections": [],
+                                "removals": [
+                                    851981
+                                ],
+                                "collision_offset": {
+                                    "x": 0.0,
+                                    "y": 0.0,
+                                    "z": 1.0
+                                },
+                                "pickup": 851988,
+                                "hud_memo": 851987,
+                                "streamed_audio": 851984,
+                                "sound": 851989,
+                                "audio_fade": 851979
+                            },
+                            "stages": [
+                                {
+                                    "required_item": null,
+                                    "resources": [
+                                        {
+                                            "item": 47,
+                                            "amount": 1
+                                        },
+                                        {
+                                            "item": 4,
+                                            "amount": 1
+                                        }
+                                    ],
+                                    "appearance": {
+                                        "model_data": "SuperMissile",
+                                        "sound": 0,
+                                        "jingle": {
+                                            "file_name": "/audio/itm_x_long_00.dsp",
+                                            "volume": 71
+                                        },
+                                        "hud_text": "Super Missile acquired!",
+                                        "scan": "Super Missile."
+                                    },
+                                    "conversion": []
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "mrea_id": 369673571,
+                    "pickups": [
+                        {
+                            "location": {
+                                "type": "standard",
+                                "exclude_memo_from_removal": false,
+                                "original_model": "MissileExpansion",
+                                "connections": [],
+                                "removals": [
+                                    917616
+                                ],
+                                "collision_offset": {
+                                    "x": 0.0,
+                                    "y": 0.0,
+                                    "z": 1.0
+                                },
+                                "pickup": 917662,
+                                "hud_memo": 917660,
+                                "streamed_audio": 917657,
+                                "sound": 917652,
+                                "audio_fade": 917661
+                            },
+                            "stages": [
+                                {
+                                    "required_item": null,
+                                    "resources": [
+                                        {
+                                            "item": 44,
+                                            "amount": 5
+                                        },
+                                        {
+                                            "item": 47,
+                                            "amount": 1
+                                        },
+                                        {
+                                            "item": 73,
+                                            "amount": 1
+                                        }
+                                    ],
+                                    "appearance": {
+                                        "model_data": "MissileLauncher",
+                                        "sound": 0,
+                                        "jingle": {
+                                            "file_name": "/audio/itm_x_long_00.dsp",
+                                            "volume": 71
+                                        },
+                                        "hud_text": "Missile Launcher acquired!",
+                                        "scan": "Missile Launcher."
+                                    },
+                                    "conversion": []
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "mrea_id": 2384714559,
+                    "pickups": [
+                        {
+                            "location": {
+                                "type": "standard",
+                                "exclude_memo_from_removal": false,
+                                "original_model": "MissileExpansion",
+                                "connections": [],
+                                "removals": [
+                                    1310839
+                                ],
+                                "collision_offset": {
+                                    "x": 0.0,
+                                    "y": 0.0,
+                                    "z": 1.0
+                                },
+                                "pickup": 1310844,
+                                "hud_memo": 1310842,
+                                "streamed_audio": 1310836,
+                                "sound": 1310845,
+                                "audio_fade": 1310835
+                            },
+                            "stages": [
+                                {
+                                    "required_item": null,
+                                    "resources": [
+                                        {
+                                            "item": 47,
+                                            "amount": 1
+                                        },
+                                        {
+                                            "item": 98,
+                                            "amount": 1
+                                        }
+                                    ],
+                                    "appearance": {
+                                        "model_data": "AmberTranslator",
+                                        "sound": 0,
+                                        "jingle": {
+                                            "file_name": "/audio/itm_x_long_00.dsp",
+                                            "volume": 71
+                                        },
+                                        "hud_text": "Amber Translator acquired!",
+                                        "scan": "Amber Translator."
+                                    },
+                                    "conversion": []
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "mrea_id": 4105303847,
+                    "pickups": [
+                        {
+                            "location": {
+                                "type": "standard",
+                                "exclude_memo_from_removal": false,
+                                "original_model": "MissileExpansion",
+                                "connections": [],
+                                "removals": [
+                                    1507352
+                                ],
+                                "collision_offset": {
+                                    "x": 0.0,
+                                    "y": 0.0,
+                                    "z": 1.0
+                                },
+                                "pickup": 1507348,
+                                "hud_memo": 1507353,
+                                "streamed_audio": 1507357,
+                                "sound": 1507350,
+                                "audio_fade": 1507355
+                            },
+                            "stages": [
+                                {
+                                    "required_item": null,
+                                    "resources": [
+                                        {
+                                            "item": 47,
+                                            "amount": 1
+                                        },
+                                        {
+                                            "item": 99,
+                                            "amount": 1
+                                        }
+                                    ],
+                                    "appearance": {
+                                        "model_data": "EmeraldTranslator",
+                                        "sound": 0,
+                                        "jingle": {
+                                            "file_name": "/audio/itm_x_long_00.dsp",
+                                            "volume": 71
+                                        },
+                                        "hud_text": "Emerald Translator acquired!",
+                                        "scan": "Emerald Translator."
+                                    },
+                                    "conversion": []
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "mrea_id": 588443165,
+                    "pickups": [
+                        {
+                            "location": {
+                                "type": "standard",
+                                "exclude_memo_from_removal": false,
+                                "original_model": "MissileExpansion",
+                                "connections": [],
+                                "removals": [
+                                    1573288
+                                ],
+                                "collision_offset": {
+                                    "x": 0.0,
+                                    "y": 0.0,
+                                    "z": 1.0
+                                },
+                                "pickup": 1573278,
+                                "hud_memo": 1573284,
+                                "streamed_audio": 1573280,
+                                "sound": 1573276,
+                                "audio_fade": 1573286
+                            },
+                            "stages": [
+                                {
+                                    "required_item": null,
+                                    "resources": [
+                                        {
+                                            "item": 47,
+                                            "amount": 1
+                                        },
+                                        {
+                                            "item": 18,
+                                            "amount": 1
+                                        }
+                                    ],
+                                    "appearance": {
+                                        "model_data": "MorphBallBomb",
+                                        "sound": 0,
+                                        "jingle": {
+                                            "file_name": "/audio/itm_x_long_00.dsp",
+                                            "volume": 71
+                                        },
+                                        "hud_text": "Morph Ball Bomb acquired!",
+                                        "scan": "Morph Ball Bomb."
+                                    },
+                                    "conversion": []
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "mrea_id": 1803024829,
+                    "pickups": [
+                        {
+                            "location": {
+                                "type": "standard",
+                                "exclude_memo_from_removal": false,
+                                "original_model": "SpaceJumpBoots",
+                                "connections": [
+                                    {
+                                        "state": "ZERO",
+                                        "message": "ACTV",
+                                        "target": 471400995
+                                    },
+                                    {
+                                        "state": "ZERO",
+                                        "message": "ZERO",
+                                        "target": 471400995
+                                    },
+                                    {
+                                        "state": "ZERO",
+                                        "message": "ZERO",
+                                        "target": 1638984
+                                    }
+                                ],
+                                "removals": [
+                                    1638691,
+                                    471400926
+                                ],
+                                "collision_offset": {
+                                    "x": 0.0,
+                                    "y": 0.0,
+                                    "z": 1.0
+                                },
+                                "pickup": 1638403,
+                                "hud_memo": 1638409,
+                                "streamed_audio": 1638413,
+                                "sound": 1638692,
+                                "audio_fade": 1638478
+                            },
+                            "stages": [
+                                {
+                                    "required_item": null,
+                                    "resources": [
+                                        {
+                                            "item": 45,
+                                            "amount": 20
+                                        },
+                                        {
+                                            "item": 47,
+                                            "amount": 1
+                                        }
+                                    ],
+                                    "appearance": {
+                                        "model_data": "DarkBeamAmmoExpansion",
+                                        "sound": 0,
+                                        "jingle": {
+                                            "file_name": "/audio/itm_x_short_00.dsp",
+                                            "volume": 55
+                                        },
+                                        "hud_text": "Dark Ammo Expansion acquired!",
+                                        "scan": "Dark Ammo Expansion. Provides 20 Dark Ammo and 1 Item Percentage."
+                                    },
+                                    "conversion": []
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "mrea_id": 872074261,
+                    "pickups": [
+                        {
+                            "location": {
+                                "type": "standard",
+                                "exclude_memo_from_removal": false,
+                                "original_model": "MissileExpansion",
+                                "connections": [],
+                                "removals": [
+                                    2031745
+                                ],
+                                "collision_offset": {
+                                    "x": 0.0,
+                                    "y": 0.0,
+                                    "z": 1.0
+                                },
+                                "pickup": 2031692,
+                                "hud_memo": 2031673,
+                                "streamed_audio": 2031672,
+                                "sound": 2031690,
+                                "audio_fade": 2031676
+                            },
+                            "stages": [
+                                {
+                                    "required_item": null,
+                                    "resources": [
+                                        {
+                                            "item": 32,
+                                            "amount": 1
+                                        }
+                                    ],
+                                    "appearance": {
+                                        "model_data": "DarkTempleKey",
+                                        "sound": 1,
+                                        "jingle": {
+                                            "file_name": "/audio/skytenkey-jin-short32.dsp",
+                                            "volume": 110
+                                        },
+                                        "hud_text": "Dark Agon Key 1 acquired!",
+                                        "scan": "Dark Agon Key 1."
+                                    },
+                                    "conversion": []
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "mrea_id": 3853985320,
+                    "pickups": [
+                        {
+                            "location": {
+                                "type": "standard",
+                                "exclude_memo_from_removal": false,
+                                "original_model": "PowerBombExpansion",
+                                "connections": [],
+                                "removals": [
+                                    2293884
+                                ],
+                                "collision_offset": {
+                                    "x": 0.0,
+                                    "y": 0.0,
+                                    "z": 0.0
+                                },
+                                "pickup": 2293876,
+                                "hud_memo": 2293882,
+                                "streamed_audio": 2293878,
+                                "sound": 2293875,
+                                "audio_fade": 2293881
+                            },
+                            "stages": [
+                                {
+                                    "required_item": null,
+                                    "resources": [
+                                        {
+                                            "item": 29,
+                                            "amount": 1
+                                        }
+                                    ],
+                                    "appearance": {
+                                        "model_data": "SkyTempleKey",
+                                        "sound": 1,
+                                        "jingle": {
+                                            "file_name": "/audio/skytenkey-jin-short32.dsp",
+                                            "volume": 110
+                                        },
+                                        "hud_text": "Sky Temple Key 1 acquired!",
+                                        "scan": "Sky Temple Key 1."
+                                    },
+                                    "conversion": []
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "mrea_id": 1970603146,
+                    "pickups": [
+                        {
+                            "location": {
+                                "type": "standard",
+                                "exclude_memo_from_removal": false,
+                                "original_model": "DarkSuit",
+                                "connections": [
+                                    {
+                                        "state": "ZERO",
+                                        "message": "ACTV",
+                                        "target": 673448541
+                                    },
+                                    {
+                                        "state": "ZERO",
+                                        "message": "ZERO",
+                                        "target": 673448541
+                                    },
+                                    {
+                                        "state": "ZERO",
+                                        "message": "ZERO",
+                                        "target": 673448040
+                                    },
+                                    {
+                                        "state": "ZERO",
+                                        "message": "DECR",
+                                        "target": 2359402
+                                    },
+                                    {
+                                        "state": "ZERO",
+                                        "message": "STRT",
+                                        "target": 2360133
+                                    },
+                                    {
+                                        "state": "ZERO",
+                                        "message": "ULCK",
+                                        "target": 2360364
+                                    },
+                                    {
+                                        "state": "ZERO",
+                                        "message": "ULCK",
+                                        "target": 2359546
+                                    },
+                                    {
+                                        "state": "ZERO",
+                                        "message": "ULCK",
+                                        "target": 2360153
+                                    }
+                                ],
+                                "removals": [
+                                    673448046,
+                                    673448843
+                                ],
+                                "collision_offset": {
+                                    "x": 0.0,
+                                    "y": 0.0,
+                                    "z": 0.0
+                                },
+                                "pickup": 673448549,
+                                "hud_memo": 673448544,
+                                "streamed_audio": 673448540,
+                                "sound": 673448547,
+                                "audio_fade": 673448538
+                            },
+                            "stages": [
+                                {
+                                    "required_item": null,
+                                    "resources": [
+                                        {
+                                            "item": 46,
+                                            "amount": 20
+                                        },
+                                        {
+                                            "item": 47,
+                                            "amount": 1
+                                        }
+                                    ],
+                                    "appearance": {
+                                        "model_data": "LightBeamAmmoExpansion",
+                                        "sound": 0,
+                                        "jingle": {
+                                            "file_name": "/audio/itm_x_short_00.dsp",
+                                            "volume": 55
+                                        },
+                                        "hud_text": "Light Ammo Expansion acquired!",
+                                        "scan": "Light Ammo Expansion. Provides 20 Light Ammo and 1 Item Percentage."
+                                    },
+                                    "conversion": []
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "mrea_id": 3933819436,
+                    "pickups": [
+                        {
+                            "location": {
+                                "type": "standard",
+                                "exclude_memo_from_removal": false,
+                                "original_model": "DarkTempleKey",
+                                "connections": [],
+                                "removals": [
+                                    2490429,
+                                    2490981
+                                ],
+                                "collision_offset": {
+                                    "x": 0.0,
+                                    "y": 0.6,
+                                    "z": 0.0
+                                },
+                                "pickup": 2490846,
+                                "hud_memo": 2490851,
+                                "streamed_audio": 2490848,
+                                "sound": 2490857,
+                                "audio_fade": 2490850
+                            },
+                            "stages": [
+                                {
+                                    "required_item": null,
+                                    "resources": [
+                                        {
+                                            "item": 47,
+                                            "amount": 1
+                                        },
+                                        {
+                                            "item": 16,
+                                            "amount": 1
+                                        }
+                                    ],
+                                    "appearance": {
+                                        "model_data": "BoostBall",
+                                        "sound": 0,
+                                        "jingle": {
+                                            "file_name": "/audio/itm_x_long_00.dsp",
+                                            "volume": 71
+                                        },
+                                        "hud_text": "Boost Ball acquired!",
+                                        "scan": "Boost Ball."
+                                    },
+                                    "conversion": []
+                                }
+                            ]
+                        },
+                        {
+                            "location": {
+                                "type": "standard",
+                                "exclude_memo_from_removal": false,
+                                "original_model": "SkyTempleKey",
+                                "connections": [],
+                                "removals": [
+                                    405144125,
+                                    405144167
+                                ],
+                                "collision_offset": {
+                                    "x": 0.0,
+                                    "y": 0.6,
+                                    "z": 0.0
+                                },
+                                "pickup": 405144126,
+                                "hud_memo": 405144121,
+                                "streamed_audio": 405144119,
+                                "sound": 405144115,
+                                "audio_fade": 405144116
+                            },
+                            "stages": [
+                                {
+                                    "required_item": null,
+                                    "resources": [
+                                        {
+                                            "item": 106,
+                                            "amount": 1
+                                        }
+                                    ],
+                                    "appearance": {
+                                        "model_data": "SkyTempleKey",
+                                        "sound": 1,
+                                        "jingle": {
+                                            "file_name": "/audio/skytenkey-jin-short32.dsp",
+                                            "volume": 110
+                                        },
+                                        "hud_text": "Sky Temple Key 9 acquired!",
+                                        "scan": "Sky Temple Key 9."
+                                    },
+                                    "conversion": []
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "mrea_id": 50083607,
+                    "pickups": [
+                        {
+                            "location": {
+                                "type": "custom",
+                                "exclude_memo_from_removal": false,
+                                "original_model": "AmberTranslator",
+                                "connections": [
+                                    {
+                                        "state": "ZERO",
+                                        "message": "ZERO",
+                                        "target": 2555936
+                                    }
+                                ],
+                                "removals": [
+                                    2556035,
+                                    136773993,
+                                    136773766
+                                ],
+                                "collision_offset": {
+                                    "x": 0.0,
+                                    "y": 0.0,
+                                    "z": 1.0
+                                },
+                                "collision_size": {
+                                    "x": 1.0,
+                                    "y": 1.0,
+                                    "z": 2.0
+                                },
+                                "layer": "Default",
+                                "position": {
+                                    "x": -82.75,
+                                    "y": 350.7,
+                                    "z": 12.34
+                                }
+                            },
+                            "stages": [
+                                {
+                                    "required_item": null,
+                                    "resources": [
+                                        {
+                                            "item": 45,
+                                            "amount": 50
+                                        },
+                                        {
+                                            "item": 47,
+                                            "amount": 1
+                                        },
+                                        {
+                                            "item": 1,
+                                            "amount": 1
+                                        }
+                                    ],
+                                    "appearance": {
+                                        "model_data": "DarkBeam",
+                                        "sound": 0,
+                                        "jingle": {
+                                            "file_name": "/audio/itm_x_long_00.dsp",
+                                            "volume": 71
+                                        },
+                                        "hud_text": "Dark Beam acquired!",
+                                        "scan": "Dark Beam."
+                                    },
+                                    "conversion": []
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "mrea_id": 2761919085,
+                    "pickups": [
+                        {
+                            "location": {
+                                "type": "standard",
+                                "exclude_memo_from_removal": false,
+                                "original_model": "DarkTempleKey",
+                                "connections": [],
+                                "removals": [
+                                    3277104,
+                                    3276940
+                                ],
+                                "collision_offset": {
+                                    "x": 0.0,
+                                    "y": 0.6,
+                                    "z": 0.0
+                                },
+                                "pickup": 3277443,
+                                "hud_memo": 3277034,
+                                "streamed_audio": 3277036,
+                                "sound": 3277444,
+                                "audio_fade": 3277441
+                            },
+                            "stages": [
+                                {
+                                    "required_item": null,
+                                    "resources": [
+                                        {
+                                            "item": 47,
+                                            "amount": 1
+                                        },
+                                        {
+                                            "item": 42,
+                                            "amount": 1
+                                        }
+                                    ],
+                                    "appearance": {
+                                        "model_data": "EnergyTank",
+                                        "sound": 0,
+                                        "jingle": {
+                                            "file_name": "/audio/itm_x_long_00.dsp",
+                                            "volume": 71
+                                        },
+                                        "hud_text": "Energy Tank acquired!",
+                                        "scan": "Energy Tank."
+                                    },
+                                    "conversion": []
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "mrea_id": 2583401855,
+                    "pickups": [
+                        {
+                            "location": {
+                                "type": "standard",
+                                "exclude_memo_from_removal": false,
+                                "original_model": "SkyTempleKey",
+                                "connections": [],
+                                "removals": [
+                                    339017914,
+                                    339018091
+                                ],
+                                "collision_offset": {
+                                    "x": 0.0,
+                                    "y": 0.6,
+                                    "z": 0.0
+                                },
+                                "pickup": 339017909,
+                                "hud_memo": 339017913,
+                                "streamed_audio": 339017915,
+                                "sound": 339017910,
+                                "audio_fade": 339017931
+                            },
+                            "stages": [
+                                {
+                                    "required_item": null,
+                                    "resources": [
+                                        {
+                                            "item": 104,
+                                            "amount": 1
+                                        }
+                                    ],
+                                    "appearance": {
+                                        "model_data": "SkyTempleKey",
+                                        "sound": 1,
+                                        "jingle": {
+                                            "file_name": "/audio/skytenkey-jin-short32.dsp",
+                                            "volume": 110
+                                        },
+                                        "hud_text": "Sky Temple Key 7 acquired!",
+                                        "scan": "Sky Temple Key 7."
+                                    },
+                                    "conversion": []
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "mrea_id": 2527480810,
+                    "pickups": [
+                        {
+                            "location": {
+                                "type": "standard",
+                                "exclude_memo_from_removal": false,
+                                "original_model": "MissileExpansion",
+                                "connections": [],
+                                "removals": [
+                                    3997740
+                                ],
+                                "collision_offset": {
+                                    "x": 0.0,
+                                    "y": 0.0,
+                                    "z": 1.0
+                                },
+                                "pickup": 3997752,
+                                "hud_memo": 3997746,
+                                "streamed_audio": 3997748,
+                                "sound": 3997753,
+                                "audio_fade": 3997744
+                            },
+                            "stages": [
+                                {
+                                    "required_item": null,
+                                    "resources": [
+                                        {
+                                            "item": 46,
+                                            "amount": 20
+                                        },
+                                        {
+                                            "item": 47,
+                                            "amount": 1
+                                        }
+                                    ],
+                                    "appearance": {
+                                        "model_data": "LightBeamAmmoExpansion",
+                                        "sound": 0,
+                                        "jingle": {
+                                            "file_name": "/audio/itm_x_short_00.dsp",
+                                            "volume": 55
+                                        },
+                                        "hud_text": "Light Ammo Expansion acquired!",
+                                        "scan": "Light Ammo Expansion. Provides 20 Light Ammo and 1 Item Percentage."
+                                    },
+                                    "conversion": []
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "mrea_id": 123369195,
+                    "pickups": [
+                        {
+                            "location": {
+                                "type": "standard",
+                                "exclude_memo_from_removal": false,
+                                "original_model": "PowerBombExpansion",
+                                "connections": [],
+                                "removals": [
+                                    4063309
+                                ],
+                                "collision_offset": {
+                                    "x": 0.0,
+                                    "y": 0.0,
+                                    "z": 0.0
+                                },
+                                "pickup": 4063317,
+                                "hud_memo": 4063310,
+                                "streamed_audio": 4063307,
+                                "sound": 4063299,
+                                "audio_fade": 4063304
+                            },
+                            "stages": [
+                                {
+                                    "required_item": null,
+                                    "resources": [
+                                        {
+                                            "item": 46,
+                                            "amount": 20
+                                        },
+                                        {
+                                            "item": 47,
+                                            "amount": 1
+                                        }
+                                    ],
+                                    "appearance": {
+                                        "model_data": "LightBeamAmmoExpansion",
+                                        "sound": 0,
+                                        "jingle": {
+                                            "file_name": "/audio/itm_x_short_00.dsp",
+                                            "volume": 55
+                                        },
+                                        "hud_text": "Light Ammo Expansion acquired!",
+                                        "scan": "Light Ammo Expansion. Provides 20 Light Ammo and 1 Item Percentage."
+                                    },
+                                    "conversion": []
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "mrea_id": 1385574326,
+                    "pickups": [
+                        {
+                            "location": {
+                                "type": "standard",
+                                "exclude_memo_from_removal": false,
+                                "original_model": "LightBeam",
+                                "connections": [
+                                    {
+                                        "state": "ZERO",
+                                        "message": "ACTV",
+                                        "target": 4391031
+                                    },
+                                    {
+                                        "state": "ZERO",
+                                        "message": "ZERO",
+                                        "target": 4391031
+                                    }
+                                ],
+                                "removals": [
+                                    4391000,
+                                    4391025,
+                                    4391010
+                                ],
+                                "collision_offset": {
+                                    "x": 0.0,
+                                    "y": 0.0,
+                                    "z": 1.0
+                                },
+                                "pickup": 4391009,
+                                "hud_memo": 4390998,
+                                "streamed_audio": 4390999,
+                                "sound": 4390996,
+                                "audio_fade": 4391005
+                            },
+                            "stages": [
+                                {
+                                    "required_item": null,
+                                    "resources": [
+                                        {
+                                            "item": 47,
+                                            "amount": 1
+                                        },
+                                        {
+                                            "item": 42,
+                                            "amount": 1
+                                        }
+                                    ],
+                                    "appearance": {
+                                        "model_data": "EnergyTank",
+                                        "sound": 0,
+                                        "jingle": {
+                                            "file_name": "/audio/itm_x_long_00.dsp",
+                                            "volume": 71
+                                        },
+                                        "hud_text": "Energy Tank acquired!",
+                                        "scan": "Energy Tank."
+                                    },
+                                    "conversion": []
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "mrea_id": 2467885174,
+                    "pickups": [
+                        {
+                            "location": {
+                                "type": "standard",
+                                "exclude_memo_from_removal": false,
+                                "original_model": "SonicBoom",
+                                "connections": [
+                                    {
+                                        "state": "ZERO",
+                                        "message": "ACTV",
+                                        "target": 4653202
+                                    },
+                                    {
+                                        "state": "ZERO",
+                                        "message": "ZERO",
+                                        "target": 4653202
+                                    }
+                                ],
+                                "removals": [
+                                    4653205,
+                                    4653175
+                                ],
+                                "collision_offset": {
+                                    "x": 0.0,
+                                    "y": 0.0,
+                                    "z": 1.0
+                                },
+                                "pickup": 4653214,
+                                "hud_memo": 4653212,
+                                "streamed_audio": 4653207,
+                                "sound": 4653213,
+                                "audio_fade": 4653211
+                            },
+                            "stages": [
+                                {
+                                    "required_item": null,
+                                    "resources": [
+                                        {
+                                            "item": 45,
+                                            "amount": 20
+                                        },
+                                        {
+                                            "item": 47,
+                                            "amount": 1
+                                        }
+                                    ],
+                                    "appearance": {
+                                        "model_data": "DarkBeamAmmoExpansion",
+                                        "sound": 0,
+                                        "jingle": {
+                                            "file_name": "/audio/itm_x_short_00.dsp",
+                                            "volume": 55
+                                        },
+                                        "hud_text": "Dark Ammo Expansion acquired!",
+                                        "scan": "Dark Ammo Expansion. Provides 20 Dark Ammo and 1 Item Percentage."
+                                    },
+                                    "conversion": []
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "mlvl_id": 1039999561,
+            "area_changes": [
+                {
+                    "mrea_id": 2114709145,
+                    "pickups": [
+                        {
+                            "location": {
+                                "type": "standard",
+                                "exclude_memo_from_removal": false,
+                                "original_model": "MissileExpansion",
+                                "connections": [],
+                                "removals": [
+                                    131166
+                                ],
+                                "collision_offset": {
+                                    "x": 0.0,
+                                    "y": 0.0,
+                                    "z": 1.0
+                                },
+                                "pickup": 131147,
+                                "hud_memo": 131164,
+                                "streamed_audio": 131167,
+                                "sound": 131150,
+                                "audio_fade": 131169
+                            },
+                            "stages": [
+                                {
+                                    "required_item": null,
+                                    "resources": [
+                                        {
+                                            "item": 47,
+                                            "amount": 1
+                                        },
+                                        {
+                                            "item": 42,
+                                            "amount": 1
+                                        }
+                                    ],
+                                    "appearance": {
+                                        "model_data": "EnergyTank",
+                                        "sound": 0,
+                                        "jingle": {
+                                            "file_name": "/audio/itm_x_long_00.dsp",
+                                            "volume": 71
+                                        },
+                                        "hud_text": "Energy Tank acquired!",
+                                        "scan": "Energy Tank."
+                                    },
+                                    "conversion": []
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "mrea_id": 1950913308,
+                    "pickups": [
+                        {
+                            "location": {
+                                "type": "standard",
+                                "exclude_memo_from_removal": false,
+                                "original_model": "MissileExpansion",
+                                "connections": [],
+                                "removals": [
+                                    327724
+                                ],
+                                "collision_offset": {
+                                    "x": 0.0,
+                                    "y": 0.0,
+                                    "z": 1.0
+                                },
+                                "pickup": 327730,
+                                "hud_memo": 327719,
+                                "streamed_audio": 327723,
+                                "sound": 327718,
+                                "audio_fade": 327721
+                            },
+                            "stages": [
+                                {
+                                    "required_item": null,
+                                    "resources": [
+                                        {
+                                            "item": 43,
+                                            "amount": 2
+                                        },
+                                        {
+                                            "item": 47,
+                                            "amount": 1
+                                        }
+                                    ],
+                                    "appearance": {
+                                        "model_data": "PowerBomb",
+                                        "sound": 0,
+                                        "jingle": {
+                                            "file_name": "/audio/itm_x_long_00.dsp",
+                                            "volume": 71
+                                        },
+                                        "hud_text": "Power Bomb acquired!",
+                                        "scan": "Power Bomb."
+                                    },
+                                    "conversion": []
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "mrea_id": 165596961,
+                    "pickups": [
+                        {
+                            "location": {
+                                "type": "standard",
+                                "exclude_memo_from_removal": false,
+                                "original_model": "MissileExpansion",
+                                "connections": [],
+                                "removals": [
+                                    459109
+                                ],
+                                "collision_offset": {
+                                    "x": 0.0,
+                                    "y": 0.0,
+                                    "z": 1.0
+                                },
+                                "pickup": 459107,
+                                "hud_memo": 459113,
+                                "streamed_audio": 459110,
+                                "sound": 459106,
+                                "audio_fade": 459114
+                            },
+                            "stages": [
+                                {
+                                    "required_item": null,
+                                    "resources": [
+                                        {
+                                            "item": 45,
+                                            "amount": 20
+                                        },
+                                        {
+                                            "item": 47,
+                                            "amount": 1
+                                        }
+                                    ],
+                                    "appearance": {
+                                        "model_data": "DarkBeamAmmoExpansion",
+                                        "sound": 0,
+                                        "jingle": {
+                                            "file_name": "/audio/itm_x_short_00.dsp",
+                                            "volume": 55
+                                        },
+                                        "hud_text": "Dark Ammo Expansion acquired!",
+                                        "scan": "Dark Ammo Expansion. Provides 20 Dark Ammo and 1 Item Percentage."
+                                    },
+                                    "conversion": []
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "mrea_id": 212528838,
+                    "pickups": [
+                        {
+                            "location": {
+                                "type": "standard",
+                                "exclude_memo_from_removal": false,
+                                "original_model": "BeamAmmoExpansion",
+                                "connections": [],
+                                "removals": [
+                                    655379,
+                                    655407
+                                ],
+                                "collision_offset": {
+                                    "x": 0.0,
+                                    "y": 0.0,
+                                    "z": 1.0
+                                },
+                                "pickup": 655419,
+                                "hud_memo": 655413,
+                                "streamed_audio": 655418,
+                                "sound": 655420,
+                                "audio_fade": 655410
+                            },
+                            "stages": [
+                                {
+                                    "required_item": null,
+                                    "resources": [
+                                        {
+                                            "item": 103,
+                                            "amount": 1
+                                        }
+                                    ],
+                                    "appearance": {
+                                        "model_data": "SkyTempleKey",
+                                        "sound": 1,
+                                        "jingle": {
+                                            "file_name": "/audio/skytenkey-jin-short32.dsp",
+                                            "volume": 110
+                                        },
+                                        "hud_text": "Sky Temple Key 6 acquired!",
+                                        "scan": "Sky Temple Key 6."
+                                    },
+                                    "conversion": []
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "mrea_id": 3250751238,
+                    "pickups": [
+                        {
+                            "location": {
+                                "type": "standard",
+                                "exclude_memo_from_removal": false,
+                                "original_model": "MissileExpansion",
+                                "connections": [],
+                                "removals": [
+                                    721105
+                                ],
+                                "collision_offset": {
+                                    "x": 0.0,
+                                    "y": 0.0,
+                                    "z": 1.0
+                                },
+                                "pickup": 721110,
+                                "hud_memo": 721107,
+                                "streamed_audio": 721101,
+                                "sound": 721109,
+                                "audio_fade": 721108
+                            },
+                            "stages": [
+                                {
+                                    "required_item": null,
+                                    "resources": [
+                                        {
+                                            "item": 46,
+                                            "amount": 20
+                                        },
+                                        {
+                                            "item": 47,
+                                            "amount": 1
+                                        }
+                                    ],
+                                    "appearance": {
+                                        "model_data": "LightBeamAmmoExpansion",
+                                        "sound": 0,
+                                        "jingle": {
+                                            "file_name": "/audio/itm_x_short_00.dsp",
+                                            "volume": 55
+                                        },
+                                        "hud_text": "Light Ammo Expansion acquired!",
+                                        "scan": "Light Ammo Expansion. Provides 20 Light Ammo and 1 Item Percentage."
+                                    },
+                                    "conversion": []
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "mrea_id": 1423634263,
+                    "pickups": [
+                        {
+                            "location": {
+                                "type": "standard",
+                                "exclude_memo_from_removal": false,
+                                "original_model": "MissileExpansion",
+                                "connections": [],
+                                "removals": [
+                                    786505
+                                ],
+                                "collision_offset": {
+                                    "x": 0.0,
+                                    "y": 0.0,
+                                    "z": 1.0
+                                },
+                                "pickup": 786513,
+                                "hud_memo": 786511,
+                                "streamed_audio": 786503,
+                                "sound": 786501,
+                                "audio_fade": 786510
+                            },
+                            "stages": [
+                                {
+                                    "required_item": null,
+                                    "resources": [
+                                        {
+                                            "item": 34,
+                                            "amount": 1
+                                        }
+                                    ],
+                                    "appearance": {
+                                        "model_data": "DarkTempleKey",
+                                        "sound": 1,
+                                        "jingle": {
+                                            "file_name": "/audio/skytenkey-jin-short32.dsp",
+                                            "volume": 110
+                                        },
+                                        "hud_text": "Dark Agon Key 3 acquired!",
+                                        "scan": "Dark Agon Key 3."
+                                    },
+                                    "conversion": []
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "mrea_id": 350405542,
+                    "pickups": [
+                        {
+                            "location": {
+                                "type": "standard",
+                                "exclude_memo_from_removal": false,
+                                "original_model": "SkyTempleKey",
+                                "connections": [],
+                                "removals": [
+                                    983067,
+                                    983234
+                                ],
+                                "collision_offset": {
+                                    "x": 0.0,
+                                    "y": 0.6,
+                                    "z": 0.0
+                                },
+                                "pickup": 983239,
+                                "hud_memo": 983242,
+                                "streamed_audio": 983248,
+                                "sound": 983237,
+                                "audio_fade": 983241
+                            },
+                            "stages": [
+                                {
+                                    "required_item": null,
+                                    "resources": [
+                                        {
+                                            "item": 47,
+                                            "amount": 1
+                                        },
+                                        {
+                                            "item": 11,
+                                            "amount": 1
+                                        }
+                                    ],
+                                    "appearance": {
+                                        "model_data": "EchoVisor",
+                                        "sound": 0,
+                                        "jingle": {
+                                            "file_name": "/audio/itm_x_long_00.dsp",
+                                            "volume": 71
+                                        },
+                                        "hud_text": "Echo Visor acquired!",
+                                        "scan": "Echo Visor."
+                                    },
+                                    "conversion": []
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "mrea_id": 2240736467,
+                    "pickups": [
+                        {
+                            "location": {
+                                "type": "standard",
+                                "exclude_memo_from_removal": false,
+                                "original_model": "DarkTempleKey",
+                                "connections": [],
+                                "removals": [
+                                    1048626,
+                                    1048621
+                                ],
+                                "collision_offset": {
+                                    "x": 0.0,
+                                    "y": 0.6,
+                                    "z": 0.0
+                                },
+                                "pickup": 1049014,
+                                "hud_memo": 1049018,
+                                "streamed_audio": 1049022,
+                                "sound": 1049012,
+                                "audio_fade": 1049021
+                            },
+                            "stages": [
+                                {
+                                    "required_item": null,
+                                    "resources": [
+                                        {
+                                            "item": 105,
+                                            "amount": 1
+                                        }
+                                    ],
+                                    "appearance": {
+                                        "model_data": "SkyTempleKey",
+                                        "sound": 1,
+                                        "jingle": {
+                                            "file_name": "/audio/skytenkey-jin-short32.dsp",
+                                            "volume": 110
+                                        },
+                                        "hud_text": "Sky Temple Key 8 acquired!",
+                                        "scan": "Sky Temple Key 8."
+                                    },
+                                    "conversion": []
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "mrea_id": 1978751231,
+                    "pickups": [
+                        {
+                            "location": {
+                                "type": "standard",
+                                "exclude_memo_from_removal": false,
+                                "original_model": "EnergyTank",
+                                "connections": [],
+                                "removals": [
+                                    1245320
+                                ],
+                                "collision_offset": {
+                                    "x": 0.0,
+                                    "y": 0.0,
+                                    "z": 0.0
+                                },
+                                "pickup": 1245318,
+                                "hud_memo": 1245323,
+                                "streamed_audio": 1245322,
+                                "sound": 1245317,
+                                "audio_fade": 1245321
+                            },
+                            "stages": [
+                                {
+                                    "required_item": null,
+                                    "resources": [
+                                        {
+                                            "item": 47,
+                                            "amount": 1
+                                        },
+                                        {
+                                            "item": 42,
+                                            "amount": 1
+                                        }
+                                    ],
+                                    "appearance": {
+                                        "model_data": "EnergyTank",
+                                        "sound": 0,
+                                        "jingle": {
+                                            "file_name": "/audio/itm_x_long_00.dsp",
+                                            "volume": 71
+                                        },
+                                        "hud_text": "Energy Tank acquired!",
+                                        "scan": "Energy Tank."
+                                    },
+                                    "conversion": []
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "mrea_id": 2761578287,
+                    "pickups": [
+                        {
+                            "location": {
+                                "type": "standard",
+                                "exclude_memo_from_removal": false,
+                                "original_model": "DarkTempleKey",
+                                "connections": [],
+                                "removals": [
+                                    1835118,
+                                    1835341
+                                ],
+                                "collision_offset": {
+                                    "x": 0.0,
+                                    "y": 0.6,
+                                    "z": 0.0
+                                },
+                                "pickup": 1835351,
+                                "hud_memo": 1835348,
+                                "streamed_audio": 1835342,
+                                "sound": 1835353,
+                                "audio_fade": 1835345
+                            },
+                            "stages": [
+                                {
+                                    "required_item": null,
+                                    "resources": [
+                                        {
+                                            "item": 40,
+                                            "amount": 1
+                                        }
+                                    ],
+                                    "appearance": {
+                                        "model_data": "DarkTempleKey",
+                                        "sound": 1,
+                                        "jingle": {
+                                            "file_name": "/audio/skytenkey-jin-short32.dsp",
+                                            "volume": 110
+                                        },
+                                        "hud_text": "Ing Hive Key 3 acquired!",
+                                        "scan": "Ing Hive Key 3."
+                                    },
+                                    "conversion": []
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "mrea_id": 2162589584,
+                    "pickups": [
+                        {
+                            "location": {
+                                "type": "standard",
+                                "exclude_memo_from_removal": false,
+                                "original_model": "MissileExpansion",
+                                "connections": [],
+                                "removals": [
+                                    1966214
+                                ],
+                                "collision_offset": {
+                                    "x": 0.0,
+                                    "y": 0.0,
+                                    "z": 1.0
+                                },
+                                "pickup": 1966211,
+                                "hud_memo": 1966217,
+                                "streamed_audio": 1966221,
+                                "sound": 1966213,
+                                "audio_fade": 1966218
+                            },
+                            "stages": [
+                                {
+                                    "required_item": null,
+                                    "resources": [
+                                        {
+                                            "item": 47,
+                                            "amount": 1
+                                        },
+                                        {
+                                            "item": 7,
+                                            "amount": 1
+                                        }
+                                    ],
+                                    "appearance": {
+                                        "model_data": "SonicBoom",
+                                        "sound": 0,
+                                        "jingle": {
+                                            "file_name": "/audio/itm_x_long_00.dsp",
+                                            "volume": 71
+                                        },
+                                        "hud_text": "Sonic Boom acquired!",
+                                        "scan": "Sonic Boom."
+                                    },
+                                    "conversion": []
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "mrea_id": 1576678107,
+                    "pickups": [
+                        {
+                            "location": {
+                                "type": "standard",
+                                "exclude_memo_from_removal": false,
+                                "original_model": "EnergyTank",
+                                "connections": [],
+                                "removals": [
+                                    2031771
+                                ],
+                                "collision_offset": {
+                                    "x": 0.0,
+                                    "y": 0.0,
+                                    "z": 0.0
+                                },
+                                "pickup": 2031654,
+                                "hud_memo": 2031657,
+                                "streamed_audio": 2031655,
+                                "sound": 2031651,
+                                "audio_fade": 2031662
+                            },
+                            "stages": [
+                                {
+                                    "required_item": null,
+                                    "resources": [
+                                        {
+                                            "item": 47,
+                                            "amount": 1
+                                        },
+                                        {
+                                            "item": 42,
+                                            "amount": 1
+                                        }
+                                    ],
+                                    "appearance": {
+                                        "model_data": "EnergyTank",
+                                        "sound": 0,
+                                        "jingle": {
+                                            "file_name": "/audio/itm_x_long_00.dsp",
+                                            "volume": 71
+                                        },
+                                        "hud_text": "Energy Tank acquired!",
+                                        "scan": "Energy Tank."
+                                    },
+                                    "conversion": []
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "mrea_id": 912503189,
+                    "pickups": [
+                        {
+                            "location": {
+                                "type": "standard",
+                                "exclude_memo_from_removal": true,
+                                "original_model": "EchoVisor",
+                                "connections": [
+                                    {
+                                        "state": "ZERO",
+                                        "message": "ACTV",
+                                        "target": 941622762
+                                    },
+                                    {
+                                        "state": "ZERO",
+                                        "message": "ZERO",
+                                        "target": 941622762
+                                    }
+                                ],
+                                "removals": [
+                                    941621420,
+                                    941622750
+                                ],
+                                "collision_offset": {
+                                    "x": 0.0,
+                                    "y": 0.0,
+                                    "z": 1.0
+                                },
+                                "pickup": 941621427,
+                                "hud_memo": 941621425,
+                                "streamed_audio": 941621426,
+                                "sound": 941621428,
+                                "audio_fade": 941621423
+                            },
+                            "stages": [
+                                {
+                                    "required_item": null,
+                                    "resources": [
+                                        {
+                                            "item": 45,
+                                            "amount": 0
+                                        },
+                                        {
+                                            "item": 46,
+                                            "amount": 0
+                                        },
+                                        {
+                                            "item": 47,
+                                            "amount": 1
+                                        },
+                                        {
+                                            "item": 3,
+                                            "amount": 1
+                                        }
+                                    ],
+                                    "appearance": {
+                                        "model_data": "AnnihilatorBeam",
+                                        "sound": 0,
+                                        "jingle": {
+                                            "file_name": "/audio/itm_x_long_00.dsp",
+                                            "volume": 71
+                                        },
+                                        "hud_text": "Annihilator Beam acquired!",
+                                        "scan": "Annihilator Beam."
+                                    },
+                                    "conversion": []
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "mrea_id": 7688697,
+                    "pickups": [
+                        {
+                            "location": {
+                                "type": "standard",
+                                "exclude_memo_from_removal": false,
+                                "original_model": "EnergyTank",
+                                "connections": [],
+                                "removals": [
+                                    2490373
+                                ],
+                                "collision_offset": {
+                                    "x": 0.0,
+                                    "y": 0.0,
+                                    "z": 0.0
+                                },
+                                "pickup": 2490385,
+                                "hud_memo": 2490416,
+                                "streamed_audio": 2490417,
+                                "sound": 2490403,
+                                "audio_fade": 2490408
+                            },
+                            "stages": [
+                                {
+                                    "required_item": null,
+                                    "resources": [
+                                        {
+                                            "item": 47,
+                                            "amount": 1
+                                        },
+                                        {
+                                            "item": 42,
+                                            "amount": 1
+                                        }
+                                    ],
+                                    "appearance": {
+                                        "model_data": "EnergyTank",
+                                        "sound": 0,
+                                        "jingle": {
+                                            "file_name": "/audio/itm_x_long_00.dsp",
+                                            "volume": 71
+                                        },
+                                        "hud_text": "Energy Tank acquired!",
+                                        "scan": "Energy Tank."
+                                    },
+                                    "conversion": []
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "mrea_id": 3585454182,
+                    "pickups": [
+                        {
+                            "location": {
+                                "type": "standard",
+                                "exclude_memo_from_removal": false,
+                                "original_model": "MissileExpansion",
+                                "connections": [],
+                                "removals": [
+                                    2621681
+                                ],
+                                "collision_offset": {
+                                    "x": 0.0,
+                                    "y": 0.0,
+                                    "z": 1.0
+                                },
+                                "pickup": 2621639,
+                                "hud_memo": 2621677,
+                                "streamed_audio": 2621676,
+                                "sound": 2621682,
+                                "audio_fade": 2621674
+                            },
+                            "stages": [
+                                {
+                                    "required_item": null,
+                                    "resources": [
+                                        {
+                                            "item": 37,
+                                            "amount": 1
+                                        }
+                                    ],
+                                    "appearance": {
+                                        "model_data": "DarkTempleKey",
+                                        "sound": 1,
+                                        "jingle": {
+                                            "file_name": "/audio/skytenkey-jin-short32.dsp",
+                                            "volume": 110
+                                        },
+                                        "hud_text": "Dark Torvus Key 3 acquired!",
+                                        "scan": "Dark Torvus Key 3."
+                                    },
+                                    "conversion": []
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "mrea_id": 700027128,
+                    "pickups": [
+                        {
+                            "location": {
+                                "type": "standard",
+                                "exclude_memo_from_removal": false,
+                                "original_model": "DarkTempleKey",
+                                "connections": [],
+                                "removals": [
+                                    3473468,
+                                    3473438
+                                ],
+                                "collision_offset": {
+                                    "x": 0.0,
+                                    "y": 0.6,
+                                    "z": 0.0
+                                },
+                                "pickup": 3473648,
+                                "hud_memo": 3473644,
+                                "streamed_audio": 3473640,
+                                "sound": 3473649,
+                                "audio_fade": 3473641
+                            },
+                            "stages": [
+                                {
+                                    "required_item": null,
+                                    "resources": [
+                                        {
+                                            "item": 107,
+                                            "amount": 1
+                                        }
+                                    ],
+                                    "appearance": {
+                                        "model_data": "EnergyTransferModule",
+                                        "sound": 0,
+                                        "jingle": {
+                                            "file_name": "/audio/itm_x_long_00.dsp",
+                                            "volume": 71
+                                        },
+                                        "hud_text": "Energy Transfer Module acquired!",
+                                        "scan": "Energy Transfer Module."
+                                    },
+                                    "conversion": []
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "mrea_id": 889276218,
+                    "pickups": [
+                        {
+                            "location": {
+                                "type": "standard",
+                                "exclude_memo_from_removal": false,
+                                "original_model": "MissileExpansion",
+                                "connections": [],
+                                "removals": [
+                                    3539111
+                                ],
+                                "collision_offset": {
+                                    "x": 0.0,
+                                    "y": 0.0,
+                                    "z": 1.0
+                                },
+                                "pickup": 3539117,
+                                "hud_memo": 3539109,
+                                "streamed_audio": 3539110,
+                                "sound": 3539115,
+                                "audio_fade": 3539114
+                            },
+                            "stages": [
+                                {
+                                    "required_item": null,
+                                    "resources": [
+                                        {
+                                            "item": 47,
+                                            "amount": 1
+                                        },
+                                        {
+                                            "item": 6,
+                                            "amount": 1
+                                        }
+                                    ],
+                                    "appearance": {
+                                        "model_data": "Sunburst",
+                                        "sound": 0,
+                                        "jingle": {
+                                            "file_name": "/audio/itm_x_long_00.dsp",
+                                            "volume": 71
+                                        },
+                                        "hud_text": "Sunburst acquired!",
+                                        "scan": "Sunburst."
+                                    },
+                                    "conversion": []
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "mrea_id": 1270197856,
+                    "pickups": [
+                        {
+                            "location": {
+                                "type": "standard",
+                                "exclude_memo_from_removal": false,
+                                "original_model": "MissileExpansion",
+                                "connections": [],
+                                "removals": [
+                                    3604852
+                                ],
+                                "collision_offset": {
+                                    "x": 0.0,
+                                    "y": 0.0,
+                                    "z": 1.0
+                                },
+                                "pickup": 3604859,
+                                "hud_memo": 3604849,
+                                "streamed_audio": 3604853,
+                                "sound": 3604860,
+                                "audio_fade": 3604855
+                            },
+                            "stages": [
+                                {
+                                    "required_item": null,
+                                    "resources": [
+                                        {
+                                            "item": 45,
+                                            "amount": 20
+                                        },
+                                        {
+                                            "item": 47,
+                                            "amount": 1
+                                        }
+                                    ],
+                                    "appearance": {
+                                        "model_data": "DarkBeamAmmoExpansion",
+                                        "sound": 0,
+                                        "jingle": {
+                                            "file_name": "/audio/itm_x_short_00.dsp",
+                                            "volume": 55
+                                        },
+                                        "hud_text": "Dark Ammo Expansion acquired!",
+                                        "scan": "Dark Ammo Expansion. Provides 20 Dark Ammo and 1 Item Percentage."
+                                    },
+                                    "conversion": []
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "mrea_id": 1654100212,
+                    "pickups": [
+                        {
+                            "location": {
+                                "type": "standard",
+                                "exclude_memo_from_removal": true,
+                                "original_model": "GrappleBeam",
+                                "connections": [
+                                    {
+                                        "state": "ZERO",
+                                        "message": "ACTV",
+                                        "target": 205193759
+                                    },
+                                    {
+                                        "state": "ZERO",
+                                        "message": "ZERO",
+                                        "target": 205193759
+                                    }
+                                ],
+                                "removals": [
+                                    205193765,
+                                    272302343
+                                ],
+                                "collision_offset": {
+                                    "x": 0.0,
+                                    "y": 0.0,
+                                    "z": 1.0
+                                },
+                                "pickup": 205193775,
+                                "hud_memo": 205193760,
+                                "streamed_audio": 205193771,
+                                "sound": 205193616,
+                                "audio_fade": 205193773
+                            },
+                            "stages": [
+                                {
+                                    "required_item": null,
+                                    "resources": [
+                                        {
+                                            "item": 47,
+                                            "amount": 1
+                                        },
+                                        {
+                                            "item": 42,
+                                            "amount": 1
+                                        }
+                                    ],
+                                    "appearance": {
+                                        "model_data": "EnergyTank",
+                                        "sound": 0,
+                                        "jingle": {
+                                            "file_name": "/audio/itm_x_long_00.dsp",
+                                            "volume": 71
+                                        },
+                                        "hud_text": "Energy Tank acquired!",
+                                        "scan": "Energy Tank."
+                                    },
+                                    "conversion": []
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "mrea_id": 2242084895,
+                    "pickups": [
+                        {
+                            "location": {
+                                "type": "standard",
+                                "exclude_memo_from_removal": false,
+                                "original_model": "MissileExpansion",
+                                "connections": [],
+                                "removals": [
+                                    3932234
+                                ],
+                                "collision_offset": {
+                                    "x": 0.0,
+                                    "y": 0.0,
+                                    "z": 1.0
+                                },
+                                "pickup": 3932385,
+                                "hud_memo": 3932377,
+                                "streamed_audio": 3932383,
+                                "sound": 3932374,
+                                "audio_fade": 3932380
+                            },
+                            "stages": [
+                                {
+                                    "required_item": null,
+                                    "resources": [
+                                        {
+                                            "item": 46,
+                                            "amount": 20
+                                        },
+                                        {
+                                            "item": 47,
+                                            "amount": 1
+                                        }
+                                    ],
+                                    "appearance": {
+                                        "model_data": "LightBeamAmmoExpansion",
+                                        "sound": 0,
+                                        "jingle": {
+                                            "file_name": "/audio/itm_x_short_00.dsp",
+                                            "volume": 55
+                                        },
+                                        "hud_text": "Light Ammo Expansion acquired!",
+                                        "scan": "Light Ammo Expansion. Provides 20 Light Ammo and 1 Item Percentage."
+                                    },
+                                    "conversion": []
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "mrea_id": 3072694950,
+                    "pickups": [
+                        {
+                            "location": {
+                                "type": "standard",
+                                "exclude_memo_from_removal": false,
+                                "original_model": "MissileExpansion",
+                                "connections": [],
+                                "removals": [
+                                    3997743
+                                ],
+                                "collision_offset": {
+                                    "x": 0.0,
+                                    "y": 0.0,
+                                    "z": 1.0
+                                },
+                                "pickup": 3997746,
+                                "hud_memo": 3997740,
+                                "streamed_audio": 3997745,
+                                "sound": 3997735,
+                                "audio_fade": 3997742
+                            },
+                            "stages": [
+                                {
+                                    "required_item": null,
+                                    "resources": [
+                                        {
+                                            "item": 46,
+                                            "amount": 20
+                                        },
+                                        {
+                                            "item": 47,
+                                            "amount": 1
+                                        }
+                                    ],
+                                    "appearance": {
+                                        "model_data": "LightBeamAmmoExpansion",
+                                        "sound": 0,
+                                        "jingle": {
+                                            "file_name": "/audio/itm_x_short_00.dsp",
+                                            "volume": 55
+                                        },
+                                        "hud_text": "Light Ammo Expansion acquired!",
+                                        "scan": "Light Ammo Expansion. Provides 20 Light Ammo and 1 Item Percentage."
+                                    },
+                                    "conversion": []
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "mrea_id": 3152327598,
+                    "pickups": [
+                        {
+                            "location": {
+                                "type": "standard",
+                                "exclude_memo_from_removal": false,
+                                "original_model": "SkyTempleKey",
+                                "connections": [],
+                                "removals": [
+                                    4260128,
+                                    4260282
+                                ],
+                                "collision_offset": {
+                                    "x": 0.0,
+                                    "y": 0.6,
+                                    "z": 0.0
+                                },
+                                "pickup": 4260134,
+                                "hud_memo": 4260127,
+                                "streamed_audio": 4260133,
+                                "sound": 4260124,
+                                "audio_fade": 4260130
+                            },
+                            "stages": [
+                                {
+                                    "required_item": null,
+                                    "resources": [
+                                        {
+                                            "item": 36,
+                                            "amount": 1
+                                        }
+                                    ],
+                                    "appearance": {
+                                        "model_data": "DarkTempleKey",
+                                        "sound": 1,
+                                        "jingle": {
+                                            "file_name": "/audio/skytenkey-jin-short32.dsp",
+                                            "volume": 110
+                                        },
+                                        "hud_text": "Dark Torvus Key 2 acquired!",
+                                        "scan": "Dark Torvus Key 2."
+                                    },
+                                    "conversion": []
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "mrea_id": 1557447417,
+                    "pickups": [
+                        {
+                            "location": {
+                                "type": "standard",
+                                "exclude_memo_from_removal": false,
+                                "original_model": "MissileExpansion",
+                                "connections": [],
+                                "removals": [
+                                    4390915
+                                ],
+                                "collision_offset": {
+                                    "x": 0.0,
+                                    "y": 0.0,
+                                    "z": 1.0
+                                },
+                                "pickup": 4390935,
+                                "hud_memo": 4390914,
+                                "streamed_audio": 4390931,
+                                "sound": 4390934,
+                                "audio_fade": 4390916
+                            },
+                            "stages": [
+                                {
+                                    "required_item": null,
+                                    "resources": [
+                                        {
+                                            "item": 47,
+                                            "amount": 1
+                                        },
+                                        {
+                                            "item": 100,
+                                            "amount": 1
+                                        }
+                                    ],
+                                    "appearance": {
+                                        "model_data": "CobaltTranslator",
+                                        "sound": 0,
+                                        "jingle": {
+                                            "file_name": "/audio/itm_x_long_00.dsp",
+                                            "volume": 71
+                                        },
+                                        "hud_text": "Cobalt Translator acquired!",
+                                        "scan": "Cobalt Translator."
+                                    },
+                                    "conversion": []
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "mlvl_id": 464164546,
+            "area_changes": [
+                {
+                    "mrea_id": 1388284403,
+                    "pickups": [
+                        {
+                            "location": {
+                                "type": "standard",
+                                "exclude_memo_from_removal": false,
+                                "original_model": "MissileExpansion",
+                                "connections": [],
+                                "removals": [
+                                    590022
+                                ],
+                                "collision_offset": {
+                                    "x": 0.0,
+                                    "y": 0.0,
+                                    "z": 1.0
+                                },
+                                "pickup": 590026,
+                                "hud_memo": 590017,
+                                "streamed_audio": 590020,
+                                "sound": 590015,
+                                "audio_fade": 590019
+                            },
+                            "stages": [
+                                {
+                                    "required_item": null,
+                                    "resources": [
+                                        {
+                                            "item": 47,
+                                            "amount": 1
+                                        },
+                                        {
+                                            "item": 5,
+                                            "amount": 1
+                                        }
+                                    ],
+                                    "appearance": {
+                                        "model_data": "Darkburst",
+                                        "sound": 0,
+                                        "jingle": {
+                                            "file_name": "/audio/itm_x_long_00.dsp",
+                                            "volume": 71
+                                        },
+                                        "hud_text": "Darkburst acquired!",
+                                        "scan": "Darkburst."
+                                    },
+                                    "conversion": []
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "mrea_id": 1433528478,
+                    "pickups": [
+                        {
+                            "location": {
+                                "type": "standard",
+                                "exclude_memo_from_removal": false,
+                                "original_model": "MissileExpansion",
+                                "connections": [],
+                                "removals": [
+                                    655434
+                                ],
+                                "collision_offset": {
+                                    "x": 0.0,
+                                    "y": 0.0,
+                                    "z": 1.0
+                                },
+                                "pickup": 655429,
+                                "hud_memo": 655433,
+                                "streamed_audio": 655435,
+                                "sound": 655430,
+                                "audio_fade": 655432
+                            },
+                            "stages": [
+                                {
+                                    "required_item": null,
+                                    "resources": [
+                                        {
+                                            "item": 35,
+                                            "amount": 1
+                                        }
+                                    ],
+                                    "appearance": {
+                                        "model_data": "DarkTempleKey",
+                                        "sound": 1,
+                                        "jingle": {
+                                            "file_name": "/audio/skytenkey-jin-short32.dsp",
+                                            "volume": 110
+                                        },
+                                        "hud_text": "Dark Torvus Key 1 acquired!",
+                                        "scan": "Dark Torvus Key 1."
+                                    },
+                                    "conversion": []
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "mrea_id": 2437878657,
+                    "pickups": [
+                        {
+                            "location": {
+                                "type": "standard",
+                                "exclude_memo_from_removal": false,
+                                "original_model": "MissileExpansion",
+                                "connections": [],
+                                "removals": [
+                                    721483
+                                ],
+                                "collision_offset": {
+                                    "x": 0.0,
+                                    "y": 0.0,
+                                    "z": 1.0
+                                },
+                                "pickup": 721311,
+                                "hud_memo": 721300,
+                                "streamed_audio": 721306,
+                                "sound": 721309,
+                                "audio_fade": 721303
+                            },
+                            "stages": [
+                                {
+                                    "required_item": null,
+                                    "resources": [
+                                        {
+                                            "item": 39,
+                                            "amount": 1
+                                        }
+                                    ],
+                                    "appearance": {
+                                        "model_data": "DarkTempleKey",
+                                        "sound": 1,
+                                        "jingle": {
+                                            "file_name": "/audio/skytenkey-jin-short32.dsp",
+                                            "volume": 110
+                                        },
+                                        "hud_text": "Ing Hive Key 2 acquired!",
+                                        "scan": "Ing Hive Key 2."
+                                    },
+                                    "conversion": []
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "mrea_id": 1894024576,
+                    "pickups": [
+                        {
+                            "location": {
+                                "type": "standard",
+                                "exclude_memo_from_removal": false,
+                                "original_model": "MissileExpansion",
+                                "connections": [],
+                                "removals": [
+                                    1048751
+                                ],
+                                "collision_offset": {
+                                    "x": 0.0,
+                                    "y": 0.0,
+                                    "z": 1.0
+                                },
+                                "pickup": 1048745,
+                                "hud_memo": 1048752,
+                                "streamed_audio": 1048755,
+                                "sound": 1048744,
+                                "audio_fade": 1048753
+                            },
+                            "stages": [
+                                {
+                                    "required_item": null,
+                                    "resources": [
+                                        {
+                                            "item": 47,
+                                            "amount": 1
+                                        },
+                                        {
+                                            "item": 42,
+                                            "amount": 1
+                                        }
+                                    ],
+                                    "appearance": {
+                                        "model_data": "EnergyTank",
+                                        "sound": 0,
+                                        "jingle": {
+                                            "file_name": "/audio/itm_x_long_00.dsp",
+                                            "volume": 71
+                                        },
+                                        "hud_text": "Energy Tank acquired!",
+                                        "scan": "Energy Tank."
+                                    },
+                                    "conversion": []
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "mrea_id": 3222355176,
+                    "pickups": [
+                        {
+                            "location": {
+                                "type": "standard",
+                                "exclude_memo_from_removal": false,
+                                "original_model": "SpiderBall",
+                                "connections": [
+                                    {
+                                        "state": "ZERO",
+                                        "message": "ACTV",
+                                        "target": 739509342
+                                    },
+                                    {
+                                        "state": "ZERO",
+                                        "message": "ZERO",
+                                        "target": 739509342
+                                    }
+                                ],
+                                "removals": [
+                                    1310856,
+                                    739509371
+                                ],
+                                "collision_offset": {
+                                    "x": 0.0,
+                                    "y": 0.0,
+                                    "z": 0.0
+                                },
+                                "pickup": 1311406,
+                                "hud_memo": 1311403,
+                                "streamed_audio": 1311404,
+                                "sound": 1310797,
+                                "audio_fade": 1311402
+                            },
+                            "stages": [
+                                {
+                                    "required_item": null,
+                                    "resources": [
+                                        {
+                                            "item": 47,
+                                            "amount": 1
+                                        },
+                                        {
+                                            "item": 23,
+                                            "amount": 1
+                                        }
+                                    ],
+                                    "appearance": {
+                                        "model_data": "GrappleBeam",
+                                        "sound": 0,
+                                        "jingle": {
+                                            "file_name": "/audio/itm_x_long_00.dsp",
+                                            "volume": 71
+                                        },
+                                        "hud_text": "Grapple Beam acquired!",
+                                        "scan": "Grapple Beam."
+                                    },
+                                    "conversion": []
+                                }
+                            ]
+                        },
+                        {
+                            "location": {
+                                "type": "standard",
+                                "exclude_memo_from_removal": false,
+                                "original_model": "MissileExpansion",
+                                "connections": [],
+                                "removals": [
+                                    1311917
+                                ],
+                                "collision_offset": {
+                                    "x": 0.0,
+                                    "y": 0.0,
+                                    "z": 1.0
+                                },
+                                "pickup": 1311926,
+                                "hud_memo": 1311918,
+                                "streamed_audio": 1311916,
+                                "sound": 1311915,
+                                "audio_fade": 1311923
+                            },
+                            "stages": [
+                                {
+                                    "required_item": null,
+                                    "resources": [
+                                        {
+                                            "item": 47,
+                                            "amount": 1
+                                        },
+                                        {
+                                            "item": 10,
+                                            "amount": 1
+                                        }
+                                    ],
+                                    "appearance": {
+                                        "model_data": "DarkVisor",
+                                        "sound": 0,
+                                        "jingle": {
+                                            "file_name": "/audio/itm_x_long_00.dsp",
+                                            "volume": 71
+                                        },
+                                        "hud_text": "Dark Visor acquired!",
+                                        "scan": "Dark Visor."
+                                    },
+                                    "conversion": []
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "mrea_id": 2722128775,
+                    "pickups": [
+                        {
+                            "location": {
+                                "type": "standard",
+                                "exclude_memo_from_removal": false,
+                                "original_model": "BeamAmmoExpansion",
+                                "connections": [],
+                                "removals": [
+                                    1573249,
+                                    1573238
+                                ],
+                                "collision_offset": {
+                                    "x": 0.0,
+                                    "y": 0.0,
+                                    "z": 1.0
+                                },
+                                "pickup": 1573246,
+                                "hud_memo": 1573253,
+                                "streamed_audio": 1573250,
+                                "sound": 1573425,
+                                "audio_fade": 1573408
+                            },
+                            "stages": [
+                                {
+                                    "required_item": null,
+                                    "resources": [
+                                        {
+                                            "item": 47,
+                                            "amount": 1
+                                        },
+                                        {
+                                            "item": 42,
+                                            "amount": 1
+                                        }
+                                    ],
+                                    "appearance": {
+                                        "model_data": "EnergyTank",
+                                        "sound": 0,
+                                        "jingle": {
+                                            "file_name": "/audio/itm_x_long_00.dsp",
+                                            "volume": 71
+                                        },
+                                        "hud_text": "Energy Tank acquired!",
+                                        "scan": "Energy Tank."
+                                    },
+                                    "conversion": []
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "mrea_id": 4065261236,
+                    "pickups": [
+                        {
+                            "location": {
+                                "type": "standard",
+                                "exclude_memo_from_removal": false,
+                                "original_model": "SkyTempleKey",
+                                "connections": [],
+                                "removals": [
+                                    337510813,
+                                    337510941
+                                ],
+                                "collision_offset": {
+                                    "x": 0.0,
+                                    "y": 0.6,
+                                    "z": 0.0
+                                },
+                                "pickup": 337510804,
+                                "hud_memo": 337510807,
+                                "streamed_audio": 337510811,
+                                "sound": 337510814,
+                                "audio_fade": 337510805
+                            },
+                            "stages": [
+                                {
+                                    "required_item": null,
+                                    "resources": [
+                                        {
+                                            "item": 46,
+                                            "amount": 20
+                                        },
+                                        {
+                                            "item": 47,
+                                            "amount": 1
+                                        }
+                                    ],
+                                    "appearance": {
+                                        "model_data": "LightBeamAmmoExpansion",
+                                        "sound": 0,
+                                        "jingle": {
+                                            "file_name": "/audio/itm_x_short_00.dsp",
+                                            "volume": 55
+                                        },
+                                        "hud_text": "Light Ammo Expansion acquired!",
+                                        "scan": "Light Ammo Expansion. Provides 20 Light Ammo and 1 Item Percentage."
+                                    },
+                                    "conversion": []
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "mrea_id": 2765624647,
+                    "pickups": [
+                        {
+                            "location": {
+                                "type": "standard",
+                                "exclude_memo_from_removal": false,
+                                "original_model": "MissileExpansion",
+                                "connections": [],
+                                "removals": [
+                                    2097357
+                                ],
+                                "collision_offset": {
+                                    "x": 0.0,
+                                    "y": 0.0,
+                                    "z": 1.0
+                                },
+                                "pickup": 2097363,
+                                "hud_memo": 2097355,
+                                "streamed_audio": 2097354,
+                                "sound": 2097352,
+                                "audio_fade": 2097356
+                            },
+                            "stages": [
+                                {
+                                    "required_item": null,
+                                    "resources": [
+                                        {
+                                            "item": 46,
+                                            "amount": 20
+                                        },
+                                        {
+                                            "item": 47,
+                                            "amount": 1
+                                        }
+                                    ],
+                                    "appearance": {
+                                        "model_data": "LightBeamAmmoExpansion",
+                                        "sound": 0,
+                                        "jingle": {
+                                            "file_name": "/audio/itm_x_short_00.dsp",
+                                            "volume": 55
+                                        },
+                                        "hud_text": "Light Ammo Expansion acquired!",
+                                        "scan": "Light Ammo Expansion. Provides 20 Light Ammo and 1 Item Percentage."
+                                    },
+                                    "conversion": []
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "mrea_id": 1089946750,
+                    "pickups": [
+                        {
+                            "location": {
+                                "type": "standard",
+                                "exclude_memo_from_removal": false,
+                                "original_model": "DarkTempleKey",
+                                "connections": [],
+                                "removals": [
+                                    2293797,
+                                    2294109
+                                ],
+                                "collision_offset": {
+                                    "x": 0.0,
+                                    "y": 0.6,
+                                    "z": 0.0
+                                },
+                                "pickup": 2293890,
+                                "hud_memo": 2293893,
+                                "streamed_audio": 2293896,
+                                "sound": 2293901,
+                                "audio_fade": 2293891
+                            },
+                            "stages": [
+                                {
+                                    "required_item": null,
+                                    "resources": [
+                                        {
+                                            "item": 45,
+                                            "amount": 20
+                                        },
+                                        {
+                                            "item": 47,
+                                            "amount": 1
+                                        }
+                                    ],
+                                    "appearance": {
+                                        "model_data": "DarkBeamAmmoExpansion",
+                                        "sound": 0,
+                                        "jingle": {
+                                            "file_name": "/audio/itm_x_short_00.dsp",
+                                            "volume": 55
+                                        },
+                                        "hud_text": "Dark Ammo Expansion acquired!",
+                                        "scan": "Dark Ammo Expansion. Provides 20 Dark Ammo and 1 Item Percentage."
+                                    },
+                                    "conversion": []
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "mrea_id": 1932798548,
+                    "pickups": [
+                        {
+                            "location": {
+                                "type": "standard",
+                                "exclude_memo_from_removal": false,
+                                "original_model": "PowerBombExpansion",
+                                "connections": [],
+                                "removals": [
+                                    136577154
+                                ],
+                                "collision_offset": {
+                                    "x": 0.0,
+                                    "y": 0.0,
+                                    "z": 0.0
+                                },
+                                "pickup": 136577160,
+                                "hud_memo": 136577150,
+                                "streamed_audio": 136577155,
+                                "sound": 136577159,
+                                "audio_fade": 136577153
+                            },
+                            "stages": [
+                                {
+                                    "required_item": null,
+                                    "resources": [
+                                        {
+                                            "item": 102,
+                                            "amount": 1
+                                        }
+                                    ],
+                                    "appearance": {
+                                        "model_data": "SkyTempleKey",
+                                        "sound": 1,
+                                        "jingle": {
+                                            "file_name": "/audio/skytenkey-jin-short32.dsp",
+                                            "volume": 110
+                                        },
+                                        "hud_text": "Sky Temple Key 5 acquired!",
+                                        "scan": "Sky Temple Key 5."
+                                    },
+                                    "conversion": []
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "mrea_id": 3312357786,
+                    "pickups": [
+                        {
+                            "location": {
+                                "type": "standard",
+                                "exclude_memo_from_removal": false,
+                                "original_model": "MissileExpansion",
+                                "connections": [],
+                                "removals": [
+                                    3014809
+                                ],
+                                "collision_offset": {
+                                    "x": 0.0,
+                                    "y": 0.0,
+                                    "z": 1.0
+                                },
+                                "pickup": 3014807,
+                                "hud_memo": 3014813,
+                                "streamed_audio": 3014960,
+                                "sound": 3014805,
+                                "audio_fade": 3014958
+                            },
+                            "stages": [
+                                {
+                                    "required_item": null,
+                                    "resources": [
+                                        {
+                                            "item": 30,
+                                            "amount": 1
+                                        }
+                                    ],
+                                    "appearance": {
+                                        "model_data": "SkyTempleKey",
+                                        "sound": 1,
+                                        "jingle": {
+                                            "file_name": "/audio/skytenkey-jin-short32.dsp",
+                                            "volume": 110
+                                        },
+                                        "hud_text": "Sky Temple Key 2 acquired!",
+                                        "scan": "Sky Temple Key 2."
+                                    },
+                                    "conversion": []
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "mrea_id": 4093264161,
+                    "pickups": [
+                        {
+                            "location": {
+                                "type": "standard",
+                                "exclude_memo_from_removal": false,
+                                "original_model": "SkyTempleKey",
+                                "connections": [],
+                                "removals": [
+                                    272302431,
+                                    272302583
+                                ],
+                                "collision_offset": {
+                                    "x": 0.0,
+                                    "y": 0.6,
+                                    "z": 0.0
+                                },
+                                "pickup": 272302439,
+                                "hud_memo": 272302425,
+                                "streamed_audio": 272302422,
+                                "sound": 272302419,
+                                "audio_fade": 272302423
+                            },
+                            "stages": [
+                                {
+                                    "required_item": null,
+                                    "resources": [
+                                        {
+                                            "item": 107,
+                                            "amount": 1
+                                        }
+                                    ],
+                                    "appearance": {
+                                        "model_data": "EnergyTransferModule",
+                                        "sound": 0,
+                                        "jingle": {
+                                            "file_name": "/audio/itm_x_long_00.dsp",
+                                            "volume": 71
+                                        },
+                                        "hud_text": "Energy Transfer Module acquired!",
+                                        "scan": "Energy Transfer Module."
+                                    },
+                                    "conversion": []
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
 }
