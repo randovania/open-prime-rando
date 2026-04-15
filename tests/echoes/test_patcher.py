@@ -11,9 +11,9 @@ def configuration(test_files_dir):
 
 
 def test_ntsc_export(prime2_ntsc_iso_path, tmp_path, configuration) -> None:
-    patcher.patch_iso(prime2_ntsc_iso_path, tmp_path, configuration)
+    patcher.patch_iso(prime2_ntsc_iso_path, tmp_path.joinpath("out.iso"), configuration)
 
 
 def test_pal_export(prime2_pal_iso_path, tmp_path, configuration) -> None:
     configuration.practice_mod = PracticeModMode.disabled
-    patcher.patch_iso(prime2_pal_iso_path, tmp_path, configuration)
+    patcher.patch_iso(prime2_pal_iso_path, tmp_path.joinpath("out.iso"), configuration)

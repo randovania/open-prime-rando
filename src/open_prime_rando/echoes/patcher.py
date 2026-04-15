@@ -6,7 +6,6 @@ from typing import TYPE_CHECKING
 
 import open_prime_rando_practice_mod
 from ppc_asm.assembler import ppc
-from retro_data_structures.asset_manager import IsoFileProvider, PathFileWriter
 from retro_data_structures.exceptions import UnknownAssetId
 from retro_data_structures.game_check import Game
 from retro_data_structures.properties.echoes.objects import WorldTeleporter
@@ -18,7 +17,7 @@ from open_prime_rando.dol_patching.echoes.beam_configuration import BeamAmmoConf
 from open_prime_rando.dol_patching.echoes.user_preferences import OprEchoesUserPreferences
 from open_prime_rando.echoes import custom_assets, frontend_asset_ids, inverted
 from open_prime_rando.echoes.elevators import auto_enabled_elevator_patches
-from open_prime_rando.patcher_editor import PatcherEditor
+from open_prime_rando.patcher_editor import IsoFileProvider, IsoFileWriter, PatcherEditor
 
 if TYPE_CHECKING:
     from collections.abc import Callable
@@ -151,8 +150,6 @@ def patch_iso(
     """
     file_provider = IsoFileProvider(input_iso)
 
-    output = PathFileWriter(output_iso)  # TODO: IsoFileWriter
-
     editor = PatcherEditor(file_provider, Game.ECHOES)
 
     custom_assets.create_custom_assets(editor)
@@ -173,5 +170,13 @@ def patch_iso(
 
     # Save our changes
     editor.build_modified_files()
+    output = IsoFileWriter(file_provider)
     editor.save_modifications(output)
+    output.commit(
+        output_iso,
+        callback=lambda bytes_written, total_bytes: status_update(
+            f"Writing ISO: {bytes_written / total_bytes:.2%}", bytes_written / total_bytes
+        ),
+    )
+
     status_update("Finished", 1.0)
