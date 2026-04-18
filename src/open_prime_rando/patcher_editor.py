@@ -4,6 +4,7 @@ import os
 import typing
 from pathlib import Path
 
+import typing_extensions
 from retro_data_structures.asset_manager import AssetManager, FileProvider, FileWriter
 from retro_data_structures.base_resource import AssetId, NameOrAssetId
 from retro_data_structures.formats.mlvl import Mlvl
@@ -82,15 +83,15 @@ try:
             self._files = {}
             self._dol = None
 
-        @typing.override
+        @typing_extensions.override
         def open_text(self, name: str) -> typing.TextIO:
             return self._files.setdefault(name, _MemoryStringIo())
 
-        @typing.override
+        @typing_extensions.override
         def open_binary(self, name: str) -> typing.BinaryIO:
             return self._files.setdefault(name, _MemoryBytesIo())
 
-        @typing.override
+        @typing_extensions.override
         def write_dol(self, data: bytes) -> None:
             self._dol = data
 
