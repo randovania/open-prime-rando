@@ -100,3 +100,7 @@ extend-ignore = [
     "ISC001",  # may cause conflicts with formatter
     "PLC0415",
 ]
+
+[tool.ruff.lint.flake8-type-checking]
+runtime-evaluated-base-classes = ["pydantic.BaseModel"]
+runtime-evaluated-decorators = ["dataclasses.dataclass"]
