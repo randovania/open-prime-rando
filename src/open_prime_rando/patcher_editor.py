@@ -17,6 +17,9 @@ T = typing.TypeVar("T")
 try:
     import nod_rs
 
+    # Keeping these classes only in OPR (instead of RDS) until `nod-rs` is available upstream
+    # These are also optional until we're fine with including this in Randovania.
+
     class IsoFileProvider(FileProvider):
         disc_reader: nod_rs.DiscReader
 
