@@ -2,7 +2,7 @@ from typing import Annotated
 
 from annotated_types import Interval
 from open_prime_rando_practice_mod import PracticeModMode
-from pydantic import BaseModel
+from pydantic import BaseModel, StringConstraints
 
 AssetId = Annotated[int, Interval(ge=0, le=0xFFFFFFFF)]
 
@@ -33,6 +33,9 @@ class RandoConfiguration(BaseModel):
     """
     Configuration for randomizing Metroid Prime 2: Echoes.
     """
+
+    game_title: Annotated[str, StringConstraints(max_length=64)]
+    """The new title of the game, listed in the ISO/Banner."""
 
     starting_area: AreaReference | None = None
     """The game will start at the given area. When not set, starts at Landing Site."""

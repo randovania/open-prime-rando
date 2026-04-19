@@ -5,8 +5,10 @@ import uuid
 from typing import TYPE_CHECKING
 
 import open_prime_rando_practice_mod
+from PIL import Image
 from ppc_asm.assembler import ppc
 from retro_data_structures.exceptions import UnknownAssetId
+from retro_data_structures.formats.banner import Banner
 from retro_data_structures.game_check import Game
 from retro_data_structures.properties.echoes.objects import WorldTeleporter
 
@@ -134,6 +136,31 @@ def edit_starting_area(editor: PatcherEditor, version: EchoesDolVersion, startin
     edit_starting_area_teleporter(editor, starting_area)
 
 
+def patch_game_name_and_id(editor: PatcherEditor, output: IsoFileWriter, new_name: str, id_suffix: str) -> None:
+    """
+    Changes the suffix of the Game ID, name and banner image.
+    """
+
+    game_id = output.source.disc_reader.header().game_id
+    game_id = game_id[:-2] + id_suffix
+
+    output.patcher.set_header(
+        game_id=game_id,
+        game_title=new_name,
+    )
+
+    raw_banner = editor.provider.read_binary("opening.bnr")
+    banner = Banner.parse(raw_banner)
+    for metadata in banner.metadata:
+        metadata.long_title = new_name
+
+    with Image.open(custom_assets.custom_asset_path().joinpath("banner.png")) as banner_image:
+        banner.image = banner_image
+
+    with output.open_binary("opening.bnr") as new_banner:
+        new_banner.write(banner.build())
+
+
 def remove_attract_videos(editor: PatcherEditor, output: IsoFileWriter) -> None:
     """
     Replace all Attract THP files with 0-byte files, as that causes them to not be loaded.
@@ -184,6 +211,7 @@ def patch_iso(
     # Save our changes
     editor.build_modified_files()
     output = IsoFileWriter(file_provider)
+    patch_game_name_and_id(editor, output, new_name=configuration.game_title, id_suffix="NR")
     remove_attract_videos(editor, output)
     editor.save_modifications(output)
     output.commit(
