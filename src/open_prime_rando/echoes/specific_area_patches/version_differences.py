@@ -95,7 +95,7 @@ def portal_terminal(editor: PatcherEditor, version: EchoesVersion):
     relay_ids = [0x12033A, 0x120343]  # 0x120307 is the last cork to destroy
     for relay_id in relay_ids:
         relay = area.get_instance(relay_id)
-        relay.remove_connections_from(counter)
+        relay.remove_all_connections_to(counter)
 
     # Set the destroyed cork counter to expect only one cork to be destroyed
     with counter.edit_properties(Counter) as props:
