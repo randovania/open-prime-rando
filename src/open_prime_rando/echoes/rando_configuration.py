@@ -12,6 +12,23 @@ class AreaReference(BaseModel):
     mrea_id: AssetId
 
 
+class AreaChange(BaseModel):
+    """Contains changes for a given MREA."""
+
+    mrea_id: AssetId
+    """The asset id of the MREA for this change."""
+
+
+class WorldChange(BaseModel):
+    """Contains changes for a given MLVL."""
+
+    mlvl_id: AssetId
+    """The asset id of the MLVL for this change."""
+
+    area_changes: list[AreaChange]
+    """The changes to apply to a MREA that belongs to this MLVL."""
+
+
 class RandoConfiguration(BaseModel):
     """
     Configuration for randomizing Metroid Prime 2: Echoes.
@@ -22,3 +39,6 @@ class RandoConfiguration(BaseModel):
 
     practice_mod: PracticeModMode = PracticeModMode.disabled
     """How accessible is the Practice Mod."""
+
+    world_changes: list[WorldChange]
+    """"""
