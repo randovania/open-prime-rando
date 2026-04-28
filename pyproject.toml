@@ -38,6 +38,10 @@ open-prime-rando = "open_prime_rando.cli:main"
 hook-dirs = "open_prime_rando.__pyinstaller:get_hook_dirs"
 
 [project.optional-dependencies]
+nod = [
+    "nod_rs",
+]
+
 test = [
     "pytest",
     "pytest-cov",
