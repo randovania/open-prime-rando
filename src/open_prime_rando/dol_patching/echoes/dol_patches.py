@@ -17,6 +17,7 @@ from open_prime_rando.dol_patching.all_prime_dol_patches import (
 )
 from open_prime_rando.dol_patching.echoes.beam_configuration import BeamAmmoConfiguration
 from open_prime_rando.dol_patching.echoes.user_preferences import OprEchoesUserPreferences
+from open_prime_rando.echoes.specific_area_patches.version_differences import EchoesVersion
 
 POWERUP_TO_INDEX = {
     "Double Damage": 58,
@@ -380,6 +381,7 @@ def apply_starting_visor_patch(addresses: StartingBeamVisorAddresses, default_it
 
 @dataclasses.dataclass(frozen=True)
 class EchoesDolVersion(BasePrimeDolVersion):
+    echoes_version: EchoesVersion
     practice_mod_version: open_prime_rando_practice_mod.GameVersion
     health_capacity: HealthCapacityAddresses
     dangerous_energy_tank: DangerousEnergyTankAddresses
