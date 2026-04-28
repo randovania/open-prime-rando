@@ -48,7 +48,6 @@ jobs:
       fail-fast: false
       matrix:
         python:
-          - {version: '3.11'}
           - {version: '3.12'}
           - {version: '3.13'}
           - {version: '3.14'}
