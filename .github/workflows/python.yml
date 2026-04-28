@@ -72,7 +72,7 @@ jobs:
           python-version: ${{ matrix.python.version }}
 
       - name: install
-        run: uv sync --frozen --extra test
+        run: uv sync --locked --all-extras
 
       - name: run pytest
         run: uv run pytest --skip-if-missing
@@ -90,7 +90,7 @@ jobs:
           submodules: 'recursive'
 
       - name: install
-        run: uv sync --frozen --extra test
+        run: uv sync --locked --all-extras
 
       - name: Run Tests
         run: uv run pytest --cov src --cov-report=xml --durations=100 -n 4

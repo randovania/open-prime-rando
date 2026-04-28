@@ -6,7 +6,6 @@ from typing import TYPE_CHECKING
 
 import open_prime_rando_practice_mod
 from ppc_asm.assembler import ppc
-from retro_data_structures.asset_manager import FileWriter, IsoFileProvider, PathFileWriter
 from retro_data_structures.exceptions import UnknownAssetId
 from retro_data_structures.game_check import Game
 from retro_data_structures.properties.echoes.objects import WorldTeleporter
@@ -18,7 +17,7 @@ from open_prime_rando.dol_patching.echoes.beam_configuration import BeamAmmoConf
 from open_prime_rando.dol_patching.echoes.user_preferences import OprEchoesUserPreferences
 from open_prime_rando.echoes import custom_assets, frontend_asset_ids, inverted, specific_area_patches
 from open_prime_rando.echoes.elevators import auto_enabled_elevator_patches
-from open_prime_rando.patcher_editor import PatcherEditor
+from open_prime_rando.patcher_editor import IsoFileProvider, IsoFileWriter, PatcherEditor
 
 if TYPE_CHECKING:
     from collections.abc import Callable
@@ -135,7 +134,7 @@ def edit_starting_area(editor: PatcherEditor, version: EchoesDolVersion, startin
     edit_starting_area_teleporter(editor, starting_area)
 
 
-def remove_attract_videos(editor: PatcherEditor, output: FileWriter) -> None:
+def remove_attract_videos(editor: PatcherEditor, output: IsoFileWriter) -> None:
     """
     Replace all Attract THP files with 0-byte files, as that causes them to not be loaded.
     """
@@ -159,8 +158,6 @@ def patch_iso(
     :return:
     """
     file_provider = IsoFileProvider(input_iso)
-
-    output = PathFileWriter(output_iso)  # TODO: IsoFileWriter
 
     editor = PatcherEditor(file_provider, Game.ECHOES)
 
@@ -186,6 +183,14 @@ def patch_iso(
 
     # Save our changes
     editor.build_modified_files()
+    output = IsoFileWriter(file_provider)
     remove_attract_videos(editor, output)
     editor.save_modifications(output)
+    output.commit(
+        output_iso,
+        callback=lambda bytes_written, total_bytes: status_update(
+            f"Writing ISO: {bytes_written / total_bytes:.2%}", bytes_written / total_bytes
+        ),
+    )
+
     status_update("Finished", 1.0)
