@@ -16,7 +16,7 @@ from open_prime_rando.dol_patching import ppc_helper
 from open_prime_rando.dol_patching.echoes import dol_patcher
 from open_prime_rando.dol_patching.echoes.beam_configuration import BeamAmmoConfiguration
 from open_prime_rando.dol_patching.echoes.user_preferences import OprEchoesUserPreferences
-from open_prime_rando.echoes import custom_assets, frontend_asset_ids, inverted
+from open_prime_rando.echoes import custom_assets, frontend_asset_ids, inverted, specific_area_patches
 from open_prime_rando.echoes.elevators import auto_enabled_elevator_patches
 from open_prime_rando.patcher_editor import PatcherEditor
 
@@ -165,10 +165,14 @@ def patch_iso(
     editor = PatcherEditor(file_provider, Game.ECHOES)
 
     custom_assets.create_custom_assets(editor)
-    version = dol_patcher.apply_patches(editor.dol, _default_dol_patches())
+    dol_version = dol_patcher.apply_patches(editor.dol, _default_dol_patches())
+
+    specific_area_patches.required_fixes.apply_all(editor)
+    specific_area_patches.patch_version_differences(editor, dol_version.echoes_version)
+    specific_area_patches.rebalance_patches.apply_all(editor)
 
     if configuration.starting_area is not None:
-        edit_starting_area(editor, version, configuration.starting_area)
+        edit_starting_area(editor, dol_version, configuration.starting_area)
 
     if _ALL_FEATURES:
         auto_enabled_elevator_patches.apply_auto_enabled_elevators_patch(editor)
@@ -177,7 +181,7 @@ def patch_iso(
     if configuration.practice_mod != open_prime_rando_practice_mod.PracticeModMode.disabled:
         practice_mod.patch_dol(
             editor.dol,
-            open_prime_rando_practice_mod.get_elf_for(version.practice_mod_version, configuration.practice_mod),
+            open_prime_rando_practice_mod.get_elf_for(dol_version.practice_mod_version, configuration.practice_mod),
         )
 
     # Save our changes

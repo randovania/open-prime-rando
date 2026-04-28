@@ -15,6 +15,7 @@ from open_prime_rando.dol_patching.echoes.dol_patches import (
     SafeZoneAddresses,
     StartingBeamVisorAddresses,
 )
+from open_prime_rando.echoes.specific_area_patches.version_differences import EchoesVersion
 
 ALL_VERSIONS = [
     EchoesDolVersion(
@@ -39,6 +40,7 @@ ALL_VERSIONS = [
             incr_pickup=0x80085760,
             decr_pickup=0x800856C4,
         ),
+        echoes_version=EchoesVersion.NTSC_U,
         practice_mod_version=open_prime_rando_practice_mod.GameVersion.GC_NTSC,
         health_capacity=HealthCapacityAddresses(
             base_health_capacity=0x8041ABE4,
@@ -111,6 +113,7 @@ ALL_VERSIONS = [
             incr_pickup=0x8008589C,
             decr_pickup=0x80085800,
         ),
+        echoes_version=EchoesVersion.PAL,
         practice_mod_version=open_prime_rando_practice_mod.GameVersion.GC_PAL,
         health_capacity=HealthCapacityAddresses(
             base_health_capacity=0x8041BEDC,
