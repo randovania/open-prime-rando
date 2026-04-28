@@ -9,11 +9,16 @@ from retro_data_structures.formats.strg import Strg
 from retro_data_structures.game_check import Game
 from retro_data_structures.properties.echoes.objects.ScannableObjectInfo import ScannableObjectInfo
 
-T = typing.TypeVar("T")
+type LogbookScanStrings = tuple[str, str, str]
+"""(Box 1, Box 2, Logbook)"""
+
+type ScanContents = tuple[LogbookScanStrings, AssetId]
+"""(Strings, Model ID)"""
 
 
 class PatcherEditor(AssetManager):
-    pooled_scans: dict[tuple[tuple[str, str, str], AssetId], AssetId]
+    pooled_scans: dict[ScanContents, AssetId]
+    """Map scan contents to a SCAN asset ID"""
 
     def __init__(self, provider: FileProvider, target_game: Game):
         super().__init__(provider, target_game)
@@ -64,10 +69,7 @@ class PatcherEditor(AssetManager):
 
         return asset_id, strg
 
-    def get_pickup_scan(self, strings: str | tuple[str, str, str], model: AssetId) -> AssetId:
-        if isinstance(strings, str):
-            strings = (strings, "", "")
-
+    def get_pickup_scan(self, strings: tuple[str, str, str], model: AssetId) -> AssetId:
         if (strings, model) not in self.pooled_scans:
             template_id = None
             if self.target_game == Game.ECHOES:
