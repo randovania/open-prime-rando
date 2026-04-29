@@ -92,7 +92,7 @@ jobs:
         run: uv sync --locked --all-extras
 
       - name: Run Tests
-        run: uv run pytest --cov src --cov-report=xml --durations=100 -n 4 --tmp-path-retention-policy=none
+        run: uv run pytest --cov src --cov-report=xml --durations=100 -n 4 -o tmp_path_retention_policy=none
 
       - name: codecov
         uses: codecov/codecov-action@v6
