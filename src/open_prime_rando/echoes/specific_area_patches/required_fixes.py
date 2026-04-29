@@ -96,7 +96,7 @@ def _patch_echo_gate_softlock(
         shot_relay = area.get_instance(shot_relay_id)
         memory_relay = area.get_instance(memory_relay_id)
 
-        shot_relay.remove_connections_from(counter)
+        shot_relay.remove_all_connections_to(counter)
         memory_relay.add_connection(State.Active, Message.Increment, counter)
 
 

@@ -113,7 +113,7 @@ def randomize_rubiks_puzzles(editor: PatcherEditor, rng: random.Random):
         for color, cube_id in zip(solution, cubes):
             cube = area.get_instance(cube_id)
 
-            puzzle.remove_connections_from(cube)
+            puzzle.remove_all_connections_to(cube)
             puzzle.add_connection(color.state, Message.Attach, cube)
 
             with cube.edit_properties(Actor) as props:

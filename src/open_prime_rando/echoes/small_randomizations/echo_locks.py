@@ -56,7 +56,7 @@ def randomize_echo_locks(editor: PatcherEditor, rng: random.Random):
         key_scan_points = [area.get_instance(f"(Key {i}) Scan Point") for i in range(3)]
 
         for relay in correct_key_relays:
-            counter.remove_connections_from(relay)
+            counter.remove_all_connections_to(relay)
 
         # Update all scan posts to have the updated scan text
         for scan_point, key_scan in zip(key_scan_points, key_scans):

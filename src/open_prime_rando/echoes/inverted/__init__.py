@@ -39,7 +39,7 @@ def _swap_dark_world(editor: PatcherEditor):
             is_dark_world = area.internal_name.endswith("_dark")
 
             for instance in area.all_instances:
-                if instance.type == AreaAttributes:
+                if instance.script_type == AreaAttributes:
                     with instance.edit_properties(AreaAttributes) as prop:
                         if prop.dark_world != is_dark_world:
                             print(area.name, is_dark_world, "found", prop.dark_world)
@@ -54,7 +54,7 @@ def _copy_safe_zones(dark: Area, dark_layer: ScriptLayer, light_layer: ScriptLay
     copied_safe_zones = {}
 
     for instance in list(dark_layer.instances):
-        if instance.type == SafeZone:
+        if instance.script_type == SafeZone:
             copied_safe_zones[instance.id] = light_layer.add_instance_with(instance.get_properties_as(SafeZone))
 
             ids = {conn.target for conn in instance.connections}
@@ -114,7 +114,7 @@ def _move_safe_zones(world: Mlvl, pairs: list[tuple[int, int]]):
 
         # Copy the safe zone crystals
         for instance in list(dark_layer.instances):
-            if instance.type == SafeZoneCrystal:
+            if instance.script_type == SafeZoneCrystal:
                 copied_crystal = light_layer.add_instance_with(instance.get_properties_as(SafeZoneCrystal))
 
                 targets_special = _copy_safe_zone_crystal(

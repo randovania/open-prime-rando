@@ -76,10 +76,10 @@ class DoorType:
         dock = next(
             inst
             for inst in area.all_instances
-            if (inst.type == Dock and inst.get_properties_as(Dock).dock_number == dock_index)
+            if (inst.script_type == Dock and inst.get_properties_as(Dock).dock_number == dock_index)
         )
         for instance in area.all_instances:
-            if instance.type != Door:
+            if instance.script_type != Door:
                 continue
             for connection in instance.connections:
                 if dock.id_matches(connection.target):
@@ -175,7 +175,7 @@ class BlastShieldDoorType(DoorType):
         for connection in source.connections:
             if connection.state == state and connection.message == message:
                 target = area.get_instance(connection.target)
-                if target.type == target_type and (target_name is None or target.name == target_name):
+                if target.script_type == target_type and (target_name is None or target.name == target_name):
                     return target
         name = f"{target_type} named {target_name}" if target_name is not None else str(target_type)
         raise TypeError(f"No {name} connected to {source}")

@@ -115,7 +115,7 @@ def apply_tweak_edits(editor: PatcherEditor, tweak_edits: dict[str, dict[str, ty
 
                 parent[spit_name[-1]] = value
 
-            instance.set_properties(instance.type.from_json(properties))
+            instance.set_properties(instance.script_type.from_json(properties))
 
 
 def patch_paks(
