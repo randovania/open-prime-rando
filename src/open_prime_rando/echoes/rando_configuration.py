@@ -37,6 +37,9 @@ class RandoConfiguration(BaseModel):
     game_title: Annotated[str, StringConstraints(max_length=64)]
     """The new title of the game, listed in the ISO/Banner."""
 
+    title_screen_text: str
+    """Text to be displayed in the title screen."""
+
     starting_area: AreaReference | None = None
     """The game will start at the given area. When not set, starts at Landing Site."""
 
