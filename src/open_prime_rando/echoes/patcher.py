@@ -7,18 +7,17 @@ from typing import TYPE_CHECKING
 import open_prime_rando_practice_mod
 from PIL import Image
 from ppc_asm.assembler import ppc
-from retro_data_structures.exceptions import UnknownAssetId
 from retro_data_structures.formats.banner import Banner
 from retro_data_structures.game_check import Game
-from retro_data_structures.properties.echoes.objects import WorldTeleporter
 
 from open_prime_rando import practice_mod
 from open_prime_rando.dol_patching import ppc_helper
 from open_prime_rando.dol_patching.echoes import dol_patcher
 from open_prime_rando.dol_patching.echoes.beam_configuration import BeamAmmoConfiguration
 from open_prime_rando.dol_patching.echoes.user_preferences import OprEchoesUserPreferences
-from open_prime_rando.echoes import custom_assets, frontend_asset_ids, inverted, specific_area_patches
+from open_prime_rando.echoes import custom_assets, inverted, specific_area_patches
 from open_prime_rando.echoes.elevators import auto_enabled_elevator_patches
+from open_prime_rando.echoes.specific_area_patches import front_end
 from open_prime_rando.patcher_editor import IsoFileProvider, IsoFileWriter, PatcherEditor
 
 if TYPE_CHECKING:
@@ -119,21 +118,9 @@ def edit_starting_area_dol(editor: PatcherEditor, version: EchoesDolVersion, sta
     )
 
 
-def edit_starting_area_teleporter(editor: PatcherEditor, starting_area: AreaReference) -> None:
-    try:
-        area = editor.get_area(frontend_asset_ids.FRONTEND_PAL_MLVL, frontend_asset_ids.FRONTEND_PAL_MREA)
-    except UnknownAssetId:
-        area = editor.get_area(frontend_asset_ids.FRONTEND_NTSC_MLVL, frontend_asset_ids.FRONTEND_NTSC_MREA)
-
-    elevator = area.get_instance("StartNewSinglePlayerGame")
-    with elevator.edit_properties(WorldTeleporter) as teleporter:
-        teleporter.world = starting_area.mlvl_id
-        teleporter.area = starting_area.mrea_id
-
-
 def edit_starting_area(editor: PatcherEditor, version: EchoesDolVersion, starting_area: AreaReference) -> None:
     edit_starting_area_dol(editor, version, starting_area)
-    edit_starting_area_teleporter(editor, starting_area)
+    front_end.edit_starting_area_teleporter(editor, starting_area)
 
 
 def patch_game_name_and_id(editor: PatcherEditor, output: IsoFileWriter, new_name: str, id_suffix: str) -> None:
@@ -194,6 +181,8 @@ def patch_iso(
     specific_area_patches.required_fixes.apply_all(editor)
     specific_area_patches.patch_version_differences(editor, dol_version.echoes_version)
     specific_area_patches.rebalance_patches.apply_all(editor)
+
+    front_end.edit_front_end(editor, configuration.title_screen_text)
 
     if configuration.starting_area is not None:
         edit_starting_area(editor, dol_version, configuration.starting_area)
