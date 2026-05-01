@@ -189,7 +189,7 @@ class PatcherEditor(AssetManager):
 
         return asset_id, strg
 
-    def _create_scan(self, strings: tuple[str, str, str] | tuple[str], model: AssetId) -> AssetId:
+    def _create_scan(self, strings: LogbookScanStrings | tuple[str], model: AssetId) -> AssetId:
         if (strings, model) not in self.pooled_scans:
             template_id = None
             if self.target_game == Game.ECHOES:
