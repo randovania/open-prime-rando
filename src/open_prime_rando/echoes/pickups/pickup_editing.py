@@ -36,8 +36,7 @@ if TYPE_CHECKING:
 
 
 def _attach_etm_particle(target: ScriptInstance, layer: ScriptLayer) -> None:
-    with target.edit_properties(target.type) as props:
-        target_editor_properties: EditorProperties = props.editor_properties
+    target_editor_properties: EditorProperties = target.get_properties().editor_properties
 
     particle = layer.add_instance_with(Effect())
     with particle.edit_properties(Effect) as etm:
@@ -130,7 +129,9 @@ def _patch_single_pickup_stage_appearance(
     model_data = stage.appearance.model_data
 
     # pickup
-    with instances.pickup.edit_properties(RDSPickup) as pickup:
+    with instances.pickup.edit_properties(RDSPickup) as pickup_e:
+        pickup: RDSPickup = pickup_e
+        assert isinstance(pickup, RDSPickup)
         # basics
         pickup.model = editor._resolve_asset_id(model_data.model)
         pickup.auto_spin = model_data.auto_spin
@@ -159,8 +160,8 @@ def _patch_single_pickup_stage_appearance(
         lighting.ambient_color = model_data.lighting.ambient_color
 
         # scan
-        pickup.actor_information.scannable.scannable_info0 = editor.get_pickup_scan(
-            stage.appearance.scan, model_data.scan_model
+        pickup.actor_information.scannable.scannable_info0 = editor.create_simple_scan(
+            stage.appearance.scan, model=model_data.scan_model
         )
         area._parent_mlvl.savw.raw.scannable_objects.append(
             {
@@ -179,7 +180,7 @@ def _patch_single_pickup_stage_appearance(
         inst = area.get_instance(location.cutscene_model.instance)
 
         # FIXME: this does not account for progressive item models
-        with inst.edit_properties(inst.type) as cutscene_model:
+        with inst.edit_properties(inst.script_type) as cutscene_model:
             cutscene_model.model = model_data.model
             cutscene_model.animation_information.ancs = model_data.animation.get_animation_parameters(editor)
 
