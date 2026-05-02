@@ -191,9 +191,12 @@ def patch_iso(
     disable_hud_popup = True
     for world_change in configuration.world_changes:
         mlvl = editor.get_mlvl(world_change.mlvl_id)
+        LOG.debug("Editing %s", mlvl.world_name)
 
         for area_change in world_change.area_changes:
             area = mlvl.get_area(area_change.mrea_id)
+            LOG.debug("Editing %s", area.name)
+
             mapa_id = mlvl.mapw.get_mapa_id(area.index)
             mapa = editor.get_file(mapa_id, Mapa)
 
