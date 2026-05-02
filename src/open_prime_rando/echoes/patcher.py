@@ -203,11 +203,19 @@ def patch_iso(
     patch_game_name_and_id(editor, output, new_name=configuration.game_title, id_suffix="NR")
     remove_attract_videos(editor, output)
     editor.save_modifications(output)
+
+    _last_percent = None
+
+    def _write_callback(bytes_written: int, total_bytes: int) -> None:
+        nonlocal _last_percent
+        percent = int(100 * (bytes_written / total_bytes))
+        if percent != _last_percent:
+            status_update(f"Writing ISO: {percent}%", bytes_written / total_bytes)
+            _last_percent = percent
+
     output.commit(
         output_iso,
-        callback=lambda bytes_written, total_bytes: status_update(
-            f"Writing ISO: {bytes_written / total_bytes:.2%}", bytes_written / total_bytes
-        ),
+        callback=_write_callback,
     )
 
     status_update("Finished", 1.0)
