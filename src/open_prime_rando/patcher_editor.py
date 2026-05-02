@@ -62,17 +62,27 @@ try:
             return list(self._all_files)
 
     class _MemoryStringIo(io.StringIO):
-        data: str | None = None
+        _data: str | None = None
+
+        @property
+        def data(self) -> str:
+            assert self._data is not None
+            return self._data
 
         def __exit__(self, exc_type, exc_val, exc_tb):
-            self.data = self.getvalue()
+            self._data = self.getvalue()
             return super().__exit__(exc_type, exc_val, exc_tb)
 
     class _MemoryBytesIo(io.BytesIO):
-        data: bytes | None = None
+        _data: bytes | None = None
+
+        @property
+        def data(self) -> bytes:
+            assert self._data is not None
+            return self._data
 
         def __exit__(self, exc_type, exc_val, exc_tb):
-            self.data = self.getvalue()
+            self._data = self.getvalue()
             return super().__exit__(exc_type, exc_val, exc_tb)
 
     class IsoFileWriter(FileWriter):
