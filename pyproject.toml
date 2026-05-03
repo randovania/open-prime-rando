@@ -21,7 +21,7 @@ dynamic = ["version"]
 license = "GPL-3.0-or-later"
 
 dependencies = [
-    "retro-data-structures>=0.35.0",
+    "retro-data-structures>=0.36.0",
     "jsonschema>=4.0.0",
     "ppc-asm>=1.6.0",
     "py_randomprime", # for Prime 1 symbols

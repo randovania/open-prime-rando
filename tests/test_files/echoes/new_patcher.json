@@ -4073,5 +4073,71 @@
                 }
             ]
         }
+    ],
+    "starting_items": [
+        {
+            "item": 8,
+            "capacity": 1
+        },
+        {
+            "item": 47,
+            "capacity": 13
+        },
+        {
+            "item": 9,
+            "capacity": 1
+        },
+        {
+            "item": 12,
+            "capacity": 1
+        },
+        {
+            "item": 13,
+            "capacity": 1
+        },
+        {
+            "item": 14,
+            "capacity": 1
+        },
+        {
+            "item": 0,
+            "capacity": 1
+        },
+        {
+            "item": 22,
+            "capacity": 1
+        },
+        {
+            "item": 1,
+            "capacity": 1
+        },
+        {
+            "item": 45,
+            "capacity": 50
+        },
+        {
+            "item": 2,
+            "capacity": 1
+        },
+        {
+            "item": 46,
+            "capacity": 50
+        },
+        {
+            "item": 3,
+            "capacity": 1
+        },
+        {
+            "item": 15,
+            "capacity": 1
+        },
+        {
+            "item": 24,
+            "capacity": 1
+        },
+        {
+            "item": 97,
+            "capacity": 1
+        }
     ]
 }

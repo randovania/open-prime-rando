@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import functools
 import logging
 import uuid
 from typing import TYPE_CHECKING
@@ -12,11 +13,13 @@ from retro_data_structures.formats.banner import Banner
 from retro_data_structures.game_check import Game
 
 from open_prime_rando import practice_mod
+from open_prime_rando.area_patcher import AreaPatcher
 from open_prime_rando.dol_patching import ppc_helper
 from open_prime_rando.dol_patching.echoes import dol_patcher
 from open_prime_rando.dol_patching.echoes.beam_configuration import BeamAmmoConfiguration
 from open_prime_rando.dol_patching.echoes.user_preferences import OprEchoesUserPreferences
-from open_prime_rando.echoes import custom_assets, inverted, pickups, specific_area_patches
+from open_prime_rando.echoes import custom_assets, inverted, pickups, specific_area_patches, starting_items
+from open_prime_rando.echoes.asset_ids import world
 from open_prime_rando.echoes.elevators import auto_enabled_elevator_patches
 from open_prime_rando.echoes.specific_area_patches import front_end
 from open_prime_rando.patcher_editor import IsoFileProvider, IsoFileWriter, PatcherEditor
@@ -27,6 +30,7 @@ if TYPE_CHECKING:
 
     from open_prime_rando.dol_patching.echoes.dol_patches import EchoesDolVersion
     from open_prime_rando.echoes.rando_configuration import AreaReference, RandoConfiguration
+
 
 LOG = logging.getLogger("echoes_patcher")
 
@@ -158,35 +162,28 @@ def remove_attract_videos(editor: PatcherEditor, output: IsoFileWriter) -> None:
             f.write(b"")
 
 
-def patch_iso(
-    input_iso: Path,
-    output_iso: Path,
-    configuration: RandoConfiguration,
-    status_update: Callable[[str, float], None] = lambda s, _: LOG.info(s),
-) -> None:
-    """
-
-    :param input_iso:
-    :param output_iso:
-    :param configuration:
-    :param status_update:
-    :return:
-    """
-    file_provider = IsoFileProvider(input_iso)
-
-    editor = PatcherEditor(file_provider, Game.ECHOES)
+def _apply_patches(editor: PatcherEditor, configuration: RandoConfiguration, output: IsoFileWriter) -> None:
 
     custom_assets.create_custom_assets(editor)
     dol_version = dol_patcher.apply_patches(editor.dol, _default_dol_patches())
 
-    specific_area_patches.required_fixes.apply_all(editor)
-    specific_area_patches.patch_version_differences(editor, dol_version.echoes_version)
-    specific_area_patches.rebalance_patches.apply_all(editor)
+    area_patcher = AreaPatcher(editor, list(world.NAME_TO_ID_MLVL.values()))
+
+    specific_area_patches.required_fixes.register_all(area_patcher)
+    specific_area_patches.version_differences.register_all(area_patcher, dol_version.echoes_version)
+    specific_area_patches.rebalance_patches.register_all(area_patcher)
 
     front_end.edit_front_end(editor, configuration.title_screen_text)
 
-    if configuration.starting_area is not None:
-        edit_starting_area(editor, dol_version, configuration.starting_area)
+    edit_starting_area(editor, dol_version, configuration.starting_area)
+    area_patcher.add_raw_function(
+        configuration.starting_area.mlvl_id,
+        configuration.starting_area.mrea_id,
+        functools.partial(
+            starting_items.edit_starting_items,
+            items_config=configuration.starting_items,
+        ),
+    )
 
     disable_hud_popup = True
     for world_change in configuration.world_changes:
@@ -214,16 +211,45 @@ def patch_iso(
         )
 
     # Save our changes
+    area_patcher.perform_changes()
     editor.build_modified_files()
-    output = IsoFileWriter(file_provider)
     patch_game_name_and_id(editor, output, new_name=configuration.game_title, id_suffix="NR")
     remove_attract_videos(editor, output)
     editor.save_modifications(output)
+
+
+def patch_iso(
+    input_iso: Path,
+    output_iso: Path,
+    configuration: RandoConfiguration,
+    status_update: Callable[[str, float], None] = lambda s, _: LOG.info(s),
+) -> None:
+    """
+
+    :param input_iso:
+    :param output_iso:
+    :param configuration:
+    :param status_update:
+    :return:
+    """
+    file_provider = IsoFileProvider(input_iso)
+
+    editor = PatcherEditor(file_provider, Game.ECHOES)
+    output = IsoFileWriter(file_provider)
+    _apply_patches(editor, configuration, output)
+
+    _last_percent = None
+
+    def _write_callback(bytes_written: int, total_bytes: int) -> None:
+        nonlocal _last_percent
+        percent = int(100 * (bytes_written / total_bytes))
+        if percent != _last_percent:
+            status_update(f"Writing ISO: {percent}%", bytes_written / total_bytes)
+            _last_percent = percent
+
     output.commit(
         output_iso,
-        callback=lambda bytes_written, total_bytes: status_update(
-            f"Writing ISO: {bytes_written / total_bytes:.2%}", bytes_written / total_bytes
-        ),
+        callback=_write_callback,
     )
 
     status_update("Finished", 1.0)
