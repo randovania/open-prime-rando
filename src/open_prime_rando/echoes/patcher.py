@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import functools
 import logging
 import uuid
 from typing import TYPE_CHECKING
@@ -174,7 +175,14 @@ def _apply_patches(editor: PatcherEditor, configuration: RandoConfiguration, out
     front_end.edit_front_end(editor, configuration.title_screen_text)
 
     edit_starting_area(editor, dol_version, configuration.starting_area)
-    starting_items.edit_starting_items(editor, configuration.starting_area, configuration.starting_items)
+    area_patcher.add_raw_function(
+        configuration.starting_area.mlvl_id,
+        configuration.starting_area.mrea_id,
+        functools.partial(
+            starting_items.edit_starting_items,
+            items_config=configuration.starting_items,
+        ),
+    )
 
     if _ALL_FEATURES:
         auto_enabled_elevator_patches.apply_auto_enabled_elevators_patch(editor)

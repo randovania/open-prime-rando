@@ -8,11 +8,11 @@ from retro_data_structures.enums.echoes import PlayerItemEnum
 from retro_data_structures.properties.echoes.objects import SpawnPoint
 
 if TYPE_CHECKING:
+    from retro_data_structures.formats.mlvl import Mlvl
     from retro_data_structures.formats.mrea import Area
     from retro_data_structures.formats.script_object import ScriptInstance
     from retro_data_structures.properties.field_reflection import FieldReflection
 
-    from open_prime_rando.echoes.rando_configuration import AreaReference
     from open_prime_rando.patcher_editor import PatcherEditor
 
 # 0x161898dc and 0x32f5e918 are assigned to no items at all
@@ -158,14 +158,13 @@ def _get_first_spawn(area: Area) -> tuple[ScriptInstance, SpawnPoint]:
 
 def edit_starting_items(
     editor: PatcherEditor,
-    starting_area: AreaReference,
+    mlvl: Mlvl,
+    area: Area,
     items_config: list[StartingItemConfig],
 ) -> None:
     """
     Changes the SpawnPoint in the given area to start with the given items.
     """
-    mlvl = editor.get_mlvl(starting_area.mlvl_id)
-    area = mlvl.get_area(starting_area.mrea_id)
 
     capacity_by_enum = {}
     amount_by_enum = {}
