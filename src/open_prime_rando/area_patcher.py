@@ -61,8 +61,11 @@ class AreaPatcher:
             mlvl = self.editor.get_mlvl(mlvl_id)
             logging.info("Patching %s", mlvl.world_name)
 
-            for area_id, area_functions in area_changes.items():
-                area = mlvl.get_area(area_id)
+            for area in mlvl.areas:
+                area_functions = self._patcher_functions[mlvl_id][area.mrea_asset_id]
+                if not area_functions:
+                    # Area unchanged
+                    continue
 
                 logging.info("Patching %s", area.name)
                 for func in area_functions:
