@@ -27,7 +27,7 @@ Randomizer ISO and must be deleted.""",
 
 def allow_skippable_cutscenes(editor: PatcherEditor, mlvl: Mlvl, area: Area) -> None:
     """
-    Edits all Camera objects to that can be skipped to not require being watched first.
+    Edits all Camera objects that can be skipped to not require being watched first.
     """
     for instance in area.all_instances:
         if instance.script_type == Camera:
