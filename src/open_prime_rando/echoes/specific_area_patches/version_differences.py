@@ -35,7 +35,7 @@ class EchoesVersion(float, Enum):
     TRILOGY_PAL = 3.629
 
 
-def patch_version_differences(area_patcher: AreaPatcher, version: EchoesVersion):
+def register_all(area_patcher: AreaPatcher, version: EchoesVersion):
     """
     Patches version differences that affect gameplay or logic. Usually restores NTSC-U functionality.
     Note: only NTSC-U and PAL are officially supported. Version differences introduced in later versions
@@ -44,11 +44,7 @@ def patch_version_differences(area_patcher: AreaPatcher, version: EchoesVersion)
 
     if version >= EchoesVersion.PAL:
         area_patcher.add_function(transport_a_access)
-
-    if version >= EchoesVersion.PAL:
         area_patcher.add_function(path_of_eyes)
-
-    if version >= EchoesVersion.PAL:
         area_patcher.add_function(venomous_pond)
 
     if version >= EchoesVersion.NTSC_J:

@@ -40,7 +40,7 @@ if TYPE_CHECKING:
 LOG = logging.getLogger("echoes_patcher")
 
 
-def apply_all(area_patcher: AreaPatcher) -> None:
+def register_all(area_patcher: AreaPatcher) -> None:
     """
     Applies changes necessary for the game to function properly.
     """

@@ -37,7 +37,7 @@ if TYPE_CHECKING:
 LOG = logging.getLogger("echoes_patcher")
 
 
-def apply_all(area_patcher: AreaPatcher) -> None:
+def register_all(area_patcher: AreaPatcher) -> None:
     """
     Applies patches that rebalance aspects of the game for a better rando experience.
     """

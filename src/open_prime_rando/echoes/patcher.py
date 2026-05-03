@@ -166,9 +166,9 @@ def _apply_patches(editor: PatcherEditor, configuration: RandoConfiguration, out
 
     area_patcher = AreaPatcher(editor, list(world.NAME_TO_ID_MLVL.values()))
 
-    specific_area_patches.required_fixes.apply_all(area_patcher)
-    specific_area_patches.patch_version_differences(area_patcher, dol_version.echoes_version)
-    specific_area_patches.rebalance_patches.apply_all(area_patcher)
+    specific_area_patches.required_fixes.register_all(area_patcher)
+    specific_area_patches.version_differences.register_all(area_patcher, dol_version.echoes_version)
+    specific_area_patches.rebalance_patches.register_all(area_patcher)
 
     front_end.edit_front_end(editor, configuration.title_screen_text)
 
