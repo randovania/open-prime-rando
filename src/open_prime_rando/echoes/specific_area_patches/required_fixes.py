@@ -1,9 +1,9 @@
+from __future__ import annotations
+
 import logging
-from collections.abc import Iterable
+from typing import TYPE_CHECKING
 
 from retro_data_structures.enums.echoes import Message, State
-from retro_data_structures.formats.mrea import Area
-from retro_data_structures.formats.script_object import InstanceIdRef
 from retro_data_structures.properties.echoes.archetypes.EditorProperties import EditorProperties
 from retro_data_structures.properties.echoes.archetypes.LayerSwitch import LayerSwitch
 from retro_data_structures.properties.echoes.archetypes.Transform import Transform
@@ -19,72 +19,81 @@ from retro_data_structures.properties.echoes.objects import (
     Trigger,
 )
 
+from open_prime_rando.area_patcher import AreaPatcher, decorate_patcher
 from open_prime_rando.echoes.asset_ids import agon_wastes, sanctuary_fortress, temple_grounds, torvus_bog
-from open_prime_rando.echoes.asset_ids.agon_wastes import COMMAND_CENTER_MREA
 from open_prime_rando.echoes.asset_ids.world import (
     AGON_WASTES_MLVL,
     SANCTUARY_FORTRESS_MLVL,
     TEMPLE_GROUNDS_MLVL,
     TORVUS_BOG_MLVL,
 )
-from open_prime_rando.patcher_editor import PatcherEditor
+
+if TYPE_CHECKING:
+    from collections.abc import Iterable
+
+    from retro_data_structures.formats.mlvl import Mlvl
+    from retro_data_structures.formats.mrea import Area
+    from retro_data_structures.formats.script_object import InstanceIdRef
+
+    from open_prime_rando.patcher_editor import PatcherEditor
 
 LOG = logging.getLogger("echoes_patcher")
 
 
-def apply_all(editor: PatcherEditor):
+def register_all(area_patcher: AreaPatcher) -> None:
     """
     Applies changes necessary for the game to function properly.
     """
-    mining_station_b(editor)
-    undertemple_access(editor)
-    main_reactor(editor)
-    sacrificial_chamber(editor)
-    aerie(editor)
-    main_research(editor)
-    hive_chamber_b(editor)
-    gfmc_compound(editor)
-    torvus_temple(editor)
-    command_center_door(editor)
+
+    for func in [
+        mining_station_b,
+        undertemple_access,
+        main_reactor,
+        sacrificial_chamber,
+        aerie,
+        main_research,
+        hive_chamber_b,
+        gfmc_compound,
+        torvus_temple,
+        command_center_door,
+    ]:
+        area_patcher.add_function(func)
 
 
-def mining_station_b(editor: PatcherEditor):
+@decorate_patcher(AGON_WASTES_MLVL, agon_wastes.MINING_STATION_B_MREA)
+def mining_station_b(editor: PatcherEditor, mlvl: Mlvl, area: Area) -> None:
     """
     Normally this relay is activated by the cutscene, but has an incoming connection from the pickup.
     Activating it like this means the pickup will trigger the relay without the cutscene
     """
-    area = editor.get_area(AGON_WASTES_MLVL, agon_wastes.MINING_STATION_B_MREA)
     with area.get_instance(0x80121).edit_properties(Relay) as post_pickup_relay:
         post_pickup_relay.editor_properties.active = True
 
 
-def undertemple_access(editor: PatcherEditor):
+@decorate_patcher(TORVUS_BOG_MLVL, torvus_bog.UNDERTEMPLE_ACCESS_MREA)
+def undertemple_access(editor: PatcherEditor, mlvl: Mlvl, area: Area) -> None:
     """
     Move the default spawn point in-bounds.
     """
-    area = editor.get_area(TORVUS_BOG_MLVL, torvus_bog.UNDERTEMPLE_ACCESS_MREA)
-
     with area.get_instance("Spawn point 001").edit_properties(SpawnPoint) as spawn:
         spawn.editor_properties.transform.position.x = -149.25
 
 
-def main_reactor(editor: PatcherEditor):
+@decorate_patcher(AGON_WASTES_MLVL, agon_wastes.MAIN_REACTOR_MREA)
+def main_reactor(editor: PatcherEditor, mlvl: Mlvl, area: Area) -> None:
     """
     Save some memory during DS1 fight.
     """
-    area = editor.get_area(AGON_WASTES_MLVL, agon_wastes.MAIN_REACTOR_MREA)
-
     unload_relay = area.get_instance("Unload dock when door closed")
     trigger = area.get_instance("Trigger Start DS Intro")
     trigger.add_connection(State.Entered, Message.SetToZero, unload_relay)
 
 
-def sacrificial_chamber(editor: PatcherEditor):
+@decorate_patcher(TORVUS_BOG_MLVL, torvus_bog.SACRIFICIAL_CHAMBER_MREA)
+def sacrificial_chamber(editor: PatcherEditor, mlvl: Mlvl, area: Area) -> None:
     """
     Makes the pickup persistent, even if you exit the area and reload.
     """
-    area = editor.get_area(TORVUS_BOG_MLVL, torvus_bog.SACRIFICIAL_CHAMBER_MREA)
-
     with area.get_instance("If grapple attainment is loaded, then end battle").edit_properties(Switch) as switch:
         switch.is_open = True
 
@@ -100,24 +109,22 @@ def _patch_echo_gate_softlock(
         memory_relay.add_connection(State.Active, Message.Increment, counter)
 
 
-def aerie(editor: PatcherEditor):
+@decorate_patcher(SANCTUARY_FORTRESS_MLVL, sanctuary_fortress.AERIE_MREA)
+def aerie(editor: PatcherEditor, mlvl: Mlvl, area: Area) -> None:
     """
     Patches an echo gate softlock.
     """
-    area = editor.get_area(SANCTUARY_FORTRESS_MLVL, sanctuary_fortress.AERIE_MREA)
-
     relays = ((0x410094, 0x41008D), (0x410077, 0x41007F), (0x4100B5, 0x4100B6))
     _patch_echo_gate_softlock(area, 0x4100BE, relays)
 
 
-def main_research(editor: PatcherEditor):
+@decorate_patcher(SANCTUARY_FORTRESS_MLVL, sanctuary_fortress.MAIN_RESEARCH_MREA)
+def main_research(editor: PatcherEditor, mlvl: Mlvl, area: Area) -> None:
     """
     Patches an echo gate softlock.
     Disables the Contraption layer by default, activating it dynamically when exiting the lower portal.
     This hopefully prevents OOM/object list full crashes.
     """
-    area = editor.get_area(SANCTUARY_FORTRESS_MLVL, sanctuary_fortress.MAIN_RESEARCH_MREA)
-
     relays = ((0x0B02E6, 0x0B02DE), (0x0B0303, 0x0B030D), (0x0B02F6, 0x0B02FA))
     _patch_echo_gate_softlock(area, 0x0B0315, relays)
 
@@ -150,12 +157,11 @@ def main_research(editor: PatcherEditor):
         controller.add_connection(State.Arrived, Message.Play, controller)
 
 
-def hive_chamber_b(editor: PatcherEditor):
+@decorate_patcher(TEMPLE_GROUNDS_MLVL, temple_grounds.HIVE_CHAMBER_B_MREA)
+def hive_chamber_b(editor: PatcherEditor, mlvl: Mlvl, area: Area) -> None:
     """
     Removes item loss sequence.
     """
-    area = editor.get_area(TEMPLE_GROUNDS_MLVL, temple_grounds.HIVE_CHAMBER_B_MREA)
-
     # FIXME: use layers API
     area.get_layer("DS Appears Part1").active = False
     area.get_layer("Pre Dark Samus Music").active = False
@@ -164,12 +170,11 @@ def hive_chamber_b(editor: PatcherEditor):
     area.get_layer("Post Dark Samus Music").active = True
 
 
-def gfmc_compound(editor: PatcherEditor):
+@decorate_patcher(TEMPLE_GROUNDS_MLVL, temple_grounds.GFMC_COMPOUND_MREA)
+def gfmc_compound(editor: PatcherEditor, mlvl: Mlvl, area: Area) -> None:
     """
     Add a HUDMemo for the ship missile.
     """
-    area = editor.get_area(TEMPLE_GROUNDS_MLVL, temple_grounds.GFMC_COMPOUND_MREA)
-
     pickup_xfm = area.get_instance(0x2B0324).get_properties_as(Pickup).editor_properties.transform
     ship_trigger = area.get_layer("Default").add_instance_with(
         Trigger(
@@ -205,12 +210,11 @@ def gfmc_compound(editor: PatcherEditor):
     timer.add_connection(State.Zero, Message.Deactivate, ship_trigger)
 
 
-def torvus_temple(editor: PatcherEditor):
+@decorate_patcher(TORVUS_BOG_MLVL, torvus_bog.TORVUS_TEMPLE_MREA)
+def torvus_temple(editor: PatcherEditor, mlvl: Mlvl, area: Area) -> None:
     """
     Remove cosmetic objects from Torvus Temple to minimize the chance of crash via alloc failure
     """
-    area = editor.get_area(TORVUS_BOG_MLVL, torvus_bog.TORVUS_TEMPLE_MREA)
-
     to_remove = [
         "Thrust1",
         "Thrust1",
@@ -226,12 +230,12 @@ def torvus_temple(editor: PatcherEditor):
         area.remove_instance(obj)
 
 
-def command_center_door(editor: PatcherEditor):
+@decorate_patcher(AGON_WASTES_MLVL, agon_wastes.COMMAND_CENTER_MREA)
+def command_center_door(editor: PatcherEditor, mlvl: Mlvl, area: Area) -> None:
     """
     Opening the blast door normally requires a room reload after they've been closed.
     The DS cutscene in Security Station B reloads the room, but that cutscene has been removed.
     """
-    area = editor.get_area(AGON_WASTES_MLVL, COMMAND_CENTER_MREA)
     default = area.get_layer("Default")
 
     poi = default.get_instance("Blast Door Activation")

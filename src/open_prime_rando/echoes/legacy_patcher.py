@@ -9,11 +9,13 @@ from retro_data_structures.asset_manager import FileProvider, PathFileWriter
 from retro_data_structures.formats.strg import Strg
 from retro_data_structures.game_check import Game
 
+from open_prime_rando.area_patcher import AreaPatcher
 from open_prime_rando.echoes import (
     asset_ids,
     dock_lock_rando,
     legacy_dynamic_schema,
 )
+from open_prime_rando.echoes.asset_ids.world import AGON_WASTES_MLVL, TORVUS_BOG_MLVL
 from open_prime_rando.echoes.elevators.elevator_rando import patch_elevator
 from open_prime_rando.echoes.general_changes import apply_corrupted_memory_card_change
 from open_prime_rando.echoes.small_randomizations import apply_small_randomizations
@@ -139,8 +141,10 @@ def patch_paks(
 
     status_update("Applying small patches", 0)
     dock_lock_rando.add_custom_models(editor)
-    required_fixes.torvus_temple(editor)
-    required_fixes.command_center_door(editor)
+    area_patcher = AreaPatcher(editor, [AGON_WASTES_MLVL, TORVUS_BOG_MLVL])
+    area_patcher.add_function(required_fixes.torvus_temple)
+    area_patcher.add_function(required_fixes.command_center_door)
+    area_patcher.perform_changes()
     apply_small_randomizations(editor, configuration["small_randomizations"])
     apply_corrupted_memory_card_change(editor)
 
