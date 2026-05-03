@@ -58,10 +58,18 @@ class AreaPatcher:
         """
         self._patcher_functions[mlvl_id][mrea_id].append(func)
 
+    def add_global_function(self, func: RawPatcherFunction) -> None:
+        """
+        Adds a function that is called for every area.
+        """
+        for mlvl_id, area_changes in self._patcher_functions.items():
+            mlvl = self.editor.get_mlvl(mlvl_id)
+            for area in mlvl.areas:
+                self._patcher_functions[mlvl_id][area.mrea_asset_id].append(func)
+
     def perform_changes(self) -> None:
         """
-
-        :return:
+        Calls the registered functions.
         """
         for mlvl_id, area_changes in self._patcher_functions.items():
             mlvl = self.editor.get_mlvl(mlvl_id)
