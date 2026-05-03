@@ -141,7 +141,7 @@ class StartingItemConfig(pydantic.BaseModel):
 
 def _get_first_spawn(area: Area) -> tuple[ScriptInstance, SpawnPoint]:
     """
-    Gets the script object that is a SpawnPoint with first_spawn set that belongs to an active layer.
+    Gets the active script object that is a SpawnPoint with first_spawn set that belongs to an active layer.
     Raises if none found.
     """
 
@@ -150,7 +150,7 @@ def _get_first_spawn(area: Area) -> tuple[ScriptInstance, SpawnPoint]:
             for instance in layer.instances:
                 if instance.script_type == SpawnPoint:
                     prop = instance.get_properties_as(SpawnPoint)
-                    if prop.first_spawn:
+                    if prop.editor_properties.active and prop.first_spawn:
                         return instance, prop
 
     raise RuntimeError(f"No first spawn found in {area}")
@@ -174,7 +174,6 @@ def edit_starting_items(
         capacity_by_enum[entry.item] = entry.capacity
         amount_by_enum[entry.item] = entry.amount or entry.capacity
 
-    # FIXME: Landing Site is not working properly
     instance, prop = _get_first_spawn(area)
 
     for field in dataclasses.fields(prop.capacity):
