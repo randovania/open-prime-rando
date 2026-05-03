@@ -1,3 +1,4 @@
+import hashlib
 import json
 import os
 from pathlib import Path
@@ -9,6 +10,42 @@ from retro_data_structures.game_check import Game
 from open_prime_rando.patcher_editor import PatcherEditor
 
 _FAIL_INSTEAD_OF_SKIP = True
+
+
+class HashUtil:
+    def hash_pak(self, contents: bytes) -> dict:
+        result = {}
+
+        from retro_data_structures.formats import Pak
+
+        pak = Pak.parse(contents, target_game=Game.ECHOES)
+
+        result["named_resources"] = {name: file.id for name, file in pak._raw.named_resources.items()}
+
+        result["files"] = files = {}
+        for asset in pak._raw.files:
+            if asset.compressed_data is not None:
+                data = "c_" + hashlib.sha256(asset.compressed_data).hexdigest()
+            else:
+                assert asset.uncompressed_data is not None
+                data = hashlib.sha256(asset.uncompressed_data).hexdigest()
+            files[f"{asset.asset_type}_{asset.asset_id:08x}"] = data
+
+        return result
+
+    def hash_file(self, name: str, contents: str | bytes) -> str | dict:
+        if isinstance(contents, str):
+            contents = contents.encode("utf-8")
+
+        if name.endswith(".pak"):
+            return self.hash_pak(contents)
+
+        return hashlib.sha256(contents).hexdigest()
+
+
+@pytest.fixture(scope="session")
+def hash_util():
+    return HashUtil()
 
 
 def get_env_or_skip(env_name: str, override_fail: bool | None = None) -> str:

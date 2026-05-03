@@ -1,36 +1,23 @@
-import hashlib
+from __future__ import annotations
+
 import json
-from pathlib import Path
+from typing import TYPE_CHECKING
 
 import pytest
-from retro_data_structures.formats import Pak
-from retro_data_structures.game_check import Game
 
 from open_prime_rando.echoes import legacy_patcher
 
+if TYPE_CHECKING:
+    from pathlib import Path
 
-def _hash_pak(pak_path: Path) -> dict[str, bytes]:
-    result = {}
-
-    with pak_path.open("rb") as f:
-        pak = Pak.parse_stream(f, target_game=Game.ECHOES)
-
-        result["named_resources"] = {name: file.id for name, file in pak._raw.named_resources.items()}
-
-        result["files"] = files = {}
-        for asset in pak._raw.files:
-            if asset.compressed_data is not None:
-                data = "c_" + hashlib.sha256(asset.compressed_data).hexdigest()
-            else:
-                assert asset.uncompressed_data is not None
-                data = hashlib.sha256(asset.uncompressed_data).hexdigest()
-            files[f"{asset.asset_type}_{asset.asset_id:08x}"] = data
-
-    return result
+    from conftest import HashUtil
 
 
-def hash_all_paks(base_path: Path) -> dict[str, dict]:
-    return {pak_path.relative_to(base_path).as_posix(): _hash_pak(pak_path) for pak_path in base_path.rglob("*.pak")}
+def hash_all_paks(base_path: Path, hash_util: HashUtil) -> dict[str, dict]:
+    return {
+        pak_path.relative_to(base_path).as_posix(): hash_util.hash_pak(pak_path.read_bytes())
+        for pak_path in base_path.rglob("*.pak")
+    }
 
 
 def _update_hashes_file(path: Path, hashes: dict[str, dict]) -> None:
@@ -38,7 +25,7 @@ def _update_hashes_file(path: Path, hashes: dict[str, dict]) -> None:
     pytest.fail("updated hashes file")
 
 
-def test_ntsc_paks(prime2_iso_provider, tmp_path, test_files_dir) -> None:
+def test_ntsc_paks(prime2_iso_provider, tmp_path, test_files_dir, hash_util: HashUtil) -> None:
     output_path = tmp_path.joinpath("out")
     configuration = test_files_dir.read_json("echoes", "door_lock.json")
 
@@ -49,7 +36,7 @@ def test_ntsc_paks(prime2_iso_provider, tmp_path, test_files_dir) -> None:
         output_path=output_path,
         configuration=configuration,
     )
-    hashes = hash_all_paks(output_path)
+    hashes = hash_all_paks(output_path, hash_util)
 
     # _update_hashes_file(test_files_dir.joinpath("legacy_ntsc_hashes.json"), hashes)
 
