@@ -50,14 +50,14 @@ def edit_front_end(editor: PatcherEditor, title_screen_text: str) -> None:
     normal_mode_func = layer.add_instance_with(
         SpecialFunction(
             editor_properties=EditorProperties(name="Unlock NormalModeCompleted"),
-            function=Function.UnlockMultiplayerMusic,
+            function=Function.GameStateSysVar,
             string_parm="NormalModeCompleted",
         )
     )
     seen_intro_func = layer.add_instance_with(
         SpecialFunction(
             editor_properties=EditorProperties(name="Unlock SeenIntroText"),
-            function=Function.UnlockMultiplayerMusic,
+            function=Function.GameStateSysVar,
             string_parm="SeenIntroText",
         )
     )
