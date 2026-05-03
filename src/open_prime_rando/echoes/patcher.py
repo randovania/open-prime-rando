@@ -11,11 +11,13 @@ from retro_data_structures.formats.banner import Banner
 from retro_data_structures.game_check import Game
 
 from open_prime_rando import practice_mod
+from open_prime_rando.area_patcher import AreaPatcher
 from open_prime_rando.dol_patching import ppc_helper
 from open_prime_rando.dol_patching.echoes import dol_patcher
 from open_prime_rando.dol_patching.echoes.beam_configuration import BeamAmmoConfiguration
 from open_prime_rando.dol_patching.echoes.user_preferences import OprEchoesUserPreferences
 from open_prime_rando.echoes import custom_assets, inverted, specific_area_patches
+from open_prime_rando.echoes.asset_ids import world
 from open_prime_rando.echoes.elevators import auto_enabled_elevator_patches
 from open_prime_rando.echoes.specific_area_patches import front_end
 from open_prime_rando.patcher_editor import IsoFileProvider, IsoFileWriter, PatcherEditor
@@ -162,9 +164,11 @@ def _apply_patches(editor: PatcherEditor, configuration: RandoConfiguration, out
     custom_assets.create_custom_assets(editor)
     dol_version = dol_patcher.apply_patches(editor.dol, _default_dol_patches())
 
-    specific_area_patches.required_fixes.apply_all(editor)
-    specific_area_patches.patch_version_differences(editor, dol_version.echoes_version)
-    specific_area_patches.rebalance_patches.apply_all(editor)
+    area_patcher = AreaPatcher(editor, list(world.NAME_TO_ID_MLVL.values()))
+
+    specific_area_patches.required_fixes.apply_all(area_patcher)
+    specific_area_patches.patch_version_differences(area_patcher, dol_version.echoes_version)
+    specific_area_patches.rebalance_patches.apply_all(area_patcher)
 
     front_end.edit_front_end(editor, configuration.title_screen_text)
 
@@ -182,6 +186,7 @@ def _apply_patches(editor: PatcherEditor, configuration: RandoConfiguration, out
         )
 
     # Save our changes
+    area_patcher.perform_changes()
     editor.build_modified_files()
     patch_game_name_and_id(editor, output, new_name=configuration.game_title, id_suffix="NR")
     remove_attract_videos(editor, output)
