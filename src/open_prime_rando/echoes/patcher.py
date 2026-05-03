@@ -17,7 +17,7 @@ from open_prime_rando.dol_patching import ppc_helper
 from open_prime_rando.dol_patching.echoes import dol_patcher
 from open_prime_rando.dol_patching.echoes.beam_configuration import BeamAmmoConfiguration
 from open_prime_rando.dol_patching.echoes.user_preferences import OprEchoesUserPreferences
-from open_prime_rando.echoes import custom_assets, inverted, specific_area_patches, starting_items
+from open_prime_rando.echoes import custom_assets, general_changes, inverted, specific_area_patches, starting_items
 from open_prime_rando.echoes.asset_ids import world
 from open_prime_rando.echoes.elevators import auto_enabled_elevator_patches
 from open_prime_rando.echoes.specific_area_patches import front_end
@@ -183,6 +183,8 @@ def _apply_patches(editor: PatcherEditor, configuration: RandoConfiguration, out
             items_config=configuration.starting_items,
         ),
     )
+
+    area_patcher.add_global_function(general_changes.allow_skippable_cutscenes)
 
     if _ALL_FEATURES:
         auto_enabled_elevator_patches.apply_auto_enabled_elevators_patch(editor)
