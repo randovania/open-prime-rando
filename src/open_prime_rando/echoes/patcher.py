@@ -158,23 +158,7 @@ def remove_attract_videos(editor: PatcherEditor, output: IsoFileWriter) -> None:
             f.write(b"")
 
 
-def patch_iso(
-    input_iso: Path,
-    output_iso: Path,
-    configuration: RandoConfiguration,
-    status_update: Callable[[str, float], None] = lambda s, _: LOG.info(s),
-) -> None:
-    """
-
-    :param input_iso:
-    :param output_iso:
-    :param configuration:
-    :param status_update:
-    :return:
-    """
-    file_provider = IsoFileProvider(input_iso)
-
-    editor = PatcherEditor(file_provider, Game.ECHOES)
+def _apply_patches(editor: PatcherEditor, configuration: RandoConfiguration, output: IsoFileWriter) -> None:
 
     custom_assets.create_custom_assets(editor)
     dol_version = dol_patcher.apply_patches(editor.dol, _default_dol_patches())
@@ -200,10 +184,30 @@ def patch_iso(
 
     # Save our changes
     editor.build_modified_files()
-    output = IsoFileWriter(file_provider)
     patch_game_name_and_id(editor, output, new_name=configuration.game_title, id_suffix="NR")
     remove_attract_videos(editor, output)
     editor.save_modifications(output)
+
+
+def patch_iso(
+    input_iso: Path,
+    output_iso: Path,
+    configuration: RandoConfiguration,
+    status_update: Callable[[str, float], None] = lambda s, _: LOG.info(s),
+) -> None:
+    """
+
+    :param input_iso:
+    :param output_iso:
+    :param configuration:
+    :param status_update:
+    :return:
+    """
+    file_provider = IsoFileProvider(input_iso)
+
+    editor = PatcherEditor(file_provider, Game.ECHOES)
+    output = IsoFileWriter(file_provider)
+    _apply_patches(editor, configuration, output)
 
     _last_percent = None
 
