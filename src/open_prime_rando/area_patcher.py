@@ -38,7 +38,7 @@ def decorate_patcher(mlvl_id: AssetId, mrea_id: AssetId) -> typing.Callable[[Raw
 
 
 class AreaPatcher:
-    _patcher_functions: dict[AssetId, dict[AssetId, list[AreaPatcherFunction]]]
+    _patcher_functions: dict[AssetId, dict[AssetId, list[RawPatcherFunction]]]
 
     def __init__(self, editor: PatcherEditor, mlvl_list: list[AssetId]):
         self.editor = editor
@@ -48,9 +48,15 @@ class AreaPatcher:
 
     def add_function(self, func: AreaPatcherFunction) -> None:
         """
-        Adds a new function that is used to patch an area.
+        Adds a function decorated with `decorate_patcher` that is used to patch an area.
         """
         self._patcher_functions[func.mlvl_id][func.mrea_id].append(func)
+
+    def add_raw_function(self, mlvl_id: AssetId, mrea_id: AssetId, func: RawPatcherFunction) -> None:
+        """
+        Adds a new function that is used to patch an area with the given ids.
+        """
+        self._patcher_functions[mlvl_id][mrea_id].append(func)
 
     def perform_changes(self) -> None:
         """

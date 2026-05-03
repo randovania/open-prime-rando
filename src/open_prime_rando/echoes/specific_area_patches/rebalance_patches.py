@@ -12,6 +12,7 @@ from retro_data_structures.properties.echoes.objects import (
     MemoryRelay,
     Pickup,
     ScriptLayerController,
+    SpawnPoint,
     Splinter,
     Timer,
 )
@@ -71,6 +72,10 @@ def landing_site(editor: PatcherEditor, mlvl: Mlvl, area: Area) -> None:
     area.get_layer("1st Pass - Intro Cinematic").active = not remove_intro
     for layer_name in ("Save Station Load", "Ship Repair", "Luminoth Key Bearer", "WAR CHEST"):
         area.get_layer(layer_name).active = remove_intro
+
+    spawn = area.get_instance("E3 Spawn Point")
+    with spawn.edit_properties(SpawnPoint) as props:
+        props.editor_properties.active = not remove_intro
 
     if remove_intro:
         timer = area.get_layer("Default").add_instance_with(Timer(time=0.01, auto_start=True))

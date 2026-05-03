@@ -4,6 +4,10 @@ from annotated_types import Interval
 from open_prime_rando_practice_mod import PracticeModMode
 from pydantic import BaseModel, StringConstraints
 
+from open_prime_rando.echoes.asset_ids.temple_grounds import LANDING_SITE_MREA
+from open_prime_rando.echoes.asset_ids.world import TEMPLE_GROUNDS_MLVL
+from open_prime_rando.echoes.starting_items import StartingItemConfig
+
 AssetId = Annotated[int, Interval(ge=0, le=0xFFFFFFFF)]
 
 
@@ -40,8 +44,11 @@ class RandoConfiguration(BaseModel):
     title_screen_text: str
     """Text to be displayed in the title screen."""
 
-    starting_area: AreaReference | None = None
+    starting_area: AreaReference = AreaReference(mlvl_id=TEMPLE_GROUNDS_MLVL, mrea_id=LANDING_SITE_MREA)
     """The game will start at the given area. When not set, starts at Landing Site."""
+
+    starting_items: list[StartingItemConfig]
+    """What is the starting inventory. Any item not listed will be set to 0."""
 
     practice_mod: PracticeModMode = PracticeModMode.disabled
     """How accessible is the Practice Mod."""

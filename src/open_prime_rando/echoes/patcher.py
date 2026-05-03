@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import functools
 import logging
 import uuid
 from typing import TYPE_CHECKING
@@ -16,7 +17,7 @@ from open_prime_rando.dol_patching import ppc_helper
 from open_prime_rando.dol_patching.echoes import dol_patcher
 from open_prime_rando.dol_patching.echoes.beam_configuration import BeamAmmoConfiguration
 from open_prime_rando.dol_patching.echoes.user_preferences import OprEchoesUserPreferences
-from open_prime_rando.echoes import custom_assets, inverted, specific_area_patches
+from open_prime_rando.echoes import custom_assets, inverted, specific_area_patches, starting_items
 from open_prime_rando.echoes.asset_ids import world
 from open_prime_rando.echoes.elevators import auto_enabled_elevator_patches
 from open_prime_rando.echoes.specific_area_patches import front_end
@@ -28,6 +29,7 @@ if TYPE_CHECKING:
 
     from open_prime_rando.dol_patching.echoes.dol_patches import EchoesDolVersion
     from open_prime_rando.echoes.rando_configuration import AreaReference, RandoConfiguration
+
 
 LOG = logging.getLogger("echoes_patcher")
 
@@ -172,8 +174,15 @@ def _apply_patches(editor: PatcherEditor, configuration: RandoConfiguration, out
 
     front_end.edit_front_end(editor, configuration.title_screen_text)
 
-    if configuration.starting_area is not None:
-        edit_starting_area(editor, dol_version, configuration.starting_area)
+    edit_starting_area(editor, dol_version, configuration.starting_area)
+    area_patcher.add_raw_function(
+        configuration.starting_area.mlvl_id,
+        configuration.starting_area.mrea_id,
+        functools.partial(
+            starting_items.edit_starting_items,
+            items_config=configuration.starting_items,
+        ),
+    )
 
     if _ALL_FEATURES:
         auto_enabled_elevator_patches.apply_auto_enabled_elevators_patch(editor)
