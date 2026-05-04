@@ -104,12 +104,13 @@ def apply_tweak_edits(editor: PatcherEditor, tweak_edits: dict[str, dict[str, ty
     :return:
     """
     for instance in editor.tweaks.instances:
-        properties = instance.get_properties().to_json()
+        properties = typing.cast("dict", instance.get_properties().to_json())
+
         if properties["instance_name"] in tweak_edits:
             logging.debug("Editing %s", properties["instance_name"])
 
             for name, value in tweak_edits[properties["instance_name"]].items():
-                parent = properties
+                parent = typing.cast("dict", properties)
                 spit_name = name.split(".")
 
                 for part in spit_name[:-1]:
