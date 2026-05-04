@@ -383,11 +383,11 @@ wheels = [
 
 [[package]]
 name = "ppc-asm"
-version = "1.6.0"
+version = "1.6.1"
 source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/31/c3/cdeda8172edf068306ce7646349246d442b6e7f6645c5eb129de66278ddc/ppc_asm-1.6.0.tar.gz", hash = "sha256:e11e52ee8cb5e76ddc42bb515969ccae5f5657d2bf6c949d7443b3d383b701c9", size = 25642, upload-time = "2026-01-30T13:22:59.482Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/10/13/be6488922ef61a52d56d2271f12f337d92cbbd2f6d979842805f78a6f564/ppc_asm-1.6.1.tar.gz", hash = "sha256:4658c25044a8d189e574d824ff48d366477a485e5202c937da462e93fa09e17f", size = 26136, upload-time = "2026-05-04T19:37:53.974Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/09/ac/50a7fe3ca0a75ce60620885397c1f4634083991d8b3a8c6c4de493629074/ppc_asm-1.6.0-py3-none-any.whl", hash = "sha256:8a96ba0424e11a3d70d4330b3a6baf15f0dc4e18c796ececf59bdaba5dfa15ab", size = 21575, upload-time = "2026-01-30T13:22:58.584Z" },
+    { url = "https://files.pythonhosted.org/packages/9d/35/d136daa215d40662a254597d109b9f601096d6178197295417e958e3d0c3/ppc_asm-1.6.1-py3-none-any.whl", hash = "sha256:6519883c7dc04bacd326d4d9393cef3a63e77edec55f4d6de8a0dfd9a9644ba2", size = 21541, upload-time = "2026-05-04T19:37:52.903Z" },
 ]
 
 [[package]]

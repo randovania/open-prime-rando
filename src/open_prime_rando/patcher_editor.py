@@ -55,7 +55,8 @@ try:
                     yield it
 
         def open_binary(self, name: str) -> typing.BinaryIO:
-            return self.data_partition.read_file(self._all_files[name])  # type: ignore[invalid-return-type]
+            # TODO: nod_rs.DiscReader ideally should satisfy the BinaryIO protocol
+            return typing.cast("typing.BinaryIO", self.data_partition.read_file(self._all_files[name]))
 
         def read_binary(self, name: str) -> bytes:
             return self.data_partition.read_file(self._all_files[name]).read()
