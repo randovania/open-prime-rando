@@ -227,7 +227,7 @@ def adjust_item_amount_patch(
     ]
 
 
-def remote_execution_patch(game: Game):
+def remote_execution_patch(game: Game) -> list[BaseInstruction]:
     return [
         *remote_execution_patch_start(game),
         *remote_execution_clear_pending_op(),
@@ -235,7 +235,9 @@ def remote_execution_patch(game: Game):
     ]
 
 
-def apply_remote_execution_patch(game: Game, patch_addresses: StringDisplayPatchAddresses, dol_editor: DolEditor):
+def apply_remote_execution_patch(
+    game: Game, patch_addresses: StringDisplayPatchAddresses, dol_editor: DolEditor
+) -> None:
     dol_editor.write_instructions(patch_addresses.update_hint_state, remote_execution_patch(game))
 
 
@@ -267,7 +269,7 @@ def create_remote_execution_body(
 
 def apply_energy_tank_capacity_patch(
     patch_addresses: HealthCapacityAddresses, energy_per_tank: int, dol_editor: DolEditor
-):
+) -> None:
     """
     Patches the base health capacity and the energy tank capacity with matching values.
     """
@@ -283,7 +285,7 @@ def apply_reverse_energy_tank_heal_patch(
     active: bool,
     game: Game,
     dol_editor: DolEditor,
-):
+) -> None:
     if game == Game.ECHOES:
         health_offset = 0x14
         refill_item = 0x29
@@ -315,7 +317,7 @@ def apply_reverse_energy_tank_heal_patch(
     dol_editor.write_instructions(addresses.incr_pickup + patch_offset, patch)
 
 
-def apply_build_info_patch(dol_file: DolEditor, uid: uuid.UUID, version: DolVersion):
+def apply_build_info_patch(dol_file: DolEditor, uid: uuid.UUID, version: DolVersion) -> None:
     dol_file.write(
         version.build_string_address + 6,
         uid.bytes,

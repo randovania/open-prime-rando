@@ -22,7 +22,7 @@ ECHO_LOCK_STATES = [State.Zero, State.InternalState00, State.InternalState01, St
 ECHO_LOCK_SOUNDS = [1005, 1006, 1007]
 
 
-def randomize_echo_locks(editor: PatcherEditor, rng: random.Random):
+def randomize_echo_locks(editor: PatcherEditor, rng: random.Random) -> None:
     # create key scan assets
     key_scans = []
     for pitch in ["low", "medium", "high"]:

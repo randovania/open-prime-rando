@@ -1,18 +1,23 @@
+from __future__ import annotations
+
 import fnmatch
 import io
 import os
 import typing
-from pathlib import Path
 
 import typing_extensions
 from retro_data_structures.asset_manager import AssetManager, FileProvider, FileWriter
 from retro_data_structures.base_resource import AssetId, NameOrAssetId
 from retro_data_structures.formats.mlvl import Mlvl
-from retro_data_structures.formats.mrea import Area
 from retro_data_structures.formats.scan import Scan
 from retro_data_structures.formats.strg import Strg
 from retro_data_structures.game_check import Game
 from retro_data_structures.properties.echoes.objects.ScannableObjectInfo import ScannableObjectInfo
+
+if typing.TYPE_CHECKING:
+    from pathlib import Path
+
+    from retro_data_structures.formats.mrea import Area
 
 type LogbookScanStrings = tuple[str, str, str]
 """(Box 1, Box 2, Logbook)"""
@@ -50,7 +55,7 @@ try:
                     yield it
 
         def open_binary(self, name: str) -> typing.BinaryIO:
-            return self.data_partition.read_file(self._all_files[name])
+            return self.data_partition.read_file(self._all_files[name])  # type: ignore[invalid-return-type]
 
         def read_binary(self, name: str) -> bytes:
             return self.data_partition.read_file(self._all_files[name]).read()
@@ -69,7 +74,7 @@ try:
             assert self._data is not None
             return self._data
 
-        def __exit__(self, exc_type, exc_val, exc_tb):
+        def __exit__(self, exc_type: type[BaseException] | None, exc_val: BaseException | None, exc_tb: typing.Any):
             self._data = self.getvalue()
             return super().__exit__(exc_type, exc_val, exc_tb)
 
@@ -81,7 +86,7 @@ try:
             assert self._data is not None
             return self._data
 
-        def __exit__(self, exc_type, exc_val, exc_tb):
+        def __exit__(self, exc_type: type[BaseException] | None, exc_val: BaseException | None, exc_tb: typing.Any):
             self._data = self.getvalue()
             return super().__exit__(exc_type, exc_val, exc_tb)
 
@@ -104,11 +109,15 @@ try:
 
         @typing_extensions.override
         def open_text(self, name: str) -> typing.TextIO:
-            return self._files.setdefault(name, _MemoryStringIo())
+            file = self._files.setdefault(name, _MemoryStringIo())
+            assert isinstance(file, _MemoryStringIo)
+            return file
 
         @typing_extensions.override
         def open_binary(self, name: str) -> typing.BinaryIO:
-            return self._files.setdefault(name, _MemoryBytesIo())
+            file = self._files.setdefault(name, _MemoryBytesIo())
+            assert isinstance(file, _MemoryBytesIo)
+            return file
 
         @typing_extensions.override
         def write_dol(self, data: bytes) -> None:
@@ -159,7 +168,7 @@ class PatcherEditor(AssetManager):
     def get_area(self, mlvl: NameOrAssetId, mrea: NameOrAssetId) -> Area:
         return self.get_mlvl(mlvl).get_area(mrea)
 
-    def build_modified_files(self):
+    def build_modified_files(self) -> None:
         super().build_modified_files()
         self.pooled_scans.clear()
 

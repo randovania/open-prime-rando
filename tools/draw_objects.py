@@ -27,7 +27,7 @@ def _draw_component(
     dot.render(cleanup=True, format="png")
 
 
-def draw_objects(editor: PatcherEditor, world_name: str, area_name: str):
+def draw_objects(editor: PatcherEditor, world_name: str, area_name: str) -> None:
     mlvl = editor.get_mlvl(world.NAME_TO_ID_MLVL[world_name])
     area = mlvl.get_area(world.load_dedicated_file(world_name).NAME_TO_ID_MREA[area_name])
 
@@ -65,7 +65,7 @@ def draw_objects(editor: PatcherEditor, world_name: str, area_name: str):
         group_i += 1
 
 
-def main():
+def main() -> None:
     iso = os.getenv("PRIME2_ISO")
 
     parser = argparse.ArgumentParser()

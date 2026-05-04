@@ -12,5 +12,4 @@ def dol_file(tmp_path):
     data[0:0x100] = DolHeader(tuple(sections), 0, 0, 0).as_bytes()
 
     tmp_path.joinpath("test.dol").write_bytes(data)
-    dol_file = DolFile(tmp_path.joinpath("test.dol"))
-    return dol_file
+    return DolFile(tmp_path.joinpath("test.dol"))

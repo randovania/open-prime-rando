@@ -13,7 +13,7 @@ if TYPE_CHECKING:
     from open_prime_rando.patcher_editor import PatcherEditor
 
 
-def apply_corrupted_memory_card_change(editor: PatcherEditor):
+def apply_corrupted_memory_card_change(editor: PatcherEditor) -> None:
     # STRG_MemoryCard_0
     table = editor.get_file(0x88E242D6, Strg)
 

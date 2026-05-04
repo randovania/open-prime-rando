@@ -37,7 +37,7 @@ def _read_legacy_schema():
 
 def apply_area_modifications(
     editor: PatcherEditor, configuration: dict[str, dict], status_update: Callable[[str, float], None]
-):
+) -> None:
     num_areas = sum(len(world_config["areas"]) for world_config in configuration.values())
     areas_processed = 0.0
 
@@ -104,12 +104,13 @@ def apply_tweak_edits(editor: PatcherEditor, tweak_edits: dict[str, dict[str, ty
     :return:
     """
     for instance in editor.tweaks.instances:
-        properties = instance.get_properties().to_json()
+        properties = typing.cast("dict", instance.get_properties().to_json())
+
         if properties["instance_name"] in tweak_edits:
             logging.debug("Editing %s", properties["instance_name"])
 
             for name, value in tweak_edits[properties["instance_name"]].items():
-                parent = properties
+                parent = typing.cast("dict", properties)
                 spit_name = name.split(".")
 
                 for part in spit_name[:-1]:
@@ -125,7 +126,7 @@ def patch_paks(
     output_path: Path,
     configuration: dict,
     status_update: Callable[[str, float], None] = lambda s, _: LOG.info(s),
-):
+) -> None:
     """Applies the legacy patches, intended to be used alongside Claris' patcher."""
     status_update(f"Will patch files at {file_provider}", 0)
     output_path.joinpath("files").mkdir(parents=True, exist_ok=True)

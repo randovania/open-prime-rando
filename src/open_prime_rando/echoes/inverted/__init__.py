@@ -124,7 +124,7 @@ def _move_safe_zones(world: Mlvl, pairs: list[tuple[int, int]]):
                     dark_layer.remove_instance(instance)
 
 
-def apply_inverted(editor: PatcherEditor):
+def apply_inverted(editor: PatcherEditor) -> None:
     _swap_dark_world(editor)
 
     _move_safe_zones(editor.get_mlvl(world_ids.TEMPLE_GROUNDS_MLVL), area_pairs.TG_PAIRS)

@@ -5,7 +5,7 @@ from open_prime_rando.echoes.suit_cosmetics.asset_map import SUIT_ASSETS
 from open_prime_rando.patcher_editor import PatcherEditor
 
 
-def apply_custom_suits(editor: PatcherEditor, configuration: dict):
+def apply_custom_suits(editor: PatcherEditor, configuration: dict) -> None:
     for suit, assets in SUIT_ASSETS.items():
         skin = configuration[suit]
         if skin == "player1":

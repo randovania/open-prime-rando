@@ -1,3 +1,5 @@
+from typing import Literal, overload
+
 from retro_data_structures.base_resource import AssetId, RawResource
 
 from open_prime_rando.echoes.custom_assets import custom_asset_path
@@ -6,10 +8,14 @@ from open_prime_rando.echoes.dock_lock_rando.dock_type_database import DOCK_TYPE
 from open_prime_rando.patcher_editor import PatcherEditor
 
 
-def add_custom_models(editor: PatcherEditor):
+def add_custom_models(editor: PatcherEditor) -> None:
     assets = custom_asset_path().joinpath("doors")
 
-    def get_txtr(n: str, must_exist: bool = True) -> AssetId:
+    @overload
+    def get_txtr(n: str, must_exist: Literal[True] = ...) -> AssetId: ...
+    @overload
+    def get_txtr(n: str, must_exist: Literal[False]) -> AssetId | None: ...
+    def get_txtr(n: str, must_exist: bool = True) -> AssetId | None:
         f = assets.joinpath(n)
         if not must_exist and not f.exists():
             return None
@@ -42,7 +48,7 @@ def apply_door_rando(
     new_door_type: str,
     old_door_type: str | None,
     low_memory: bool,
-):
+) -> None:
     if old_door_type is not None:
         old_door = DOCK_TYPES[old_door_type]
 

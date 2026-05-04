@@ -1,6 +1,6 @@
 import dataclasses
 import struct
-from collections.abc import Iterable
+from collections.abc import Iterable, Sequence
 from enum import Enum
 from typing import NamedTuple
 
@@ -32,8 +32,8 @@ class IsDoorAddr(NamedTuple):
     register_num: int
 
     @property
-    def register(self) -> Register:
-        return Register(self.register_num)
+    def register(self) -> GeneralRegister:
+        return GeneralRegister(self.register_num)
 
 
 @dataclasses.dataclass(frozen=True)
@@ -101,7 +101,7 @@ _FLAGS_ORDER = (
 
 def apply_game_options_patch(
     game_options_constructor_offset: int, user_preferences: OprEchoesUserPreferences, dol_editor: DolEditor
-):
+) -> None:
     patch = [
         # Unknown purpose, but keep for safety
         stw(r31, 0x1C, r1),
@@ -239,7 +239,7 @@ def _is_out_of_ammo_patch(symbols: dict[str, int], ammo_types: list[tuple[int, i
 
 def apply_beam_cost_patch(
     patch_addresses: BeamCostAddresses, beam_configurations: Iterable[BeamAmmoConfiguration], dol_editor: DolEditor
-):
+) -> None:
     uncharged_costs = []
     charged_costs = []
     combo_costs = []
@@ -324,14 +324,16 @@ def apply_beam_cost_patch(
 
 def apply_safe_zone_heal_patch(
     patch_addresses: SafeZoneAddresses, sda2_base: int, heal_per_second: float, dol_editor: DolEditor
-):
+) -> None:
     offset = patch_addresses.heal_per_frame_constant - sda2_base
 
     dol_editor.write(patch_addresses.heal_per_frame_constant, struct.pack(">f", heal_per_second / 60))
     dol_editor.write_instructions(patch_addresses.increment_health_fmr, [lfs(f1, offset, r2)])
 
 
-def apply_starting_visor_patch(addresses: StartingBeamVisorAddresses, default_items: dict, dol_editor: DolEditor):
+def apply_starting_visor_patch(
+    addresses: StartingBeamVisorAddresses, default_items: dict, dol_editor: DolEditor
+) -> None:
     visor_order = ["Combat Visor", "Echo Visor", "Scan Visor", "Dark Visor"]
     beam_order = ["Power Beam", "Dark Beam", "Light Beam", "Annihilator Beam"]
 
@@ -399,7 +401,7 @@ class EchoesDolVersion(BasePrimeDolVersion):
     starting_area_serialize_clean_slot_address: int
 
 
-def apply_fixes(version: EchoesDolVersion, dol_editor: DolEditor):
+def apply_fixes(version: EchoesDolVersion, dol_editor: DolEditor) -> None:
     dol_editor.symbols["CMapWorldInfo::IsAnythingSet"] = version.anything_set_address
 
     dol_editor.write_instructions(
@@ -426,13 +428,13 @@ def apply_fixes(version: EchoesDolVersion, dol_editor: DolEditor):
     )
 
 
-def change_powerup_should_persist(version: EchoesDolVersion, dol_editor: DolEditor, powerups: list[str]):
+def change_powerup_should_persist(version: EchoesDolVersion, dol_editor: DolEditor, powerups: list[str]) -> None:
     for item in powerups:
         index = POWERUP_TO_INDEX[item]
         dol_editor.write(version.powerup_should_persist + index, b"\x01")
 
 
-def apply_unvisited_room_names(version: EchoesDolVersion, dol_editor: DolEditor, enabled: bool):
+def apply_unvisited_room_names(version: EchoesDolVersion, dol_editor: DolEditor, enabled: bool) -> None:
     # In CAutoMapper::Update, the function checks for `mwInfo.IsMapped` then `mwInfo.IsAreaVisited` and if both are
     # false, sets a variable to false. This variable indicates if the room name is displayed used.
     dol_editor.write_instructions(
@@ -443,7 +445,7 @@ def apply_unvisited_room_names(version: EchoesDolVersion, dol_editor: DolEditor,
     )
 
 
-def apply_teleporter_sounds(version: EchoesDolVersion, dol_editor: DolEditor, enabled: bool):
+def apply_teleporter_sounds(version: EchoesDolVersion, dol_editor: DolEditor, enabled: bool) -> None:
     dol_editor.symbols["CWorldTransManager::SfxStart"] = version.cworldtransmanager_sfxstart
 
     if enabled:
@@ -454,7 +456,7 @@ def apply_teleporter_sounds(version: EchoesDolVersion, dol_editor: DolEditor, en
     dol_editor.write_instructions("CWorldTransManager::SfxStart", [inst])
 
 
-def freeze_player():
+def freeze_player() -> Sequence[BaseInstruction]:
     return [
         lfs(f1, -0x707C, r2),  # timeout = 5.0f
         lwz(r3, 0x14FC, r31),  # player = manager->players[0]
@@ -466,7 +468,7 @@ def freeze_player():
     ]
 
 
-def apply_map_door_changes(door_symbols: MapDoorTypeAddresses, dol_editor: DolEditor):
+def apply_map_door_changes(door_symbols: MapDoorTypeAddresses, dol_editor: DolEditor) -> None:
     # This ends up being a slow import, don't do it early
     from open_prime_rando.echoes.dock_lock_rando.map_icons import DoorMapIcon
 
@@ -475,7 +477,7 @@ def apply_map_door_changes(door_symbols: MapDoorTypeAddresses, dol_editor: DolEd
     num_door_colors = 1 + door_max - door_min
     assert num_door_colors <= 32, "There's only enough space for 32 colors in the table!"
 
-    is_door_symbols = [
+    is_door_symbols: list[IsDoorAddr] = [
         door_symbols.get_correct_transform,
         door_symbols.map_obj_draw,
         door_symbols.is_visible_to_automapper,

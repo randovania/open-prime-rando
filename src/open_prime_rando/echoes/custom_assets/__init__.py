@@ -137,7 +137,7 @@ def _import_premade_assets(editor: PatcherEditor):
         editor.add_new_asset(name, RawResource(asset_type, raw), ())
 
 
-def create_custom_assets(editor: PatcherEditor):
+def create_custom_assets(editor: PatcherEditor) -> None:
     _import_premade_assets(editor)
 
     _create_visor_derivatives(editor)

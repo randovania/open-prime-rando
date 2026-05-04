@@ -12,11 +12,8 @@ type RawPatcherFunction = typing.Callable[[PatcherEditor, Mlvl, Area], None]
 
 
 class AreaPatcherFunction(typing.Protocol):
-    @property
-    def mlvl_id(self) -> AssetId: ...
-
-    @property
-    def mrea_id(self) -> AssetId: ...
+    mlvl_id: AssetId
+    mrea_id: AssetId
 
     def __call__(self, editor: PatcherEditor, mlvl: Mlvl, area: Area) -> None: ...
 
@@ -30,9 +27,10 @@ def decorate_patcher(mlvl_id: AssetId, mrea_id: AssetId) -> typing.Callable[[Raw
     """
 
     def decorator(func: RawPatcherFunction) -> AreaPatcherFunction:
-        func.mlvl_id = mlvl_id
-        func.mrea_id = mrea_id
-        return func
+        result = typing.cast("AreaPatcherFunction", func)
+        result.mlvl_id = mlvl_id
+        result.mrea_id = mrea_id
+        return result
 
     return decorator
 

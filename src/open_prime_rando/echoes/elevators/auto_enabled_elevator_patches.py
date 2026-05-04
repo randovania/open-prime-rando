@@ -41,7 +41,7 @@ ELEVATOR_MEMORY_RELAY_PER_MREA = {
 }
 
 
-def apply_auto_enabled_elevators_patch(editor: PatcherEditor):
+def apply_auto_enabled_elevators_patch(editor: PatcherEditor) -> None:
     """
     Patches that activates every elevator on room load
     """

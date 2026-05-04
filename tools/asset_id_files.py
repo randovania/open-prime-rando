@@ -70,7 +70,7 @@ def generate_template(items: dict[str, int], suffix: str) -> str:
     return template
 
 
-def create_asset_id_files(editor: PatcherEditor, output_path: Path):
+def create_asset_id_files(editor: PatcherEditor, output_path: Path) -> None:
     output_path.mkdir(parents=True, exist_ok=True)
     shutil.rmtree(output_path)
     output_path.mkdir()
@@ -178,7 +178,7 @@ def load_dedicated_file(world_name: str):
     )
 
 
-def main():
+def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--game", required=True, choices=["echoes"])
     parser.add_argument("--iso", required=True, type=Path, help="Path to where the ISO.")

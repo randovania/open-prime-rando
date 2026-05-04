@@ -9,13 +9,13 @@ _game_to_patcher = {
 }
 
 
-def create_parser():
+def create_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser()
     parser.add_argument("game", choices=sorted(_game_to_patcher.keys()))
     return parser
 
 
-def setup_logging():
+def setup_logging() -> None:
     handlers = {
         "default": {
             "level": "DEBUG",
@@ -47,7 +47,7 @@ def setup_logging():
     )
 
 
-def main():
+def main() -> None:
     setup_logging()
     parser = create_parser()
     args = parser.parse_args(sys.argv[1:2])

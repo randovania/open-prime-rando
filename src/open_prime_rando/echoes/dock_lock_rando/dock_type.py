@@ -86,7 +86,7 @@ class DoorType:
                     return instance
         raise KeyError(f"no door found with a connection to {dock} in {area.name}")
 
-    def patch_map_icon(self, mapa: Mapa, door: ScriptInstance):
+    def patch_map_icon(self, mapa: Mapa, door: ScriptInstance) -> None:
         for obj in mapa.raw.mappable_objects:
             if door.id_matches(obj.editor_id):
                 obj.type = self.map_icon.value
@@ -107,6 +107,7 @@ class DoorType:
             strg_id = editor.duplicate_asset(template_strg_id, f"custom_door_{self.name}.STRG")
             strg = editor.get_file(strg_id, Strg)
 
+            assert self.scan_text is not None
             for i, text in enumerate(self.scan_text):
                 strg.set_single_string(i, text)
 
@@ -120,7 +121,9 @@ class DoorType:
 
         return self.patched_scan
 
-    def patch_door(self, editor: PatcherEditor, world_name: str, area_name: str, dock_name: str, low_memory: bool):
+    def patch_door(
+        self, editor: PatcherEditor, world_name: str, area_name: str, dock_name: str, low_memory: bool
+    ) -> None:
         area, mapa = self.get_files(editor, world_name, area_name)
         door = self.get_door_from_dock_index(area, self.get_dock_index(world_name, area_name, dock_name))
         self.patch_map_icon(mapa, door)
@@ -138,7 +141,9 @@ class DoorType:
 
 @dataclasses.dataclass(kw_only=True)
 class NormalDoorType(DoorType):
-    def patch_door(self, editor: PatcherEditor, world_name: str, area_name: str, dock_name: str, low_memory: bool):
+    def patch_door(
+        self, editor: PatcherEditor, world_name: str, area_name: str, dock_name: str, low_memory: bool
+    ) -> None:
         super().patch_door(editor, world_name, area_name, dock_name, low_memory)
         area = self.get_area(editor, world_name, area_name)
         door = self.get_door_from_dock_index(area, self.get_dock_index(world_name, area_name, dock_name))
@@ -195,7 +200,7 @@ class BlastShieldDoorType(DoorType):
         active: bool = True,
         seeker_lock_on: bool = True,
         orbitable: bool = False,
-    ):
+    ) -> None:
         pos = Vector(door_xfm.position.x, door_xfm.position.y, door_xfm.position.z + 1.8)
 
         return DamageableTriggerOrientated(
@@ -211,7 +216,9 @@ class BlastShieldDoorType(DoorType):
             visor=VisorParameters(visor_flags=visor_flags),
         )
 
-    def patch_door(self, editor: PatcherEditor, world_name: str, area_name: str, dock_name: str, low_memory: bool):
+    def patch_door(
+        self, editor: PatcherEditor, world_name: str, area_name: str, dock_name: str, low_memory: bool
+    ) -> None:
         """
         blast shield connections:
             DEAD -> lock cleared MemoryRelay, ACTV
@@ -311,7 +318,7 @@ class BlastShieldDoorType(DoorType):
 
 @dataclasses.dataclass(kw_only=True)
 class VanillaBlastShieldDoorType(BlastShieldDoorType):
-    def remove_blast_shield(self, editor: PatcherEditor, world_name: str, area_name: str, dock_name: str):
+    def remove_blast_shield(self, editor: PatcherEditor, world_name: str, area_name: str, dock_name: str) -> None:
         area = self.get_area(editor, world_name, area_name)
         door = self.get_door_from_dock_index(area, self.get_dock_index(world_name, area_name, dock_name))
 
@@ -325,7 +332,9 @@ class VanillaBlastShieldDoorType(BlastShieldDoorType):
 
 @dataclasses.dataclass(kw_only=True)
 class SeekerBlastShieldDoorType(VanillaBlastShieldDoorType):
-    def patch_door(self, editor: PatcherEditor, world_name: str, area_name: str, dock_name: str, low_memory: bool):
+    def patch_door(
+        self, editor: PatcherEditor, world_name: str, area_name: str, dock_name: str, low_memory: bool
+    ) -> None:
         actors = super().patch_door(editor, world_name, area_name, dock_name, low_memory)
         area = self.get_area(editor, world_name, area_name)
         default = area.get_layer("Default")
@@ -385,7 +394,7 @@ class SeekerBlastShieldDoorType(VanillaBlastShieldDoorType):
         actors.relay.add_connection(State.Active, Message.Deactivate, timer)
         actors.relay.add_connection(State.Active, Message.Deactivate, timer_reset)
 
-    def remove_blast_shield(self, editor: PatcherEditor, world_name: str, area_name: str, dock_name: str):
+    def remove_blast_shield(self, editor: PatcherEditor, world_name: str, area_name: str, dock_name: str) -> None:
         area = self.get_area(editor, world_name, area_name)
         door = self.get_door_from_dock_index(area, self.get_dock_index(world_name, area_name, dock_name))
 
@@ -406,13 +415,17 @@ class SeekerBlastShieldDoorType(VanillaBlastShieldDoorType):
 class PlanetaryEnergyDoorType(DoorType):
     planetary_energy_item_id: int
 
-    def patch_door(self, editor: PatcherEditor, world_name: str, area_name: str, dock_name: str, low_memory: bool):
+    def patch_door(
+        self, editor: PatcherEditor, world_name: str, area_name: str, dock_name: str, low_memory: bool
+    ) -> None:
         raise NotImplementedError
 
 
 @dataclasses.dataclass(kw_only=True)
 class GrappleDoorType(BlastShieldDoorType):
-    def patch_door(self, editor: PatcherEditor, world_name: str, area_name: str, dock_name: str, low_memory: bool):
+    def patch_door(
+        self, editor: PatcherEditor, world_name: str, area_name: str, dock_name: str, low_memory: bool
+    ) -> None:
         raise NotImplementedError
 
 
@@ -427,7 +440,9 @@ class VisorDoorType(BlastShieldDoorType):
     visor_flags: VisorFlags
     player_controller_proxy: int
 
-    def patch_door(self, editor: PatcherEditor, world_name: str, area_name: str, dock_name: str, low_memory: bool):
+    def patch_door(
+        self, editor: PatcherEditor, world_name: str, area_name: str, dock_name: str, low_memory: bool
+    ) -> None:
         actors = super().patch_door(editor, world_name, area_name, dock_name, low_memory)
         area = self.get_area(editor, world_name, area_name)
         default = area.get_layer("Default")
@@ -470,7 +485,9 @@ class VisorDoorType(BlastShieldDoorType):
 
 @dataclasses.dataclass(kw_only=True)
 class DarkVisorDoorType(VisorDoorType):
-    def patch_door(self, editor: PatcherEditor, world_name: str, area_name: str, dock_name: str, low_memory: bool):
+    def patch_door(
+        self, editor: PatcherEditor, world_name: str, area_name: str, dock_name: str, low_memory: bool
+    ) -> None:
         actors = super().patch_door(editor, world_name, area_name, dock_name, low_memory)
 
         with actors.lock.edit_properties(Actor) as lock:
@@ -481,7 +498,9 @@ class DarkVisorDoorType(VisorDoorType):
 
 @dataclasses.dataclass(kw_only=True)
 class EchoVisorDoorType(VisorDoorType):
-    def patch_door(self, editor: PatcherEditor, world_name: str, area_name: str, dock_name: str, low_memory: bool):
+    def patch_door(
+        self, editor: PatcherEditor, world_name: str, area_name: str, dock_name: str, low_memory: bool
+    ) -> None:
         actors = super().patch_door(editor, world_name, area_name, dock_name, low_memory)
         area = self.get_area(editor, world_name, area_name)
         default = area.get_layer("Default")
@@ -575,7 +594,9 @@ class EchoVisorDoorType(VisorDoorType):
 
 @dataclasses.dataclass(kw_only=True)
 class ScanVisorDoorType(BlastShieldDoorType):
-    def patch_door(self, editor: PatcherEditor, world_name: str, area_name: str, dock_name: str, low_memory: bool):
+    def patch_door(
+        self, editor: PatcherEditor, world_name: str, area_name: str, dock_name: str, low_memory: bool
+    ) -> None:
         raise NotImplementedError
 
 
@@ -583,5 +604,7 @@ class ScanVisorDoorType(BlastShieldDoorType):
 class TranslatorDoorType(ScanVisorDoorType):
     translator_item_id: int
 
-    def patch_door(self, editor: PatcherEditor, world_name: str, area_name: str, dock_name: str, low_memory: bool):
+    def patch_door(
+        self, editor: PatcherEditor, world_name: str, area_name: str, dock_name: str, low_memory: bool
+    ) -> None:
         raise NotImplementedError
