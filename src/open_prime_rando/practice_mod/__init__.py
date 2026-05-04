@@ -1,28 +1,34 @@
+from __future__ import annotations
+
 import logging
 import tomllib
-from pathlib import Path
 from typing import TYPE_CHECKING
 
 import elftools.elf.elffile
 from ppc_asm.assembler import ppc
-from ppc_asm.dol_file import DolEditor
 
 from open_prime_rando.dol_patching import ppc_helper
 
 if TYPE_CHECKING:
+    from pathlib import Path
+
     from elftools.elf.sections import SymbolTableSection
+    from retro_data_structures.asset_manager import MemoryDol
 
 
-def patch_dol(dol: DolEditor, mod_path: Path) -> None:
+def patch_dol(dol: MemoryDol, mod_path: Path) -> None:
+    symbol_section: SymbolTableSection
+
     def get_symbol(name: str) -> int:
         return symbol_section.get_symbol_by_name(name)[0].entry["st_value"]
 
     # First, add the new sections
     with mod_path.open("rb") as f:
         elf_file = elftools.elf.elffile.ELFFile(f)
-        symbol_section: SymbolTableSection | None = elf_file.get_section_by_name(".symtab")
-        if not symbol_section:
+        tmp_section: SymbolTableSection | None = elf_file.get_section_by_name(".symtab")
+        if not tmp_section:
             raise ValueError("Unable to find symbol table")
+        symbol_section = tmp_section
 
         patcher_config = tomllib.loads(elf_file.get_section_by_name(".patcher_config").data().decode())
 
