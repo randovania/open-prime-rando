@@ -9,6 +9,7 @@ from retro_data_structures.properties.echoes.archetypes.LayerSwitch import Layer
 from retro_data_structures.properties.echoes.archetypes.Transform import Transform
 from retro_data_structures.properties.echoes.core.Vector import Vector
 from retro_data_structures.properties.echoes.objects import (
+    CameraFilterKeyframe,
     HUDMemo,
     Pickup,
     Relay,
@@ -56,6 +57,8 @@ def register_all(area_patcher: AreaPatcher) -> None:
         gfmc_compound,
         torvus_temple,
         command_center_door,
+        landing_site_load_black_bars,
+        temple_transport_c_black_bars,
     ]:
         area_patcher.add_function(func)
 
@@ -263,3 +266,24 @@ def command_center_door(editor: PatcherEditor, mlvl: Mlvl, area: Area) -> None:
             Message.Activate,
             default.get_instance(instance),
         )
+
+
+@decorate_patcher(TEMPLE_GROUNDS_MLVL, temple_grounds.LANDING_SITE_MREA)
+def landing_site_load_black_bars(editor: PatcherEditor, mlvl: Mlvl, area: Area) -> None:
+    """
+    Makes the "Load In" cutscene have cinematic black bars appear, this
+    CameraFilterKeyframe object is wrongfully sharing the same FilterIndex
+    value as the PlayerActor load wait black screen filter.
+    """
+    with area.get_instance(0x102).edit_properties(CameraFilterKeyframe) as blackbars:
+        blackbars.filter_stage = 1
+
+
+@decorate_patcher(TEMPLE_GROUNDS_MLVL, temple_grounds.TEMPLE_TRANSPORT_C_MREA)
+def temple_transport_c_black_bars(editor: PatcherEditor, mlvl: Mlvl, area: Area) -> None:
+    """
+    Makes the Departure cutscene black bars not hide if being hit by the light rays filter, this
+    CameraFilterKeyframe object is wrongfully sharing the same FilterIndex value as the Black Bars screen filter.
+    """
+    with area.get_instance(0x90010).edit_properties(CameraFilterKeyframe) as sunlight_filter:
+        sunlight_filter.filter_stage = 0
