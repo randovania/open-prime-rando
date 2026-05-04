@@ -10,7 +10,6 @@ on:
 jobs:
   ty:
     runs-on: ubuntu-latest
-    name: Wheel
 
     steps:
       - name: Checkout
