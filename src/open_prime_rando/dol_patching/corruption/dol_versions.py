@@ -3,6 +3,8 @@ from retro_data_structures.game_check import Game
 from open_prime_rando.dol_patching.all_prime_dol_patches import PowerupFunctionsAddresses
 from open_prime_rando.dol_patching.corruption.dol_patches import CorruptionDolVersion
 
+# FIXME: add addresses for string_display
+
 ALL_VERSIONS = [
     CorruptionDolVersion(
         game=Game.CORRUPTION,
@@ -14,7 +16,7 @@ ALL_VERSIONS = [
         game_state_pointer=0x8067DC0C,
         cplayer_vtable=0x80592C78,
         cstate_manager_global=0x805C4F70,
-        string_display=None,
+        string_display=None,  # type: ignore[invalid-argument-type]
         # string_display=StringDisplayPatchAddresses(
         #     update_hint_state=None,
         #     message_receiver_string_ref=0x805a4200,
@@ -38,7 +40,7 @@ ALL_VERSIONS = [
         game_state_pointer=0x80680234,
         cplayer_vtable=0x80595238,
         cstate_manager_global=0x805C7570,
-        string_display=None,
+        string_display=None,  # type: ignore[invalid-argument-type]
         powerup_functions=PowerupFunctionsAddresses(
             add_power_up=0x80191E2C,
             incr_pickup=0x801920B0,
@@ -55,7 +57,7 @@ ALL_VERSIONS = [
         game_state_pointer=0x80683A7C,
         cplayer_vtable=0x80598650,
         cstate_manager_global=0x805CAA30,
-        string_display=None,
+        string_display=None,  # type: ignore[invalid-argument-type]
         powerup_functions=PowerupFunctionsAddresses(
             add_power_up=0x801932D0,
             incr_pickup=0x80193554,
