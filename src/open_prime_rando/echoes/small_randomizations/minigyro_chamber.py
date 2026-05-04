@@ -25,6 +25,7 @@ class GyroColor(Enum):
             return "#FF6562"
         if self == GyroColor.EMERALD:
             return "#4E9761"
+        raise ValueError(f"Unknown self: {self}")
 
     @property
     def text(self) -> str:
