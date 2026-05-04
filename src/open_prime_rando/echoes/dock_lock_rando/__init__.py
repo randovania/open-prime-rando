@@ -1,3 +1,5 @@
+from typing import Literal, overload
+
 from retro_data_structures.base_resource import AssetId, RawResource
 
 from open_prime_rando.echoes.custom_assets import custom_asset_path
@@ -9,7 +11,11 @@ from open_prime_rando.patcher_editor import PatcherEditor
 def add_custom_models(editor: PatcherEditor):
     assets = custom_asset_path().joinpath("doors")
 
-    def get_txtr(n: str, must_exist: bool = True) -> AssetId:
+    @overload
+    def get_txtr(n: str, must_exist: Literal[True] = ...) -> AssetId: ...
+    @overload
+    def get_txtr(n: str, must_exist: Literal[False]) -> AssetId | None: ...
+    def get_txtr(n: str, must_exist: bool = True) -> AssetId | None:
         f = assets.joinpath(n)
         if not must_exist and not f.exists():
             return None

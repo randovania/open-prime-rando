@@ -107,6 +107,7 @@ class DoorType:
             strg_id = editor.duplicate_asset(template_strg_id, f"custom_door_{self.name}.STRG")
             strg = editor.get_file(strg_id, Strg)
 
+            assert self.scan_text is not None
             for i, text in enumerate(self.scan_text):
                 strg.set_single_string(i, text)
 
