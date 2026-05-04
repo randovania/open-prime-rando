@@ -1,4 +1,4 @@
-from PyInstaller.utils.hooks import collect_data_files
+from PyInstaller.utils.hooks import collect_data_files  # type: ignore
 
 import open_prime_rando.echoes.asset_ids.world
 
