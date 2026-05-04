@@ -30,6 +30,7 @@ class Prime1DolVersion(BasePrimeDolVersion):
         message_receiver_string_ref: int,
     ):
         symbols = py_randomprime.symbols_for_version(version)
+        assert symbols is not None, f"Unable to find symbols for version {version}"
 
         super().__init__(
             game=Game.PRIME,

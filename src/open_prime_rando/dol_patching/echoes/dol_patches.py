@@ -32,8 +32,8 @@ class IsDoorAddr(NamedTuple):
     register_num: int
 
     @property
-    def register(self) -> Register:
-        return Register(self.register_num)
+    def register(self) -> GeneralRegister:
+        return GeneralRegister(self.register_num)
 
 
 @dataclasses.dataclass(frozen=True)
@@ -475,7 +475,7 @@ def apply_map_door_changes(door_symbols: MapDoorTypeAddresses, dol_editor: DolEd
     num_door_colors = 1 + door_max - door_min
     assert num_door_colors <= 32, "There's only enough space for 32 colors in the table!"
 
-    is_door_symbols = [
+    is_door_symbols: list[IsDoorAddr] = [
         door_symbols.get_correct_transform,
         door_symbols.map_obj_draw,
         door_symbols.is_visible_to_automapper,
