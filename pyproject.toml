@@ -97,6 +97,9 @@ select = [
     "PT", # common style issues or inconsistencies with pytest-based tests (flake8-pytest-style)
     "SIM101", # Multiple isinstance calls for {name}, merge into a single call
     "RUF",  # Ruff-specific rules
+    "SIM",  # flake8-simplify
+    "RET",  # flake8-return
+    "TC",  # flake8-type-checking
 
     "PLC",  # pylint convention
     "PLE",  # pylint error
@@ -113,6 +116,8 @@ select = [
 extend-ignore = [
     "ISC001",  # may cause conflicts with formatter
     "PLC0415",
+    "SIM108",  # Use ternary operator {contents} instead of if-else-block
+    "RET505",  # Unnecessary `else` after `return` statement"
 ]
 
 [tool.ruff.lint.flake8-type-checking]

@@ -27,8 +27,7 @@ def expand_schema(base_schema: dict, editor: PatcherEditor) -> dict:
             area_def["properties"]["docks"] = {
                 "type": "object",
                 "properties": {
-                    dock_name: {"$ref": "#/$defs/dock"}
-                    for dock_name in world_details.DOCK_NAMES.get(area_name, {}).keys()
+                    dock_name: {"$ref": "#/$defs/dock"} for dock_name in world_details.DOCK_NAMES.get(area_name, {})
                 },
                 "default": {},
                 "additionalProperties": False,
