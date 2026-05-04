@@ -50,7 +50,7 @@ try:
                     yield it
 
         def open_binary(self, name: str) -> typing.BinaryIO:
-            return self.data_partition.read_file(self._all_files[name])
+            return self.data_partition.read_file(self._all_files[name])  # type: ignore[invalid-return-type]
 
         def read_binary(self, name: str) -> bytes:
             return self.data_partition.read_file(self._all_files[name]).read()
@@ -104,11 +104,15 @@ try:
 
         @typing_extensions.override
         def open_text(self, name: str) -> typing.TextIO:
-            return self._files.setdefault(name, _MemoryStringIo())
+            file = self._files.setdefault(name, _MemoryStringIo())
+            assert isinstance(file, _MemoryStringIo)
+            return file
 
         @typing_extensions.override
         def open_binary(self, name: str) -> typing.BinaryIO:
-            return self._files.setdefault(name, _MemoryBytesIo())
+            file = self._files.setdefault(name, _MemoryBytesIo())
+            assert isinstance(file, _MemoryBytesIo)
+            return file
 
         @typing_extensions.override
         def write_dol(self, data: bytes) -> None:
