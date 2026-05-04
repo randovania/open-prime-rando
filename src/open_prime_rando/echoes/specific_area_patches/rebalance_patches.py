@@ -57,6 +57,7 @@ def register_all(area_patcher: AreaPatcher) -> None:
         dynamo_works,
         torvus_temple,
         gfmc_compound,
+        sanctuary_entrance,
     ]:
         area_patcher.add_function(func)
 
@@ -261,3 +262,12 @@ def gfmc_compound(editor: PatcherEditor, mlvl: Mlvl, area: Area) -> None:
         new_inst = area.get_layer("Default").add_instance_with(old_inst.get_properties())
         area.remove_instance(old_inst)
         new_inst.id = InstanceId.new(new_inst.id.layer, new_inst.id.area, inst_id.instance)
+
+
+@decorate_patcher(SANCTUARY_FORTRESS_MLVL, sanctuary_fortress.SANCTUARY_ENTRANCE_MREA)
+def sanctuary_entrance(editor: PatcherEditor, mlvl: Mlvl, area: Area) -> None:
+    """
+    Change the Keybearer to spawn on the Default layer, removing the Spider Guardian requirement.
+    """
+    area.move_instance("Dead Luminoth 4 KeyBearer", "Default")
+    area.move_instance("Luminoth Light Support", "Default")
