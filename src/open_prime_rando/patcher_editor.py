@@ -222,14 +222,14 @@ class PatcherEditor(AssetManager):
 
         return self.pooled_scans[(strings, model)]
 
-    def create_simple_scan(self, box1: str, box2: str | None = None) -> AssetId:
+    def create_simple_scan(self, box1: str, box2: str | None = None, model: AssetId = 0xFFFFFFFF) -> AssetId:
         """
         Creates a SCAN that does not have a logbook entry, nor a dedicated model.
         """
         if box2 is None:
-            return self._create_scan((box1,), 0xFFFFFFFF)
+            return self._create_scan((box1,), model)
         else:
-            return self._create_scan((box1, box2, " "), 0xFFFFFFFF)
+            return self._create_scan((box1, box2, " "), model)
 
     def create_full_scan(self, box1: str, box2: str, logbook: str, model: AssetId) -> AssetId:
         """

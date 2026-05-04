@@ -6,6 +6,7 @@ from pydantic import BaseModel, StringConstraints
 
 from open_prime_rando.echoes.asset_ids.temple_grounds import LANDING_SITE_MREA
 from open_prime_rando.echoes.asset_ids.world import TEMPLE_GROUNDS_MLVL
+from open_prime_rando.echoes.pickups.schema import PickupModification
 from open_prime_rando.echoes.starting_items import StartingItemConfig
 
 AssetId = Annotated[int, Interval(ge=0, le=0xFFFFFFFF)]
@@ -21,6 +22,9 @@ class AreaChange(BaseModel):
 
     mrea_id: AssetId
     """The asset id of the MREA for this change."""
+
+    pickups: list[PickupModification]
+    """Either a modification for an existing pickup in this area, or a new pickup to add."""
 
 
 class WorldChange(BaseModel):
