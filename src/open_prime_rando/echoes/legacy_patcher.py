@@ -37,7 +37,7 @@ def _read_legacy_schema():
 
 def apply_area_modifications(
     editor: PatcherEditor, configuration: dict[str, dict], status_update: Callable[[str, float], None]
-):
+) -> None:
     num_areas = sum(len(world_config["areas"]) for world_config in configuration.values())
     areas_processed = 0.0
 
@@ -126,7 +126,7 @@ def patch_paks(
     output_path: Path,
     configuration: dict,
     status_update: Callable[[str, float], None] = lambda s, _: LOG.info(s),
-):
+) -> None:
     """Applies the legacy patches, intended to be used alongside Claris' patcher."""
     status_update(f"Will patch files at {file_provider}", 0)
     output_path.joinpath("files").mkdir(parents=True, exist_ok=True)

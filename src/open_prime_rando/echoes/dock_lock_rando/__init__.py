@@ -8,7 +8,7 @@ from open_prime_rando.echoes.dock_lock_rando.dock_type_database import DOCK_TYPE
 from open_prime_rando.patcher_editor import PatcherEditor
 
 
-def add_custom_models(editor: PatcherEditor):
+def add_custom_models(editor: PatcherEditor) -> None:
     assets = custom_asset_path().joinpath("doors")
 
     @overload
@@ -48,7 +48,7 @@ def apply_door_rando(
     new_door_type: str,
     old_door_type: str | None,
     low_memory: bool,
-):
+) -> None:
     if old_door_type is not None:
         old_door = DOCK_TYPES[old_door_type]
 

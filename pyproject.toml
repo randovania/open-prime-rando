@@ -101,6 +101,9 @@ select = [
     "RET",  # flake8-return
     "TC",  # flake8-type-checking
     "ANN001", # Missing type annotation for function argument {name}
+    "ANN002", # Missing type annotation for *{name}
+    "ANN003", # Missing type annotation for **{name}
+    "ANN201", # Missing return type annotation for public function {name}
 
     "PLC",  # pylint convention
     "PLE",  # pylint error
@@ -126,4 +129,4 @@ runtime-evaluated-base-classes = ["pydantic.BaseModel"]
 runtime-evaluated-decorators = ["dataclasses.dataclass"]
 
 [tool.ruff.lint.per-file-ignores]
-"tests/*" = ["ANN001"]
+"tests/*" = ["ANN"]

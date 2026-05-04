@@ -13,7 +13,7 @@ def patch_elevator(
     target_mrea: int,
     target_strg: int,
     target_name: str,
-):
+) -> None:
     elevator = area.get_instance(elevator_id)
     with elevator.edit_properties(WorldTeleporter) as props:
         props.world = target_mlvl

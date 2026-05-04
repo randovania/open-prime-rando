@@ -6,7 +6,7 @@ from open_prime_rando.echoes.small_randomizations.rubiks import randomize_rubiks
 from open_prime_rando.patcher_editor import PatcherEditor
 
 
-def apply_small_randomizations(editor: PatcherEditor, configuration: dict):
+def apply_small_randomizations(editor: PatcherEditor, configuration: dict) -> None:
     rng = Random(configuration["seed"])
 
     if configuration["echo_locks"]:

@@ -5,7 +5,7 @@ from open_prime_rando.echoes import patcher
 from open_prime_rando.echoes.rando_configuration import RandoConfiguration
 
 
-def create_parser():
+def create_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser()
     parser.add_argument("--input-iso", required=True, type=Path, help="Path to a ISO to randomize")
     parser.add_argument("--output-iso", required=True, type=Path, help="Path to write the modified ISO.")

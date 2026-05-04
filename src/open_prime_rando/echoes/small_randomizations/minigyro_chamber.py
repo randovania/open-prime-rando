@@ -40,7 +40,7 @@ GYRO_STATES = [
 ]
 
 
-def randomize_minigyro_chamber(editor: PatcherEditor, rng: random.Random):
+def randomize_minigyro_chamber(editor: PatcherEditor, rng: random.Random) -> None:
     area = editor.get_area(SANCTUARY_FORTRESS_MLVL, MINIGYRO_CHAMBER_MREA)
     solution = [GyroColor.AMBER, GyroColor.COBALT, GyroColor.CRIMSON, GyroColor.EMERALD]
     rng.shuffle(solution)

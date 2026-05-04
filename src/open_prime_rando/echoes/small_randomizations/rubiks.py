@@ -82,7 +82,7 @@ COLORS = {
 }
 
 
-def randomize_rubiks_puzzles(editor: PatcherEditor, rng: random.Random):
+def randomize_rubiks_puzzles(editor: PatcherEditor, rng: random.Random) -> None:
     area = editor.get_area(SANCTUARY_FORTRESS_MLVL, MAIN_GYRO_CHAMBER_MREA)
 
     # Add custom textures so colorblind players can distinguish the cubes
@@ -124,7 +124,7 @@ def randomize_rubiks_puzzles(editor: PatcherEditor, rng: random.Random):
     area.update_all_dependencies()
 
 
-def patch_upstairs_puzzle_transform(editor: PatcherEditor):
+def patch_upstairs_puzzle_transform(editor: PatcherEditor) -> None:
     """
     The vanilla transform for these angles them with the glass, making the lock-on points
     awfully inconsistent. This patches them to be straight up and down, and adjusts the

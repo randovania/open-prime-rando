@@ -168,7 +168,7 @@ class PatcherEditor(AssetManager):
     def get_area(self, mlvl: NameOrAssetId, mrea: NameOrAssetId) -> Area:
         return self.get_mlvl(mlvl).get_area(mrea)
 
-    def build_modified_files(self):
+    def build_modified_files(self) -> None:
         super().build_modified_files()
         self.pooled_scans.clear()
 
