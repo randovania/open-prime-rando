@@ -26,6 +26,7 @@ from retro_data_structures.properties.echoes.objects.SpecialFunction import Func
 from open_prime_rando.echoes.pickups.models import ETM_MODEL
 
 if TYPE_CHECKING:
+    from retro_data_structures.formats import Mlvl
     from retro_data_structures.formats.mrea import Area
     from retro_data_structures.formats.script_layer import ScriptLayer
     from retro_data_structures.formats.script_object import ScriptInstance
@@ -84,7 +85,7 @@ def _add_modify_inventory_sf(item: PlayerItemEnum, amount: int, layer: ScriptLay
     return layer.add_instance_with(
         SpecialFunction(
             editor_properties=EditorProperties(name="Modify Item Amount"),
-            function=Function.InventoryThing1,
+            function=Function.SetInventoryAmount,
             int_parm2=amount,
             inventory_item_parm=item,
             sound1=-1,
@@ -314,7 +315,10 @@ def _patch_single_pickup_stage(
         )
 
 
-def _add_map_icon(mapa: Mapa, instances: PickupInstances) -> None:
+def _add_map_icon(editor: PatcherEditor, mlvl: Mlvl, area: Area, instances: PickupInstances) -> None:
+    mapa_id = mlvl.mapw.get_mapa_id(area.index)
+    mapa = editor.get_file(mapa_id, Mapa)
+
     mappable_id = instances.mappable_object.id
     with instances.pickup.edit_properties(RDSPickup) as pickup:
         pos = pickup.editor_properties.transform.position
@@ -323,7 +327,7 @@ def _add_map_icon(mapa: Mapa, instances: PickupInstances) -> None:
     mapa.raw.mappable_objects.append(
         {
             "type": ObjectTypeMP2.TranslatorGate,
-            "visibility_mode": ObjectVisibility,
+            "visibility_mode": ObjectVisibility.AreaVisitOrMapStation,
             "editor_id": mappable_id,
             "unk1": padding,
             "transform": [
@@ -346,20 +350,28 @@ def _add_map_icon(mapa: Mapa, instances: PickupInstances) -> None:
 
 
 def patch_simple_pickup(
-    modification: PickupModification, editor: PatcherEditor, area: Area, mapa: Mapa, disable_hud_popup: bool
-):
+    modification: PickupModification,
+    editor: PatcherEditor,
+    mlvl: Mlvl,
+    area: Area,
+    disable_hud_popup: bool,
+) -> None:
     instances = modification.location.get_instances(area)
 
     _patch_single_pickup_stage(
         editor, modification.location, area, modification.stages[0], instances, disable_hud_popup
     )
-    _add_map_icon(mapa, instances)
+    _add_map_icon(editor, mlvl, area, instances)
 
     for removal in modification.location.removals:
         area.remove_instance(removal)
 
 
 def patch_complex_pickup(
-    modification: PickupModification, editor: PatcherEditor, area: Area, mapa: Mapa, disable_hud_popup: bool
-):
+    modification: PickupModification,
+    editor: PatcherEditor,
+    mlvl: Mlvl,
+    area: Area,
+    disable_hud_popup: bool,
+) -> None:
     pass

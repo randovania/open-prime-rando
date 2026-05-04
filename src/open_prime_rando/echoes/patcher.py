@@ -8,7 +8,6 @@ from typing import TYPE_CHECKING
 import open_prime_rando_practice_mod
 from PIL import Image
 from ppc_asm.assembler import ppc
-from retro_data_structures.formats import Mapa
 from retro_data_structures.formats.banner import Banner
 from retro_data_structures.game_check import Game
 
@@ -187,18 +186,17 @@ def _apply_patches(editor: PatcherEditor, configuration: RandoConfiguration, out
 
     disable_hud_popup = True
     for world_change in configuration.world_changes:
-        mlvl = editor.get_mlvl(world_change.mlvl_id)
-        LOG.debug("Editing %s", mlvl.world_name)
-
         for area_change in world_change.area_changes:
-            area = mlvl.get_area(area_change.mrea_id)
-            LOG.debug("Editing %s", area.name)
-
-            mapa_id = mlvl.mapw.get_mapa_id(area.index)
-            mapa = editor.get_file(mapa_id, Mapa)
-
             for pickup_change in area_change.pickups:
-                pickups.patch_pickup(editor, pickup_change, area, mapa, disable_hud_popup)
+                area_patcher.add_raw_function(
+                    world_change.mlvl_id,
+                    area_change.mrea_id,
+                    functools.partial(
+                        pickups.patch_pickup,
+                        modification=pickup_change,
+                        disable_hud_popup=disable_hud_popup,
+                    ),
+                )
 
     if _ALL_FEATURES:
         auto_enabled_elevator_patches.apply_auto_enabled_elevators_patch(editor)

@@ -76,3 +76,5 @@ class AreaPatcher:
                 logging.info("Patching %s", area.name)
                 for func in area_functions:
                     func(self.editor, mlvl, area)
+
+                area.update_all_dependencies(only_modified=True)
