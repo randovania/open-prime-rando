@@ -1,19 +1,23 @@
+from __future__ import annotations
+
 import fnmatch
 import io
 import os
 import typing
-from pathlib import Path
 
 import typing_extensions
-from mypy.dmypy_util import TracebackType
 from retro_data_structures.asset_manager import AssetManager, FileProvider, FileWriter
 from retro_data_structures.base_resource import AssetId, NameOrAssetId
 from retro_data_structures.formats.mlvl import Mlvl
-from retro_data_structures.formats.mrea import Area
 from retro_data_structures.formats.scan import Scan
 from retro_data_structures.formats.strg import Strg
 from retro_data_structures.game_check import Game
 from retro_data_structures.properties.echoes.objects.ScannableObjectInfo import ScannableObjectInfo
+
+if typing.TYPE_CHECKING:
+    from pathlib import Path
+
+    from retro_data_structures.formats.mrea import Area
 
 type LogbookScanStrings = tuple[str, str, str]
 """(Box 1, Box 2, Logbook)"""
@@ -70,9 +74,7 @@ try:
             assert self._data is not None
             return self._data
 
-        def __exit__(
-            self, exc_type: type[BaseException] | None, exc_val: BaseException | None, exc_tb: TracebackType | None
-        ):
+        def __exit__(self, exc_type: type[BaseException] | None, exc_val: BaseException | None, exc_tb: typing.Any):
             self._data = self.getvalue()
             return super().__exit__(exc_type, exc_val, exc_tb)
 
@@ -84,9 +86,7 @@ try:
             assert self._data is not None
             return self._data
 
-        def __exit__(
-            self, exc_type: type[BaseException] | None, exc_val: BaseException | None, exc_tb: TracebackType | None
-        ):
+        def __exit__(self, exc_type: type[BaseException] | None, exc_val: BaseException | None, exc_tb: typing.Any):
             self._data = self.getvalue()
             return super().__exit__(exc_type, exc_val, exc_tb)
 
