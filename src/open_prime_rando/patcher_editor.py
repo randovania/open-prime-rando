@@ -5,6 +5,7 @@ import typing
 from pathlib import Path
 
 import typing_extensions
+from mypy.dmypy_util import TracebackType
 from retro_data_structures.asset_manager import AssetManager, FileProvider, FileWriter
 from retro_data_structures.base_resource import AssetId, NameOrAssetId
 from retro_data_structures.formats.mlvl import Mlvl
@@ -69,7 +70,9 @@ try:
             assert self._data is not None
             return self._data
 
-        def __exit__(self, exc_type, exc_val, exc_tb):
+        def __exit__(
+            self, exc_type: type[BaseException] | None, exc_val: BaseException | None, exc_tb: TracebackType | None
+        ):
             self._data = self.getvalue()
             return super().__exit__(exc_type, exc_val, exc_tb)
 
@@ -81,7 +84,9 @@ try:
             assert self._data is not None
             return self._data
 
-        def __exit__(self, exc_type, exc_val, exc_tb):
+        def __exit__(
+            self, exc_type: type[BaseException] | None, exc_val: BaseException | None, exc_tb: TracebackType | None
+        ):
             self._data = self.getvalue()
             return super().__exit__(exc_type, exc_val, exc_tb)
 

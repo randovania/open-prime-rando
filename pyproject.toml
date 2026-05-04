@@ -100,6 +100,7 @@ select = [
     "SIM",  # flake8-simplify
     "RET",  # flake8-return
     "TC",  # flake8-type-checking
+    "ANN001", # Missing type annotation for function argument {name}
 
     "PLC",  # pylint convention
     "PLE",  # pylint error
@@ -123,3 +124,6 @@ extend-ignore = [
 [tool.ruff.lint.flake8-type-checking]
 runtime-evaluated-base-classes = ["pydantic.BaseModel"]
 runtime-evaluated-decorators = ["dataclasses.dataclass"]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/*" = ["ANN001"]
