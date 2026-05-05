@@ -173,7 +173,7 @@ def _patch_single_pickup_stage_appearance(
 
         # scan
         pickup.actor_information.scannable.scannable_info0 = editor.create_simple_scan(
-            stage.appearance.scan, model=editor._resolve_asset_id(model_data.scan_model)
+            stage.appearance.scan, model=editor.resolve_asset_id(model_data.scan_model)
         )
         area._parent_mlvl.savw.raw.scannable_objects.append(
             {
@@ -194,7 +194,7 @@ def _patch_single_pickup_stage_appearance(
         # FIXME: this does not account for progressive item models
         with inst.edit_properties(inst.script_type) as cutscene_model:
             assert isinstance(cutscene_model, ObjectWithModel)
-            cutscene_model.model = editor._resolve_asset_id(model_data.model)
+            cutscene_model.model = editor.resolve_asset_id(model_data.model)
             cutscene_model.animation_information.ancs = model_data.animation.get_animation_parameters(editor).ancs
 
         if model_data.model == ETM_MODEL:
