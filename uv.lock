@@ -272,7 +272,7 @@ requires-dist = [
     { name = "pytest-cov", marker = "extra == 'test'" },
     { name = "pytest-mock", marker = "extra == 'test'" },
     { name = "pytest-xdist", marker = "extra == 'test'" },
-    { name = "retro-data-structures", specifier = ">=0.36.1" },
+    { name = "retro-data-structures", specifier = ">=0.37" },
 ]
 provides-extras = ["nod", "test"]
 
@@ -648,7 +648,7 @@ wheels = [
 
 [[package]]
 name = "retro-data-structures"
-version = "0.36.1"
+version = "0.37.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "construct" },
@@ -658,9 +658,9 @@ dependencies = [
     { name = "pycryptodome" },
     { name = "typing-extensions" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/58/86/ca5f4013ce70a8973e71efce267a66a7e04c7ad7d507bc0caf4b2b6e997c/retro_data_structures-0.36.1.tar.gz", hash = "sha256:51aa5b5cd25fbd3717a2a39518eef93567b88608b39df2a345e70ad42471e7e2", size = 1963721, upload-time = "2026-05-03T21:55:36.407Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/45/b5/e360594b3f393441c76c6025d405d1e0a048f3811f5cb7add062553bfd8b/retro_data_structures-0.37.0.tar.gz", hash = "sha256:7a20e71e684147e1d5268f4363763d91ed69df513c72c4da905ead98af8505ab", size = 1964318, upload-time = "2026-05-04T23:59:17.002Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/b9/0e/4a21d3ac8fd45d429cdc4655e50eede6c682f86638e849d898770775692d/retro_data_structures-0.36.1-py3-none-any.whl", hash = "sha256:456d39979db93cac882f9c812dda9a76ce35e55d128017d8eaa0f74a9639660d", size = 4031409, upload-time = "2026-05-03T21:55:34.121Z" },
+    { url = "https://files.pythonhosted.org/packages/0a/69/998ef151d7e3a36e0634d16c5ccdd3156113ea091f68c5ae686ed192bd76/retro_data_structures-0.37.0-py3-none-any.whl", hash = "sha256:eebd73a083591aeb294cd59439492c34cee1be9326e3ad3baf7c672c7c9b6080", size = 4030827, upload-time = "2026-05-04T23:59:14.747Z" },
 ]
 
 [[package]]

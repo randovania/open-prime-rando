@@ -128,7 +128,7 @@ class DoorType:
         door = self.get_door_from_dock_index(area, self.get_dock_index(world_name, area_name, dock_name))
         self.patch_map_icon(mapa, door)
 
-        shell_model = editor._resolve_asset_id(self.shell_model)
+        shell_model = editor.resolve_asset_id(self.shell_model)
 
         with door.edit_properties(Door) as door_props:
             door_props.shell_model = shell_model
@@ -246,7 +246,7 @@ class BlastShieldDoorType(DoorType):
         shield_model = self.shield_model
         if isinstance(shield_model, str):
             shield_model = f"custom_door_lock_{shield_model}.CMDL"
-        model = editor._resolve_asset_id(shield_model)
+        model = editor.resolve_asset_id(shield_model)
 
         lock = default.add_instance_with(
             Actor(

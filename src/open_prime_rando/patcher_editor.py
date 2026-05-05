@@ -187,7 +187,7 @@ class PatcherEditor(AssetManager):
             existing = self.get_file(name, Strg)
             expected = tuple(string_list)
             if existing.strings == expected:
-                return self._resolve_asset_id(name), existing
+                return self.resolve_asset_id(name), existing
             raise ValueError(
                 f"STRG named {name!r} already exists with contents `{existing.strings!r}`, expected `{expected!r}`"
             )
