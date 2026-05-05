@@ -1,11 +1,11 @@
 from __future__ import annotations
 
 import dataclasses
-from typing import TYPE_CHECKING, Annotated, Literal, NamedTuple
+from typing import TYPE_CHECKING, Annotated, Literal, NamedTuple, Self
 
 import pydantic
 from retro_data_structures.enums.echoes import Message, State
-from retro_data_structures.formats.script_object import ScriptInstance
+from retro_data_structures.formats.script_object import Connection, ScriptInstance
 from retro_data_structures.properties.echoes.archetypes.EditorProperties import EditorProperties
 from retro_data_structures.properties.echoes.archetypes.SurroundPan import SurroundPan
 from retro_data_structures.properties.echoes.archetypes.Transform import Transform
@@ -26,17 +26,62 @@ from open_prime_rando.echoes.pydantic_models import PydanticConnection, Pydantic
 
 if TYPE_CHECKING:
     from retro_data_structures.formats.mlvl import Area
+    from retro_data_structures.formats.script_layer import ScriptLayer
 
 
-@dataclasses.dataclass(frozen=True)
+@dataclasses.dataclass(frozen=True, kw_only=True)
 class PickupInstances:
     pickup: ScriptInstance
     hud_memo: ScriptInstance
     streamed_audio: ScriptInstance
     sound: ScriptInstance
     audio_fade: ScriptInstance
+    fade_timer: ScriptInstance
     post_pickup_relay: ScriptInstance
     mappable_object: ScriptInstance
+    memory_relay: ScriptInstance
+
+    def new_stage(self, layer: ScriptLayer) -> Self:
+        """
+        Create copies of any instances that change between pickup stages,
+        set up their connections, and return a new PickupInstances with the new instances.
+        """
+
+        def copy_inst(instance: ScriptInstance) -> ScriptInstance:
+            return layer.add_instance_with(instance.get_properties())
+
+        pickup = copy_inst(self.pickup)
+        with pickup.edit_properties(Pickup) as pickup_props:
+            pickup_props.editor_properties.active = False
+
+        stage = PickupInstances(
+            pickup=pickup,
+            hud_memo=copy_inst(self.hud_memo),
+            streamed_audio=copy_inst(self.streamed_audio),
+            sound=copy_inst(self.sound),
+            audio_fade=copy_inst(self.audio_fade),
+            fade_timer=copy_inst(self.fade_timer),
+            post_pickup_relay=copy_inst(self.post_pickup_relay),
+            mappable_object=self.mappable_object,
+            memory_relay=self.memory_relay,
+        )
+        stage.add_connections()
+        return stage
+
+    def add_connections(self) -> None:
+        """
+        Set up the connections between the instances. Use when the instances are first created.
+        """
+
+        self.pickup.add_connection(State.Arrived, Message.SetToZero, self.hud_memo)
+        self.pickup.add_connection(State.Arrived, Message.Play, self.streamed_audio)
+        self.pickup.add_connection(State.Arrived, Message.Play, self.sound)
+        self.pickup.add_connection(State.Arrived, Message.Decrement, self.audio_fade)
+        self.pickup.add_connection(State.Arrived, Message.ResetAndStart, self.fade_timer)
+        self.fade_timer.add_connection(State.Zero, Message.Increment, self.audio_fade)
+        self.pickup.add_connection(State.Arrived, Message.Activate, self.memory_relay)
+        self.memory_relay.add_connection(State.Active, Message.Deactivate, self.pickup)
+        self.pickup.add_connection(State.Arrived, Message.SetToZero, self.post_pickup_relay)
 
 
 class CutsceneModel(NamedTuple):
@@ -52,15 +97,25 @@ class BasePickupLocation(pydantic.BaseModel):
     collision_offset: PydanticVector
     cutscene_model: CutsceneModel | None = None
 
+    _instances: PickupInstances | None = None
+
     # TODO: add to db
     # dark torvus arena 0x200543, "Stage 2 -> Post Battle Cinematic"
     # main gyro chamber 0x240111, "Cannon"
 
-    def get_instances(self, area: Area) -> PickupInstances:
+    def _get_instances(self, area: Area) -> PickupInstances:
         raise NotImplementedError
+
+    def get_instances(self, area: Area) -> PickupInstances:
+        if self._instances is None:
+            self._instances = self._get_instances(area)
+        return self._instances
 
     def get_layer_name(self, area: Area) -> str:
         raise NotImplementedError
+
+    def get_layer(self, area: Area) -> ScriptLayer:
+        return area.get_layer(self.get_layer_name(area))
 
     def _add_mappable_obj(self, area: Area, relay: ScriptInstance) -> ScriptInstance:
         layer = area.get_layer(self.get_layer_name(area))
@@ -87,8 +142,8 @@ class StandardPickupLocation(BasePickupLocation):
     sound: PydanticInstanceId
     audio_fade: PydanticInstanceId
 
-    def get_instances(self, area: Area) -> PickupInstances:
-        inst = area.get_instance
+    def _get_instances(self, area: Area) -> PickupInstances:
+        get_inst = area.get_instance
 
         layer = area.get_layer(self.get_layer_name(area))
         relay = layer.add_instance_with(
@@ -97,17 +152,30 @@ class StandardPickupLocation(BasePickupLocation):
                 one_shot=False,
             )
         )
-        pickup = inst(self.pickup)
+        pickup = get_inst(self.pickup)
         pickup.add_connection(State.Arrived, Message.SetToZero, relay)
+
+        mem_relay = next(
+            inst
+            for conn in pickup.connections
+            if conn.state == State.Arrived
+            and conn.message == Message.Activate
+            and (inst := get_inst(conn.target)).script_type == MemoryRelay
+        )
+
+        desired_connection = Connection(State.Zero, Message.Increment, self.audio_fade)
+        fade_timer = next(inst for inst in area.all_instances if desired_connection in inst.connections)
 
         return PickupInstances(
             pickup=pickup,
-            hud_memo=inst(self.hud_memo),
-            streamed_audio=inst(self.streamed_audio),
-            sound=inst(self.sound),
-            audio_fade=inst(self.audio_fade),
+            hud_memo=get_inst(self.hud_memo),
+            streamed_audio=get_inst(self.streamed_audio),
+            sound=get_inst(self.sound),
+            audio_fade=get_inst(self.audio_fade),
+            fade_timer=fade_timer,
             post_pickup_relay=relay,
             mappable_object=self._add_mappable_obj(area, relay),
+            memory_relay=mem_relay,
         )
 
     def get_layer_name(self, area: Area) -> str:
@@ -126,7 +194,7 @@ class CustomPickupLocation(BasePickupLocation):
     collision_size: PydanticVector
     layer: str
 
-    def get_instances(self, area: Area) -> PickupInstances:
+    def _get_instances(self, area: Area) -> PickupInstances:
         layer = area.get_layer(self.layer)
 
         # Create instances
@@ -221,26 +289,19 @@ class CustomPickupLocation(BasePickupLocation):
             )
         )
 
-        # Add connections
-        pickup.add_connection(State.Arrived, Message.SetToZero, hud_memo)
-        pickup.add_connection(State.Arrived, Message.Play, streamed)
-        pickup.add_connection(State.Arrived, Message.Play, sound)
-        pickup.add_connection(State.Arrived, Message.Decrement, audio_fade)
-        pickup.add_connection(State.Arrived, Message.ResetAndStart, timer)
-        timer.add_connection(State.Zero, Message.Increment, audio_fade)
-        pickup.add_connection(State.Arrived, Message.Activate, mem_relay)
-        mem_relay.add_connection(State.Active, Message.Deactivate, pickup)
-        pickup.add_connection(State.Arrived, Message.SetToZero, relay)
-
-        return PickupInstances(
-            pickup,
-            hud_memo,
-            streamed,
-            sound,
-            audio_fade,
-            relay,
-            self._add_mappable_obj(area, relay),
+        instances = PickupInstances(
+            pickup=pickup,
+            hud_memo=hud_memo,
+            streamed_audio=streamed,
+            sound=sound,
+            audio_fade=audio_fade,
+            fade_timer=timer,
+            post_pickup_relay=relay,
+            mappable_object=self._add_mappable_obj(area, relay),
+            memory_relay=mem_relay,
         )
+        instances.add_connections()
+        return instances
 
     def get_layer_name(self, area: Area) -> str:
         return self.layer
