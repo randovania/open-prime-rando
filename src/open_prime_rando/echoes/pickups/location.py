@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import dataclasses
+import typing
 from typing import TYPE_CHECKING, Annotated, Literal, NamedTuple, Self
 
 import pydantic
@@ -31,15 +32,15 @@ if TYPE_CHECKING:
 
 @dataclasses.dataclass(frozen=True, kw_only=True)
 class PickupInstances:
-    pickup: ScriptInstance
-    hud_memo: ScriptInstance
-    streamed_audio: ScriptInstance
-    sound: ScriptInstance
-    audio_fade: ScriptInstance
-    fade_timer: ScriptInstance
-    post_pickup_relay: ScriptInstance
-    mappable_object: ScriptInstance
-    memory_relay: ScriptInstance
+    pickup: Annotated[ScriptInstance, Pickup]
+    hud_memo: Annotated[ScriptInstance, HUDMemo]
+    streamed_audio: Annotated[ScriptInstance, StreamedAudio]
+    sound: Annotated[ScriptInstance, Sound]
+    audio_fade: Annotated[ScriptInstance, StreamedAudio]
+    fade_timer: Annotated[ScriptInstance, Timer]
+    post_pickup_relay: Annotated[ScriptInstance, Relay]
+    mappable_object: Annotated[ScriptInstance, SpecialFunction]
+    memory_relay: Annotated[ScriptInstance, MemoryRelay]
 
     def new_stage(self, layer: ScriptLayer) -> Self:
         """
@@ -82,6 +83,7 @@ class PickupInstances:
         self.pickup.add_connection(State.Arrived, Message.Activate, self.memory_relay)
         self.memory_relay.add_connection(State.Active, Message.Deactivate, self.pickup)
         self.pickup.add_connection(State.Arrived, Message.SetToZero, self.post_pickup_relay)
+        self.post_pickup_relay.add_connection(State.Zero, Message.Decrement, self.mappable_object)
 
 
 class CutsceneModel(NamedTuple):
@@ -103,12 +105,18 @@ class BasePickupLocation(pydantic.BaseModel):
     # dark torvus arena 0x200543, "Stage 2 -> Post Battle Cinematic"
     # main gyro chamber 0x240111, "Cannon"
 
-    def _get_instances(self, area: Area) -> PickupInstances:
+    def _prepare_instances(self, area: Area) -> PickupInstances:
         raise NotImplementedError
 
-    def get_instances(self, area: Area) -> PickupInstances:
+    def prepare_instances(self, area: Area) -> PickupInstances:
+        """
+        When first called, prepares and returns the instances for this location,
+        creating new ones and adding connections as needed.
+        On subsequent calls, the existing instances are returned directly.
+        """
+
         if self._instances is None:
-            self._instances = self._get_instances(area)
+            self._instances = self._prepare_instances(area)
         return self._instances
 
     def get_layer_name(self, area: Area) -> str:
@@ -117,10 +125,10 @@ class BasePickupLocation(pydantic.BaseModel):
     def get_layer(self, area: Area) -> ScriptLayer:
         return area.get_layer(self.get_layer_name(area))
 
-    def _add_mappable_obj(self, area: Area, relay: ScriptInstance) -> ScriptInstance:
-        layer = area.get_layer(self.get_layer_name(area))
+    def _add_mappable_obj(self, area: Area) -> ScriptInstance:
+        layer = self.get_layer(area)
 
-        mappable = layer.add_instance_with(
+        return layer.add_instance_with(
             SpecialFunction(
                 editor_properties=EditorProperties(name="Pickup Map Icon"),
                 function=Function.TranslatorDoorLocation,
@@ -129,9 +137,6 @@ class BasePickupLocation(pydantic.BaseModel):
                 sound3=-1,
             )
         )
-
-        relay.add_connection(State.Zero, Message.Decrement, mappable)
-        return mappable
 
 
 class StandardPickupLocation(BasePickupLocation):
@@ -142,7 +147,8 @@ class StandardPickupLocation(BasePickupLocation):
     sound: PydanticInstanceId
     audio_fade: PydanticInstanceId
 
-    def _get_instances(self, area: Area) -> PickupInstances:
+    @typing.override
+    def _prepare_instances(self, area: Area) -> PickupInstances:
         get_inst = area.get_instance
 
         layer = area.get_layer(self.get_layer_name(area))
@@ -155,6 +161,7 @@ class StandardPickupLocation(BasePickupLocation):
         pickup = get_inst(self.pickup)
         pickup.add_connection(State.Arrived, Message.SetToZero, relay)
 
+        # find the MemoryRelay that the pickup sends an Activate message to on its Arrived state
         mem_relay = next(
             inst
             for conn in pickup.connections
@@ -166,6 +173,9 @@ class StandardPickupLocation(BasePickupLocation):
         desired_connection = Connection(State.Zero, Message.Increment, self.audio_fade)
         fade_timer = next(inst for inst in area.all_instances if desired_connection in inst.connections)
 
+        mappable_object = self._add_mappable_obj(area)
+        relay.add_connection(State.Zero, Message.Decrement, mappable_object)
+
         return PickupInstances(
             pickup=pickup,
             hud_memo=get_inst(self.hud_memo),
@@ -174,7 +184,7 @@ class StandardPickupLocation(BasePickupLocation):
             audio_fade=get_inst(self.audio_fade),
             fade_timer=fade_timer,
             post_pickup_relay=relay,
-            mappable_object=self._add_mappable_obj(area, relay),
+            mappable_object=mappable_object,
             memory_relay=mem_relay,
         )
 
@@ -194,7 +204,8 @@ class CustomPickupLocation(BasePickupLocation):
     collision_size: PydanticVector
     layer: str
 
-    def _get_instances(self, area: Area) -> PickupInstances:
+    @typing.override
+    def _prepare_instances(self, area: Area) -> PickupInstances:
         layer = area.get_layer(self.layer)
 
         # Create instances
@@ -297,7 +308,7 @@ class CustomPickupLocation(BasePickupLocation):
             audio_fade=audio_fade,
             fade_timer=timer,
             post_pickup_relay=relay,
-            mappable_object=self._add_mappable_obj(area, relay),
+            mappable_object=self._add_mappable_obj(area),
             memory_relay=mem_relay,
         )
         instances.add_connections()

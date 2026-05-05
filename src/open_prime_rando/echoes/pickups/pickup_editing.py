@@ -108,7 +108,7 @@ def _add_relay(layer: ScriptLayer) -> ScriptInstance:
 
 def _add_conditional_relay(item: PlayerItemEnum, immediate: bool, layer: ScriptLayer) -> ScriptInstance:
     empty_test = ConditionalTest(
-        boolean=Boolean.Unknown,
+        boolean=Boolean.Unknown,  # this enum value means that the conditional isn't checked by the relay's logic
     )
     return layer.add_instance_with(
         ConditionalRelay(
@@ -366,7 +366,7 @@ def patch_simple_pickup(
     area: Area,
     disable_hud_popup: bool,
 ) -> None:
-    instances = modification.location.get_instances(area)
+    instances = modification.location.prepare_instances(area)
 
     _patch_single_pickup_stage(
         editor, modification.location, area, modification.stages[0], instances, disable_hud_popup
@@ -384,9 +384,10 @@ def patch_complex_pickup(
     area: Area,
     disable_hud_popup: bool,
 ) -> None:
+    # patch the first stage, as well as stage-agnostic changes like the map icon
     patch_simple_pickup(modification, editor, mlvl, area, disable_hud_popup)
 
-    instances = modification.location.get_instances(area)
+    instances = modification.location.prepare_instances(area)
     layer = modification.location.get_layer(area)
     previous_conditional: ScriptInstance | None = None
 
