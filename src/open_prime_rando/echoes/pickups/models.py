@@ -48,7 +48,7 @@ class ModelAnim:
 
     def get_animation_parameters(self, editor: PatcherEditor) -> AnimationParameters:
         return AnimationParameters(
-            ancs=editor._resolve_asset_id(self.ancs),
+            ancs=editor.resolve_asset_id(self.ancs),
             character_index=self.character_index,
             initial_anim=self.initial_anim,
         )

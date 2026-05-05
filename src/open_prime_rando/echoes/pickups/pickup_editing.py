@@ -145,7 +145,7 @@ def _patch_single_pickup_stage_appearance(
         pickup: RDSPickup = pickup_e
         assert isinstance(pickup, RDSPickup)
         # basics
-        pickup.model = editor._resolve_asset_id(model_data.model)
+        pickup.model = editor.resolve_asset_id(model_data.model)
         pickup.auto_spin = model_data.auto_spin
 
         # transform

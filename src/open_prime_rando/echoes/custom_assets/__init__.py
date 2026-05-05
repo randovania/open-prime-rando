@@ -60,7 +60,7 @@ def _create_visor_derivatives(editor: PatcherEditor):
             editor.register_custom_asset_name(f"{name}.CMDL", assets.new_cmdl)
             editor.register_custom_asset_name(f"{name}.ANCS", assets.new_ancs)
 
-        texture = editor._resolve_asset_id(assets.txtr)
+        texture = editor.resolve_asset_id(assets.txtr)
         cmdl_id = editor.duplicate_asset(SCAN_VISOR_CMDL, f"{name}.CMDL")
 
         cmdl = editor.get_file(cmdl_id, type_hint=Cmdl)
