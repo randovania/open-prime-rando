@@ -30,7 +30,7 @@ jobs:
           python-version: "3.13"
 
       - name: build
-        run: uv sync --frozen --group dev
+        run: uv sync --frozen --group dev --all-extras
 
       - name: ty
         run: uv run ty check src
