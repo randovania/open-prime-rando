@@ -192,6 +192,7 @@ def _apply_patches(editor: PatcherEditor, configuration: RandoConfiguration, out
     )
 
     area_patcher.add_global_function(general_changes.allow_skippable_cutscenes)
+    area_patcher.add_global_function(general_changes.loop_conditional_relays)
 
     disable_hud_popup = True
     for world_change in configuration.world_changes:

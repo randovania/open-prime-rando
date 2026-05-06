@@ -55,7 +55,8 @@ try:
                     yield it
 
         def open_binary(self, name: str) -> typing.BinaryIO:
-            return self.data_partition.read_file(self._all_files[name])  # type: ignore[invalid-return-type]
+            # TODO: nod_rs.DiscReader ideally should satisfy the BinaryIO protocol
+            return typing.cast("typing.BinaryIO", self.data_partition.read_file(self._all_files[name]))
 
         def read_binary(self, name: str) -> bytes:
             return self.data_partition.read_file(self._all_files[name]).read()
@@ -187,7 +188,7 @@ class PatcherEditor(AssetManager):
             existing = self.get_file(name, Strg)
             expected = tuple(string_list)
             if existing.strings == expected:
-                return self._resolve_asset_id(name), existing
+                return self.resolve_asset_id(name), existing
             raise ValueError(
                 f"STRG named {name!r} already exists with contents `{existing.strings!r}`, expected `{expected!r}`"
             )

@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import typing
 from typing import TYPE_CHECKING
 
 from retro_data_structures.enums.echoes import Message, PlayerItemEnum, State
@@ -28,18 +29,28 @@ from retro_data_structures.properties.echoes.objects.SpecialFunction import Func
 from open_prime_rando.echoes.pickups.models import ETM_MODEL
 
 if TYPE_CHECKING:
+    from collections.abc import Sequence
+
+    from retro_data_structures.base_resource import AssetId
     from retro_data_structures.formats import Mlvl
     from retro_data_structures.formats.mrea import Area
     from retro_data_structures.formats.script_layer import ScriptLayer
     from retro_data_structures.formats.script_object import ScriptInstance
+    from retro_data_structures.properties.echoes.core import AnimationParameters
 
     from open_prime_rando.echoes.pickups.location import PickupInstances, PickupLocation
     from open_prime_rando.echoes.pickups.schema import PickupModification, PickupStage
     from open_prime_rando.patcher_editor import PatcherEditor
 
 
+@typing.runtime_checkable
+class ObjectWithModel(typing.Protocol):
+    model: AssetId
+    animation_information: AnimationParameters
+
+
 def _attach_etm_particle(target: ScriptInstance, layer: ScriptLayer) -> None:
-    target_editor_properties: EditorProperties = target.get_properties().editor_properties
+    target_editor_properties: EditorProperties = getattr(target.get_properties(), "editor_properties")
 
     particle = layer.add_instance_with(Effect())
     with particle.edit_properties(Effect) as etm:
@@ -144,7 +155,7 @@ def _patch_single_pickup_stage_appearance(
         pickup: RDSPickup = pickup_e
         assert isinstance(pickup, RDSPickup)
         # basics
-        pickup.model = editor._resolve_asset_id(model_data.model)
+        pickup.model = editor.resolve_asset_id(model_data.model)
         pickup.auto_spin = model_data.auto_spin
 
         # transform
@@ -172,7 +183,7 @@ def _patch_single_pickup_stage_appearance(
 
         # scan
         pickup.actor_information.scannable.scannable_info0 = editor.create_simple_scan(
-            stage.appearance.scan, model=model_data.scan_model
+            stage.appearance.scan, model=editor.resolve_asset_id(model_data.scan_model)
         )
         area._parent_mlvl.savw.raw.scannable_objects.append(
             {
@@ -192,8 +203,9 @@ def _patch_single_pickup_stage_appearance(
 
         # FIXME: this does not account for progressive item models
         with inst.edit_properties(inst.script_type) as cutscene_model:
-            cutscene_model.model = model_data.model
-            cutscene_model.animation_information.ancs = model_data.animation.get_animation_parameters(editor)
+            assert isinstance(cutscene_model, ObjectWithModel)
+            cutscene_model.model = editor.resolve_asset_id(model_data.model)
+            cutscene_model.animation_information.ancs = model_data.animation.get_animation_parameters(editor).ancs
 
         if model_data.model == ETM_MODEL:
             layer = area.get_layer(location.cutscene_model.layer)
@@ -220,7 +232,7 @@ def _patch_single_pickup_stage_appearance(
             hud_memo.display_time = 0.1
             hud_memo.display_type = 1
         else:
-            hud_memo.display_type = 4.0
+            hud_memo.display_time = 4.0
             hud_memo.display_type = 0
 
 
@@ -266,7 +278,11 @@ def _patch_single_pickup_stage_converted_resources(
     instances: PickupInstances,
 ) -> None:
     layer = location.get_layer(area)
-    for from_item, to_item in stage.conversion:
+
+    # TODO: ty should support this...
+    conversion = typing.cast("Sequence[tuple[PlayerItemEnum, PlayerItemEnum]]", stage.conversion)
+
+    for from_item, to_item in conversion:
         relay = _add_relay(layer)
         conditional = _add_conditional_relay(from_item, False, layer)
 
