@@ -222,8 +222,8 @@ def _patch_single_pickup_stage_appearance(
 
     # hud memo
     with instances.hud_memo.edit_properties(HUDMemo) as hud_memo:
-        scan_string = stage.appearance.scan
-        hud_memo.string, _ = editor.create_strg(f"Pickup{scan_string}.STRG", scan_string)
+        collect_string = stage.appearance.hud_text
+        hud_memo.string, _ = editor.create_strg(f"Pickup{collect_string}.STRG", collect_string)
 
         if not disable_hud_popup:
             hud_memo.display_time = 2.5
