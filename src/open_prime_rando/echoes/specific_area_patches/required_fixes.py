@@ -21,13 +21,13 @@ from retro_data_structures.properties.echoes.objects import (
 )
 
 from open_prime_rando.area_patcher import AreaPatcher, decorate_patcher
-from open_prime_rando.echoes.asset_ids import agon_wastes, sanctuary_fortress, temple_grounds, torvus_bog, great_temple
+from open_prime_rando.echoes.asset_ids import agon_wastes, great_temple, sanctuary_fortress, temple_grounds, torvus_bog
 from open_prime_rando.echoes.asset_ids.world import (
     AGON_WASTES_MLVL,
+    GREAT_TEMPLE_MLVL,
     SANCTUARY_FORTRESS_MLVL,
     TEMPLE_GROUNDS_MLVL,
     TORVUS_BOG_MLVL,
-    GREAT_TEMPLE_MLVL,
 )
 
 if TYPE_CHECKING:
@@ -289,6 +289,7 @@ def temple_transport_c_black_bars(editor: PatcherEditor, mlvl: Mlvl, area: Area)
     """
     with area.get_instance(0x90010).edit_properties(CameraFilterKeyframe) as sunlight_filter:
         sunlight_filter.filter_stage = 0
+
 
 @decorate_patcher(GREAT_TEMPLE_MLVL, great_temple.TEMPLE_SANCTUARY_MREA)
 def temple_sanctuary(editor: PatcherEditor, mlvl: Mlvl, area: Area) -> None:
