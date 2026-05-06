@@ -222,8 +222,8 @@ def _patch_single_pickup_stage_appearance(
 
     # hud memo
     with instances.hud_memo.edit_properties(HUDMemo) as hud_memo:
-        scan_string = stage.appearance.scan
-        hud_memo.string, _ = editor.create_strg(f"Pickup{scan_string}.STRG", scan_string)
+        collect_string = stage.appearance.hud_text
+        hud_memo.string, _ = editor.create_strg(f"Pickup{collect_string}.STRG", collect_string)
 
         if not disable_hud_popup:
             hud_memo.display_time = 2.5
@@ -385,7 +385,7 @@ def patch_simple_pickup(
     instances = modification.location.prepare_instances(area)
 
     _patch_single_pickup_stage(
-        editor, modification.location, area, modification.stages[0], instances, disable_hud_popup
+        editor, modification.location, area, modification.primary_stage, instances, disable_hud_popup
     )
     _add_map_icon(editor, mlvl, area, instances)
 
@@ -407,9 +407,7 @@ def patch_complex_pickup(
     layer = modification.location.get_layer(area)
     previous_conditional: ScriptInstance | None = None
 
-    for stage in modification.stages[1:]:
-        assert stage.required_item is not None
-
+    for stage in modification.progressive_stages:
         # create new instances for this stage
         previous_instances = instances
         instances = instances.new_stage(layer)
