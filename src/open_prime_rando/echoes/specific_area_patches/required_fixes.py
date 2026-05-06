@@ -21,12 +21,13 @@ from retro_data_structures.properties.echoes.objects import (
 )
 
 from open_prime_rando.area_patcher import AreaPatcher, decorate_patcher
-from open_prime_rando.echoes.asset_ids import agon_wastes, sanctuary_fortress, temple_grounds, torvus_bog
+from open_prime_rando.echoes.asset_ids import agon_wastes, sanctuary_fortress, temple_grounds, torvus_bog, great_temple
 from open_prime_rando.echoes.asset_ids.world import (
     AGON_WASTES_MLVL,
     SANCTUARY_FORTRESS_MLVL,
     TEMPLE_GROUNDS_MLVL,
     TORVUS_BOG_MLVL,
+    GREAT_TEMPLE_MLVL,
 )
 
 if TYPE_CHECKING:
@@ -59,6 +60,7 @@ def register_all(area_patcher: AreaPatcher) -> None:
         command_center_door,
         landing_site_load_black_bars,
         temple_transport_c_black_bars,
+        temple_sanctuary,
     ]:
         area_patcher.add_function(func)
 
@@ -287,3 +289,17 @@ def temple_transport_c_black_bars(editor: PatcherEditor, mlvl: Mlvl, area: Area)
     """
     with area.get_instance(0x90010).edit_properties(CameraFilterKeyframe) as sunlight_filter:
         sunlight_filter.filter_stage = 0
+
+@decorate_patcher(GREAT_TEMPLE_MLVL, great_temple.TEMPLE_SANCTUARY_MREA)
+def temple_sanctuary(editor: PatcherEditor, mlvl: Mlvl, area: Area) -> None:
+    """
+    Makes Ing Battle music play even when other music layers are active
+    """
+    area.move_instance("Ing Encounter", "1st Pass Enemy")
+    boss_death_cinema_end_relay = area.get_instance("Cinema End")
+    for instance in (0x20115, 0x20006, 0x2013E):
+        boss_death_cinema_end_relay.add_connection(
+            State.Zero,
+            Message.Play,
+            instance,
+        )
