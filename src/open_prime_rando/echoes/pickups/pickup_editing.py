@@ -385,7 +385,7 @@ def patch_simple_pickup(
     instances = modification.location.prepare_instances(area)
 
     _patch_single_pickup_stage(
-        editor, modification.location, area, modification.stages[0], instances, disable_hud_popup
+        editor, modification.location, area, modification.primary_stage, instances, disable_hud_popup
     )
     _add_map_icon(editor, mlvl, area, instances)
 
@@ -407,9 +407,7 @@ def patch_complex_pickup(
     layer = modification.location.get_layer(area)
     previous_conditional: ScriptInstance | None = None
 
-    for stage in modification.stages[1:]:
-        assert stage.required_item is not None
-
+    for stage in modification.progressive_stages:
         # create new instances for this stage
         previous_instances = instances
         instances = instances.new_stage(layer)
