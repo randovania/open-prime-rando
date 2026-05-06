@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import dataclasses
 import typing
-from typing import TYPE_CHECKING, Annotated, Literal, NamedTuple, Self
+from typing import TYPE_CHECKING, Annotated, Literal, NamedTuple
 
 import pydantic
 from retro_data_structures.enums.echoes import Message, State
@@ -42,7 +42,7 @@ class PickupInstances:
     mappable_object: Annotated[ScriptInstance, SpecialFunction]
     memory_relay: Annotated[ScriptInstance, MemoryRelay]
 
-    def new_stage(self, layer: ScriptLayer) -> Self:
+    def new_stage(self, layer: ScriptLayer) -> PickupInstances:
         """
         Create copies of any instances that change between pickup stages,
         set up their connections, and return a new PickupInstances with the new instances.
