@@ -151,7 +151,7 @@ def _is_out_of_ammo_patch(symbols: dict[str, int], ammo_types: list[tuple[int, i
     def get_beam_ammo_amount(index: int):
         label = f"_after_get_ammo_type_{index}"
 
-        body = [
+        body: list[BaseInstruction | Instruction] = [
             lwz(r5, 0x774, r30),  # r5 = get current beam
             addi(r5, r5, 0x1),  # current_beam += 1
             mtspr(CTR, r5),  # count_register = current_beam

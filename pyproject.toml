@@ -130,3 +130,8 @@ runtime-evaluated-decorators = ["dataclasses.dataclass"]
 
 [tool.ruff.lint.per-file-ignores]
 "tests/*" = ["ANN"]
+
+[dependency-groups]
+dev = [
+    "ty>=0.0.34",
+]

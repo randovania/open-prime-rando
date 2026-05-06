@@ -40,6 +40,9 @@ class HashUtil:
         if name.endswith(".pak"):
             return self.hash_pak(contents)
 
+        if name.endswith(".json"):
+            return json.loads(contents)
+
         return hashlib.sha256(contents).hexdigest()
 
 

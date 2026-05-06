@@ -44,6 +44,16 @@ from open_prime_rando.echoes.vulnerabilities import resist_all_vuln
 from open_prime_rando.patcher_editor import PatcherEditor
 
 
+@dataclasses.dataclass
+class BlastShieldActors:
+    door: ScriptInstance
+    sound: ScriptInstance | None
+    streamed: ScriptInstance | None
+    lock: ScriptInstance
+    relay: ScriptInstance
+    gibs: ScriptInstance | None
+
+
 @dataclasses.dataclass(kw_only=True)
 class DoorType:
     name: str
@@ -123,7 +133,7 @@ class DoorType:
 
     def patch_door(
         self, editor: PatcherEditor, world_name: str, area_name: str, dock_name: str, low_memory: bool
-    ) -> None:
+    ) -> BlastShieldActors | None:
         area, mapa = self.get_files(editor, world_name, area_name)
         door = self.get_door_from_dock_index(area, self.get_dock_index(world_name, area_name, dock_name))
         self.patch_map_icon(mapa, door)
@@ -138,12 +148,14 @@ class DoorType:
             else:
                 door_props.alt_scannable.scannable_info0 = 0xFFFFFFFF
 
+        return None
+
 
 @dataclasses.dataclass(kw_only=True)
 class NormalDoorType(DoorType):
     def patch_door(
         self, editor: PatcherEditor, world_name: str, area_name: str, dock_name: str, low_memory: bool
-    ) -> None:
+    ) -> BlastShieldActors | None:
         super().patch_door(editor, world_name, area_name, dock_name, low_memory)
         area = self.get_area(editor, world_name, area_name)
         door = self.get_door_from_dock_index(area, self.get_dock_index(world_name, area_name, dock_name))
@@ -151,15 +163,7 @@ class NormalDoorType(DoorType):
         with door.edit_properties(Door) as door_props:
             door_props.vulnerability = self.vulnerability
 
-
-@dataclasses.dataclass
-class BlastShieldActors:
-    door: ScriptInstance
-    sound: ScriptInstance | None
-    streamed: ScriptInstance | None
-    lock: ScriptInstance
-    relay: ScriptInstance
-    gibs: ScriptInstance | None
+        return None
 
 
 @dataclasses.dataclass(kw_only=True)
@@ -200,7 +204,7 @@ class BlastShieldDoorType(DoorType):
         active: bool = True,
         seeker_lock_on: bool = True,
         orbitable: bool = False,
-    ) -> None:
+    ) -> DamageableTriggerOrientated:
         pos = Vector(door_xfm.position.x, door_xfm.position.y, door_xfm.position.z + 1.8)
 
         return DamageableTriggerOrientated(
@@ -218,7 +222,7 @@ class BlastShieldDoorType(DoorType):
 
     def patch_door(
         self, editor: PatcherEditor, world_name: str, area_name: str, dock_name: str, low_memory: bool
-    ) -> None:
+    ) -> BlastShieldActors | None:
         """
         blast shield connections:
             DEAD -> lock cleared MemoryRelay, ACTV
@@ -334,8 +338,10 @@ class VanillaBlastShieldDoorType(BlastShieldDoorType):
 class SeekerBlastShieldDoorType(VanillaBlastShieldDoorType):
     def patch_door(
         self, editor: PatcherEditor, world_name: str, area_name: str, dock_name: str, low_memory: bool
-    ) -> None:
+    ) -> BlastShieldActors:
         actors = super().patch_door(editor, world_name, area_name, dock_name, low_memory)
+        assert actors is not None
+
         area = self.get_area(editor, world_name, area_name)
         default = area.get_layer("Default")
 
@@ -394,6 +400,8 @@ class SeekerBlastShieldDoorType(VanillaBlastShieldDoorType):
         actors.relay.add_connection(State.Active, Message.Deactivate, timer)
         actors.relay.add_connection(State.Active, Message.Deactivate, timer_reset)
 
+        return actors
+
     def remove_blast_shield(self, editor: PatcherEditor, world_name: str, area_name: str, dock_name: str) -> None:
         area = self.get_area(editor, world_name, area_name)
         door = self.get_door_from_dock_index(area, self.get_dock_index(world_name, area_name, dock_name))
@@ -417,7 +425,7 @@ class PlanetaryEnergyDoorType(DoorType):
 
     def patch_door(
         self, editor: PatcherEditor, world_name: str, area_name: str, dock_name: str, low_memory: bool
-    ) -> None:
+    ) -> BlastShieldActors | None:
         raise NotImplementedError
 
 
@@ -425,7 +433,7 @@ class PlanetaryEnergyDoorType(DoorType):
 class GrappleDoorType(BlastShieldDoorType):
     def patch_door(
         self, editor: PatcherEditor, world_name: str, area_name: str, dock_name: str, low_memory: bool
-    ) -> None:
+    ) -> BlastShieldActors | None:
         raise NotImplementedError
 
 
@@ -442,8 +450,9 @@ class VisorDoorType(BlastShieldDoorType):
 
     def patch_door(
         self, editor: PatcherEditor, world_name: str, area_name: str, dock_name: str, low_memory: bool
-    ) -> None:
+    ) -> BlastShieldActors | None:
         actors = super().patch_door(editor, world_name, area_name, dock_name, low_memory)
+        assert actors is not None
         area = self.get_area(editor, world_name, area_name)
         default = area.get_layer("Default")
 
@@ -487,21 +496,26 @@ class VisorDoorType(BlastShieldDoorType):
 class DarkVisorDoorType(VisorDoorType):
     def patch_door(
         self, editor: PatcherEditor, world_name: str, area_name: str, dock_name: str, low_memory: bool
-    ) -> None:
+    ) -> BlastShieldActors | None:
         actors = super().patch_door(editor, world_name, area_name, dock_name, low_memory)
+        assert isinstance(actors, VisorBlastShieldActors)
 
         with actors.lock.edit_properties(Actor) as lock:
             # TODO: update the template
             # this property makes the actor appear red in dark visor
             lock.actor_information.unknown_0xcd4c81a1 = True
 
+        return actors
+
 
 @dataclasses.dataclass(kw_only=True)
 class EchoVisorDoorType(VisorDoorType):
     def patch_door(
         self, editor: PatcherEditor, world_name: str, area_name: str, dock_name: str, low_memory: bool
-    ) -> None:
+    ) -> BlastShieldActors | None:
         actors = super().patch_door(editor, world_name, area_name, dock_name, low_memory)
+        assert isinstance(actors, VisorBlastShieldActors)
+
         area = self.get_area(editor, world_name, area_name)
         default = area.get_layer("Default")
 
@@ -591,12 +605,14 @@ class EchoVisorDoorType(VisorDoorType):
             actors.relay.add_connection(State.Active, Message.Deactivate, timer)
             actors.relay.add_connection(State.Active, Message.Deactivate, disrupted)
 
+        return actors
+
 
 @dataclasses.dataclass(kw_only=True)
 class ScanVisorDoorType(BlastShieldDoorType):
     def patch_door(
         self, editor: PatcherEditor, world_name: str, area_name: str, dock_name: str, low_memory: bool
-    ) -> None:
+    ) -> BlastShieldActors | None:
         raise NotImplementedError
 
 
@@ -606,5 +622,5 @@ class TranslatorDoorType(ScanVisorDoorType):
 
     def patch_door(
         self, editor: PatcherEditor, world_name: str, area_name: str, dock_name: str, low_memory: bool
-    ) -> None:
+    ) -> BlastShieldActors | None:
         raise NotImplementedError
