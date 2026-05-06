@@ -47,7 +47,7 @@ class PickupModification(pydantic.BaseModel):
     Use StandardPickupLocation for an existing pickup and CustomPickupLocation to create a new one.
     """
 
-    stage: PickupStage
+    primary_stage: PickupStage
     """
     The intended resources given and appearance of the pickup.
     For progressive pickups, it's the one used when none of the progressive stages requirements are met.

@@ -384,7 +384,9 @@ def patch_simple_pickup(
 ) -> None:
     instances = modification.location.prepare_instances(area)
 
-    _patch_single_pickup_stage(editor, modification.location, area, modification.stage, instances, disable_hud_popup)
+    _patch_single_pickup_stage(
+        editor, modification.location, area, modification.primary_stage, instances, disable_hud_popup
+    )
     _add_map_icon(editor, mlvl, area, instances)
 
     for removal in modification.location.removals:

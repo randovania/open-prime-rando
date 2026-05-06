@@ -33,8 +33,7 @@
                                 "sound": 403046975,
                                 "audio_fade": 403046967
                             },
-                            "stage": {
-                                "required_item": null,
+                            "primary_stage": {
                                 "resources": [
                                     {
                                         "item": 47,
@@ -97,8 +96,7 @@
                                 "sound": 458841,
                                 "audio_fade": 458851
                             },
-                            "stage": {
-                                "required_item": null,
+                            "primary_stage": {
                                 "resources": [
                                     {
                                         "item": 46,
@@ -148,8 +146,7 @@
                                 "sound": 269549881,
                                 "audio_fade": 269549879
                             },
-                            "stage": {
-                                "required_item": null,
+                            "primary_stage": {
                                 "resources": [
                                     {
                                         "item": 47,
@@ -199,8 +196,7 @@
                                 "sound": 1441994,
                                 "audio_fade": 1441998
                             },
-                            "stage": {
-                                "required_item": null,
+                            "primary_stage": {
                                 "resources": [
                                     {
                                         "item": 47,
@@ -250,8 +246,7 @@
                                 "sound": 1573079,
                                 "audio_fade": 1573054
                             },
-                            "stage": {
-                                "required_item": null,
+                            "primary_stage": {
                                 "resources": [
                                     {
                                         "item": 47,
@@ -301,8 +296,7 @@
                                 "sound": 1638487,
                                 "audio_fade": 1638558
                             },
-                            "stage": {
-                                "required_item": null,
+                            "primary_stage": {
                                 "resources": [
                                     {
                                         "item": 47,
@@ -352,8 +346,7 @@
                                 "sound": 2162717,
                                 "audio_fade": 2162709
                             },
-                            "stage": {
-                                "required_item": null,
+                            "primary_stage": {
                                 "resources": [
                                     {
                                         "item": 31,
@@ -399,8 +392,7 @@
                                 "sound": 2228304,
                                 "audio_fade": 2228311
                             },
-                            "stage": {
-                                "required_item": null,
+                            "primary_stage": {
                                 "resources": [
                                     {
                                         "item": 47,
@@ -451,8 +443,7 @@
                                 "sound": 2293891,
                                 "audio_fade": 2293887
                             },
-                            "stage": {
-                                "required_item": null,
+                            "primary_stage": {
                                 "resources": [
                                     {
                                         "item": 38,
@@ -498,8 +489,7 @@
                                 "sound": 2556218,
                                 "audio_fade": 2556212
                             },
-                            "stage": {
-                                "required_item": null,
+                            "primary_stage": {
                                 "resources": [
                                     {
                                         "item": 47,
@@ -575,8 +565,7 @@
                                 "sound": 606798315,
                                 "audio_fade": 606798320
                             },
-                            "stage": {
-                                "required_item": null,
+                            "primary_stage": {
                                 "resources": [
                                     {
                                         "item": 47,
@@ -626,8 +615,7 @@
                                 "sound": 3145767,
                                 "audio_fade": 3145773
                             },
-                            "stage": {
-                                "required_item": null,
+                            "primary_stage": {
                                 "resources": [
                                     {
                                         "item": 46,
@@ -678,8 +666,7 @@
                                 "sound": 4063277,
                                 "audio_fade": 4063270
                             },
-                            "stage": {
-                                "required_item": null,
+                            "primary_stage": {
                                 "resources": [
                                     {
                                         "item": 101,
@@ -730,8 +717,7 @@
                                 "sound": 65686,
                                 "audio_fade": 65683
                             },
-                            "stage": {
-                                "required_item": null,
+                            "primary_stage": {
                                 "resources": [
                                     {
                                         "item": 45,
@@ -781,8 +767,7 @@
                                 "sound": 327891,
                                 "audio_fade": 327904
                             },
-                            "stage": {
-                                "required_item": null,
+                            "primary_stage": {
                                 "resources": [
                                     {
                                         "item": 47,
@@ -840,8 +825,7 @@
                                     "z": 12.8
                                 }
                             },
-                            "stage": {
-                                "required_item": null,
+                            "primary_stage": {
                                 "resources": [
                                     {
                                         "item": 45,
@@ -918,8 +902,7 @@
                                 "sound": 537330373,
                                 "audio_fade": 537330384
                             },
-                            "stage": {
-                                "required_item": null,
+                            "primary_stage": {
                                 "resources": [
                                     {
                                         "item": 47,
@@ -974,8 +957,7 @@
                                 "sound": 131483,
                                 "audio_fade": 131489
                             },
-                            "stage": {
-                                "required_item": null,
+                            "primary_stage": {
                                 "resources": [
                                     {
                                         "item": 45,
@@ -1025,8 +1007,7 @@
                                 "sound": 393245,
                                 "audio_fade": 393239
                             },
-                            "stage": {
-                                "required_item": null,
+                            "primary_stage": {
                                 "resources": [
                                     {
                                         "item": 46,
@@ -1092,8 +1073,7 @@
                                 "sound": 524568,
                                 "audio_fade": 524573
                             },
-                            "stage": {
-                                "required_item": null,
+                            "primary_stage": {
                                 "resources": [
                                     {
                                         "item": 45,
@@ -1143,8 +1123,7 @@
                                 "sound": 589917,
                                 "audio_fade": 589914
                             },
-                            "stage": {
-                                "required_item": null,
+                            "primary_stage": {
                                 "resources": [
                                     {
                                         "item": 45,
@@ -1194,8 +1173,7 @@
                                 "sound": 851989,
                                 "audio_fade": 851979
                             },
-                            "stage": {
-                                "required_item": null,
+                            "primary_stage": {
                                 "resources": [
                                     {
                                         "item": 47,
@@ -1245,8 +1223,7 @@
                                 "sound": 917652,
                                 "audio_fade": 917661
                             },
-                            "stage": {
-                                "required_item": null,
+                            "primary_stage": {
                                 "resources": [
                                     {
                                         "item": 44,
@@ -1300,8 +1277,7 @@
                                 "sound": 1310845,
                                 "audio_fade": 1310835
                             },
-                            "stage": {
-                                "required_item": null,
+                            "primary_stage": {
                                 "resources": [
                                     {
                                         "item": 47,
@@ -1351,8 +1327,7 @@
                                 "sound": 1507350,
                                 "audio_fade": 1507355
                             },
-                            "stage": {
-                                "required_item": null,
+                            "primary_stage": {
                                 "resources": [
                                     {
                                         "item": 47,
@@ -1402,8 +1377,7 @@
                                 "sound": 1573276,
                                 "audio_fade": 1573286
                             },
-                            "stage": {
-                                "required_item": null,
+                            "primary_stage": {
                                 "resources": [
                                     {
                                         "item": 47,
@@ -1470,8 +1444,7 @@
                                 "sound": 1638692,
                                 "audio_fade": 1638478
                             },
-                            "stage": {
-                                "required_item": null,
+                            "primary_stage": {
                                 "resources": [
                                     {
                                         "item": 45,
@@ -1521,8 +1494,7 @@
                                 "sound": 2031690,
                                 "audio_fade": 2031676
                             },
-                            "stage": {
-                                "required_item": null,
+                            "primary_stage": {
                                 "resources": [
                                     {
                                         "item": 32,
@@ -1568,8 +1540,7 @@
                                 "sound": 2293875,
                                 "audio_fade": 2293881
                             },
-                            "stage": {
-                                "required_item": null,
+                            "primary_stage": {
                                 "resources": [
                                     {
                                         "item": 29,
@@ -1657,8 +1628,7 @@
                                 "sound": 673448547,
                                 "audio_fade": 673448538
                             },
-                            "stage": {
-                                "required_item": null,
+                            "primary_stage": {
                                 "resources": [
                                     {
                                         "item": 46,
@@ -1709,8 +1679,7 @@
                                 "sound": 2490857,
                                 "audio_fade": 2490850
                             },
-                            "stage": {
-                                "required_item": null,
+                            "primary_stage": {
                                 "resources": [
                                     {
                                         "item": 47,
@@ -1756,8 +1725,7 @@
                                 "sound": 405144115,
                                 "audio_fade": 405144116
                             },
-                            "stage": {
-                                "required_item": null,
+                            "primary_stage": {
                                 "resources": [
                                     {
                                         "item": 106,
@@ -1817,8 +1785,7 @@
                                     "z": 12.34
                                 }
                             },
-                            "stage": {
-                                "required_item": null,
+                            "primary_stage": {
                                 "resources": [
                                     {
                                         "item": 45,
@@ -1873,8 +1840,7 @@
                                 "sound": 3277444,
                                 "audio_fade": 3277441
                             },
-                            "stage": {
-                                "required_item": null,
+                            "primary_stage": {
                                 "resources": [
                                     {
                                         "item": 47,
@@ -1925,8 +1891,7 @@
                                 "sound": 339017910,
                                 "audio_fade": 339017931
                             },
-                            "stage": {
-                                "required_item": null,
+                            "primary_stage": {
                                 "resources": [
                                     {
                                         "item": 104,
@@ -1972,8 +1937,7 @@
                                 "sound": 3997753,
                                 "audio_fade": 3997744
                             },
-                            "stage": {
-                                "required_item": null,
+                            "primary_stage": {
                                 "resources": [
                                     {
                                         "item": 46,
@@ -2023,8 +1987,7 @@
                                 "sound": 4063299,
                                 "audio_fade": 4063304
                             },
-                            "stage": {
-                                "required_item": null,
+                            "primary_stage": {
                                 "resources": [
                                     {
                                         "item": 46,
@@ -2087,8 +2050,7 @@
                                 "sound": 4390996,
                                 "audio_fade": 4391005
                             },
-                            "stage": {
-                                "required_item": null,
+                            "primary_stage": {
                                 "resources": [
                                     {
                                         "item": 47,
@@ -2150,8 +2112,7 @@
                                 "sound": 4653213,
                                 "audio_fade": 4653211
                             },
-                            "stage": {
-                                "required_item": null,
+                            "primary_stage": {
                                 "resources": [
                                     {
                                         "item": 45,
@@ -2206,8 +2167,7 @@
                                 "sound": 131150,
                                 "audio_fade": 131169
                             },
-                            "stage": {
-                                "required_item": null,
+                            "primary_stage": {
                                 "resources": [
                                     {
                                         "item": 47,
@@ -2257,8 +2217,7 @@
                                 "sound": 327718,
                                 "audio_fade": 327721
                             },
-                            "stage": {
-                                "required_item": null,
+                            "primary_stage": {
                                 "resources": [
                                     {
                                         "item": 43,
@@ -2308,8 +2267,7 @@
                                 "sound": 459106,
                                 "audio_fade": 459114
                             },
-                            "stage": {
-                                "required_item": null,
+                            "primary_stage": {
                                 "resources": [
                                     {
                                         "item": 45,
@@ -2360,8 +2318,7 @@
                                 "sound": 655420,
                                 "audio_fade": 655410
                             },
-                            "stage": {
-                                "required_item": null,
+                            "primary_stage": {
                                 "resources": [
                                     {
                                         "item": 103,
@@ -2407,8 +2364,7 @@
                                 "sound": 721109,
                                 "audio_fade": 721108
                             },
-                            "stage": {
-                                "required_item": null,
+                            "primary_stage": {
                                 "resources": [
                                     {
                                         "item": 46,
@@ -2458,8 +2414,7 @@
                                 "sound": 786501,
                                 "audio_fade": 786510
                             },
-                            "stage": {
-                                "required_item": null,
+                            "primary_stage": {
                                 "resources": [
                                     {
                                         "item": 34,
@@ -2506,8 +2461,7 @@
                                 "sound": 983237,
                                 "audio_fade": 983241
                             },
-                            "stage": {
-                                "required_item": null,
+                            "primary_stage": {
                                 "resources": [
                                     {
                                         "item": 47,
@@ -2558,8 +2512,7 @@
                                 "sound": 1049012,
                                 "audio_fade": 1049021
                             },
-                            "stage": {
-                                "required_item": null,
+                            "primary_stage": {
                                 "resources": [
                                     {
                                         "item": 105,
@@ -2605,8 +2558,7 @@
                                 "sound": 1245317,
                                 "audio_fade": 1245321
                             },
-                            "stage": {
-                                "required_item": null,
+                            "primary_stage": {
                                 "resources": [
                                     {
                                         "item": 47,
@@ -2657,8 +2609,7 @@
                                 "sound": 1835353,
                                 "audio_fade": 1835345
                             },
-                            "stage": {
-                                "required_item": null,
+                            "primary_stage": {
                                 "resources": [
                                     {
                                         "item": 40,
@@ -2704,8 +2655,7 @@
                                 "sound": 1966213,
                                 "audio_fade": 1966218
                             },
-                            "stage": {
-                                "required_item": null,
+                            "primary_stage": {
                                 "resources": [
                                     {
                                         "item": 47,
@@ -2755,8 +2705,7 @@
                                 "sound": 2031651,
                                 "audio_fade": 2031662
                             },
-                            "stage": {
-                                "required_item": null,
+                            "primary_stage": {
                                 "resources": [
                                     {
                                         "item": 47,
@@ -2818,8 +2767,7 @@
                                 "sound": 941621428,
                                 "audio_fade": 941621423
                             },
-                            "stage": {
-                                "required_item": null,
+                            "primary_stage": {
                                 "resources": [
                                     {
                                         "item": 45,
@@ -2877,8 +2825,7 @@
                                 "sound": 2490403,
                                 "audio_fade": 2490408
                             },
-                            "stage": {
-                                "required_item": null,
+                            "primary_stage": {
                                 "resources": [
                                     {
                                         "item": 47,
@@ -2928,8 +2875,7 @@
                                 "sound": 2621682,
                                 "audio_fade": 2621674
                             },
-                            "stage": {
-                                "required_item": null,
+                            "primary_stage": {
                                 "resources": [
                                     {
                                         "item": 37,
@@ -2976,8 +2922,7 @@
                                 "sound": 3473649,
                                 "audio_fade": 3473641
                             },
-                            "stage": {
-                                "required_item": null,
+                            "primary_stage": {
                                 "resources": [
                                     {
                                         "item": 107,
@@ -3023,8 +2968,7 @@
                                 "sound": 3539115,
                                 "audio_fade": 3539114
                             },
-                            "stage": {
-                                "required_item": null,
+                            "primary_stage": {
                                 "resources": [
                                     {
                                         "item": 47,
@@ -3074,8 +3018,7 @@
                                 "sound": 3604860,
                                 "audio_fade": 3604855
                             },
-                            "stage": {
-                                "required_item": null,
+                            "primary_stage": {
                                 "resources": [
                                     {
                                         "item": 45,
@@ -3137,8 +3080,7 @@
                                 "sound": 205193616,
                                 "audio_fade": 205193773
                             },
-                            "stage": {
-                                "required_item": null,
+                            "primary_stage": {
                                 "resources": [
                                     {
                                         "item": 47,
@@ -3188,8 +3130,7 @@
                                 "sound": 3932374,
                                 "audio_fade": 3932380
                             },
-                            "stage": {
-                                "required_item": null,
+                            "primary_stage": {
                                 "resources": [
                                     {
                                         "item": 46,
@@ -3239,8 +3180,7 @@
                                 "sound": 3997735,
                                 "audio_fade": 3997742
                             },
-                            "stage": {
-                                "required_item": null,
+                            "primary_stage": {
                                 "resources": [
                                     {
                                         "item": 46,
@@ -3291,8 +3231,7 @@
                                 "sound": 4260124,
                                 "audio_fade": 4260130
                             },
-                            "stage": {
-                                "required_item": null,
+                            "primary_stage": {
                                 "resources": [
                                     {
                                         "item": 36,
@@ -3338,8 +3277,7 @@
                                 "sound": 4390934,
                                 "audio_fade": 4390916
                             },
-                            "stage": {
-                                "required_item": null,
+                            "primary_stage": {
                                 "resources": [
                                     {
                                         "item": 47,
@@ -3394,8 +3332,7 @@
                                 "sound": 590015,
                                 "audio_fade": 590019
                             },
-                            "stage": {
-                                "required_item": null,
+                            "primary_stage": {
                                 "resources": [
                                     {
                                         "item": 47,
@@ -3445,8 +3382,7 @@
                                 "sound": 655430,
                                 "audio_fade": 655432
                             },
-                            "stage": {
-                                "required_item": null,
+                            "primary_stage": {
                                 "resources": [
                                     {
                                         "item": 35,
@@ -3492,8 +3428,7 @@
                                 "sound": 721309,
                                 "audio_fade": 721303
                             },
-                            "stage": {
-                                "required_item": null,
+                            "primary_stage": {
                                 "resources": [
                                     {
                                         "item": 39,
@@ -3539,8 +3474,7 @@
                                 "sound": 1048744,
                                 "audio_fade": 1048753
                             },
-                            "stage": {
-                                "required_item": null,
+                            "primary_stage": {
                                 "resources": [
                                     {
                                         "item": 47,
@@ -3602,8 +3536,7 @@
                                 "sound": 1310797,
                                 "audio_fade": 1311402
                             },
-                            "stage": {
-                                "required_item": null,
+                            "primary_stage": {
                                 "resources": [
                                     {
                                         "item": 47,
@@ -3648,8 +3581,7 @@
                                 "sound": 1311915,
                                 "audio_fade": 1311923
                             },
-                            "stage": {
-                                "required_item": null,
+                            "primary_stage": {
                                 "resources": [
                                     {
                                         "item": 47,
@@ -3700,8 +3632,7 @@
                                 "sound": 1573425,
                                 "audio_fade": 1573408
                             },
-                            "stage": {
-                                "required_item": null,
+                            "primary_stage": {
                                 "resources": [
                                     {
                                         "item": 47,
@@ -3752,8 +3683,7 @@
                                 "sound": 337510814,
                                 "audio_fade": 337510805
                             },
-                            "stage": {
-                                "required_item": null,
+                            "primary_stage": {
                                 "resources": [
                                     {
                                         "item": 46,
@@ -3803,8 +3733,7 @@
                                 "sound": 2097352,
                                 "audio_fade": 2097356
                             },
-                            "stage": {
-                                "required_item": null,
+                            "primary_stage": {
                                 "resources": [
                                     {
                                         "item": 46,
@@ -3855,8 +3784,7 @@
                                 "sound": 2293901,
                                 "audio_fade": 2293891
                             },
-                            "stage": {
-                                "required_item": null,
+                            "primary_stage": {
                                 "resources": [
                                     {
                                         "item": 45,
@@ -3906,8 +3834,7 @@
                                 "sound": 136577159,
                                 "audio_fade": 136577153
                             },
-                            "stage": {
-                                "required_item": null,
+                            "primary_stage": {
                                 "resources": [
                                     {
                                         "item": 102,
@@ -3953,8 +3880,7 @@
                                 "sound": 3014805,
                                 "audio_fade": 3014958
                             },
-                            "stage": {
-                                "required_item": null,
+                            "primary_stage": {
                                 "resources": [
                                     {
                                         "item": 30,
@@ -4001,8 +3927,7 @@
                                 "sound": 272302419,
                                 "audio_fade": 272302423
                             },
-                            "stage": {
-                                "required_item": null,
+                            "primary_stage": {
                                 "resources": [
                                     {
                                         "item": 107,
