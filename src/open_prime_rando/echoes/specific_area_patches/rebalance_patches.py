@@ -4,7 +4,6 @@ import logging
 from typing import TYPE_CHECKING
 
 from retro_data_structures.enums.echoes import Message, State
-from retro_data_structures.formats.script_object import InstanceId, InstanceRef
 from retro_data_structures.properties.echoes.archetypes.LayerSwitch import LayerSwitch
 from retro_data_structures.properties.echoes.objects import (
     Actor,
@@ -32,6 +31,7 @@ if TYPE_CHECKING:
 
     from retro_data_structures.formats.mlvl import Mlvl
     from retro_data_structures.formats.mrea import Area
+    from retro_data_structures.formats.script_object import InstanceRef
 
     from open_prime_rando.patcher_editor import PatcherEditor
 
@@ -254,10 +254,6 @@ def gfmc_compound(editor: PatcherEditor, mlvl: Mlvl, area: Area) -> None:
         0x2B02E9,
     )
     gate_instances += tuple(range(0x2B0277, 0x2B0287))
-    for raw_id in gate_instances:
-        # TODO: implement a function to move an instance from one layer to another in RDS
-        inst_id = InstanceId(raw_id)
-        old_inst = area.get_instance(inst_id)
-        new_inst = area.get_layer("Default").add_instance_with(old_inst.get_properties())
-        area.remove_instance(old_inst)
-        new_inst.id = InstanceId.new(new_inst.id.layer, new_inst.id.area, inst_id.instance)
+
+    for instance_id in gate_instances:
+        area.move_instance(instance_id, "Default")
