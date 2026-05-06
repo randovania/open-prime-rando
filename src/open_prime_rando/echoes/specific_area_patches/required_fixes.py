@@ -296,7 +296,9 @@ def temple_sanctuary(editor: PatcherEditor, mlvl: Mlvl, area: Area) -> None:
     """
     Makes Ing Battle music play even when other music layers are active
     """
+    # Move StreamedAudio to "1st Pass Enemy" layer where all the Dark Splinters are
     area.move_instance("Ing Encounter", "1st Pass Enemy")
+    # Make the "Cinema End" Relay also send a `Play` message to the StreamedAudios from other layers
     boss_death_cinema_end_relay = area.get_instance("Cinema End")
     for instance in (0x20115, 0x20006, 0x2013E):
         boss_death_cinema_end_relay.add_connection(
