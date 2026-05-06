@@ -15,7 +15,7 @@ if TYPE_CHECKING:
 def patch_pickup(
     editor: PatcherEditor, mlvl: Mlvl, area: Area, modification: PickupModification, disable_hud_popup: bool
 ) -> None:
-    if len(modification.stages) > 1:
+    if modification.progressive_stages:
         pickup_editing.patch_complex_pickup(modification, editor, mlvl, area, disable_hud_popup)
     else:
         pickup_editing.patch_simple_pickup(modification, editor, mlvl, area, disable_hud_popup)

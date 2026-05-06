@@ -29,12 +29,32 @@ class ResourceConversion(pydantic.BaseModel):
 
 
 class PickupStage(pydantic.BaseModel):
-    required_item: PlayerItemEnum | None
     resources: list[ResourceGain]
     appearance: PickupAppearance
     conversion: list[ResourceConversion]
 
 
+class ProgressivePickupStage(PickupStage):
+    required_item: PlayerItemEnum
+
+
 class PickupModification(pydantic.BaseModel):
+    """Modifies an existing pickup or create a new one."""
+
     location: PickupLocation
-    stages: list[PickupStage]
+    """
+    The pickup to modify.
+    Use StandardPickupLocation for an existing pickup and CustomPickupLocation to create a new one.
+    """
+
+    stage: PickupStage
+    """
+    The intended resources given and appearance of the pickup.
+    For progressive pickups, it's the one used when none of the progressive stages requirements are met.
+    """
+
+    progressive_stages: list[ProgressivePickupStage]
+    """
+    Makes this pickup a progressive one, where the resources given and appearance depends on the player having
+    certain items.
+    """
