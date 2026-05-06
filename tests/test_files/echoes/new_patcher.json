@@ -512,19 +512,47 @@
                                     "required_item": null,
                                     "resources": [
                                         {
-                                            "item": 33,
+                                            "item": 47,
+                                            "amount": 1
+                                        },
+                                        {
+                                            "item": 23,
                                             "amount": 1
                                         }
                                     ],
                                     "appearance": {
-                                        "model_data": "DarkTempleKey",
-                                        "sound": 1,
+                                        "model_data": "GrappleBeam",
+                                        "sound": 0,
                                         "jingle": {
-                                            "file_name": "/audio/skytenkey-jin-short32.dsp",
-                                            "volume": 110
+                                            "file_name": "/audio/itm_x_long_00.dsp",
+                                            "volume": 71
                                         },
-                                        "hud_text": "Dark Agon Key 2 acquired!",
-                                        "scan": "Dark Agon Key 2."
+                                        "hud_text": "Grapple Beam acquired!",
+                                        "scan": "Grapple Beam."
+                                    },
+                                    "conversion": []
+                                },
+                                {
+                                    "required_item": 23,
+                                    "resources": [
+                                        {
+                                            "item": 47,
+                                            "amount": 1
+                                        },
+                                        {
+                                            "item": 27,
+                                            "amount": 1
+                                        }
+                                    ],
+                                    "appearance": {
+                                        "model_data": "ScrewAttack",
+                                        "sound": 0,
+                                        "jingle": {
+                                            "file_name": "/audio/itm_x_long_00.dsp",
+                                            "volume": 71
+                                        },
+                                        "hud_text": "Screw Attack acquired!",
+                                        "scan": "Screw Attack."
                                     },
                                     "conversion": []
                                 }

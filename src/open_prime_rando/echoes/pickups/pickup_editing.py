@@ -7,6 +7,7 @@ from retro_data_structures.enums.echoes import Message, PlayerItemEnum, State
 from retro_data_structures.formats.mapa import Mapa, ObjectTypeMP2, ObjectVisibility
 from retro_data_structures.properties.echoes.archetypes.ConditionalTest import (
     AmountOrCapacity,
+    Boolean,
     Condition,
     ConditionalTest,
 )
@@ -20,6 +21,7 @@ from retro_data_structures.properties.echoes.objects import (
     Sound,
     SpecialFunction,
     StreamedAudio,
+    Timer,
 )
 from retro_data_structures.properties.echoes.objects.Pickup import Pickup as RDSPickup
 from retro_data_structures.properties.echoes.objects.SpecialFunction import Function
@@ -116,9 +118,14 @@ def _add_relay(layer: ScriptLayer) -> ScriptInstance:
 
 
 def _add_conditional_relay(item: PlayerItemEnum, immediate: bool, layer: ScriptLayer) -> ScriptInstance:
+    empty_test = ConditionalTest(
+        boolean=Boolean.Unknown,  # this enum value means that the conditional isn't checked by the relay's logic
+    )
     return layer.add_instance_with(
         ConditionalRelay(
-            editor_properties=EditorProperties(name="Conditional Relay"),
+            editor_properties=EditorProperties(
+                name="Conditional Relay",
+            ),
             trigger_on_first_think=immediate,
             conditional1=ConditionalTest(
                 player_item=item,
@@ -126,6 +133,9 @@ def _add_conditional_relay(item: PlayerItemEnum, immediate: bool, layer: ScriptL
                 condition=Condition.GreaterThan,
                 value=0,
             ),
+            conditional2=empty_test,
+            conditional3=empty_test,
+            conditional4=empty_test,
         )
     )
 
@@ -184,7 +194,7 @@ def _patch_single_pickup_stage_appearance(
 
     # ETM particle
     if model_data.model == ETM_MODEL:
-        layer = area.get_layer(location.get_layer_name(area))
+        layer = location.get_layer(area)
         _attach_etm_particle(instances.pickup, layer)
 
     # cutscene model
@@ -255,7 +265,7 @@ def _patch_single_pickup_stage_basic_resources(
             pickup.amount = 0
             pickup.capacity_increase = 0
 
-    layer = area.get_layer(location.get_layer_name(area))
+    layer = location.get_layer(area)
     for resource in remaining:
         sf = _add_modify_inventory_sf(resource.item, resource.amount, layer)
         instances.post_pickup_relay.add_connection(State.Zero, Message.Action, sf)
@@ -267,7 +277,7 @@ def _patch_single_pickup_stage_converted_resources(
     stage: PickupStage,
     instances: PickupInstances,
 ) -> None:
-    layer = area.get_layer(location.get_layer_name(area))
+    layer = location.get_layer(area)
 
     # TODO: ty should support this...
     conversion = typing.cast("Sequence[tuple[PlayerItemEnum, PlayerItemEnum]]", stage.conversion)
@@ -372,7 +382,7 @@ def patch_simple_pickup(
     area: Area,
     disable_hud_popup: bool,
 ) -> None:
-    instances = modification.location.get_instances(area)
+    instances = modification.location.prepare_instances(area)
 
     _patch_single_pickup_stage(
         editor, modification.location, area, modification.stages[0], instances, disable_hud_popup
@@ -390,4 +400,60 @@ def patch_complex_pickup(
     area: Area,
     disable_hud_popup: bool,
 ) -> None:
-    pass
+    # patch the first stage, as well as stage-agnostic changes like the map icon
+    patch_simple_pickup(modification, editor, mlvl, area, disable_hud_popup)
+
+    instances = modification.location.prepare_instances(area)
+    layer = modification.location.get_layer(area)
+    previous_conditional: ScriptInstance | None = None
+
+    for stage in modification.stages[1:]:
+        assert stage.required_item is not None
+
+        # create new instances for this stage
+        previous_instances = instances
+        instances = instances.new_stage(layer)
+
+        # create the ConditionalRelay and looping Timer used to update to the correct stage
+        conditional = _add_conditional_relay(stage.required_item, False, layer)
+        looping_timer = layer.add_instance_with(
+            Timer(
+                editor_properties=EditorProperties(
+                    name="Check item requirement",
+                ),
+                time=0.01,
+                auto_reset=True,
+            )
+        )
+
+        conditional.add_connection(State.Open, Message.Deactivate, previous_instances.pickup)
+        conditional.add_connection(State.Open, Message.Activate, instances.pickup)
+        conditional.add_connection(State.Open, Message.Deactivate, looping_timer)
+
+        if previous_conditional is None:
+            # this is the first conditional relay, so we need to activate the timer
+            # at the same time as the first pickup
+
+            if previous_instances.pickup.get_properties_as(RDSPickup).editor_properties.active:
+                # first stage pickup is active at the start, so activate the timer at the start too
+                with looping_timer.edit_properties(Timer) as timer:
+                    timer.auto_start = True
+            else:
+                # first stage pickup is inactive at the start, so make anything that activates it
+                # also activate the timer
+                for inst in area.all_instances:
+                    for connection in tuple(inst.connections):
+                        if connection.target == previous_instances.pickup.id and connection.message == Message.Activate:
+                            inst.add_connection(connection.state, Message.Activate, looping_timer)
+        else:
+            # for subsequent stages, just activate the next timer when the previous condition is met
+            previous_conditional.add_connection(State.Open, Message.Activate, looping_timer)
+
+        looping_timer.add_connection(State.Zero, Message.SetToZero, conditional)
+
+        instances.memory_relay.add_connection(State.Active, Message.Deactivate, conditional)
+        instances.memory_relay.add_connection(State.Active, Message.Deactivate, looping_timer)
+
+        _patch_single_pickup_stage(editor, modification.location, area, stage, instances, disable_hud_popup)
+
+        previous_conditional = conditional
