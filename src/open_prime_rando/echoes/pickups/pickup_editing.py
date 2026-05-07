@@ -248,8 +248,6 @@ def _patch_single_pickup_stage_basic_resources(
     stage: PickupStage,
     instances: PickupInstances,
 ) -> None:
-    instances.pickup.add_connection(State.Arrived, Message.SetToZero, instances.post_pickup_relay)
-
     percentage = next(
         (resource for resource in stage.resources if resource.item == PlayerItemEnum.ItemPercentage), None
     )
