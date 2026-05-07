@@ -42,14 +42,16 @@ class PickupInstances:
     mappable_object: Annotated[ScriptInstance, SpecialFunction]
     memory_relay: Annotated[ScriptInstance, MemoryRelay]
 
-    def new_stage(self, layer: ScriptLayer) -> PickupInstances:
+    def new_stage(self, layer: ScriptLayer, number: int) -> PickupInstances:
         """
         Create copies of any instances that change between pickup stages,
         set up their connections, and return a new PickupInstances with the new instances.
         """
 
         def copy_inst(instance: ScriptInstance) -> ScriptInstance:
-            return layer.add_instance_with(instance.get_properties())
+            new_inst = layer.add_instance_with(instance.get_properties())
+            new_inst.name += f" (stage {number})"
+            return new_inst
 
         pickup = copy_inst(self.pickup)
         with pickup.edit_properties(Pickup) as pickup_props:
@@ -190,11 +192,11 @@ class StandardPickupLocation(BasePickupLocation):
 
     def get_layer_name(self, area: Area) -> str:
         for layer in area.layers:
-            try:
-                layer.get_instance(self.pickup)
-            except KeyError:
-                continue
+            if layer.has_instance(self.pickup):
+                return layer.name
             return layer.name
+        if area.generated_objects_layer.has_instance(self.pickup):
+            return "Default"  # i just get the feeling that using SCGN here is a bad idea
         raise KeyError(f"Unknown pickup: {self.pickup}")
 
 
