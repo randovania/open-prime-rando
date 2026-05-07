@@ -117,14 +117,19 @@ def _add_relay(layer: ScriptLayer) -> ScriptInstance:
     )
 
 
-def _add_conditional_relay(item: PlayerItemEnum, immediate: bool, layer: ScriptLayer) -> ScriptInstance:
+def _add_conditional_relay(
+    item: PlayerItemEnum,
+    immediate: bool,
+    layer: ScriptLayer,
+    name: str = "Conditional Relay",
+) -> ScriptInstance:
     empty_test = ConditionalTest(
         boolean=Boolean.Unknown,  # this enum value means that the conditional isn't checked by the relay's logic
     )
     return layer.add_instance_with(
         ConditionalRelay(
             editor_properties=EditorProperties(
-                name="Conditional Relay",
+                name=name,
             ),
             trigger_on_first_think=immediate,
             conditional1=ConditionalTest(
@@ -404,20 +409,25 @@ def patch_complex_pickup(
     patch_simple_pickup(modification, editor, mlvl, area, disable_hud_popup)
 
     instances = modification.location.prepare_instances(area)
-    layer = modification.location.get_layer(area)
-    previous_conditional: ScriptInstance | None = None
+    original_instances = instances
 
-    for stage in modification.progressive_stages:
+    pickup_starts_active = original_instances.pickup.get_properties_as(RDSPickup).editor_properties.active
+
+    layer = modification.location.get_layer(area)
+
+    for i, stage in enumerate(modification.progressive_stages):
         # create new instances for this stage
         previous_instances = instances
-        instances = instances.new_stage(layer)
+        instances = original_instances.new_stage(layer, i + 1)
 
         # create the ConditionalRelay and looping Timer used to update to the correct stage
-        conditional = _add_conditional_relay(stage.required_item, False, layer)
+        conditional = _add_conditional_relay(
+            stage.required_item, False, layer, f"Check item requirement (stage {i + 1})"
+        )
         looping_timer = layer.add_instance_with(
             Timer(
                 editor_properties=EditorProperties(
-                    name="Check item requirement",
+                    name=f"Loop item requirement check (stage {i + 1})",
                 ),
                 time=0.01,
                 auto_reset=True,
@@ -428,24 +438,17 @@ def patch_complex_pickup(
         conditional.add_connection(State.Open, Message.Activate, instances.pickup)
         conditional.add_connection(State.Open, Message.Deactivate, looping_timer)
 
-        if previous_conditional is None:
-            # this is the first conditional relay, so we need to activate the timer
-            # at the same time as the first pickup
-
-            if previous_instances.pickup.get_properties_as(RDSPickup).editor_properties.active:
-                # first stage pickup is active at the start, so activate the timer at the start too
-                with looping_timer.edit_properties(Timer) as timer:
-                    timer.auto_start = True
-            else:
-                # first stage pickup is inactive at the start, so make anything that activates it
-                # also activate the timer
-                for inst in area.all_instances:
-                    for connection in tuple(inst.connections):
-                        if connection.target == previous_instances.pickup.id and connection.message == Message.Activate:
-                            inst.add_connection(connection.state, Message.Activate, looping_timer)
+        if pickup_starts_active:
+            # first stage pickup is active at the start, so activate the timers at the start too
+            with looping_timer.edit_properties(Timer) as timer:
+                timer.auto_start = True
         else:
-            # for subsequent stages, just activate the next timer when the previous condition is met
-            previous_conditional.add_connection(State.Open, Message.Activate, looping_timer)
+            # first stage pickup is inactive at the start, so make anything that activates it
+            # also activate the timer
+            for inst in area.all_instances:
+                for connection in tuple(inst.connections):
+                    if connection.target == previous_instances.pickup.id and connection.message == Message.Activate:
+                        inst.add_connection(connection.state, Message.ResetAndStart, looping_timer)
 
         looping_timer.add_connection(State.Zero, Message.SetToZero, conditional)
 
@@ -453,5 +456,3 @@ def patch_complex_pickup(
         instances.memory_relay.add_connection(State.Active, Message.Deactivate, looping_timer)
 
         _patch_single_pickup_stage(editor, modification.location, area, stage, instances, disable_hud_popup)
-
-        previous_conditional = conditional
