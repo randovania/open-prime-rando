@@ -192,11 +192,11 @@ class StandardPickupLocation(BasePickupLocation):
 
     def get_layer_name(self, area: Area) -> str:
         for layer in area.layers:
-            try:
-                layer.get_instance(self.pickup)
-            except KeyError:
-                continue
+            if layer.has_instance(self.pickup):
+                return layer.name
             return layer.name
+        if area.generated_objects_layer.has_instance(self.pickup):
+            return "Default"  # i just get the feeling that using SCGN here is a bad idea
         raise KeyError(f"Unknown pickup: {self.pickup}")
 
 
