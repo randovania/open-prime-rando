@@ -565,27 +565,108 @@
                             "primary_stage": {
                                 "resources": [
                                     {
-                                        "item": 47,
-                                        "amount": 1
+                                        "item": 14,
+                                        "amount": 20
                                     },
                                     {
-                                        "item": 27,
+                                        "item": 47,
                                         "amount": 1
                                     }
                                 ],
                                 "appearance": {
-                                    "model_data": "ScrewAttack",
+                                    "model_data": "LightSuit",
                                     "sound": 0,
                                     "jingle": {
-                                        "file_name": "/audio/itm_x_long_00.dsp",
-                                        "volume": 71
+                                        "file_name": "/audio/itm_x_short_00.dsp",
+                                        "volume": 55
                                     },
-                                    "hud_text": "Screw Attack acquired!",
-                                    "scan": "Screw Attack."
+                                    "hud_text": "Light Suit acquired!",
+                                    "scan": "Light Suit."
                                 },
                                 "conversion": []
                             },
-                            "progressive_stages": []
+                            "progressive_stages": [
+                                {
+                                    "required_item": 14,
+                                    "resources": [
+                                        {
+                                            "item": 1,
+                                            "amount": 1
+                                        },
+                                        {
+                                            "item": 45,
+                                            "amount": 50
+                                        },
+                                        {
+                                            "item": 47,
+                                            "amount": 1
+                                        }
+                                    ],
+                                    "appearance": {
+                                        "model_data": "DarkBeam",
+                                        "sound": 0,
+                                        "jingle": {
+                                            "file_name": "/audio/itm_x_short_00.dsp",
+                                            "volume": 55
+                                        },
+                                        "hud_text": "Dark Beam acquired!",
+                                        "scan": "Dark Beam."
+                                    },
+                                    "conversion": []
+                                },
+                                {
+                                    "required_item": 1,
+                                    "resources": [
+                                        {
+                                            "item": 2,
+                                            "amount": 1
+                                        },
+                                        {
+                                            "item": 46,
+                                            "amount": 50
+                                        },
+                                        {
+                                            "item": 47,
+                                            "amount": 1
+                                        }
+                                    ],
+                                    "appearance": {
+                                        "model_data": "LightBeam",
+                                        "sound": 0,
+                                        "jingle": {
+                                            "file_name": "/audio/itm_x_short_00.dsp",
+                                            "volume": 55
+                                        },
+                                        "hud_text": "Light Beam acquired!",
+                                        "scan": "Light Beam."
+                                    },
+                                    "conversion": []
+                                },
+                                {
+                                    "required_item": 2,
+                                    "resources": [
+                                        {
+                                            "item": 3,
+                                            "amount": 1
+                                        },
+                                        {
+                                            "item": 47,
+                                            "amount": 1
+                                        }
+                                    ],
+                                    "appearance": {
+                                        "model_data": "AnnihilatorBeam",
+                                        "sound": 0,
+                                        "jingle": {
+                                            "file_name": "/audio/itm_x_short_00.dsp",
+                                            "volume": 55
+                                        },
+                                        "hud_text": "Annihilator Beam acquired!",
+                                        "scan": "Annihilator Beam."
+                                    },
+                                    "conversion": []
+                                }
+                            ]
                         }
                     ]
                 },
@@ -1463,6 +1544,149 @@
         {
             "mlvl_id": 1119434212,
             "area_changes": [
+                {
+                    "mrea_id": 1979488942,
+                    "pickups": [
+                        {
+                            "location": {
+                                "type": "standard",
+                                "exclude_memo_from_removal": false,
+                                "original_model": "MorphBallBomb",
+                                "connections": [
+                                    {
+                                        "target": 135921771,
+                                        "message": "ACTV",
+                                        "state": "ZERO"
+                                    },
+                                    {
+                                        "target": 135921771,
+                                        "message": "ZERO",
+                                        "state": "ZERO"
+                                    }
+                                ],
+                                "removals": [
+                                    135921773,
+                                    135921731
+                                ],
+                                "collision_offset": {
+                                    "x": 0.0,
+                                    "y": 0.0,
+                                    "z": 1.0
+                                },
+                                "pickup": 135921780,
+                                "hud_memo": 135921776,
+                                "streamed_audio": 135921772,
+                                "sound": 135921781,
+                                "audio_fade": 135921774
+                            },
+                            "primary_stage": {
+                                "resources": [
+                                    {
+                                        "item": 14,
+                                        "amount": 20
+                                    },
+                                    {
+                                        "item": 47,
+                                        "amount": 1
+                                    }
+                                ],
+                                "appearance": {
+                                    "model_data": "LightSuit",
+                                    "sound": 0,
+                                    "jingle": {
+                                        "file_name": "/audio/itm_x_short_00.dsp",
+                                        "volume": 55
+                                    },
+                                    "hud_text": "Light Suit acquired!",
+                                    "scan": "Light Suit."
+                                },
+                                "conversion": []
+                            },
+                            "progressive_stages": [
+                                {
+                                    "required_item": 14,
+                                    "resources": [
+                                        {
+                                            "item": 1,
+                                            "amount": 1
+                                        },
+                                        {
+                                            "item": 45,
+                                            "amount": 50
+                                        },
+                                        {
+                                            "item": 47,
+                                            "amount": 1
+                                        }
+                                    ],
+                                    "appearance": {
+                                        "model_data": "DarkBeam",
+                                        "sound": 0,
+                                        "jingle": {
+                                            "file_name": "/audio/itm_x_short_00.dsp",
+                                            "volume": 55
+                                        },
+                                        "hud_text": "Dark Beam acquired!",
+                                        "scan": "Dark Beam."
+                                    },
+                                    "conversion": []
+                                },
+                                {
+                                    "required_item": 1,
+                                    "resources": [
+                                        {
+                                            "item": 2,
+                                            "amount": 1
+                                        },
+                                        {
+                                            "item": 46,
+                                            "amount": 50
+                                        },
+                                        {
+                                            "item": 47,
+                                            "amount": 1
+                                        }
+                                    ],
+                                    "appearance": {
+                                        "model_data": "LightBeam",
+                                        "sound": 0,
+                                        "jingle": {
+                                            "file_name": "/audio/itm_x_short_00.dsp",
+                                            "volume": 55
+                                        },
+                                        "hud_text": "Light Beam acquired!",
+                                        "scan": "Light Beam."
+                                    },
+                                    "conversion": []
+                                },
+                                {
+                                    "required_item": 2,
+                                    "resources": [
+                                        {
+                                            "item": 3,
+                                            "amount": 1
+                                        },
+                                        {
+                                            "item": 47,
+                                            "amount": 1
+                                        }
+                                    ],
+                                    "appearance": {
+                                        "model_data": "AnnihilatorBeam",
+                                        "sound": 0,
+                                        "jingle": {
+                                            "file_name": "/audio/itm_x_short_00.dsp",
+                                            "volume": 55
+                                        },
+                                        "hud_text": "Annihilator Beam acquired!",
+                                        "scan": "Annihilator Beam."
+                                    },
+                                    "conversion": []
+                                }
+                            ]
+                        }
+                    ]
+                },
                 {
                     "mrea_id": 1115663770,
                     "pickups": [
