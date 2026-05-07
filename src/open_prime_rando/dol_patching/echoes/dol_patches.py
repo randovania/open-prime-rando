@@ -399,6 +399,7 @@ class EchoesDolVersion(BasePrimeDolVersion):
     map_door_types: MapDoorTypeAddresses
     double_damage_vfx: int
     starting_area_serialize_clean_slot_address: int
+    inventory_slot_to_item_id_address: int
 
 
 def apply_fixes(version: EchoesDolVersion, dol_editor: DolEditor) -> None:

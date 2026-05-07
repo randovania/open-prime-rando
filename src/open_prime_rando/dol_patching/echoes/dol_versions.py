@@ -90,6 +90,7 @@ ALL_VERSIONS = [
         ),
         double_damage_vfx=0x80017F28,
         starting_area_serialize_clean_slot_address=0x80143548,
+        inventory_slot_to_item_id_address=0x803ACAE0,
     ),
     EchoesDolVersion(
         game=Game.ECHOES,
@@ -163,5 +164,6 @@ ALL_VERSIONS = [
         ),
         double_damage_vfx=0x80017FC4,
         starting_area_serialize_clean_slot_address=0x80143784,
+        inventory_slot_to_item_id_address=0x803ADE40,
     ),
 ]

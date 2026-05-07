@@ -21,6 +21,7 @@ from open_prime_rando.echoes import (
     custom_assets,
     general_changes,
     inverted,
+    logbook,
     pickups,
     specific_area_patches,
     starting_items,
@@ -180,6 +181,7 @@ def _apply_patches(editor: PatcherEditor, configuration: RandoConfiguration, out
             title_screen_text=configuration.title_screen_text,
         )
     )
+    logbook.patch_logbook(editor, dol_version)
 
     # edit starting area
     edit_starting_area_dol(editor, dol_version, configuration.starting_area)
