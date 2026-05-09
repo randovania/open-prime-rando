@@ -121,7 +121,9 @@ def _add_conditional_relay(
     item: PlayerItemEnum,
     immediate: bool,
     layer: ScriptLayer,
+    *,
     name: str = "Conditional Relay",
+    active: bool = True,
 ) -> ScriptInstance:
     empty_test = ConditionalTest(
         boolean=Boolean.Unknown,  # this enum value means that the conditional isn't checked by the relay's logic
@@ -130,6 +132,7 @@ def _add_conditional_relay(
         ConditionalRelay(
             editor_properties=EditorProperties(
                 name=name,
+                active=active,
             ),
             trigger_on_first_think=immediate,
             conditional1=ConditionalTest(
@@ -413,6 +416,8 @@ def patch_complex_pickup(
 
     layer = modification.location.get_layer(area)
 
+    previous_conditional: ScriptInstance | None = None
+
     for i, stage in enumerate(modification.progressive_stages):
         # create new instances for this stage
         previous_instances = instances
@@ -420,7 +425,11 @@ def patch_complex_pickup(
 
         # create the ConditionalRelay and looping Timer used to update to the correct stage
         conditional = _add_conditional_relay(
-            stage.required_item, False, layer, f"Check item requirement (stage {i + 1})"
+            stage.required_item,
+            False,
+            layer,
+            name=f"Check item requirement (stage {i + 1})",
+            active=False,
         )
         looping_timer = layer.add_instance_with(
             Timer(
@@ -429,6 +438,7 @@ def patch_complex_pickup(
                 ),
                 time=0.01,
                 auto_reset=True,
+                auto_start=True,
             )
         )
 
@@ -438,17 +448,21 @@ def patch_complex_pickup(
 
         looping_timer.add_connection(State.Zero, Message.SetToZero, conditional)
 
-        if pickup_starts_active:
-            # first stage pickup is active at the start, so activate the timers at the start too
-            with looping_timer.edit_properties(Timer) as timer:
-                timer.auto_start = True
+        if previous_conditional is None:
+            if pickup_starts_active:
+                # first stage pickup is active at the start, so activate the conditionalrelay at the start too
+                with conditional.edit_properties(ConditionalRelay) as relay:
+                    relay.editor_properties.active = True
+            else:
+                # first stage pickup is inactive at the start, so make anything that activates it
+                # also activate the conditional relay
+                for inst in area.all_instances:
+                    for connection in tuple(inst.connections):
+                        if connection.target == previous_instances.pickup.id and connection.message == Message.Activate:
+                            inst.add_connection(connection.state, Message.Activate, conditional)
         else:
-            # first stage pickup is inactive at the start, so make anything that activates it
-            # also activate the timer
-            for inst in area.all_instances:
-                for connection in tuple(inst.connections):
-                    if connection.target == previous_instances.pickup.id and connection.message == Message.Activate:
-                        inst.add_connection(connection.state, Message.ResetAndStart, looping_timer)
+            # subsequent stages should only begin checking after the previous stage activates
+            previous_conditional.add_connection(State.Open, Message.Activate, conditional)
 
         # deactivate immediately to prevent you from picking up the next stage simultaneously
         previous_instances.pickup.add_connection(State.Arrived, Message.Deactivate, conditional)
@@ -459,3 +473,5 @@ def patch_complex_pickup(
         instances.memory_relay.add_connection(State.Active, Message.Deactivate, looping_timer)
 
         _patch_single_pickup_stage(editor, modification.location, area, stage, instances, disable_hud_popup)
+
+        previous_conditional = conditional
