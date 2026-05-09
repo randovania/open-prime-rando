@@ -247,7 +247,7 @@ def _create_strings(editor: PatcherEditor) -> AssetId:
 
 
 def _update_deps(editor: PatcherEditor, tree: Tree, hierarchy: Hier) -> None:
-    paks = sorted(set(editor.find_paks(0x95B61279)) | set(editor.find_paks(0x2E681FEF)))
+    paks = sorted(set(editor.find_paks(0x95B61279)) | set(editor.find_paks(0xDD79DC2A)))
     for dep in itertools.chain(tree.dependencies_for(), hierarchy.dependencies_for()):
         for pak in paks:
             editor.ensure_present(pak, dep.id)
