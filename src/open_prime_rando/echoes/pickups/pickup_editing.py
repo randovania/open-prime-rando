@@ -27,7 +27,6 @@ from retro_data_structures.properties.echoes.objects.Pickup import Pickup as RDS
 from retro_data_structures.properties.echoes.objects.SpecialFunction import Function
 
 from open_prime_rando.echoes.pickups.models import ETM_MODEL
-from open_prime_rando.echoes.pickups.schema import ResourceGain
 
 if TYPE_CHECKING:
     from collections.abc import Sequence
@@ -404,19 +403,6 @@ def patch_complex_pickup(
     area: Area,
     disable_hud_popup: bool,
 ) -> None:
-    for stage in (modification.primary_stage, *modification.progressive_stages):
-        # this is necessary to prevent a race condition. the pickup always grants
-        # its first resource immediately. when this resource is the condition of a
-        # progressive pickup's conditional relay, the conditionalrelay immediately
-        # activates, activating the next stage and granting both stages at once.
-        # by putting a dummy item at the start of the list, the primary resource is
-        # instead granted after the pickup Arrive state sends a message to the
-        # post-pickup relay, and the relay then activates a specialfunction to grant
-        # the actual item resources. before this happens, the pickup Arrive also
-        # sends a message deactivating the looping timer, preventing the next stage
-        # from ever activating.
-        stage.resources.insert(0, ResourceGain(item=PlayerItemEnum.PowerBeam, amount=0))
-
     # patch the first stage, as well as stage-agnostic changes like the map icon
     patch_simple_pickup(modification, editor, mlvl, area, disable_hud_popup)
 
@@ -465,8 +451,8 @@ def patch_complex_pickup(
                         inst.add_connection(connection.state, Message.ResetAndStart, looping_timer)
 
         # deactivate immediately to prevent you from picking up the next stage simultaneously
-        instances.pickup.add_connection(State.Arrived, Message.Deactivate, conditional)
-        instances.pickup.add_connection(State.Arrived, Message.Deactivate, looping_timer)
+        previous_instances.pickup.add_connection(State.Arrived, Message.Deactivate, conditional)
+        previous_instances.pickup.add_connection(State.Arrived, Message.Deactivate, looping_timer)
 
         # also deactivate via the memory relay, to preserve state
         instances.memory_relay.add_connection(State.Active, Message.Deactivate, conditional)
