@@ -97,9 +97,9 @@ class DoorType:
         raise KeyError(f"no door found with a connection to {dock} in {area.name}")
 
     def patch_map_icon(self, mapa: Mapa, door: ScriptInstance) -> None:
-        for obj in mapa.raw.mappable_objects:
+        for obj in mapa.mappable_objects:
             if door.id_matches(obj.editor_id):
-                obj.type = self.map_icon.value
+                obj.object_type = self.map_icon.value
                 return
 
     @staticmethod

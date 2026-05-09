@@ -20,23 +20,24 @@ from retro_data_structures.properties.echoes.objects.SpecialFunction import Func
 from open_prime_rando.echoes import frontend_asset_ids
 
 if TYPE_CHECKING:
+    from retro_data_structures.formats.mlvl import Mlvl
     from retro_data_structures.formats.mrea import Area
 
     from open_prime_rando.echoes.rando_configuration import AreaReference
     from open_prime_rando.patcher_editor import PatcherEditor
 
 
-def _get_front_end_area(editor: PatcherEditor) -> Area:
+def get_front_end_area(editor: PatcherEditor) -> Area:
+    """
+    Get the correct FrontEnd Area for this version of the game.
+    """
     try:
         return editor.get_area(frontend_asset_ids.FRONTEND_PAL_MLVL, frontend_asset_ids.FRONTEND_PAL_MREA)
     except UnknownAssetId:
         return editor.get_area(frontend_asset_ids.FRONTEND_NTSC_MLVL, frontend_asset_ids.FRONTEND_NTSC_MREA)
 
 
-def edit_front_end(editor: PatcherEditor, title_screen_text: str) -> None:
-    area = _get_front_end_area(editor)
-    world = area._parent_mlvl
-
+def edit_front_end(editor: PatcherEditor, mlvl: Mlvl, area: Area, title_screen_text: str) -> None:
     layer = area.add_layer("Randomizer Instant Unlocks")
 
     sys_vars_timer = layer.add_instance_with(
@@ -67,10 +68,6 @@ def edit_front_end(editor: PatcherEditor, title_screen_text: str) -> None:
     # Timeout to next attract movie
     with area.get_instance(0x132).edit_properties(SequenceTimer) as sequence_timer:
         sequence_timer.editor_properties.active = False
-
-    savw = world.savw
-    savw.add_system_state_env_var("NormalModeCompleted")
-    savw.add_system_state_env_var("SeenIntroText")
 
     main_menu_strg_id = 0x98E7E268
     main_menu_strg = editor.get_file(main_menu_strg_id, Strg)
@@ -134,9 +131,7 @@ def edit_front_end(editor: PatcherEditor, title_screen_text: str) -> None:
     # TODO: starting popup
 
 
-def edit_starting_area_teleporter(editor: PatcherEditor, starting_area: AreaReference) -> None:
-    area = _get_front_end_area(editor)
-
+def edit_starting_area_teleporter(editor: PatcherEditor, mlvl: Mlvl, area: Area, starting_area: AreaReference) -> None:
     elevator = area.get_instance("StartNewSinglePlayerGame")
     with elevator.edit_properties(WorldTeleporter) as teleporter:
         teleporter.world = starting_area.mlvl_id
