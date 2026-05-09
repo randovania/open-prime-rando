@@ -371,7 +371,7 @@ def minigyro_terminal_fall(editor: PatcherEditor, mlvl: Mlvl, area: Area) -> Non
     )
     with west_spawnpoint_trigger.edit_properties(Trigger) as west_spawn_trigger:
         west_spawn_trigger.editor_properties.transform.position = Vector(120.773407, 149.127029, -106.985382)
-        west_spawn_trigger.editor_properties.transform.scale = Vector(10.0, 10.0, 10.0)
+        west_spawn_trigger.editor_properties.transform.scale = Vector(10.0, 15.0, 10.0)
 
     east_spawnpoint_trigger = area.get_layer("Gyroscope puzzle").add_instance_with(
         other_area.get_instance("Fall Trigger_Platform").get_properties()
