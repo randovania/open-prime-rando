@@ -129,11 +129,6 @@ def edit_starting_area_dol(editor: PatcherEditor, version: EchoesDolVersion, sta
     )
 
 
-def edit_starting_area(editor: PatcherEditor, version: EchoesDolVersion, starting_area: AreaReference) -> None:
-    edit_starting_area_dol(editor, version, starting_area)
-    front_end.edit_starting_area_teleporter(editor, starting_area)
-
-
 def patch_game_name_and_id(editor: PatcherEditor, output: IsoFileWriter, new_name: str, id_suffix: str) -> None:
     """
     Changes the suffix of the Game ID, name and banner image.
