@@ -15,7 +15,12 @@ from open_prime_rando.echoes import (
     dock_lock_rando,
     legacy_dynamic_schema,
 )
-from open_prime_rando.echoes.asset_ids.world import AGON_WASTES_MLVL, TORVUS_BOG_MLVL
+from open_prime_rando.echoes.asset_ids.world import (
+    AGON_WASTES_MLVL,
+    SANCTUARY_FORTRESS_MLVL,
+    TEMPLE_GROUNDS_MLVL,
+    TORVUS_BOG_MLVL,
+)
 from open_prime_rando.echoes.elevators.elevator_rando import patch_elevator
 from open_prime_rando.echoes.general_changes import apply_corrupted_memory_card_change
 from open_prime_rando.echoes.small_randomizations import apply_small_randomizations
@@ -142,11 +147,13 @@ def patch_paks(
 
     status_update("Applying small patches", 0)
     dock_lock_rando.add_custom_models(editor)
-    area_patcher = AreaPatcher(editor, [AGON_WASTES_MLVL, TORVUS_BOG_MLVL], rebuild_savw=False)
+    area_patcher = AreaPatcher(
+        editor, [TEMPLE_GROUNDS_MLVL, AGON_WASTES_MLVL, TORVUS_BOG_MLVL, SANCTUARY_FORTRESS_MLVL], rebuild_savw=False
+    )
     area_patcher.add_function(required_fixes.torvus_temple)
     area_patcher.add_function(required_fixes.command_center_door)
+    apply_small_randomizations(area_patcher, configuration["small_randomizations"])
     area_patcher.perform_changes()
-    apply_small_randomizations(editor, configuration["small_randomizations"])
     apply_corrupted_memory_card_change(editor)
 
     if "tweaks" in configuration:

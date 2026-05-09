@@ -1,19 +1,19 @@
 from random import Random
 
-from open_prime_rando.echoes.small_randomizations.echo_locks import randomize_echo_locks
+from open_prime_rando.area_patcher import AreaPatcher
+from open_prime_rando.echoes.small_randomizations import echo_locks
 from open_prime_rando.echoes.small_randomizations.minigyro_chamber import randomize_minigyro_chamber
 from open_prime_rando.echoes.small_randomizations.rubiks import randomize_rubiks_puzzles
-from open_prime_rando.patcher_editor import PatcherEditor
 
 
-def apply_small_randomizations(editor: PatcherEditor, configuration: dict) -> None:
+def apply_small_randomizations(area_patcher: AreaPatcher, configuration: dict) -> None:
     rng = Random(configuration["seed"])
 
     if configuration["echo_locks"]:
-        randomize_echo_locks(editor, rng)
+        echo_locks.register_echo_lock_patcher(area_patcher, rng)
 
     if configuration["minigyro_chamber"]:
-        randomize_minigyro_chamber(editor, rng)
+        randomize_minigyro_chamber(area_patcher.editor, rng)
 
     if configuration["rubiks"]:
-        randomize_rubiks_puzzles(editor, rng)
+        randomize_rubiks_puzzles(area_patcher.editor, rng)
