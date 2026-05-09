@@ -169,7 +169,6 @@ def remove_attract_videos(editor: PatcherEditor, output: IsoFileWriter) -> None:
 
 
 def _apply_patches(editor: PatcherEditor, configuration: RandoConfiguration, output: IsoFileWriter) -> None:
-
     custom_assets.create_custom_assets(editor)
     dol_version = dol_patcher.apply_patches(editor.dol, _default_dol_patches())
 
@@ -179,9 +178,20 @@ def _apply_patches(editor: PatcherEditor, configuration: RandoConfiguration, out
     specific_area_patches.version_differences.register_all(area_patcher, dol_version.echoes_version)
     specific_area_patches.rebalance_patches.register_all(area_patcher)
 
-    front_end.edit_front_end(editor, configuration.title_screen_text)
+    # edit frontend
+    area_patcher.add_frontend_function(
+        functools.partial(
+            front_end.edit_front_end,
+            title_screen_text=configuration.title_screen_text,
+        )
+    )
 
-    edit_starting_area(editor, dol_version, configuration.starting_area)
+    # edit starting area
+    edit_starting_area_dol(editor, dol_version, configuration.starting_area)
+    area_patcher.add_frontend_function(
+        functools.partial(front_end.edit_starting_area_teleporter, starting_area=configuration.starting_area)
+    )
+
     area_patcher.add_raw_function(
         configuration.starting_area.mlvl_id,
         configuration.starting_area.mrea_id,
@@ -191,9 +201,11 @@ def _apply_patches(editor: PatcherEditor, configuration: RandoConfiguration, out
         ),
     )
 
+    # general changes
     area_patcher.add_global_function(general_changes.allow_skippable_cutscenes)
     area_patcher.add_global_function(general_changes.loop_conditional_relays)
 
+    # area changes
     disable_hud_popup = True
     for world_change in configuration.world_changes:
         for area_change in world_change.area_changes:
