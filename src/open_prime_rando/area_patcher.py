@@ -39,9 +39,10 @@ class AreaPatcher:
     _patcher_functions: dict[AssetId, dict[AssetId, list[RawPatcherFunction]]]
     _frontend_functions: list[RawPatcherFunction]
 
-    def __init__(self, editor: PatcherEditor, mlvl_list: list[AssetId]):
+    def __init__(self, editor: PatcherEditor, mlvl_list: list[AssetId], *, rebuild_savw: bool = True):
         self.editor = editor
         self.mlvl_list = mlvl_list
+        self.rebuild_savw = rebuild_savw
 
         self._patcher_functions = {mlvl_id: collections.defaultdict(list) for mlvl_id in mlvl_list}
         self._frontend_functions = []
@@ -94,14 +95,16 @@ class AreaPatcher:
 
                 area.update_all_dependencies(only_modified=True)
 
-            logging.info("Rebuilding %s save format", mlvl.world_name)
-            mlvl.rebuild_savw()
+            if self.rebuild_savw:
+                logging.info("Rebuilding %s save format", mlvl.world_name)
+                mlvl.rebuild_savw()
 
-        from open_prime_rando.echoes.specific_area_patches import front_end
+        if self._frontend_functions:
+            from open_prime_rando.echoes.specific_area_patches import front_end
 
-        area = front_end.get_front_end_area(self.editor)
+            area = front_end.get_front_end_area(self.editor)
 
-        logging.info("Patching FrontEnd")
+            logging.info("Patching FrontEnd")
 
-        for func in self._frontend_functions:
-            func(self.editor, area._parent_mlvl, area)
+            for func in self._frontend_functions:
+                func(self.editor, area._parent_mlvl, area)
