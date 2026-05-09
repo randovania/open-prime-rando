@@ -2,7 +2,6 @@ from __future__ import annotations
 
 import dataclasses
 import itertools
-import struct
 import typing
 
 from retro_data_structures.enums.echoes import InventorySlotEnum, Message, PlayerItemEnum, State
@@ -22,18 +21,6 @@ if typing.TYPE_CHECKING:
     from open_prime_rando.patcher_editor import PatcherEditor
 
 
-class ExtendedInventorySlotEnum:
-    def __init__(self, value: int):
-        self.value = value
-
-    @classmethod
-    def from_stream(cls, data: typing.BinaryIO, size: int | None = None) -> typing.Self:
-        return cls(struct.unpack(">L", data.read(4))[0])
-
-    def to_stream(self, data: typing.BinaryIO) -> None:
-        data.write(struct.pack(">L", self.value))
-
-
 @dataclasses.dataclass(frozen=True)
 class NewLogbookEntry:
     model_name: str
@@ -44,7 +31,7 @@ class NewLogbookEntry:
 
     def create_scan(self, editor: PatcherEditor) -> AssetId:
         """
-        Creates the scan for this entry. Used by `create_inventory_instance` and ``
+        Creates the scan for this entry. Used by `create_inventory_instance` and `create_hier_entry`.
         """
         return editor.create_full_scan(
             "",
@@ -70,6 +57,7 @@ class NewLogbookEntry:
         )
 
     def create_hier_entry(self, strg_id: AssetId, scan_id: AssetId, category_obj: ScriptInstance) -> HierEntry:
+        """Create an entry to add to `Hier`"""
         return HierEntry(
             string_table_id=strg_id,
             name=self.model_name,
