@@ -37,18 +37,28 @@ def decorate_patcher(mlvl_id: AssetId, mrea_id: AssetId) -> typing.Callable[[Raw
 
 class AreaPatcher:
     _patcher_functions: dict[AssetId, dict[AssetId, list[RawPatcherFunction]]]
+    _frontend_functions: list[RawPatcherFunction]
 
-    def __init__(self, editor: PatcherEditor, mlvl_list: list[AssetId]):
+    def __init__(self, editor: PatcherEditor, mlvl_list: list[AssetId], *, rebuild_savw: bool = True):
         self.editor = editor
         self.mlvl_list = mlvl_list
+        self.rebuild_savw = rebuild_savw
 
         self._patcher_functions = {mlvl_id: collections.defaultdict(list) for mlvl_id in mlvl_list}
+        self._frontend_functions = []
 
     def add_function(self, func: AreaPatcherFunction) -> None:
         """
         Adds a function decorated with `decorate_patcher` that is used to patch an area.
         """
         self._patcher_functions[func.mlvl_id][func.mrea_id].append(func)
+
+    def add_frontend_function(self, func: RawPatcherFunction) -> None:
+        """
+        Adds a function that is used to patch the FrontEnd area.
+        The world and area asset IDs are automatically supplied.
+        """
+        self._frontend_functions.append(func)
 
     def add_raw_function(self, mlvl_id: AssetId, mrea_id: AssetId, func: RawPatcherFunction) -> None:
         """
@@ -58,12 +68,12 @@ class AreaPatcher:
 
     def add_global_function(self, func: RawPatcherFunction) -> None:
         """
-        Adds a function that is called for every area.
+        Adds a function that is called for every area, except for FrontEnd.
         """
         for mlvl_id, area_changes in self._patcher_functions.items():
             mlvl = self.editor.get_mlvl(mlvl_id)
             for area in mlvl.areas:
-                self._patcher_functions[mlvl_id][area.mrea_asset_id].append(func)
+                area_changes[area.mrea_asset_id].append(func)
 
     def perform_changes(self) -> None:
         """
@@ -74,7 +84,7 @@ class AreaPatcher:
             logging.info("Patching %s", mlvl.world_name)
 
             for area in mlvl.areas:
-                area_functions = self._patcher_functions[mlvl_id][area.mrea_asset_id]
+                area_functions = area_changes[area.mrea_asset_id]
                 if not area_functions:
                     # Area unchanged
                     continue
@@ -84,3 +94,17 @@ class AreaPatcher:
                     func(self.editor, mlvl, area)
 
                 area.update_all_dependencies(only_modified=True)
+
+            if self.rebuild_savw:
+                logging.info("Rebuilding %s save format", mlvl.world_name)
+                mlvl.rebuild_savw()
+
+        if self._frontend_functions:
+            from open_prime_rando.echoes.specific_area_patches import front_end
+
+            area = front_end.get_front_end_area(self.editor)
+
+            logging.info("Patching FrontEnd")
+
+            for func in self._frontend_functions:
+                func(self.editor, area._parent_mlvl, area)

@@ -142,7 +142,7 @@ def patch_paks(
 
     status_update("Applying small patches", 0)
     dock_lock_rando.add_custom_models(editor)
-    area_patcher = AreaPatcher(editor, [AGON_WASTES_MLVL, TORVUS_BOG_MLVL])
+    area_patcher = AreaPatcher(editor, [AGON_WASTES_MLVL, TORVUS_BOG_MLVL], rebuild_savw=False)
     area_patcher.add_function(required_fixes.torvus_temple)
     area_patcher.add_function(required_fixes.command_center_door)
     area_patcher.perform_changes()
