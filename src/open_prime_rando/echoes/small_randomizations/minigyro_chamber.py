@@ -1,9 +1,13 @@
+import functools
 import random
 from enum import Enum
 
 from retro_data_structures.enums.echoes import Message, State
+from retro_data_structures.formats import Mlvl
+from retro_data_structures.formats.mrea import Area
 from retro_data_structures.formats.strg import Strg
 
+from open_prime_rando.area_patcher import AreaPatcher
 from open_prime_rando.echoes.asset_ids.sanctuary_fortress import MINIGYRO_CHAMBER_MREA
 from open_prime_rando.echoes.asset_ids.world import SANCTUARY_FORTRESS_MLVL
 from open_prime_rando.patcher_editor import PatcherEditor
@@ -40,11 +44,19 @@ GYRO_STATES = [
 ]
 
 
-def randomize_minigyro_chamber(editor: PatcherEditor, rng: random.Random) -> None:
-    area = editor.get_area(SANCTUARY_FORTRESS_MLVL, MINIGYRO_CHAMBER_MREA)
+def create_random_solution(rng: random.Random) -> list[GyroColor]:
+    """
+    Creates a random solution to the Minigyro Chamber puzzle.
+    """
     solution = [GyroColor.AMBER, GyroColor.COBALT, GyroColor.CRIMSON, GyroColor.EMERALD]
     rng.shuffle(solution)
+    return solution
 
+
+def patch_minigyro_chamber_puzzle(editor: PatcherEditor, mlvl: Mlvl, area: Area, solution: list[GyroColor]) -> None:
+    """
+    Modifies the puzzle in Minigyro Chamber to use the given solution.
+    """
     counter = area.get_instance("Stage gate activator")
     stage_gates = [area.get_instance(f"Stage gate {i + 1}") for i in range(4)]
 
@@ -65,4 +77,16 @@ def randomize_minigyro_chamber(editor: PatcherEditor, rng: random.Random) -> Non
     solution_text = "\n".join(gyro.text for gyro in solution)
     scan.set_single_string(1, f"Safety lockdown code is as follows:\n\n\n{solution_text}")
 
-    area.update_all_dependencies()
+
+def register_patch_random_solution(area_patcher: AreaPatcher, rng: random.Random) -> None:
+    """
+    Creates a random solution and register the Minigyro Chamber to be changed via AreaPatcher.
+    """
+    area_patcher.add_raw_function(
+        SANCTUARY_FORTRESS_MLVL,
+        MINIGYRO_CHAMBER_MREA,
+        functools.partial(
+            patch_minigyro_chamber_puzzle,
+            solution=create_random_solution(rng),
+        ),
+    )

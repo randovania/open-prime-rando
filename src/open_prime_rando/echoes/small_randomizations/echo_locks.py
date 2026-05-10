@@ -114,7 +114,7 @@ def patch_echo_locks(
         poi.scan_info.scannable_info0 = gate_scan_id
 
 
-def register_echo_lock_patcher(area_patcher: AreaPatcher, rng: random.Random) -> None:
+def register_patch_random_solution(area_patcher: AreaPatcher, rng: random.Random) -> None:
     """
     Randomizes all Echo Lock puzzles in the game and make them solvable without audio.
     """
