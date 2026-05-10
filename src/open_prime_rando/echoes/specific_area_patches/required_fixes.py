@@ -4,6 +4,7 @@ import logging
 from typing import TYPE_CHECKING
 
 from retro_data_structures.enums.echoes import Message, State
+from retro_data_structures.formats.script_object import Connection
 from retro_data_structures.properties.echoes.archetypes.EditorProperties import EditorProperties
 from retro_data_structures.properties.echoes.archetypes.LayerSwitch import LayerSwitch
 from retro_data_structures.properties.echoes.archetypes.Transform import Transform
@@ -14,6 +15,7 @@ from retro_data_structures.properties.echoes.objects import (
     Pickup,
     Relay,
     ScriptLayerController,
+    SequenceTimer,
     SpawnPoint,
     Switch,
     Timer,
@@ -87,11 +89,45 @@ def undertemple_access(editor: PatcherEditor, mlvl: Mlvl, area: Area) -> None:
 @decorate_patcher(AGON_WASTES_MLVL, agon_wastes.MAIN_REACTOR_MREA)
 def main_reactor(editor: PatcherEditor, mlvl: Mlvl, area: Area) -> None:
     """
-    Save some memory during DS1 fight.
+    Fix crashes related to room loading
+    and Dark Samus flashbang softlock.
     """
+    # Define Objects
     unload_relay = area.get_instance("Unload dock when door closed")
-    trigger = area.get_instance("Trigger Start DS Intro")
-    trigger.add_connection(State.Entered, Message.SetToZero, unload_relay)
+    spawn_point = area.get_instance("Spawn point Start DS Battle")
+    ds_death_stimer = area.get_instance("Dark Samus Death Sequence Transition")
+    start_death_cinema_relay = area.get_instance("[IN] Start Death Cinema")
+    intro_sequence_timer = area.get_instance("SequenceTimer Dark Samus Intro")
+    # Add a Looping Timer that always tries to start the Death Cinema
+    # cutscene, so if Dark Samus dies before the layer is finished loading
+    # it will start it when it does
+    death_cutscene_load_timer = area.get_layer("Dark Samus").add_instance_with(
+        Timer(
+            editor_properties=EditorProperties(
+                active=False,
+                name="Try to start Death Cinema",
+                transform=Transform(
+                    position=Vector(400.0, 92.0, 4.0),
+                    scale=Vector(2.0, 2.0, 2.0),
+                ),
+            ),
+            time=0.02,
+            auto_reset=True,
+            auto_start=True,
+        )
+    )
+    # Replace the Death Cinema start relay connection with the retry timer
+    sequence_connections = list(ds_death_stimer.connections)
+    sequence_connections[0] = Connection(State.Sequence, Message.Activate, death_cutscene_load_timer.id)
+    ds_death_stimer.connections = sequence_connections
+    # Make SequenceTimer reposition you immediately
+    with intro_sequence_timer.edit_properties(SequenceTimer) as sequence_timer:
+        sequence_timer.sequence_connections[43].activation_times = [0.0]
+    # When player is in room, stop all room loading
+    spawn_point.add_connection(State.Zero, Message.SetToZero, unload_relay)
+    # Make looping timer start the death cinema, then make death cinema deactivate timer
+    death_cutscene_load_timer.add_connection(State.Zero, Message.SetToZero, start_death_cinema_relay)
+    start_death_cinema_relay.add_connection(State.Zero, Message.Deactivate, death_cutscene_load_timer)
 
 
 @decorate_patcher(TORVUS_BOG_MLVL, torvus_bog.SACRIFICIAL_CHAMBER_MREA)

@@ -4,6 +4,8 @@ import logging
 from typing import TYPE_CHECKING
 
 from retro_data_structures.enums.echoes import Message, State
+from retro_data_structures.formats.script_object import Connection
+from retro_data_structures.properties.echoes.archetypes.Connection import Connection as SequenceConnection
 from retro_data_structures.properties.echoes.archetypes.EditorProperties import EditorProperties
 from retro_data_structures.properties.echoes.archetypes.LayerSwitch import LayerSwitch
 from retro_data_structures.properties.echoes.archetypes.Transform import Transform
@@ -13,12 +15,15 @@ from retro_data_structures.properties.echoes.objects import (
     Actor,
     CameraHint,
     CameraShaker,
+    Counter,
     IngSpiderballGuardian,
     MemoryRelay,
     Pickup,
     ScriptLayerController,
+    SequenceTimer,
     SpawnPoint,
     Splinter,
+    Switch,
     Timer,
     Trigger,
     TriggerOrientated,
@@ -61,12 +66,14 @@ def register_all(area_patcher: AreaPatcher) -> None:
         hive_tunnel,
         agon_temple,
         temple_sanctuary,
-        main_reactor,
+        main_reactor_post_ds_layer_changes,
         dynamo_works,
         torvus_temple,
         gfmc_compound,
         sanctuary_entrance,
         minigyro_terminal_fall,
+        main_reactor_dynamic_layer_loading,
+        storage_d_room_reload,
     ]:
         area_patcher.add_function(func)
 
@@ -210,17 +217,24 @@ def temple_sanctuary(editor: PatcherEditor, mlvl: Mlvl, area: Area) -> None:
 
 
 @decorate_patcher(AGON_WASTES_MLVL, agon_wastes.MAIN_REACTOR_MREA)
-def main_reactor(editor: PatcherEditor, mlvl: Mlvl, area: Area) -> None:
+def main_reactor_post_ds_layer_changes(editor: PatcherEditor, mlvl: Mlvl, area: Area) -> None:
     """
     Change layers properly after DS1's death.
     """
     layer_switcher = area.get_instance("Switch Layers To Post-Dark Samus")
     layer_controller = area.get_layer("Default").add_instance_with(
         ScriptLayerController(
+            editor_properties=EditorProperties(
+                name="Decrement Biostorage Station 1st Pass",
+                transform=Transform(
+                    position=Vector(436.5, 71.5, 4.3),
+                    scale=Vector(2.0, 2.0, 2.0),
+                ),
+            ),
             layer=LayerSwitch(
                 area_id=agon_wastes.BIOSTORAGE_STATION_INTERNAL_ID,
                 layer_number=3,  # 1st Pass
-            )
+            ),
         )
     )
     layer_switcher.add_connection(State.Zero, Message.Decrement, layer_controller)
@@ -482,3 +496,202 @@ def minigyro_terminal_fall(editor: PatcherEditor, mlvl: Mlvl, area: Area) -> Non
     east_side_camerahint_reset_trigger.add_connection(State.Connect, Message.Attach, supertrigger)
     # Attach failsafe Trigger to main Fall Trigger
     fall_failsafe_trigger.add_connection(State.Connect, Message.Attach, fall_Trigger)
+
+
+@decorate_patcher(AGON_WASTES_MLVL, agon_wastes.MAIN_REACTOR_MREA)
+def main_reactor_dynamic_layer_loading(editor: PatcherEditor, mlvl: Mlvl, area: Area) -> None:
+    """
+    Dynamically loads/unloads layers so a room reload
+    is not necesary after battling Dark Samus, then adjust
+    scripting accordingly to compensate for the changes.
+    """
+    # Add new layer just for some DS Death effects
+    area.add_layer("Dark Samus Death Particles", active=False)
+    # Move effect objects to new layer because their
+    # origin layer now gets Dynamically unloaded
+    for instances in (0x2E04AE, 0x2E0027, 0x2E001D, 0x2E0368, 0x2E039A, 0x2E04AD, 0x2E04AC, 0x2E0353):
+        area.move_instance(instances, "Dark Samus Death Particles")
+    # Particles Layer Dynamic controller
+    ds_particles_dynamic_layer_controller = area.get_layer("Default").add_instance_with(
+        ScriptLayerController(
+            editor_properties=EditorProperties(
+                name="Increment / Decrement Dark Samus Floating Particles (Dynamic)",
+                transform=Transform(
+                    position=Vector(436.5, 70.0, 4.3),
+                    scale=Vector(2.0, 2.0, 2.0),
+                ),
+            ),
+            layer=LayerSwitch(
+                area_id=agon_wastes.MAIN_REACTOR_INTERNAL_ID,
+                layer_number=9,  # Dark Samus Death Particles
+            ),
+            is_dynamic=True,
+        )
+    )
+    # non-dynamic controller that gets decremented immediately
+    ds_particles_layer_controller = area.get_layer("Default").add_instance_with(
+        ScriptLayerController(
+            editor_properties=EditorProperties(
+                name="Decrement Dark Samus Floating Particles (non-dynamic for player leaving room early)",
+                transform=Transform(
+                    position=Vector(436.5, 70.0, 5.3),
+                    scale=Vector(2.0, 2.0, 2.0),
+                ),
+            ),
+            layer=LayerSwitch(
+                area_id=agon_wastes.MAIN_REACTOR_INTERNAL_ID,
+                layer_number=9,  # Dark Samus Death Particles
+            ),
+        )
+    )
+    # Counter to now Play this controller alongside the existing controller
+    death_and_particles_counter = area.get_layer("Default").add_instance_with(
+        Counter(
+            editor_properties=EditorProperties(
+                name="Layers Loaded",
+                transform=Transform(
+                    position=Vector(437.5, 66.7, 5.3),
+                    scale=Vector(2.0, 2.0, 2.0),
+                ),
+            ),
+            initial_count=0,
+            max_count=2,
+        )
+    )
+    # Timer to unload particles layer when the effects are done
+    decrement_particles_layer_timer = area.get_layer("Default").add_instance_with(
+        Timer(
+            editor_properties=EditorProperties(
+                name="Decrement Particles Layer",
+                transform=Transform(
+                    position=Vector(391.0, 89.0, 11.0),
+                    scale=Vector(2.0, 2.0, 2.0),
+                ),
+            ),
+            time=25.02,
+        )
+    )
+    # Trigger that changes the music from Boss Go to Pirate Encounter
+    # It's played exactly where the Storage D Pickup is
+    music_change_trigger = area.get_layer("Default").add_instance_with(
+        Trigger(
+            editor_properties=EditorProperties(
+                name="Open Pirate Encounter",
+                transform=Transform(
+                    position=Vector(340.610992, 73.113937, 23.076834),
+                    scale=Vector(1.0, 1.0, 2.0),
+                ),
+                active=False,
+            ),
+            deactivate_on_enter=True,
+        )
+    )
+    post_ds_music_switch = area.get_layer("Default").add_instance_with(
+        Switch(
+            editor_properties=EditorProperties(
+                name="OPEN: Pirate Encounter / CLOSED: Boss Go",
+                transform=Transform(
+                    position=Vector(427.0, 77.0, 4.0),
+                    scale=Vector(2.0, 2.0, 2.0),
+                ),
+            ),
+            is_open=True,
+        )
+    )
+    # Define existing objects
+    layer_loading_sequence_timer = area.get_instance("Unload Intro, Load Death, Fire Death Load Check")
+    dark_samus = area.get_instance("DarkSamus 001")
+    start_death_cinema_relay = area.get_instance("[IN] Start Death Cinema")
+    layer_switch_relay = area.get_instance("Switch Layers To Post-Dark Samus")
+    ds_layer_load_switch = area.get_instance("Check for Dark Samus Death Cinema Load")
+    end_death_cinema_relay = area.get_instance("[OUT] End Death Cinema")
+    pirate_encounter_music_player = area.get_instance("Music Player For Area (pirate encounter)")
+    pirate_encounter_sAudio = area.get_instance("Pirate Encounter Finale")
+    boss_go_sAudio = area.get_instance("Boss Go")
+    death_cinema_increment_layer_switch = area.get_instance("Increment Dark Samus Death Cinema (Dynamic)")
+    death_cinema_decrement_layer_switch = area.get_instance("Decrement Dark Samus Death Cinema (Dynamic)")
+    # Move StreamedAudio to Default
+    area.move_instance("Boss Go", "Default")
+    # Change room layer controllers to be Dynamic
+    post_ds_layer_switch = area.get_instance(0x2E0334)
+    with post_ds_layer_switch.edit_properties(ScriptLayerController) as layer_switch_prop1:
+        layer_switch_prop1.editor_properties.name = "Increment Post-Dark Samus (Dynamic)"
+        layer_switch_prop1.is_dynamic = True
+    war_chest_layer_switch = area.get_instance(0x2E04AA)
+    with war_chest_layer_switch.edit_properties(ScriptLayerController) as layer_switch_prop2:
+        layer_switch_prop2.editor_properties.name = "Increment WAR CHEST (Dynamic)"
+        layer_switch_prop2.is_dynamic = True
+    ds_dec_layer_switch = area.get_instance(0x2E002D)
+    with ds_dec_layer_switch.edit_properties(ScriptLayerController) as layer_switch_prop3:
+        layer_switch_prop3.editor_properties.name = "Decrement - Dark Samus (Dynamic)"
+        layer_switch_prop3.is_dynamic = True
+    # Since layers get activated Dynamically, make Memory Relays activate immediately
+    ds_music_memory_relay = area.get_instance("Post Dark Samus Battle Music Setup")
+    with ds_music_memory_relay.edit_properties(MemoryRelay) as memory_relay1:
+        memory_relay1.delayed_action = False
+    post_ds_memory_relay = area.get_instance("SWITCH TO POST-DARK SAMUS STATE (NON-LAYER ITEMS)")
+    with post_ds_memory_relay.edit_properties(MemoryRelay) as memory_relay2:
+        memory_relay2.delayed_action = False
+    # Add a new sequence connetion to this Sequence Timer
+    with layer_loading_sequence_timer.edit_properties(SequenceTimer) as sequence_timer:
+        sequence_timer.sequence_connections.append(
+            SequenceConnection(
+                connection_index=3,
+                activation_times=[0.02],
+            ),
+        )
+    # Remove connection to Switch as the Counter will now take care of the load check
+    death_cinema_increment_layer_switch.remove_connection(death_cinema_increment_layer_switch.connections[0])
+    # Don't make Dark Samus death switch layers immediately
+    dark_samus.remove_connection(dark_samus.connections[7])
+    # Remove direct message to StreamedAudio because it's going to Switch
+    pirate_encounter_music_player.remove_connection(pirate_encounter_music_player.connections[0])
+    # Remove controller connections because now they're at the end of cutscene
+    layer_switch_connections = list(layer_switch_relay.connections)
+    layer_switch_relay.remove_connection(layer_switch_connections[1])
+    layer_switch_relay.remove_connection(layer_switch_connections[2])
+    # Instead of playing music directly, close Switch
+    death_cinema_relay_connections = list(end_death_cinema_relay.connections)
+    death_cinema_relay_connections[4] = Connection(State.Zero, Message.Close, post_ds_music_switch.id)
+    end_death_cinema_relay.connections = death_cinema_relay_connections
+    end_death_cinema_relay.remove_connection(end_death_cinema_relay.connections[1])
+    # Start loading Particles layer after DS Intro is done
+    layer_loading_sequence_timer.add_connection(
+        State.Sequence, Message.Increment, ds_particles_dynamic_layer_controller
+    )
+    # Music Player connection to Switch
+    pirate_encounter_music_player.add_connection(State.Entered, Message.SetToZero, post_ds_music_switch)
+    # Storage D trigger changes Switch back to Pirate Encounter
+    music_change_trigger.add_connection(State.Entered, Message.Open, post_ds_music_switch)
+    # Switch music controls
+    post_ds_music_switch.add_connection(State.Open, Message.Play, pirate_encounter_sAudio)
+    post_ds_music_switch.add_connection(State.Closed, Message.Play, boss_go_sAudio)
+    # Make layer switch happen on cinema start instead
+    start_death_cinema_relay.add_connection(State.Zero, Message.SetToZero, layer_switch_relay)
+    # Once particles are done, decrement layer
+    decrement_particles_layer_timer.add_connection(State.Zero, Message.Decrement, ds_particles_dynamic_layer_controller)
+    # Controllers increment counter when done loading
+    death_cinema_increment_layer_switch.add_connection(State.Arrived, Message.Increment, death_and_particles_counter)
+    ds_particles_dynamic_layer_controller.add_connection(State.Arrived, Message.Increment, death_and_particles_counter)
+    # Then counter sends opens the layer check switch
+    death_and_particles_counter.add_connection(State.MaxReached, Message.Open, ds_layer_load_switch)
+    # Switch now sends Play to both
+    ds_layer_load_switch.add_connection(State.Open, Message.Play, ds_particles_dynamic_layer_controller)
+    # Connections for Dynamic Layer Loading at the end of death cinema
+    end_death_cinema_relay.add_connection(State.Zero, Message.Start, decrement_particles_layer_timer)
+    end_death_cinema_relay.add_connection(State.Zero, Message.Decrement, death_cinema_decrement_layer_switch)
+    end_death_cinema_relay.add_connection(State.Zero, Message.Decrement, ds_dec_layer_switch)
+    end_death_cinema_relay.add_connection(State.Zero, Message.Decrement, ds_particles_layer_controller)
+    end_death_cinema_relay.add_connection(State.Zero, Message.Play, post_ds_layer_switch)
+    end_death_cinema_relay.add_connection(State.Zero, Message.Play, war_chest_layer_switch)
+    end_death_cinema_relay.add_connection(State.Zero, Message.Activate, post_ds_memory_relay)
+    end_death_cinema_relay.add_connection(State.Zero, Message.Activate, music_change_trigger)
+
+
+@decorate_patcher(AGON_WASTES_MLVL, agon_wastes.STORAGE_D_MREA)
+def storage_d_room_reload(editor: PatcherEditor, mlvl: Mlvl, area: Area) -> None:
+    """
+    Remove room reload upon grabbing pickup.
+    """
+    dark_beam_relay = area.get_instance("[IN] Start Dark Beam Attainment")
+    dark_beam_relay.remove_connection(dark_beam_relay.connections[0])
