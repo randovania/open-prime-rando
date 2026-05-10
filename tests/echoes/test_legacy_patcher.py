@@ -13,14 +13,17 @@ if TYPE_CHECKING:
     from conftest import HashUtil
 
 
-def hash_all_paks(base_path: Path, hash_util: HashUtil) -> dict[str, dict]:
-    return {
+def hash_all_paks(base_path: Path, hash_util: HashUtil) -> dict:
+    result = {
         pak_path.relative_to(base_path).as_posix(): hash_util.hash_pak(pak_path.read_bytes())
         for pak_path in base_path.rglob("*.pak")
     }
+    path = base_path.joinpath("files/custom_names.json")
+    result[path.relative_to(base_path).as_posix()] = json.loads(path.read_text())
+    return result
 
 
-def _update_hashes_file(path: Path, hashes: dict[str, dict]) -> None:
+def _update_hashes_file(path: Path, hashes: dict) -> None:
     path.write_text(json.dumps(hashes, indent=4))
     pytest.fail("updated hashes file")
 
