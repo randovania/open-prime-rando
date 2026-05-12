@@ -136,10 +136,11 @@ def main_research(editor: PatcherEditor, mlvl: Mlvl, area: Area) -> None:
 
     # Make layer be inactive by default
     area.get_layer("Contraption").active = False
+
     # Rename this existing object
     contraption_layer_switch = area.get_instance("DYNAMIC Decrement Contraption")
-    with contraption_layer_switch.edit_properties(ScriptLayerController) as layer_switch:
-        layer_switch.editor_properties.name = "DYNAMIC Increment / Decrement Contraption"
+    contraption_layer_switch.name = "DYNAMIC Increment / Decrement Contraption"
+
     # Add new Controller for the Spider Ball stuff, this layer
     # gets incremented in Staging Area already but for room
     # rando purposes, dynamically increment here as well
@@ -156,6 +157,7 @@ def main_research(editor: PatcherEditor, mlvl: Mlvl, area: Area) -> None:
             is_dynamic=True,
         )
     )
+
     # Same issue as previous layer controller
     first_pass_controller = area.get_layer("Default").add_instance_with(
         ScriptLayerController(
@@ -170,6 +172,7 @@ def main_research(editor: PatcherEditor, mlvl: Mlvl, area: Area) -> None:
             is_dynamic=True,
         )
     )
+
     # Define objects
     portal_spawn = area.get_instance(0xB0056)
     initial_spiderball_trigger = area.get_instance(0xB015B)
@@ -177,6 +180,7 @@ def main_research(editor: PatcherEditor, mlvl: Mlvl, area: Area) -> None:
     demo_contraption_trigger = area.get_instance("Start Demo Contraption")
     contraption_encounter_trigger = area.get_instance("Start Contraption Encounter")
     memory_relay = area.get_instance("Unlock 0l")
+
     # These objects get activated/deactivated upon lower portal spawn
     # arrival, but since the layer they're from gets incremented dynamically
     # upon spawn they won't receive said messages, so we're updating their
@@ -189,12 +193,14 @@ def main_research(editor: PatcherEditor, mlvl: Mlvl, area: Area) -> None:
         trigger2.editor_properties.active = False
     with contraption_encounter_trigger.edit_properties(Trigger) as trigger3:
         trigger3.editor_properties.active = True
+
     # Activate/Deactivate layers upon lower portal arrival
     portal_spawn.add_connection(State.Zero, Message.Decrement, first_pass_controller)
     portal_spawn.add_connection(State.Zero, Message.Increment, spider_controller)
     portal_spawn.add_connection(State.Zero, Message.Increment, contraption_layer_switch)
     spider_controller.add_connection(State.Arrived, Message.Play, spider_controller)
     contraption_layer_switch.add_connection(State.Arrived, Message.Play, contraption_layer_switch)
+
     # Make memory relay deactivate controller objects
     # so the caretaker stuff doesn't load again
     memory_relay.add_connection(State.Active, Message.Deactivate, contraption_layer_switch)
