@@ -3,7 +3,6 @@ import logging
 import typing
 from collections.abc import Callable
 from pathlib import Path
-from random import Random
 from typing import TYPE_CHECKING
 
 from retro_data_structures.asset_manager import FileProvider, PathFileWriter
@@ -153,7 +152,7 @@ def patch_paks(
     )
     area_patcher.add_function(required_fixes.torvus_temple)
     area_patcher.add_function(required_fixes.command_center_door)
-    register_small_randomizations(area_patcher, Random(configuration["small_randomizations"]["seed"]))
+    register_small_randomizations(area_patcher, configuration["small_randomizations"]["seed"])
     area_patcher.perform_changes()
     apply_corrupted_memory_card_change(editor)
 

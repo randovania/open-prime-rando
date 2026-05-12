@@ -1,10 +1,9 @@
-import functools
-import random
+from __future__ import annotations
 
-from retro_data_structures.base_resource import AssetId
+import functools
+from typing import TYPE_CHECKING
+
 from retro_data_structures.enums.echoes import Message, State
-from retro_data_structures.formats import Mlvl
-from retro_data_structures.formats.mrea import Area
 from retro_data_structures.formats.scan import Scan
 from retro_data_structures.formats.strg import Strg
 from retro_data_structures.properties.echoes.objects.PointOfInterest import PointOfInterest
@@ -12,11 +11,19 @@ from retro_data_structures.properties.echoes.objects.ScannableObjectInfo import 
 from retro_data_structures.properties.echoes.objects.Sound import Sound
 from retro_data_structures.properties.echoes.objects.Switch import Switch
 
-from open_prime_rando.area_patcher import AreaPatcher
 from open_prime_rando.echoes.asset_ids.sanctuary_fortress import MAIN_GYRO_CHAMBER_MREA, SENTINELS_PATH_MREA
 from open_prime_rando.echoes.asset_ids.temple_grounds import PROFANE_PATH_MREA
 from open_prime_rando.echoes.asset_ids.world import SANCTUARY_FORTRESS_MLVL, TEMPLE_GROUNDS_MLVL
-from open_prime_rando.patcher_editor import PatcherEditor
+
+if TYPE_CHECKING:
+    import random
+
+    from retro_data_structures.base_resource import AssetId
+    from retro_data_structures.formats.mlvl import Mlvl
+    from retro_data_structures.formats.mrea import Area
+
+    from open_prime_rando.area_patcher import AreaPatcher
+    from open_prime_rando.patcher_editor import PatcherEditor
 
 ECHO_LOCK_MREAS = [
     (SANCTUARY_FORTRESS_MLVL, MAIN_GYRO_CHAMBER_MREA),

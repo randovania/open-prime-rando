@@ -1,16 +1,23 @@
+from __future__ import annotations
+
 import functools
-import random
 from enum import Enum
+from typing import TYPE_CHECKING
 
 from retro_data_structures.enums.echoes import Message, State
-from retro_data_structures.formats import Mlvl
-from retro_data_structures.formats.mrea import Area
 from retro_data_structures.formats.strg import Strg
 
-from open_prime_rando.area_patcher import AreaPatcher
 from open_prime_rando.echoes.asset_ids.sanctuary_fortress import MINIGYRO_CHAMBER_MREA
 from open_prime_rando.echoes.asset_ids.world import SANCTUARY_FORTRESS_MLVL
-from open_prime_rando.patcher_editor import PatcherEditor
+
+if TYPE_CHECKING:
+    import random
+
+    from retro_data_structures.formats.mlvl import Mlvl
+    from retro_data_structures.formats.mrea import Area
+
+    from open_prime_rando.area_patcher import AreaPatcher
+    from open_prime_rando.patcher_editor import PatcherEditor
 
 
 class GyroColor(Enum):

@@ -1,12 +1,12 @@
+from __future__ import annotations
+
 import functools
-import random
 from dataclasses import dataclass
+from typing import TYPE_CHECKING
 
 from retro_data_structures.base_resource import RawResource
 from retro_data_structures.enums.echoes import Message, State
-from retro_data_structures.formats import Mlvl
 from retro_data_structures.formats.cmdl import Cmdl
-from retro_data_structures.formats.mrea import Area
 from retro_data_structures.properties.echoes.archetypes.Transform import Transform
 from retro_data_structures.properties.echoes.core.Vector import Vector
 from retro_data_structures.properties.echoes.objects.Actor import Actor
@@ -17,7 +17,14 @@ from open_prime_rando.area_patcher import AreaPatcher, decorate_patcher
 from open_prime_rando.echoes.asset_ids.sanctuary_fortress import MAIN_GYRO_CHAMBER_MREA
 from open_prime_rando.echoes.asset_ids.world import SANCTUARY_FORTRESS_MLVL
 from open_prime_rando.echoes.custom_assets import custom_asset_path
-from open_prime_rando.patcher_editor import PatcherEditor
+
+if TYPE_CHECKING:
+    import random
+
+    from retro_data_structures.formats.mlvl import Mlvl
+    from retro_data_structures.formats.mrea import Area
+
+    from open_prime_rando.patcher_editor import PatcherEditor
 
 RUBIKS_CUBES = {
     "Puzzle 1": [

@@ -3,7 +3,6 @@ from __future__ import annotations
 import functools
 import logging
 import uuid
-from random import Random
 from typing import TYPE_CHECKING
 
 import open_prime_rando_practice_mod
@@ -171,7 +170,6 @@ def _apply_patches(editor: PatcherEditor, configuration: RandoConfiguration, out
     dol_version = dol_patcher.apply_patches(editor.dol, _default_dol_patches())
 
     area_patcher = AreaPatcher(editor, list(world.NAME_TO_ID_MLVL.values()))
-    rng = Random(configuration.seed)
 
     specific_area_patches.required_fixes.register_all(area_patcher)
     specific_area_patches.version_differences.register_all(area_patcher, dol_version.echoes_version)
@@ -206,7 +204,7 @@ def _apply_patches(editor: PatcherEditor, configuration: RandoConfiguration, out
     area_patcher.add_global_function(general_changes.loop_conditional_relays)
 
     # area changes
-    small_randomizations.register_small_randomizations(area_patcher, rng)
+    small_randomizations.register_small_randomizations(area_patcher, configuration.seed)
 
     disable_hud_popup = True
     for world_change in configuration.world_changes:
