@@ -92,12 +92,14 @@ def main_reactor(editor: PatcherEditor, mlvl: Mlvl, area: Area) -> None:
     Fix crashes related to room loading
     and Dark Samus flashbang softlock.
     """
+
     # Define Objects
     unload_relay = area.get_instance("Unload dock when door closed")
     spawn_point = area.get_instance("Spawn point Start DS Battle")
     ds_death_stimer = area.get_instance("Dark Samus Death Sequence Transition")
     start_death_cinema_relay = area.get_instance("[IN] Start Death Cinema")
     intro_sequence_timer = area.get_instance("SequenceTimer Dark Samus Intro")
+
     # Add a Looping Timer that always tries to start the Death Cinema
     # cutscene, so if Dark Samus dies before the layer is finished loading
     # it will start it when it does
@@ -116,15 +118,20 @@ def main_reactor(editor: PatcherEditor, mlvl: Mlvl, area: Area) -> None:
             auto_start=True,
         )
     )
+
     # Replace the Death Cinema start relay connection with the retry timer
     sequence_connections = list(ds_death_stimer.connections)
     sequence_connections[0] = Connection(State.Sequence, Message.Activate, death_cutscene_load_timer.id)
     ds_death_stimer.connections = sequence_connections
-    # Make SequenceTimer reposition you immediately
+
+    # Make SequenceTimer reposition you immediately, so triggering the fight
+    # in wrong room will still properly stop room loading via AreaAutoLoadController
     with intro_sequence_timer.edit_properties(SequenceTimer) as sequence_timer:
         sequence_timer.sequence_connections[43].activation_times = [0.0]
+
     # When player is in room, stop all room loading
     spawn_point.add_connection(State.Zero, Message.SetToZero, unload_relay)
+
     # Make looping timer start the death cinema, then make death cinema deactivate timer
     death_cutscene_load_timer.add_connection(State.Zero, Message.SetToZero, start_death_cinema_relay)
     start_death_cinema_relay.add_connection(State.Zero, Message.Deactivate, death_cutscene_load_timer)
