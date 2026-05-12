@@ -3,6 +3,7 @@ import logging
 import typing
 from collections.abc import Callable
 from pathlib import Path
+from random import Random
 from typing import TYPE_CHECKING
 
 from retro_data_structures.asset_manager import FileProvider, PathFileWriter
@@ -15,10 +16,15 @@ from open_prime_rando.echoes import (
     dock_lock_rando,
     legacy_dynamic_schema,
 )
-from open_prime_rando.echoes.asset_ids.world import AGON_WASTES_MLVL, TORVUS_BOG_MLVL
+from open_prime_rando.echoes.asset_ids.world import (
+    AGON_WASTES_MLVL,
+    SANCTUARY_FORTRESS_MLVL,
+    TEMPLE_GROUNDS_MLVL,
+    TORVUS_BOG_MLVL,
+)
 from open_prime_rando.echoes.elevators.elevator_rando import patch_elevator
 from open_prime_rando.echoes.general_changes import apply_corrupted_memory_card_change
-from open_prime_rando.echoes.small_randomizations import apply_small_randomizations
+from open_prime_rando.echoes.small_randomizations import register_small_randomizations
 from open_prime_rando.echoes.specific_area_patches import required_fixes
 from open_prime_rando.echoes.suit_cosmetics import apply_custom_suits
 from open_prime_rando.patcher_editor import PatcherEditor
@@ -142,11 +148,13 @@ def patch_paks(
 
     status_update("Applying small patches", 0)
     dock_lock_rando.add_custom_models(editor)
-    area_patcher = AreaPatcher(editor, [AGON_WASTES_MLVL, TORVUS_BOG_MLVL], rebuild_savw=False)
+    area_patcher = AreaPatcher(
+        editor, [TEMPLE_GROUNDS_MLVL, AGON_WASTES_MLVL, TORVUS_BOG_MLVL, SANCTUARY_FORTRESS_MLVL], rebuild_savw=False
+    )
     area_patcher.add_function(required_fixes.torvus_temple)
     area_patcher.add_function(required_fixes.command_center_door)
+    register_small_randomizations(area_patcher, Random(configuration["small_randomizations"]["seed"]))
     area_patcher.perform_changes()
-    apply_small_randomizations(editor, configuration["small_randomizations"])
     apply_corrupted_memory_card_change(editor)
 
     if "tweaks" in configuration:

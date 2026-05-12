@@ -48,6 +48,9 @@ class RandoConfiguration(BaseModel):
     title_screen_text: str
     """Text to be displayed in the title screen."""
 
+    seed: int
+    """Seed number of a random number generator. Used for small changes."""
+
     starting_area: AreaReference = AreaReference(mlvl_id=TEMPLE_GROUNDS_MLVL, mrea_id=LANDING_SITE_MREA)
     """The game will start at the given area. When not set, starts at Landing Site."""
 

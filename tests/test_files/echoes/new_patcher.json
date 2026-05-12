@@ -1,6 +1,7 @@
 {
     "game_title": "Echoes Rando New Patcher",
     "title_screen_text": "Hello World!",
+    "seed": 1000,
     "starting_area": {
         "mlvl_id": 1006255871,
         "mrea_id": 1655756413
