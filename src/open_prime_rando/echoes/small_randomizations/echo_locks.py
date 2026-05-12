@@ -1,4 +1,7 @@
-import random
+from __future__ import annotations
+
+import functools
+from typing import TYPE_CHECKING
 
 from retro_data_structures.enums.echoes import Message, State
 from retro_data_structures.formats.scan import Scan
@@ -11,7 +14,16 @@ from retro_data_structures.properties.echoes.objects.Switch import Switch
 from open_prime_rando.echoes.asset_ids.sanctuary_fortress import MAIN_GYRO_CHAMBER_MREA, SENTINELS_PATH_MREA
 from open_prime_rando.echoes.asset_ids.temple_grounds import PROFANE_PATH_MREA
 from open_prime_rando.echoes.asset_ids.world import SANCTUARY_FORTRESS_MLVL, TEMPLE_GROUNDS_MLVL
-from open_prime_rando.patcher_editor import PatcherEditor
+
+if TYPE_CHECKING:
+    import random
+
+    from retro_data_structures.base_resource import AssetId
+    from retro_data_structures.formats.mlvl import Mlvl
+    from retro_data_structures.formats.mrea import Area
+
+    from open_prime_rando.area_patcher import AreaPatcher
+    from open_prime_rando.patcher_editor import PatcherEditor
 
 ECHO_LOCK_MREAS = [
     (SANCTUARY_FORTRESS_MLVL, MAIN_GYRO_CHAMBER_MREA),
@@ -22,9 +34,13 @@ ECHO_LOCK_STATES = [State.Zero, State.InternalState00, State.InternalState01, St
 ECHO_LOCK_SOUNDS = [1005, 1006, 1007]
 
 
-def randomize_echo_locks(editor: PatcherEditor, rng: random.Random) -> None:
-    # create key scan assets
+def create_key_scans(editor: PatcherEditor) -> list[AssetId]:
+    """
+    Create the custom scans for each of the pitches with our accessibility changes.
+    """
+
     key_scans = []
+
     for pitch in ["low", "medium", "high"]:
         key_strg_id = editor.duplicate_asset(0x43894960, f"accessible_echo_lock_{pitch}.STRG")
         key_strg = editor.get_file(key_strg_id, Strg)
@@ -44,52 +60,87 @@ def randomize_echo_locks(editor: PatcherEditor, rng: random.Random) -> None:
 
         key_scans.append(key_scan_id)
 
+    return key_scans
+
+
+def patch_echo_locks(
+    editor: PatcherEditor,
+    mlvl: Mlvl,
+    area: Area,
+    key_scans: list[AssetId],
+    solution: tuple[int, int, int, int],
+) -> None:
+    """
+    Modifies the Echo Lock puzzle in the provided area to have the provided solution with the given scans for the pitch.
+    """
+    counter = area.get_instance("Lock Solution Counter")
+    gate_poi = area.get_instance("(Gate) Echo Gate Scan Point")
+    correct_key_relays = [area.get_instance(f"[IN] Set Key {i} As Correct Choice") for i in range(3)]
+    lock_tone_players = [area.get_instance(f"(Gate) Lock {i} Tone") for i in range(4)]
+    key_switches = [area.get_instance(f"(Key {i}) Check Echo Key") for i in range(3)]
+    key_scan_points = [area.get_instance(f"(Key {i}) Scan Point") for i in range(3)]
+
+    for relay in correct_key_relays:
+        counter.remove_all_connections_to(relay)
+
+    # Update all scan posts to have the updated scan text
+    for scan_point, key_scan in zip(key_scan_points, key_scans, strict=True):
+        with scan_point.edit_properties(PointOfInterest) as scan:
+            scan.scan_info.scannable_info0 = key_scan
+
+    for i, key in enumerate(solution):
+        counter.add_connection(ECHO_LOCK_STATES[i], Message.SetToZero, correct_key_relays[key])
+
+        with lock_tone_players[i].edit_properties(Sound) as tone:
+            tone.sound = ECHO_LOCK_SOUNDS[key]
+
+    for i, switch in enumerate(key_switches):
+        with switch.edit_properties(Switch) as props:
+            props.is_open = i == solution[0]
+
+    # Force asset names to not use hex, to keep things identical to before
+    mrea_asset_id = int(area.mrea_asset_id)
+
+    # edit scan to indicate the solution
+    gate_strg_id = editor.duplicate_asset(0x2820CC3D, f"accessible_echo_gate_{mrea_asset_id}.STRG")
+    gate_strg = editor.get_file(gate_strg_id, Strg)
+
+    solution_text = (
+        "Sonic detection gear needed to interface with this system. The combination of its sonic locks is:\n"
+    )
+    solution_text += ", ".join(["Low", "Medium", "High"][key] for key in solution)
+    gate_strg.set_single_string(1, solution_text)
+
+    gate_scan_id = editor.duplicate_asset(0x80A987AA, f"accessible_echo_gate_{mrea_asset_id}.SCAN")
+    gate_scan = editor.get_file(gate_scan_id, Scan)
+
+    with gate_scan.scannable_object_info.edit_properties(ScannableObjectInfo) as properties:
+        properties.string = gate_strg_id
+
+    with gate_poi.edit_properties(PointOfInterest) as poi:
+        poi.scan_info.scannable_info0 = gate_scan_id
+
+
+def register_patch_random_solution(area_patcher: AreaPatcher, rng: random.Random) -> None:
+    """
+    Randomizes all Echo Lock puzzles in the game and make them solvable without audio.
+    """
+    key_scans = create_key_scans(area_patcher.editor)
+
     for mlvl_id, mrea_id in ECHO_LOCK_MREAS:
-        area = editor.get_area(mlvl_id, mrea_id)
-        solution = [rng.randint(0, 2) for _ in range(4)]
-
-        counter = area.get_instance("Lock Solution Counter")
-        gate_poi = area.get_instance("(Gate) Echo Gate Scan Point")
-        correct_key_relays = [area.get_instance(f"[IN] Set Key {i} As Correct Choice") for i in range(3)]
-        lock_tone_players = [area.get_instance(f"(Gate) Lock {i} Tone") for i in range(4)]
-        key_switches = [area.get_instance(f"(Key {i}) Check Echo Key") for i in range(3)]
-        key_scan_points = [area.get_instance(f"(Key {i}) Scan Point") for i in range(3)]
-
-        for relay in correct_key_relays:
-            counter.remove_all_connections_to(relay)
-
-        # Update all scan posts to have the updated scan text
-        for scan_point, key_scan in zip(key_scan_points, key_scans):
-            with scan_point.edit_properties(PointOfInterest) as scan:
-                scan.scan_info.scannable_info0 = key_scan
-
-        for i, key in enumerate(solution):
-            counter.add_connection(ECHO_LOCK_STATES[i], Message.SetToZero, correct_key_relays[key])
-
-            with lock_tone_players[i].edit_properties(Sound) as tone:
-                tone.sound = ECHO_LOCK_SOUNDS[key]
-
-        for i, switch in enumerate(key_switches):
-            with switch.edit_properties(Switch) as props:
-                props.is_open = i == solution[0]
-
-        # edit scan to indicate the solution
-        gate_strg_id = editor.duplicate_asset(0x2820CC3D, f"accessible_echo_gate_{mrea_id}.STRG")
-        gate_strg = editor.get_file(gate_strg_id, Strg)
-
-        solution_text = (
-            "Sonic detection gear needed to interface with this system. The combination of its sonic locks is:\n"
+        solution = (
+            rng.randint(0, 2),
+            rng.randint(0, 2),
+            rng.randint(0, 2),
+            rng.randint(0, 2),
         )
-        solution_text += ", ".join(["Low", "Medium", "High"][key] for key in solution)
-        gate_strg.set_single_string(1, solution_text)
 
-        gate_scan_id = editor.duplicate_asset(0x80A987AA, f"accessible_echo_gate_{mrea_id}.SCAN")
-        gate_scan = editor.get_file(gate_scan_id, Scan)
-
-        with gate_scan.scannable_object_info.edit_properties(ScannableObjectInfo) as properties:
-            properties.string = gate_strg_id
-
-        with gate_poi.edit_properties(PointOfInterest) as poi:
-            poi.scan_info.scannable_info0 = gate_scan_id
-
-        area.update_all_dependencies()
+        area_patcher.add_raw_function(
+            mlvl_id,
+            mrea_id,
+            functools.partial(
+                patch_echo_locks,
+                key_scans=key_scans,
+                solution=solution,
+            ),
+        )
