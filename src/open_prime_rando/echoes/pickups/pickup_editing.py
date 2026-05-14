@@ -4,7 +4,7 @@ import typing
 from typing import TYPE_CHECKING
 
 from retro_data_structures.enums.echoes import Message, PlayerItemEnum, State
-from retro_data_structures.formats.mapa import Mapa, ObjectTypeMP2, ObjectVisibility
+from retro_data_structures.formats.mapa import Mapa, MappableObject, ObjectVisibility
 from retro_data_structures.properties.echoes.archetypes.ConditionalTest import (
     AmountOrCapacity,
     Boolean,
@@ -354,15 +354,13 @@ def _add_map_icon(editor: PatcherEditor, mlvl: Mlvl, area: Area, instances: Pick
     mappable_id = instances.mappable_object.id
     with instances.pickup.edit_properties(RDSPickup) as pickup:
         pos = pickup.editor_properties.transform.position
-    padding = 0xFFFFFFFF
 
-    mapa.raw.mappable_objects.append(
-        {
-            "type": ObjectTypeMP2.TranslatorGate,
-            "visibility_mode": ObjectVisibility.AreaVisitOrMapStation,
-            "editor_id": mappable_id,
-            "unk1": padding,
-            "transform": [
+    mapa.mappable_objects.append(
+        MappableObject.create(
+            object_type=0x12,  # custom icon type for pickups
+            visibility_mode=ObjectVisibility.AreaVisitOrMapStation,
+            editor_id=mappable_id,
+            transform=[
                 1.0,
                 0.0,
                 0.0,
@@ -376,8 +374,7 @@ def _add_map_icon(editor: PatcherEditor, mlvl: Mlvl, area: Area, instances: Pick
                 1.0,
                 pos.z,
             ],
-            "unk2": [padding] * 4,
-        }
+        )
     )
 
 
