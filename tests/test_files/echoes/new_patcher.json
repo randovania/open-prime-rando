@@ -541,6 +541,14 @@
                     ]
                 },
                 {
+                    "mrea_id": 2970881060,
+                    "translator_gates": [
+                        {
+                            "translator": "unlocked"
+                        }
+                    ]
+                },
+                {
                     "mrea_id": 1353937573,
                     "pickups": [
                         {
@@ -1537,6 +1545,47 @@
                                 "conversion": []
                             },
                             "progressive_stages": []
+                        }
+                    ]
+                },
+                {
+                    "mrea_id": 2731245106,
+                    "translator_gates": [
+                        {
+                            "holo1": {
+                                "hologram": 131426,
+                                "glow": 131431
+                            },
+                            "holo2": {
+                                "hologram": 131408,
+                                "glow": 131415
+                            },
+                            "conditional_relay": 131459,
+                            "translator": "cobalt"
+                        },
+                        {
+                            "holo1": {
+                                "hologram": 131268,
+                                "glow": 131323
+                            },
+                            "holo2": {
+                                "hologram": 131273,
+                                "glow": 131237
+                            },
+                            "conditional_relay": 131458,
+                            "translator": "cobalt"
+                        },
+                        {
+                            "holo1": {
+                                "hologram": 131438,
+                                "glow": 131442
+                            },
+                            "holo2": {
+                                "hologram": 131441,
+                                "glow": 131444
+                            },
+                            "conditional_relay": 131460,
+                            "translator": "cobalt"
                         }
                     ]
                 }
