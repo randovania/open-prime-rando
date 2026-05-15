@@ -166,6 +166,14 @@ def remove_attract_videos(editor: PatcherEditor, output: IsoFileWriter) -> None:
             f.write(b"")
 
 
+def add_pickup_map_icon(editor: PatcherEditor) -> None:
+    pickup_map_icon_id = editor.resolve_asset_id("pickup_map_icon.TXTR")
+
+    # add custom icon to all the same paks as the Translator icon
+    for pak in editor.find_paks(0xC6059D2F):
+        editor.ensure_present(pak, pickup_map_icon_id)
+
+
 def _apply_patches(editor: PatcherEditor, configuration: RandoConfiguration, output: IsoFileWriter) -> None:
     custom_assets.create_custom_assets(editor)
     dol_version = dol_patcher.apply_patches(editor.dol, _default_dol_patches())
@@ -176,6 +184,8 @@ def _apply_patches(editor: PatcherEditor, configuration: RandoConfiguration, out
     specific_area_patches.required_fixes.register_all(area_patcher)
     specific_area_patches.version_differences.register_all(area_patcher, dol_version.echoes_version)
     specific_area_patches.rebalance_patches.register_all(area_patcher)
+
+    add_pickup_map_icon(editor)
 
     # edit frontend
     area_patcher.add_frontend_function(
