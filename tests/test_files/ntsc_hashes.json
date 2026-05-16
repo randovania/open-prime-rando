@@ -177,7 +177,8 @@
             "audio_groups_single_player_DGRP": 835410651,
             "audio_name_lookup_STLC": 623798017,
             "sound_lookup_ATBL": 3082924967
-        }
+        },
+        "pak_hash": "55c6fe5caccddc020cedddb3fa72625090ac8d1b3dd49f6c82c812d285587b2b"
     },
     "FrontEnd.pak": {
         "files": {
@@ -331,7 +332,8 @@
         },
         "named_resources": {
             "FrontEnd": 1770005024
-        }
+        },
+        "pak_hash": "0826d345b904ac7c3ea942af6d2f99ece8369040df850f090e479a1e34848c82"
     },
     "GGuiSys.pak": {
         "files": {
@@ -2719,7 +2721,8 @@
             "TXTR_XRayPalette": 2062387159,
             "XButtonOut": 4059729256,
             "YButtonOut": 983981773
-        }
+        },
+        "pak_hash": "cdb6c44a6cb3e9b7c88fe15e964f778732cde9e412e405227a7b0b0c41c460d3"
     },
     "LogBook.pak": {
         "files": {
@@ -4747,7 +4750,8 @@
         },
         "named_resources": {
             "DUMB_ScanTree": 2511737465
-        }
+        },
+        "pak_hash": "18d219ebec9ea6dd02e7e5c712372c63bf71419a7c6c4ec419e1f4a99d76131c"
     },
     "Metroid1.pak": {
         "files": {
@@ -11682,7 +11686,8 @@
         },
         "named_resources": {
             "01_Temple_Hub_20041018": 1006255871
-        }
+        },
+        "pak_hash": "ca16e948253cdecfc184923985069da8a8c2b7957fb4b1fd30a7cae2ee554b98"
     },
     "Metroid2.pak": {
         "files": {
@@ -14048,7 +14053,8 @@
         },
         "named_resources": {
             "02_Temple_Int_20041018": 2252328306
-        }
+        },
+        "pak_hash": "ff8ac2224d5f9b033dfdcc6f0716666e4ac002757cac55b2dbbe511b1bd1e239"
     },
     "Metroid3.pak": {
         "files": {
@@ -21540,7 +21546,8 @@
         },
         "named_resources": {
             "03_Sand_World_20041018": 1119434212
-        }
+        },
+        "pak_hash": "597876afec9216bb12ba605d699265c443e603f0e7ab5a45a3868275f273b847"
     },
     "Metroid4.pak": {
         "files": {
@@ -27954,7 +27961,8 @@
         },
         "named_resources": {
             "04_Swamp_World_20041018": 1039999561
-        }
+        },
+        "pak_hash": "507067e182dee1a13c22cb1e7db3c591eb4ea2a9989c8ae14ca5d9697fd3962a"
     },
     "Metroid5.pak": {
         "files": {
@@ -35126,7 +35134,8 @@
         },
         "named_resources": {
             "05_Cliff_World_20041018a": 464164546
-        }
+        },
+        "pak_hash": "ac5466e6fca5b507c4bc0c644e79687fa8a454103b7307b51d4e0c61e16b6ee5"
     },
     "MiscData.pak": {
         "files": {
@@ -35238,7 +35247,8 @@
             "UnitSphere_High": 2739052548,
             "UnitSphere_Low": 1429157761,
             "UnitSphere_Med": 3099007076
-        }
+        },
+        "pak_hash": "0f00ed56102804588edce0eaafecd947d98578f5f2a6ad0b7fe42be4f044904c"
     },
     "NoARAM.pak": {
         "files": {
@@ -37522,7 +37532,8 @@
             "TXTR_SoundDebugCircle2": 2689411472,
             "TXTR_SoundDebugCircle3": 1005086207,
             "TXTR_SoundDebugField": 3655547881
-        }
+        },
+        "pak_hash": "ff4dbd919841715a1917a8330fcc7edfe2b5995ec041168233e597add49994e8"
     },
     "SamusGun.pak": {
         "files": {
@@ -37796,7 +37807,8 @@
             "holo_cmdl": 3874807548,
             "holo_cskr": 2379968810,
             "rightHand": 1556953778
-        }
+        },
+        "pak_hash": "dda9390b14629726eedf0a45d04752606385f76d3bdb585ee4873b5c3fc9081f"
     },
     "SamusGunLow.pak": {
         "files": {
@@ -38066,7 +38078,8 @@
             "holo_cmdl": 3874807548,
             "holo_cskr": 2379968810,
             "rightHand": 1556953778
-        }
+        },
+        "pak_hash": "6f38b8ab5ec379c7d876f13fe7619e6e4945b7a5719fa2f6c2c66d2680478f83"
     },
     "Standard.ntwk": "59b8a95060a6ba370d1938f77c8a1b9fef55e13794c6ab367fd3f382e1899401",
     "TestAnim.pak": {
@@ -38568,7 +38581,8 @@
             "TXTR_Ashy": 3315973600,
             "WallSpark": 3778288903,
             "breakFreezeVisor": 729119045
-        }
+        },
+        "pak_hash": "c06efa3287966fd9f80a4cc8d576564a69e2a0dbdb71097faf968d021fe70712"
     },
     "Video/Attract02_32.thp": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
     "Video/Attract03_32.thp": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",

@@ -20,6 +20,7 @@ class HashUtil:
 
         pak = Pak.parse(contents, target_game=Game.ECHOES)
 
+        result["pak_hash"] = hashlib.sha256(contents).hexdigest()
         result["named_resources"] = {name: file.id for name, file in pak._raw.named_resources.items()}
 
         result["files"] = files = {}
