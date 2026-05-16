@@ -569,11 +569,11 @@ def dynamo_works_dynamic_layer_loading(editor: PatcherEditor, mlvl: Mlvl, area: 
     to compensate for the changes.
     """
     # Add new layer to separate "Default" layer objects from
-    area.add_layer("Dump During Battle")
+    dump_during_battle = area.add_layer("Dump During Battle")
 
     # Add new layer for the inner CameraHint objects
     # to only load when player is inside arena
-    area.add_layer("Tunnel Hints", active=False)
+    tunnel_hints = area.add_layer("Tunnel Hints", active=False)
 
     # Remove Spider Guardian entrance blocker
     area.remove_instance("1st Pass Spiderball Guardian Blocker")
@@ -880,11 +880,11 @@ def dynamo_works_dynamic_layer_loading(editor: PatcherEditor, mlvl: Mlvl, area: 
     # gets Dynamically loaded, also change it's initial position
     # to match it's unedited final position with these new changes
     spider_guardian = area.get_instance("IngSpiderballGuardian 001")
-    with spider_guardian.edit_properties(IngSpiderballGuardian) as sGuardian:
-        sGuardian.editor_properties.active = True
-        sGuardian.editor_properties.transform.position.y += 3.0
-        sGuardian.editor_properties.transform.position.z += 2.0
-        sGuardian.editor_properties.transform.rotation = Vector(0.0, 90.0, 0.0)
+    with spider_guardian.edit_properties(IngSpiderballGuardian) as spider_guardian_props:
+        spider_guardian_props.editor_properties.active = True
+        spider_guardian_props.editor_properties.transform.position.y += 3.0
+        spider_guardian_props.editor_properties.transform.position.z += 2.0
+        spider_guardian_props.editor_properties.transform.rotation = Vector(0.0, 90.0, 0.0)
 
     # Define Objects
     boss_dead_relay = area.get_instance("Boss Dead")
@@ -919,18 +919,14 @@ def dynamo_works_dynamic_layer_loading(editor: PatcherEditor, mlvl: Mlvl, area: 
     spider_guardian.connections = spider_connections
 
     # Make the following Layer Controllers be Dynamic
-    with boss_intro_controller.edit_properties(ScriptLayerController) as spider_intro_controller:
-        spider_intro_controller.is_dynamic = True
-
-    with spider_guardian_controller1.edit_properties(ScriptLayerController) as spider_controller1:
-        spider_controller1.is_dynamic = True
-
-    with spider_guardian_controller2.edit_properties(ScriptLayerController) as spider_controller2:
-        spider_controller2.is_dynamic = True
-
-    with spider_guardian_gone_controller.edit_properties(ScriptLayerController) as spider_controller3:
-        spider_controller3.is_dynamic = True
-
+    for layer_controller in (
+        boss_intro_controller,
+        spider_guardian_controller1,
+        spider_guardian_controller2,
+        spider_guardian_gone_controller,
+    ):
+        with layer_controller.edit_properties(ScriptLayerController) as layer_controller_props:
+            layer_controller_props.is_dynamic = True
     # Add new Objects
 
     # This will be used to load or unload the Quads layer
@@ -944,7 +940,7 @@ def dynamo_works_dynamic_layer_loading(editor: PatcherEditor, mlvl: Mlvl, area: 
             is_dynamic=True,
             layer=LayerSwitch(
                 area_id=sanctuary_fortress.DYNAMO_WORKS_INTERNAL_ID,
-                layer_number=6,  # 1st Pass
+                layer_number=area.get_layer("1st Pass").index
             ),
         )
     )
@@ -959,7 +955,7 @@ def dynamo_works_dynamic_layer_loading(editor: PatcherEditor, mlvl: Mlvl, area: 
             is_dynamic=True,
             layer=LayerSwitch(
                 area_id=sanctuary_fortress.DYNAMO_WORKS_INTERNAL_ID,
-                layer_number=17,  # Dump During Battle
+                layer_number=dump_during_battle.index
             ),
         )
     )
@@ -975,7 +971,7 @@ def dynamo_works_dynamic_layer_loading(editor: PatcherEditor, mlvl: Mlvl, area: 
             is_dynamic=True,
             layer=LayerSwitch(
                 area_id=sanctuary_fortress.DYNAMO_WORKS_INTERNAL_ID,
-                layer_number=18,  # Tunnel Hints
+                layer_number=tunnel_hints.index
             ),
         )
     )
@@ -1096,15 +1092,6 @@ def dynamo_works_dynamic_layer_loading(editor: PatcherEditor, mlvl: Mlvl, area: 
     layer_swap_trigger.remove_connection(trigger_connections[3])  # Increment -> Boss Intro Cinematic
     layer_swap_trigger.remove_connection(trigger_connections[4])  # Increment -> Spider Guardian (Nondynamic)
 
-    # Sequence connection to fire the Spider Guardian related layers check during Intro
-    with intro_sequence_timer.edit_properties(SequenceTimer) as sequence_timer:
-        sequence_timer.sequence_connections.append(
-            SequenceConnection(
-                connection_index=4,
-                activation_times=[1.0],
-            )
-        )
-
     # Tunnel Hints Layer Loading
     tunnel_in_entrance.add_connection(State.Entered, Message.Increment, tunnel_hints_controller)
     tunnel_out_entrance.add_connection(State.Entered, Message.Decrement, tunnel_hints_controller)
@@ -1135,7 +1122,14 @@ def dynamo_works_dynamic_layer_loading(editor: PatcherEditor, mlvl: Mlvl, area: 
     spider_guardian_controller1.add_connection(State.Arrived, Message.Increment, sg_layer_loading_counter)
     spider_guardian_controller2.add_connection(State.Arrived, Message.Increment, sg_layer_loading_counter)
 
-    # Intro SequenceTimer firing load check
+    # Sequence connection to fire the Spider Guardian related layers check during Intro
+    with intro_sequence_timer.edit_properties(SequenceTimer) as sequence_timer:
+        sequence_timer.sequence_connections.append(
+            SequenceConnection(
+                connection_index=4,
+                activation_times=[1.0],
+            )
+        )
     intro_sequence_timer.add_connection(State.Sequence, Message.SetToZero, sg_layer_loading_switch)
 
     # Load Check Switch, once all layers are loaded
