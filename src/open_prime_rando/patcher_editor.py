@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import fnmatch
+import hashlib
 import io
 import os
 import typing
@@ -143,14 +144,31 @@ try:
             if self._dol is not None:
                 self.patcher.set_dol(self._dol)
 
-            writer = nod_rs.DiscWriter(
-                self.patcher.build(),
-                format,
-            )
-            writer.process(
+            final_iso = self.patcher.build()
+
+            print("Hashes of final iso contents")
+            data = final_iso.open_partition_kind("Data")
+            for file in data.meta().fst():
+                if file.is_file:
+                    contents = data.read_file(file).read()
+                    print(f"- {file}: {hashlib.sha256(contents).hexdigest()}")
+
+            writer = nod_rs.DiscWriter(final_iso, format)
+            finalize = writer.process(
                 os.fspath(output),
                 callback=callback,
+                digest_crc32=True,
+                digest_md5=True,
+                digest_sha1=True,
+                digest_xxh64=True,
             )
+            print(f"""
+Hashes of the generated iso:
+- crc32: {finalize.crc32}
+- md5: {finalize.md5}
+- sha1: {finalize.sha1}
+- xxh64: {finalize.xxh64}
+""")
 except ImportError:
     pass
 
