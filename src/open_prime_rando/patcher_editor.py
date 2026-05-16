@@ -9,6 +9,7 @@ import typing
 import typing_extensions
 from retro_data_structures.asset_manager import AssetManager, FileProvider, FileWriter
 from retro_data_structures.base_resource import AssetId, NameOrAssetId
+from retro_data_structures.formats import Pak
 from retro_data_structures.formats.mlvl import Mlvl
 from retro_data_structures.formats.scan import Scan
 from retro_data_structures.formats.strg import Strg
@@ -141,6 +142,16 @@ try:
                 else:
                     file_data = file.data
                 print(f"- {name}: {hashlib.sha256(file_data).hexdigest()}")
+                if name == "Metroid4.pak":
+                    pak = Pak.parse(file_data, target_game=Game.ECHOES)
+                    for asset in pak._raw.files:
+                        if asset.compressed_data is not None:
+                            b = "c_" + hashlib.sha256(asset.compressed_data).hexdigest()
+                        else:
+                            assert asset.uncompressed_data is not None
+                            b = hashlib.sha256(asset.uncompressed_data).hexdigest()
+                        print(f"-- {asset.asset_id:08x}: {b}")
+
                 self.patcher.add_file(name, file_data)
 
             self._files.clear()
