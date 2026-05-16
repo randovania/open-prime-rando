@@ -64,5 +64,8 @@ class RandoConfiguration(BaseModel):
     practice_mod: PracticeModMode = PracticeModMode.disabled
     """How accessible is the Practice Mod."""
 
+    inverted_mode: bool = False
+    """Whether or not to use inverted mode, where Light and Dark Aether is inverted."""
+
     world_changes: list[WorldChange]
     """"""

@@ -179,6 +179,9 @@ def _apply_patches(editor: PatcherEditor, configuration: RandoConfiguration, out
     custom_assets.create_custom_assets(editor)
     dol_version = dol_patcher.apply_patches(editor.dol, _default_dol_patches())
 
+    if configuration.inverted_mode:
+        inverted.apply_inverted(editor)
+
     area_patcher = AreaPatcher(editor, list(world.NAME_TO_ID_MLVL.values()))
     rng = Random(configuration.seed)
 
@@ -246,7 +249,6 @@ def _apply_patches(editor: PatcherEditor, configuration: RandoConfiguration, out
 
     if _ALL_FEATURES:
         auto_enabled_elevator_patches.apply_auto_enabled_elevators_patch(editor)
-        inverted.apply_inverted(editor)
 
     if configuration.practice_mod != open_prime_rando_practice_mod.PracticeModMode.disabled:
         practice_mod.patch_dol(
