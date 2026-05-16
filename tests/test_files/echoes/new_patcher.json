@@ -2948,6 +2948,30 @@
             "mlvl_id": 1039999561,
             "area_changes": [
                 {
+                    "mrea_id": 3863006870,
+                    "translator_gates": [
+                        {
+                            "holo1": {
+                                "hologram": "Gate Holo 1",
+                                "glow": 1770227
+                            },
+                            "translator": "amber"
+                        },
+                        {
+                            "holo1": {
+                                "hologram": "Lore Hologram",
+                                "glow": 1769711
+                            },
+                            "holo2": {
+                                "hologram": "Lore Hologram",
+                                "glow": 1769711
+                            },
+                            "conditional_relay": "Does Player Have Correct Translator?",
+                            "translator": "violet"
+                        }
+                    ]
+                },
+                {
                     "mrea_id": 2114709145,
                     "pickups": [
                         {
