@@ -537,6 +537,236 @@
                                     "conversion": []
                                 }
                             ]
+                        },
+                        {
+                            "location": {
+                                "type": "custom",
+                                "exclude_memo_from_removal": false,
+                                "original_model": "MassiveDamage",
+                                "connections": [],
+                                "removals": [
+                                ],
+                                "collision_offset": {
+                                    "x": 0.0,
+                                    "y": 0.0,
+                                    "z": 1.0
+                                },
+                                "collision_size": {
+                                    "x": 1.0,
+                                    "y": 1.0,
+                                    "z": 2.0
+                                },
+                                "layer": "Default",
+                                "position": {
+                                    "x": -106,
+                                    "y": -172,
+                                    "z": -45
+                                }
+                            },
+                            "primary_stage": {
+                                "resources": [
+                                    {
+                                        "item": 58,
+                                        "amount": 1
+                                    }
+                                ],
+                                "appearance": {
+                                    "model_data": "MassiveDamage",
+                                    "sound": 0,
+                                    "jingle": {
+                                        "file_name": "/audio/itm_x_short_00.dsp",
+                                        "volume": 55
+                                    },
+                                    "hud_text": "Massive Damage acquired!",
+                                    "scan": "Massive Damage."
+                                },
+                                "conversion": []
+                            },
+                            "progressive_stages": []
+                        },
+                        {
+                            "location": {
+                                "type": "custom",
+                                "exclude_memo_from_removal": false,
+                                "original_model": "PowerBeam",
+                                "connections": [],
+                                "removals": [
+                                ],
+                                "collision_offset": {
+                                    "x": 0.0,
+                                    "y": 0.0,
+                                    "z": 1.0
+                                },
+                                "collision_size": {
+                                    "x": 1.0,
+                                    "y": 1.0,
+                                    "z": 2.0
+                                },
+                                "layer": "Default",
+                                "position": {
+                                    "x": -104,
+                                    "y": -172,
+                                    "z": -45
+                                }
+                            },
+                            "primary_stage": {
+                                "resources": [
+                                    {
+                                        "item": 0,
+                                        "amount": 1
+                                    }
+                                ],
+                                "appearance": {
+                                    "model_data": "PowerBeam",
+                                    "sound": 0,
+                                    "jingle": {
+                                        "file_name": "/audio/itm_x_short_00.dsp",
+                                        "volume": 55
+                                    },
+                                    "hud_text": "Power Beam acquired!",
+                                    "scan": "Power Beam."
+                                },
+                                "conversion": []
+                            },
+                            "progressive_stages": []
+                        },
+                        {
+                            "location": {
+                                "type": "custom",
+                                "exclude_memo_from_removal": false,
+                                "original_model": "ChargeBeam",
+                                "connections": [],
+                                "removals": [
+                                ],
+                                "collision_offset": {
+                                    "x": 0.0,
+                                    "y": 0.0,
+                                    "z": 1.0
+                                },
+                                "collision_size": {
+                                    "x": 1.0,
+                                    "y": 1.0,
+                                    "z": 2.0
+                                },
+                                "layer": "Default",
+                                "position": {
+                                    "x": -102,
+                                    "y": -172,
+                                    "z": -45
+                                }
+                            },
+                            "primary_stage": {
+                                "resources": [
+                                    {
+                                        "item": 22,
+                                        "amount": 1
+                                    }
+                                ],
+                                "appearance": {
+                                    "model_data": "ChargeBeam",
+                                    "sound": 0,
+                                    "jingle": {
+                                        "file_name": "/audio/itm_x_short_00.dsp",
+                                        "volume": 55
+                                    },
+                                    "hud_text": "Charge Beam acquired!",
+                                    "scan": "Charge Beam."
+                                },
+                                "conversion": []
+                            },
+                            "progressive_stages": []
+                        },
+                        {
+                            "location": {
+                                "type": "custom",
+                                "exclude_memo_from_removal": false,
+                                "original_model": "CombatVisor",
+                                "connections": [],
+                                "removals": [
+                                ],
+                                "collision_offset": {
+                                    "x": 0.0,
+                                    "y": 0.0,
+                                    "z": 1.0
+                                },
+                                "collision_size": {
+                                    "x": 1.0,
+                                    "y": 1.0,
+                                    "z": 2.0
+                                },
+                                "layer": "Default",
+                                "position": {
+                                    "x": -100,
+                                    "y": -172,
+                                    "z": -45
+                                }
+                            },
+                            "primary_stage": {
+                                "resources": [
+                                    {
+                                        "item": 8,
+                                        "amount": 1
+                                    }
+                                ],
+                                "appearance": {
+                                    "model_data": "CombatVisor",
+                                    "sound": 0,
+                                    "jingle": {
+                                        "file_name": "/audio/itm_x_short_00.dsp",
+                                        "volume": 55
+                                    },
+                                    "hud_text": "Combat Visor acquired!",
+                                    "scan": "Combat Visor."
+                                },
+                                "conversion": []
+                            },
+                            "progressive_stages": []
+                        },
+                        {
+                            "location": {
+                                "type": "custom",
+                                "exclude_memo_from_removal": false,
+                                "original_model": "ScanVisor",
+                                "connections": [],
+                                "removals": [
+                                ],
+                                "collision_offset": {
+                                    "x": 0.0,
+                                    "y": 0.0,
+                                    "z": 1.0
+                                },
+                                "collision_size": {
+                                    "x": 1.0,
+                                    "y": 1.0,
+                                    "z": 2.0
+                                },
+                                "layer": "Default",
+                                "position": {
+                                    "x": -98,
+                                    "y": -172,
+                                    "z": -45
+                                }
+                            },
+                            "primary_stage": {
+                                "resources": [
+                                    {
+                                        "item": 8,
+                                        "amount": 1
+                                    }
+                                ],
+                                "appearance": {
+                                    "model_data": "ScanVisor",
+                                    "sound": 0,
+                                    "jingle": {
+                                        "file_name": "/audio/itm_x_short_00.dsp",
+                                        "volume": 55
+                                    },
+                                    "hud_text": "Scan Visor acquired!",
+                                    "scan": "Scan Visor."
+                                },
+                                "conversion": []
+                            },
+                            "progressive_stages": []
                         }
                     ]
                 },
