@@ -267,7 +267,7 @@ dev = [
 requires-dist = [
     { name = "jsonschema", specifier = ">=4.0.0" },
     { name = "nod-rs", marker = "extra == 'nod'" },
-    { name = "open-prime-rando-practice-mod", specifier = ">=0.1.0" },
+    { name = "open-prime-rando-practice-mod", specifier = ">=0.2.3" },
     { name = "ppc-asm", specifier = ">=1.6.0" },
     { name = "pre-commit", marker = "extra == 'test'" },
     { name = "py-randomprime" },
@@ -286,11 +286,11 @@ dev = [{ name = "ty", specifier = ">=0.0.34" }]
 
 [[package]]
 name = "open-prime-rando-practice-mod"
-version = "0.1.0"
+version = "0.2.3"
 source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/83/6e/fbd7467559e8744495e0ccdf40b21c30db9eebe49c2e4dd9c5bf2453be21/open_prime_rando_practice_mod-0.1.0.tar.gz", hash = "sha256:18bad535449d0839f88090c0a8547ae5e77d064e19e80f0bdd784d5ce3f8b598", size = 170535, upload-time = "2026-02-12T22:34:41.847Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/23/dc/0c3d1eef6a6b4d065f3709c2b6d49951a5328a7a73dc24e787807c4aac6f/open_prime_rando_practice_mod-0.2.3.tar.gz", hash = "sha256:d582344a145547a12b3e66439db24414308b0ae0019f4d87720fa32ab1e05da9", size = 183361, upload-time = "2026-05-15T15:50:57.702Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/91/d3/2832b63cf4f18c4f796ca086e137446a056a2079a85c5a71c349f7a3b047/open_prime_rando_practice_mod-0.1.0-py3-none-any.whl", hash = "sha256:8044695bc16ddef000680408954c51198c44bbfdccb7e56989e87989376c2abd", size = 172606, upload-time = "2026-02-12T22:34:39.678Z" },
+    { url = "https://files.pythonhosted.org/packages/c5/e2/b740690514cb0da1c7a3972d2a15630e5b00e8354b0a058acfa91e41418b/open_prime_rando_practice_mod-0.2.3-py3-none-any.whl", hash = "sha256:97d83720c4102e07cff3610888f6be1d6882100f5d5462975755548f6423de76", size = 180609, upload-time = "2026-05-15T15:50:55.785Z" },
 ]
 
 [[package]]

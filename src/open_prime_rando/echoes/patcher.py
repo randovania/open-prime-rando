@@ -3,6 +3,7 @@ from __future__ import annotations
 import functools
 import logging
 import uuid
+from random import Random
 from typing import TYPE_CHECKING
 
 import open_prime_rando_practice_mod
@@ -23,6 +24,7 @@ from open_prime_rando.echoes import (
     inverted,
     logbook,
     pickups,
+    small_randomizations,
     specific_area_patches,
     starting_items,
 )
@@ -164,15 +166,26 @@ def remove_attract_videos(editor: PatcherEditor, output: IsoFileWriter) -> None:
             f.write(b"")
 
 
+def add_pickup_map_icon(editor: PatcherEditor) -> None:
+    pickup_map_icon_id = editor.resolve_asset_id("pickup_map_icon.TXTR")
+
+    # add custom icon to all the same paks as the Translator icon
+    for pak in editor.find_paks(0xC6059D2F):
+        editor.ensure_present(pak, pickup_map_icon_id)
+
+
 def _apply_patches(editor: PatcherEditor, configuration: RandoConfiguration, output: IsoFileWriter) -> None:
     custom_assets.create_custom_assets(editor)
     dol_version = dol_patcher.apply_patches(editor.dol, _default_dol_patches())
 
     area_patcher = AreaPatcher(editor, list(world.NAME_TO_ID_MLVL.values()))
+    rng = Random(configuration.seed)
 
     specific_area_patches.required_fixes.register_all(area_patcher)
     specific_area_patches.version_differences.register_all(area_patcher, dol_version.echoes_version)
     specific_area_patches.rebalance_patches.register_all(area_patcher)
+
+    add_pickup_map_icon(editor)
 
     # edit frontend
     area_patcher.add_frontend_function(
@@ -203,6 +216,8 @@ def _apply_patches(editor: PatcherEditor, configuration: RandoConfiguration, out
     area_patcher.add_global_function(general_changes.loop_conditional_relays)
 
     # area changes
+    small_randomizations.register_small_randomizations(area_patcher, rng)
+
     disable_hud_popup = True
     for world_change in configuration.world_changes:
         for area_change in world_change.area_changes:

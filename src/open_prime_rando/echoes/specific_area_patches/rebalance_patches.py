@@ -1,11 +1,14 @@
 from __future__ import annotations
 
+import collections
 import logging
+import typing
 from typing import TYPE_CHECKING
 
 from retro_data_structures.enums.echoes import Message, State
 from retro_data_structures.formats.script_object import Connection
 from retro_data_structures.properties.echoes.archetypes.Connection import Connection as SequenceConnection
+from retro_data_structures.properties.base_property import BaseObjectType
 from retro_data_structures.properties.echoes.archetypes.EditorProperties import EditorProperties
 from retro_data_structures.properties.echoes.archetypes.LayerSwitch import LayerSwitch
 from retro_data_structures.properties.echoes.archetypes.Transform import Transform
@@ -19,6 +22,7 @@ from retro_data_structures.properties.echoes.objects import (
     IngSpiderballGuardian,
     MemoryRelay,
     Pickup,
+    Platform,
     ScriptLayerController,
     SequenceTimer,
     SpawnPoint,
@@ -44,7 +48,7 @@ if TYPE_CHECKING:
 
     from retro_data_structures.formats.mlvl import Mlvl
     from retro_data_structures.formats.mrea import Area
-    from retro_data_structures.formats.script_object import InstanceRef
+    from retro_data_structures.formats.script_object import InstanceId, InstanceRef
 
     from open_prime_rando.patcher_editor import PatcherEditor
 
@@ -57,6 +61,7 @@ def register_all(area_patcher: AreaPatcher) -> None:
     """
     for func in [
         landing_site,
+        hive_access_tunnel,
         bionergy_production,
         agon_energy_controller,
         dark_agon_energy_controller,
@@ -99,6 +104,68 @@ def landing_site(editor: PatcherEditor, mlvl: Mlvl, area: Area) -> None:
         for inst in ("Keep Samus Ship", "Savestation Recharge Always Plays", "Ambient Music Memory Relay"):
             # TODO: unclear whether the timer is necessary, or if we can just activate these immediately
             timer.add_connection(State.Zero, Message.Activate, area.get_instance(inst))
+
+
+@typing.runtime_checkable
+class ObjectWithEditorProperties(typing.Protocol):
+    editor_properties: EditorProperties
+
+
+def get_all_ids_related_to(area: Area, target: InstanceId) -> set[InstanceId]:
+    """
+    Gets all object ids that send a message to, or receives a message from the target object, or any object involved.
+    """
+
+    obj_conn_to: dict[InstanceId, set[InstanceId]] = collections.defaultdict(set)
+
+    for instance in area.all_instances:
+        for conn in instance.connections:
+            obj_conn_to[conn.target].add(instance.id)
+
+    related_objects = set()
+
+    def add_related_objs(t_id: InstanceId) -> None:
+        if t_id in related_objects:
+            return
+
+        related_objects.add(t_id)
+
+        obj = area.get_instance(t_id)
+        for c in obj.connections:
+            add_related_objs(c.target)
+        for c in obj_conn_to[t_id]:
+            add_related_objs(c)
+
+    add_related_objs(target)
+
+    return related_objects
+
+
+@decorate_patcher(TEMPLE_GROUNDS_MLVL, temple_grounds.HIVE_ACCESS_TUNNEL_MREA)
+def hive_access_tunnel(editor: PatcherEditor, mlvl: Mlvl, area: Area) -> None:
+    """
+    Moves the translator gate to be in front of the drop to Hive Chamber A.
+    """
+    gate = area.get_instance("Luminoth Gate")
+
+    target_position = Vector(32, -207, -45)
+    rotation = Vector(0, 0, -60)
+
+    root_transform = gate.get_properties_as(Platform).editor_properties.transform
+    delta = target_position - root_transform.position
+
+    for obj_id in get_all_ids_related_to(area, gate.id):
+        with area.get_instance(obj_id).edit_properties(BaseObjectType) as props:
+            assert isinstance(props, ObjectWithEditorProperties)
+
+            if obj_id != gate.id:
+                props.editor_properties.transform.position = (
+                    props.editor_properties.transform.position.rotate(rotation, root_transform.position) + delta
+                )
+                props.editor_properties.transform.rotation += rotation
+            else:
+                props.editor_properties.transform.position = target_position
+                props.editor_properties.transform.rotation = rotation
 
 
 @decorate_patcher(AGON_WASTES_MLVL, agon_wastes.BIOENERGY_PRODUCTION_MREA)
