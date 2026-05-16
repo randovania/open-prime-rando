@@ -6,6 +6,9 @@
         "mlvl_id": 1006255871,
         "mrea_id": 1655756413
     },
+    "map_visibility": {
+        "reveal_map_at_start": true
+    },
     "practice_mod": "full",
     "auto_enabled_elevators": true,
     "world_changes": [

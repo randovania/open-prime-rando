@@ -41,6 +41,16 @@ class WorldChange(BaseModel):
     """The changes to apply to a MREA that belongs to this MLVL."""
 
 
+class MapVisibility(BaseModel):
+    """Configures how the map will be tweaked."""
+
+    reveal_map_at_start: bool = False
+    """Whether or not the map will be revealed at the start of the game."""
+
+    areas_to_never_reveal: list[AssetId] = Field(default_factory=list)
+    """Which areas are not revealed, even when `reveal_map_at_start` is True."""
+
+
 class RandoConfiguration(BaseModel):
     """
     Configuration for randomizing Metroid Prime 2: Echoes.
@@ -60,6 +70,9 @@ class RandoConfiguration(BaseModel):
 
     starting_items: list[StartingItemConfig]
     """What is the starting inventory. Any item not listed will be set to 0."""
+
+    map_visibility: MapVisibility = Field(default_factory=MapVisibility)
+    """Settings for configuring the Map visibility."""
 
     practice_mod: PracticeModMode = PracticeModMode.disabled
     """How accessible is the Practice Mod."""
