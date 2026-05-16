@@ -38,7 +38,7 @@ if TYPE_CHECKING:
 
     from retro_data_structures.formats.mlvl import Mlvl
     from retro_data_structures.formats.mrea import Area
-    from retro_data_structures.formats.script_object import InstanceIdRef
+    from retro_data_structures.formats.script_object import InstanceIdRef, InstanceRef
 
     from open_prime_rando.patcher_editor import PatcherEditor
 
@@ -309,16 +309,17 @@ def torvus_temple(editor: PatcherEditor, mlvl: Mlvl, area: Area) -> None:
     """
     Remove cosmetic objects from Torvus Temple to minimize the chance of crash via alloc failure
     """
-    to_remove = [
-        "Thrust1",
+    to_remove: list[InstanceRef] = []
+
+    for name in (
         "Thrust1",
         "Thrust2",
-        "Thrust2",
         "Looping Thrust w/Doppler",
-        "Looping Thrust w/Doppler",
+        "SwampCrateDebris",
         "GENERATE GIBS",
-    ]
-    to_remove.extend(["SwampCrateDebris"] * 7)
+    ):
+        for layer in area.all_layers:
+            to_remove.extend(layer.get_all_instances_with_name(name))
 
     for obj in to_remove:
         area.remove_instance(obj)
