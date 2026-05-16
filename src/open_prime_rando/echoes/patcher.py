@@ -213,6 +213,7 @@ def _apply_patches(editor: PatcherEditor, configuration: RandoConfiguration, out
     )
 
     # general changes
+    general_changes.apply_corrupted_memory_card_change(editor)
     area_patcher.add_global_function(general_changes.allow_skippable_cutscenes)
     area_patcher.add_global_function(general_changes.loop_conditional_relays)
 
