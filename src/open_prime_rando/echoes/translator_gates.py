@@ -30,6 +30,10 @@ class GateHoloInstances(pydantic.BaseModel):
 
 @dataclasses.dataclass(frozen=True, kw_only=True)
 class TranslatorGateModification(pydantic.BaseModel):
+    """
+    Contains changes for a given translator gate.
+    """
+
     holo1: GateHoloInstances = GateHoloInstances(
         hologram="Gate Holo 1",
         glow="Glow For Holo 1",
@@ -81,6 +85,10 @@ TRANSLATOR_DATA: dict[TranslatorRequirement, TranslatorData] = {
 def patch_translator_gate(
     editor: PatcherEditor, mlvl: Mlvl, area: Area, modification: TranslatorGateModification
 ) -> None:
+    """
+    Change the color and item requirement for a given translator gate.
+    """
+
     translator_data = TRANSLATOR_DATA[modification.translator]
 
     # edit glow color
