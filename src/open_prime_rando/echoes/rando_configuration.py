@@ -64,6 +64,9 @@ class RandoConfiguration(BaseModel):
     practice_mod: PracticeModMode = PracticeModMode.disabled
     """How accessible is the Practice Mod."""
 
+    auto_enabled_elevators: bool = False
+    """Makes the elevators to different areas to be pre-scanned."""
+
     inverted_mode: bool = False
     """Whether or not to use inverted mode, where Light and Dark Aether is inverted."""
 

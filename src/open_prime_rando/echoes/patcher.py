@@ -41,7 +41,6 @@ if TYPE_CHECKING:
     from open_prime_rando.dol_patching.echoes.dol_patches import EchoesDolVersion
     from open_prime_rando.echoes.rando_configuration import AreaReference, RandoConfiguration
 
-
 LOG = logging.getLogger("echoes_patcher")
 
 
@@ -97,9 +96,6 @@ def _default_dol_patches() -> dol_patcher.EchoesDolPatchesData:
         teleporter_sounds=True,
         dangerous_energy_tank=False,
     )
-
-
-_ALL_FEATURES = False
 
 
 def edit_starting_area_dol(editor: PatcherEditor, version: EchoesDolVersion, starting_area: AreaReference) -> None:
@@ -220,6 +216,9 @@ def _apply_patches(editor: PatcherEditor, configuration: RandoConfiguration, out
     area_patcher.add_global_function(general_changes.allow_skippable_cutscenes)
     area_patcher.add_global_function(general_changes.loop_conditional_relays)
 
+    if configuration.auto_enabled_elevators:
+        auto_enabled_elevator_patches.register(area_patcher)
+
     # area changes
     small_randomizations.register_small_randomizations(area_patcher, rng)
 
@@ -246,9 +245,6 @@ def _apply_patches(editor: PatcherEditor, configuration: RandoConfiguration, out
                         modification=translator_gate_change,
                     ),
                 )
-
-    if _ALL_FEATURES:
-        auto_enabled_elevator_patches.apply_auto_enabled_elevators_patch(editor)
 
     if configuration.practice_mod != open_prime_rando_practice_mod.PracticeModMode.disabled:
         practice_mod.patch_dol(

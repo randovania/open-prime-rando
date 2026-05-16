@@ -7,6 +7,7 @@
         "mrea_id": 1655756413
     },
     "practice_mod": "full",
+    "auto_enabled_elevators": true,
     "world_changes": [
         {
             "mlvl_id": 1006255871,
