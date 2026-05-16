@@ -28,7 +28,7 @@ _AREAS_TO_SKIP = {
 }
 
 
-def _swap_dark_world(editor: PatcherEditor):
+def _swap_dark_world(editor: PatcherEditor) -> None:
     for world_id in _WORLDS:
         world = editor.get_mlvl(world_id)
 
@@ -47,10 +47,15 @@ def _swap_dark_world(editor: PatcherEditor):
 
             mapa_id = world.mapw.get_mapa_id(area.index)
             mapa = editor.get_file(mapa_id, Mapa)
-            mapa.raw.type = not is_dark_world
+            mapa.is_dark_world = not is_dark_world
 
 
-def _copy_safe_zones(dark: Area, dark_layer: ScriptLayer, light_layer: ScriptLayer, special_ids: set):
+def _copy_safe_zones(
+    dark: Area,
+    dark_layer: ScriptLayer,
+    light_layer: ScriptLayer,
+    special_ids: set[InstanceId],
+) -> dict[InstanceId, ScriptInstance]:
     copied_safe_zones = {}
 
     for instance in list(dark_layer.instances):
@@ -74,8 +79,8 @@ def _copy_safe_zone_crystal(
     instance: ScriptInstance,
     copied_safe_zones: dict[InstanceId, ScriptInstance],
     dark: Area,
-    special_ids: set[int],
-):
+    special_ids: set[InstanceId],
+) -> bool:
     targets_special = False
 
     for conn in instance.connections:
