@@ -7,8 +7,8 @@ from typing import TYPE_CHECKING
 
 from retro_data_structures.enums.echoes import Message, State
 from retro_data_structures.formats.script_object import Connection
-from retro_data_structures.properties.echoes.archetypes.Connection import Connection as SequenceConnection
 from retro_data_structures.properties.base_property import BaseObjectType
+from retro_data_structures.properties.echoes.archetypes.Connection import Connection as SequenceConnection
 from retro_data_structures.properties.echoes.archetypes.EditorProperties import EditorProperties
 from retro_data_structures.properties.echoes.archetypes.LayerSwitch import LayerSwitch
 from retro_data_structures.properties.echoes.archetypes.Transform import Transform
