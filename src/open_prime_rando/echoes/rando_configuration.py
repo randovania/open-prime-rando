@@ -8,6 +8,7 @@ from open_prime_rando.echoes.asset_ids.temple_grounds import LANDING_SITE_MREA
 from open_prime_rando.echoes.asset_ids.world import TEMPLE_GROUNDS_MLVL
 from open_prime_rando.echoes.pickups.schema import PickupModification
 from open_prime_rando.echoes.starting_items import StartingItemConfig
+from open_prime_rando.echoes.suit_cosmetics import SuitMapping
 from open_prime_rando.echoes.translator_gates import TranslatorGateModification
 
 AssetId = Annotated[int, Interval(ge=0, le=0xFFFFFFFF)]
@@ -84,4 +85,7 @@ class RandoConfiguration(BaseModel):
     """Whether or not to use inverted mode, where Light and Dark Aether is inverted."""
 
     world_changes: list[WorldChange]
-    """"""
+    """A list of World (and Area) specific changes."""
+
+    suit_replacement: SuitMapping = Field(default_factory=SuitMapping)
+    """Changes each of the three suit textures to one prepared custom texture set."""

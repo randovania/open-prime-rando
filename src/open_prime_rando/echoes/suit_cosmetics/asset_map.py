@@ -1,6 +1,13 @@
-from retro_data_structures.base_resource import AssetId
+from __future__ import annotations
 
-SUIT_ASSETS: dict[str, dict[AssetId, str]] = {
+import typing
+
+if typing.TYPE_CHECKING:
+    from collections.abc import Mapping
+
+    from retro_data_structures.base_resource import AssetId
+
+SUIT_ASSETS: Mapping[typing.Literal["varia", "dark", "light"], dict[AssetId, str]] = {
     "varia": {
         0x788432DA: "samus_varia_visor.TXTR",
         0xC2DE6C2A: "samus_varia_visor_emissive.TXTR",
