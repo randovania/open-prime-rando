@@ -2,12 +2,13 @@ from typing import Annotated
 
 from annotated_types import Interval
 from open_prime_rando_practice_mod import PracticeModMode
-from pydantic import BaseModel, StringConstraints
+from pydantic import BaseModel, Field, StringConstraints
 
 from open_prime_rando.echoes.asset_ids.temple_grounds import LANDING_SITE_MREA
 from open_prime_rando.echoes.asset_ids.world import TEMPLE_GROUNDS_MLVL
 from open_prime_rando.echoes.pickups.schema import PickupModification
 from open_prime_rando.echoes.starting_items import StartingItemConfig
+from open_prime_rando.echoes.translator_gates import TranslatorGateModification
 
 AssetId = Annotated[int, Interval(ge=0, le=0xFFFFFFFF)]
 
@@ -23,8 +24,11 @@ class AreaChange(BaseModel):
     mrea_id: AssetId
     """The asset id of the MREA for this change."""
 
-    pickups: list[PickupModification]
+    pickups: list[PickupModification] = Field(default_factory=list)
     """Either a modification for an existing pickup in this area, or a new pickup to add."""
+
+    translator_gates: list[TranslatorGateModification] = Field(default_factory=list)
+    """A modification for an existing translator gate in this area."""
 
 
 class WorldChange(BaseModel):

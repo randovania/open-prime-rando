@@ -771,6 +771,14 @@
                     ]
                 },
                 {
+                    "mrea_id": 2970881060,
+                    "translator_gates": [
+                        {
+                            "translator": "unlocked"
+                        }
+                    ]
+                },
+                {
                     "mrea_id": 1353937573,
                     "pickups": [
                         {
@@ -1767,6 +1775,47 @@
                                 "conversion": []
                             },
                             "progressive_stages": []
+                        }
+                    ]
+                },
+                {
+                    "mrea_id": 2731245106,
+                    "translator_gates": [
+                        {
+                            "holo1": {
+                                "hologram": 131426,
+                                "glow": 131431
+                            },
+                            "holo2": {
+                                "hologram": 131408,
+                                "glow": 131415
+                            },
+                            "conditional_relay": 131459,
+                            "translator": "cobalt"
+                        },
+                        {
+                            "holo1": {
+                                "hologram": 131268,
+                                "glow": 131323
+                            },
+                            "holo2": {
+                                "hologram": 131273,
+                                "glow": 131237
+                            },
+                            "conditional_relay": 131458,
+                            "translator": "cobalt"
+                        },
+                        {
+                            "holo1": {
+                                "hologram": 131438,
+                                "glow": 131442
+                            },
+                            "holo2": {
+                                "hologram": 131441,
+                                "glow": 131444
+                            },
+                            "conditional_relay": 131460,
+                            "translator": "cobalt"
                         }
                     ]
                 }
@@ -3128,6 +3177,30 @@
         {
             "mlvl_id": 1039999561,
             "area_changes": [
+                {
+                    "mrea_id": 3863006870,
+                    "translator_gates": [
+                        {
+                            "holo1": {
+                                "hologram": "Gate Holo 1",
+                                "glow": 1770227
+                            },
+                            "translator": "amber"
+                        },
+                        {
+                            "holo1": {
+                                "hologram": "Lore Hologram",
+                                "glow": 1769711
+                            },
+                            "holo2": {
+                                "hologram": "Lore Hologram",
+                                "glow": 1769711
+                            },
+                            "conditional_relay": "Does Player Have Correct Translator?",
+                            "translator": "violet"
+                        }
+                    ]
+                },
                 {
                     "mrea_id": 2114709145,
                     "pickups": [

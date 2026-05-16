@@ -27,6 +27,7 @@ from open_prime_rando.echoes import (
     small_randomizations,
     specific_area_patches,
     starting_items,
+    translator_gates,
 )
 from open_prime_rando.echoes.asset_ids import world
 from open_prime_rando.echoes.elevators import auto_enabled_elevator_patches
@@ -230,6 +231,16 @@ def _apply_patches(editor: PatcherEditor, configuration: RandoConfiguration, out
                         pickups.patch_pickup,
                         modification=pickup_change,
                         disable_hud_popup=disable_hud_popup,
+                    ),
+                )
+
+            for translator_gate_change in area_change.translator_gates:
+                area_patcher.add_raw_function(
+                    world_change.mlvl_id,
+                    area_change.mrea_id,
+                    functools.partial(
+                        translator_gates.patch_translator_gate,
+                        modification=translator_gate_change,
                     ),
                 )
 
