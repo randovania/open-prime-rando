@@ -130,6 +130,8 @@ def _move_safe_zones(world: Mlvl, pairs: list[tuple[int, int]]):
 
 
 def apply_inverted(editor: PatcherEditor) -> None:
+    # FIXME: change to use AreaPatcher.
+    # This will be quite involved as current functions expect to operate on pairs
     _swap_dark_world(editor)
 
     _move_safe_zones(editor.get_mlvl(world_ids.TEMPLE_GROUNDS_MLVL), area_pairs.TG_PAIRS)
