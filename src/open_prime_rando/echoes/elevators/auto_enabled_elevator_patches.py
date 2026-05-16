@@ -1,3 +1,8 @@
+from __future__ import annotations
+
+import functools
+from typing import TYPE_CHECKING
+
 from retro_data_structures.enums.echoes import Message, State
 from retro_data_structures.properties.echoes.archetypes.EditorProperties import EditorProperties
 from retro_data_structures.properties.echoes.objects.Timer import Timer
@@ -10,7 +15,13 @@ from open_prime_rando.echoes.asset_ids import (
     torvus_bog,
     world,
 )
-from open_prime_rando.patcher_editor import PatcherEditor
+
+if TYPE_CHECKING:
+    from retro_data_structures.formats.mlvl import Mlvl
+    from retro_data_structures.formats.mrea import Area
+
+    from open_prime_rando.area_patcher import AreaPatcher
+    from open_prime_rando.patcher_editor import PatcherEditor
 
 ELEVATOR_MEMORY_RELAY_PER_MREA = {
     world.GREAT_TEMPLE_MLVL: {
@@ -41,19 +52,33 @@ ELEVATOR_MEMORY_RELAY_PER_MREA = {
 }
 
 
-def apply_auto_enabled_elevators_patch(editor: PatcherEditor) -> None:
+def patch_elevator(
+    editor: PatcherEditor,
+    mlvl: Mlvl,
+    area: Area,
+    memory_relay_id: int,
+) -> None:
+    """Makes it that the elevator is automatically started, by activating the given memory relay."""
+    relay = area.get_instance(memory_relay_id)
+
+    timer = area.get_layer("Default").add_instance_with(
+        Timer(
+            editor_properties=EditorProperties(name="Timer - Auto enable elevator", active=False),
+            time=0.001,
+            auto_start=True,
+        )
+    )
+    timer.add_connection(State.Zero, Message.Activate, relay)
+
+
+def register(area_patcher: AreaPatcher) -> None:
     """
-    Patches that activates every elevator on room load
+    Register for every area that has a cross-region elevator to be automatically enabled.
     """
     for mlvl_id, areas in ELEVATOR_MEMORY_RELAY_PER_MREA.items():
         for mrea_id, memory_relay_id in areas.items():
-            area = editor.get_area(mlvl_id, mrea_id)
-            timer = area.get_layer("Default").add_instance_with(
-                Timer(
-                    editor_properties=EditorProperties(name="Timer - Auto enable elevator", active=False),
-                    time=0.001,
-                    auto_start=True,
-                )
+            area_patcher.add_raw_function(
+                mlvl_id,
+                mrea_id,
+                functools.partial(patch_elevator, memory_relay_id=memory_relay_id),
             )
-            relay = area.get_instance(memory_relay_id)
-            timer.add_connection(State.Zero, Message.Activate, relay)
