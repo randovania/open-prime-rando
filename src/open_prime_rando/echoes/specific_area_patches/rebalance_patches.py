@@ -939,8 +939,7 @@ def dynamo_works_dynamic_layer_loading(editor: PatcherEditor, mlvl: Mlvl, area: 
             ),
             is_dynamic=True,
             layer=LayerSwitch(
-                area_id=sanctuary_fortress.DYNAMO_WORKS_INTERNAL_ID,
-                layer_number=area.get_layer("1st Pass").index
+                area_id=sanctuary_fortress.DYNAMO_WORKS_INTERNAL_ID, layer_number=area.get_layer("1st Pass").index
             ),
         )
     )
@@ -954,8 +953,7 @@ def dynamo_works_dynamic_layer_loading(editor: PatcherEditor, mlvl: Mlvl, area: 
             ),
             is_dynamic=True,
             layer=LayerSwitch(
-                area_id=sanctuary_fortress.DYNAMO_WORKS_INTERNAL_ID,
-                layer_number=dump_during_battle.index
+                area_id=sanctuary_fortress.DYNAMO_WORKS_INTERNAL_ID, layer_number=dump_during_battle.index
             ),
         )
     )
@@ -969,10 +967,7 @@ def dynamo_works_dynamic_layer_loading(editor: PatcherEditor, mlvl: Mlvl, area: 
                 transform=Transform(position=Vector(174.5, 228.3, -19.3), scale=Vector(2.0, 2.0, 2.0)),
             ),
             is_dynamic=True,
-            layer=LayerSwitch(
-                area_id=sanctuary_fortress.DYNAMO_WORKS_INTERNAL_ID,
-                layer_number=tunnel_hints.index
-            ),
+            layer=LayerSwitch(area_id=sanctuary_fortress.DYNAMO_WORKS_INTERNAL_ID, layer_number=tunnel_hints.index),
         )
     )
 
