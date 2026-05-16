@@ -133,11 +133,15 @@ try:
         ) -> None:
             """Creates the ISO with all the files written so far."""
 
+            print("Adding files to the DiscPatcher")
+
             for name, file in self._files.items():
                 if isinstance(file, _MemoryStringIo):
-                    self.patcher.add_file(name, file.data.encode("utf-8"))
+                    file_data = file.data.encode("utf-8")
                 else:
-                    self.patcher.add_file(name, file.data)
+                    file_data = file.data
+                print(f"- {name}: {hashlib.sha256(file_data).hexdigest()}")
+                self.patcher.add_file(name, file_data)
 
             self._files.clear()
 
@@ -151,7 +155,7 @@ try:
             for file in data.meta().fst():
                 if file.is_file:
                     contents = data.read_file(file).read()
-                    print(f"- {file}: {hashlib.sha256(contents).hexdigest()}")
+                    print(f"- {file.path}: {hashlib.sha256(contents).hexdigest()}")
 
             writer = nod_rs.DiscWriter(final_iso, format)
             finalize = writer.process(
