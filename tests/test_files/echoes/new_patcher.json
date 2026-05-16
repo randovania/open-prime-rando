@@ -5056,5 +5056,10 @@
             "item": 97,
             "capacity": 1
         }
-    ]
+    ],
+    "suit_replacement": {
+        "varia": "player1",
+        "dark": "player2",
+        "light": "player3"
+    }
 }

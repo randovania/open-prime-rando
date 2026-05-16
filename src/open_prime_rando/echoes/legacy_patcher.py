@@ -26,7 +26,7 @@ from open_prime_rando.echoes.elevators.elevator_rando import patch_elevator
 from open_prime_rando.echoes.general_changes import apply_corrupted_memory_card_change
 from open_prime_rando.echoes.small_randomizations import register_small_randomizations
 from open_prime_rando.echoes.specific_area_patches import required_fixes
-from open_prime_rando.echoes.suit_cosmetics import apply_custom_suits
+from open_prime_rando.echoes.suit_cosmetics import SuitMapping, SuitSkin, apply_custom_suits
 from open_prime_rando.patcher_editor import PatcherEditor
 from open_prime_rando.validator_with_default import DefaultValidatingDraft7Validator
 
@@ -163,7 +163,14 @@ def patch_paks(
 
     status_update("Modifying areas", 0)
     apply_area_modifications(editor, configuration["worlds"], status_update)
-    apply_custom_suits(editor, configuration["cosmetics"]["suits"])
+    apply_custom_suits(
+        editor,
+        SuitMapping(
+            varia=SuitSkin(configuration["cosmetics"]["suits"]["varia"]),
+            dark=SuitSkin(configuration["cosmetics"]["suits"]["dark"]),
+            light=SuitSkin(configuration["cosmetics"]["suits"]["light"]),
+        ),
+    )
 
     # Save our changes
     editor.build_modified_files()

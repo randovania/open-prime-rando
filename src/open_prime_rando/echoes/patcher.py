@@ -27,6 +27,7 @@ from open_prime_rando.echoes import (
     small_randomizations,
     specific_area_patches,
     starting_items,
+    suit_cosmetics,
     translator_gates,
 )
 from open_prime_rando.echoes.asset_ids import world
@@ -186,6 +187,7 @@ def _apply_patches(editor: PatcherEditor, configuration: RandoConfiguration, out
     specific_area_patches.rebalance_patches.register_all(area_patcher)
 
     add_pickup_map_icon(editor)
+    suit_cosmetics.apply_custom_suits(editor, configuration.suit_replacement)
 
     # edit frontend
     area_patcher.add_frontend_function(
