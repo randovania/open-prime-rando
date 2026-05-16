@@ -238,7 +238,6 @@ def _apply_patches(editor: PatcherEditor, configuration: RandoConfiguration, out
 
     if _ALL_FEATURES:
         auto_enabled_elevator_patches.apply_auto_enabled_elevators_patch(editor)
-        inverted.apply_inverted(editor)
 
     if configuration.practice_mod != open_prime_rando_practice_mod.PracticeModMode.disabled:
         practice_mod.patch_dol(
