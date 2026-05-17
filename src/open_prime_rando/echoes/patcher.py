@@ -10,6 +10,7 @@ import open_prime_rando_practice_mod
 from PIL import Image
 from ppc_asm.assembler import ppc
 from retro_data_structures.formats.banner import Banner
+from retro_data_structures.formats.strg import Strg
 from retro_data_structures.game_check import Game
 
 from open_prime_rando import practice_mod
@@ -40,7 +41,7 @@ if TYPE_CHECKING:
     from pathlib import Path
 
     from open_prime_rando.dol_patching.echoes.dol_patches import EchoesDolVersion
-    from open_prime_rando.echoes.rando_configuration import AreaReference, RandoConfiguration
+    from open_prime_rando.echoes.rando_configuration import AreaReference, RandoConfiguration, StringChange
 
 LOG = logging.getLogger("echoes_patcher")
 
@@ -172,6 +173,11 @@ def add_pickup_map_icon(editor: PatcherEditor) -> None:
         editor.ensure_present(pak, pickup_map_icon_id)
 
 
+def edit_string(editor: PatcherEditor, change: StringChange) -> None:
+    strg = editor.get_file(change.strg_id, Strg)
+    strg.set_string_list(change.strings)
+
+
 def _apply_patches(editor: PatcherEditor, configuration: RandoConfiguration, output: IsoFileWriter) -> None:
     custom_assets.create_custom_assets(editor)
     dol_version = dol_patcher.apply_patches(editor.dol, _default_dol_patches())
@@ -197,6 +203,9 @@ def _apply_patches(editor: PatcherEditor, configuration: RandoConfiguration, out
         )
     )
     logbook.patch_logbook(editor, dol_version)
+
+    for string_change in configuration.string_changes:
+        edit_string(editor, string_change)
 
     # edit starting area
     edit_starting_area_dol(editor, dol_version, configuration.starting_area)
