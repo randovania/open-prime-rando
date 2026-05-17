@@ -52,14 +52,12 @@ class NewHierarchyEntry[T: ScanTreeInstance]:
         Creates it first, if necessary.
         """
 
-        if cls._name_string_table_id is None:
-            cls._name_string_table_id = editor.duplicate_asset(
-                0x2E681FEF,
-                f"{cls.__name__}Logbook.STRG",
-            )
-            strg = editor.get_file(cls._name_string_table_id, Strg)
+        asset_name = f"{cls.__name__}Logbook.STRG"
+        if not editor.does_asset_exists(asset_name):
+            editor.duplicate_asset(0x2E681FEF, asset_name)
+            strg = editor.get_file(asset_name, Strg)
             strg.set_strings_by_name_dict({})
-        return cls._name_string_table_id
+        return editor.resolve_asset_id(asset_name)
 
     def apply(
         self, editor: PatcherEditor, tree: Tree, hierarchy_entries: list[HierEntry], dol_version: EchoesDolVersion

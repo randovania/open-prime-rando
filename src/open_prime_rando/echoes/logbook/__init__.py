@@ -27,11 +27,11 @@ def _patch_dark_temple_key_scans(editor: PatcherEditor) -> None:
     """
     Edit the SCANs for the dark temple key hints to use the temple key model in the logbook.
     """
-
     scan_ids = (0xA9B11356, 0x8C669B58, 0x813068D5)
     for scan_id in scan_ids:
         scan = editor.get_file(scan_id, Scan)
         with scan.scannable_object_info.edit_properties(ScannableObjectInfo) as info:
+            # TODO: when we introduce colored temple keys, update this with it
             info.animated_model.ancs = 0x41C2513F
             info.animated_model.character_index = 1
             info.animated_model.initial_anim = 1
