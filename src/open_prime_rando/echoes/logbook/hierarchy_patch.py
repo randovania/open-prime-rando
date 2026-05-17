@@ -74,6 +74,7 @@ HIERARCHY_PATCHES = [
         320,  # Inventory -> Visors
         None,
         (
+            # in some order: Combat Visor, Scan Visor, Dark Visor, Echo Visor
             26,
             139,
             172,
