@@ -82,6 +82,9 @@ def register_all(area_patcher: AreaPatcher) -> None:
         main_reactor_dynamic_layer_loading,
         storage_d_room_reload,
         dynamo_works_dynamic_layer_loading,
+        dark_agon_temple_key_scans,
+        dark_torvus_temple_key_scans,
+        hive_temple_key_scans,
     ]:
         area_patcher.add_function(func)
 
@@ -1392,3 +1395,33 @@ def dynamo_works_dynamic_layer_loading(editor: PatcherEditor, mlvl: Mlvl, area: 
     post_sg_layer_loading_counter.add_connection(State.MaxReached, Message.Play, spider_guardian_gone_controller)
     post_sg_layer_loading_counter.add_connection(State.MaxReached, Message.Play, quads_dynamic_controller)
     post_sg_layer_loading_counter.add_connection(State.MaxReached, Message.Play, dump_during_battle_controller)
+
+
+def _remove_gate_key_scans(area: Area) -> None:
+    """Remove all the gate key scans except for the "No Keys" variant."""
+
+    pois = [
+        area.get_instance(poi_name) for poi_name in ("POI - No Keys", "POI - 1 Key", "POI - 2 Keys", "POI - 3 Keys")
+    ]
+    for counter_name in ("1 Key", "2 Key", "3 Key"):
+        counter = area.get_instance(counter_name)
+        for poi in pois:
+            counter.remove_all_connections_to(poi)
+
+
+@decorate_patcher(AGON_WASTES_MLVL, agon_wastes.DARK_AGON_TEMPLE_MREA)
+def dark_agon_temple_key_scans(editor: PatcherEditor, mlvl: Mlvl, area: Area) -> None:
+    """Remove all the gate key scans except for the "No Keys" variant."""
+    _remove_gate_key_scans(area)
+
+
+@decorate_patcher(TORVUS_BOG_MLVL, torvus_bog.DARK_TORVUS_TEMPLE_MREA)
+def dark_torvus_temple_key_scans(editor: PatcherEditor, mlvl: Mlvl, area: Area) -> None:
+    """Remove all the gate key scans except for the "No Keys" variant."""
+    _remove_gate_key_scans(area)
+
+
+@decorate_patcher(SANCTUARY_FORTRESS_MLVL, sanctuary_fortress.HIVE_TEMPLE_ACCESS_MREA)
+def hive_temple_key_scans(editor: PatcherEditor, mlvl: Mlvl, area: Area) -> None:
+    """Remove all the gate key scans except for the "No Keys" variant."""
+    _remove_gate_key_scans(area)
