@@ -3,6 +3,7 @@ from __future__ import annotations
 import dataclasses
 import typing
 
+from retro_data_structures.base_resource import NameOrAssetId
 from retro_data_structures.enums.echoes import InventorySlotEnum, PlayerItemEnum
 from retro_data_structures.formats import Strg
 from retro_data_structures.formats.hier import HierEntry
@@ -29,6 +30,12 @@ if typing.TYPE_CHECKING:
 
 
 type ScanTreeInstance = ScanTreeCategory | ScanTreeInventory | ScanTreeScan | ScanTreeMenu | ScanTreeSlider
+
+
+class HierarchySharedProperties(typing.TypedDict):
+    editor_properties: EditorProperties
+    name_string_table: AssetId
+    name_string_name: str
 
 
 @dataclasses.dataclass(frozen=True)
@@ -65,6 +72,14 @@ class NewHierarchyEntry[T: ScanTreeInstance]:
         hierarchy_entries.append(self._create_hier_entry(editor))
 
         return tree.add_new_instance(self._create_instance(editor))
+
+    @typing.final
+    def _shared_properties(self, editor: PatcherEditor) -> HierarchySharedProperties:
+        return HierarchySharedProperties(
+            editor_properties=EditorProperties(name=self.name_string_name),
+            name_string_table=self.name_string_table_id(editor),
+            name_string_name=self.name_string_name,
+        )
 
     def _create_instance(self, editor: PatcherEditor) -> T:
         """Creates a new instance for this entry."""
@@ -116,9 +131,7 @@ class NewInventoryEntry(NewHierarchyEntry[ScanTreeInventory]):
     @typing.override
     def _create_instance(self, editor: PatcherEditor) -> ScanTreeInventory:
         return ScanTreeInventory(
-            editor_properties=EditorProperties(name=self.model_name),
-            name_string_table=self.name_string_table_id(editor),
-            name_string_name=self.name_string_name,
+            **self._shared_properties(editor),
             inventory_slot=self.slot_index,
             scannable_parameters=ScannableParameters(
                 scannable_info0=self._scan_id(editor),
@@ -135,7 +148,23 @@ class NewCategoryEntry(NewHierarchyEntry[ScanTreeCategory]):
     @typing.override
     def _create_instance(self, editor: PatcherEditor) -> ScanTreeCategory:
         return ScanTreeCategory(
-            editor_properties=EditorProperties(name=self.name_string_name),
-            name_string_table=self.name_string_table_id(editor),
-            name_string_name=self.name_string_name,
+            **self._shared_properties(editor),
+        )
+
+
+@dataclasses.dataclass(frozen=True)
+class NewScanEntry(NewHierarchyEntry[ScanTreeScan]):
+    scan_id: NameOrAssetId
+
+    @typing.override
+    def _scan_id(self, editor: PatcherEditor) -> AssetId:
+        return editor.resolve_asset_id(self.scan_id)
+
+    @typing.override
+    def _create_instance(self, editor: PatcherEditor) -> ScanTreeScan:
+        return ScanTreeScan(
+            **self._shared_properties(editor),
+            scannable_parameters=ScannableParameters(
+                scannable_info0=self._scan_id(editor),
+            ),
         )

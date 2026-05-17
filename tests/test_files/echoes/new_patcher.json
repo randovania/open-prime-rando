@@ -5073,6 +5073,30 @@
                 "",
                 "The Flying Ing Cache in &push;&main-color=#FF3333;Defiled Shrine&pop; contains &push;&main-color=#FF6705B3;an item&pop;."
             ]
+        },
+        {
+            "strg_id": 3898145717,
+            "strings": [
+                "Security system initiated.\nThree keys are required to access &push;&main-color=#FF6705B3;Dark Agon Temple&pop;.",
+                "They are scattered throughout &push;&main-color=#FF3333;Dark Agon Wastes&pop;.",
+                "Three keys are required to access &push;&main-color=#FF6705B3;Dark Agon Temple&pop;.\nThey are scattered throughout &push;&main-color=#FF3333;Dark Agon Wastes&pop;."
+            ]
+        },
+        {
+            "strg_id": 1886029647,
+            "strings": [
+                "Security system initiated.\nThree keys are required to access &push;&main-color=#FF6705B3;Dark Torvus Temple&pop;.",
+                "They are scattered throughout &push;&main-color=#FF3333;Dark Torvus Bog&pop;.",
+                "Three keys are required to access &push;&main-color=#FF6705B3;Dark Torvus Temple&pop;.\nThey are scattered throughout &push;&main-color=#FF3333;Dark Torvus Bog&pop;."
+            ]
+        },
+        {
+            "strg_id": 2101114050,
+            "strings": [
+                "Security system initiated.\nThree keys are required to access &push;&main-color=#FF6705B3;Hive Temple&pop;.",
+                "They are scattered throughout &push;&main-color=#FF3333;Ing Hive&pop;.",
+                "Three keys are required to access &push;&main-color=#FF6705B3;Hive Temple&pop;.\nThey are scattered throughout &push;&main-color=#FF3333;Ing Hive&pop;."
+            ]
         }
     ]
 }

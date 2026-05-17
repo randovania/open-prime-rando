@@ -10,6 +10,7 @@ from open_prime_rando.echoes.logbook.new_entry import (
     NewCategoryEntry,
     NewHierarchyEntry,
     NewInventoryEntry,
+    NewScanEntry,
 )
 
 if typing.TYPE_CHECKING:
@@ -219,6 +220,24 @@ HIERARCHY_PATCHES = [
                                     HierarchyPatch(289, "Sky Temple Key 8"),
                                     HierarchyPatch(52, "Sky Temple Key 9"),
                                 ),
+                            ),
+                        ),
+                    ),
+                    HierarchyPatch(
+                        NewCategoryEntry("DarkTempleKeyHints"),
+                        "&line-spacing=75;Dark Temple\nKey Hints",
+                        (
+                            HierarchyPatch(
+                                NewScanEntry("DarkAgonKeyHints", 0xA9B11356),
+                                "Dark Agon Temple",
+                            ),
+                            HierarchyPatch(
+                                NewScanEntry("DarkTorvusKeyHints", 0x8C669B58),
+                                "Dark Torvus Temple",
+                            ),
+                            HierarchyPatch(
+                                NewScanEntry("IngHiveKeyHints", 0x813068D5),
+                                "Hive Temple",
                             ),
                         ),
                     ),
