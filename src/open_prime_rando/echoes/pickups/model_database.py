@@ -15,7 +15,7 @@ PICKUP_MODELS = {
             scale=Vector(1.75, 1.75, 1.75),
             rotation=Vector(0.0, 0.0, -78.7218),
         ),
-        lighting=ModelLighting(ambient_color=Color(1.0, 1.0, 0.0, 0.75)),
+        lighting=ModelLighting(unk_bool=False, ambient_color=Color(1.0, 1.0, 0.0, 0.75)),
         auto_spin=True,
     ),
     "ChargeBeam": PickupModel(
@@ -134,9 +134,6 @@ PICKUP_MODELS = {
     ),
     "MassiveDamage": PickupModel(
         model=0xCD995C16,
-        animation=ModelAnim(
-            ancs=0xA3E787B7,
-        ),
         transform=ModelTransform(
             scale=Vector(3.0, 3.0, 3.0),
         ),

@@ -92,13 +92,13 @@ class DoorType:
             if instance.script_type != Door:
                 continue
             for connection in instance.connections:
-                if dock.id_matches(connection.target):
+                if dock.id.matches(connection.target):
                     return instance
         raise KeyError(f"no door found with a connection to {dock} in {area.name}")
 
     def patch_map_icon(self, mapa: Mapa, door: ScriptInstance) -> None:
         for obj in mapa.mappable_objects:
-            if door.id_matches(obj.editor_id):
+            if door.id.matches(obj.editor_id):
                 obj.object_type = self.map_icon.value
                 return
 

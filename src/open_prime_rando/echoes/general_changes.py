@@ -3,15 +3,20 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Final
 
 from retro_data_structures.enums.echoes import Message, PlayerItemEnum, State
+from retro_data_structures.formats import Mapa
+from retro_data_structures.formats.mapa import AreaVisibility
 from retro_data_structures.formats.strg import Strg
 from retro_data_structures.properties.echoes.archetypes.EditorProperties import EditorProperties
 from retro_data_structures.properties.echoes.objects import Camera, ConditionalRelay, Timer
 from retro_data_structures.properties.echoes.objects.Camera import FlagsCinematicCamera
 
+from open_prime_rando.echoes.asset_ids import agon_wastes, great_temple, sanctuary_fortress, torvus_bog
+
 if TYPE_CHECKING:
     from retro_data_structures.formats.mlvl import Mlvl
     from retro_data_structures.formats.mrea import Area
 
+    from open_prime_rando.echoes.rando_configuration import MapVisibility
     from open_prime_rando.patcher_editor import PatcherEditor
 
 
@@ -97,3 +102,31 @@ def loop_conditional_relays(editor: PatcherEditor, mlvl: Mlvl, area: Area) -> No
         conditional_relay.add_connection(
             State.Open, Message.Deactivate, timer
         )  # prevents activating the relay multiple times
+
+
+# Keep the energy controllers always visible on the map so we're always able to warp to that region.
+_AREAS_THAT_ALWAYS_VISIBLE = {
+    agon_wastes.AGON_ENERGY_CONTROLLER_MREA,
+    torvus_bog.TORVUS_ENERGY_CONTROLLER_MREA,
+    sanctuary_fortress.SANCTUARY_ENERGY_CONTROLLER_MREA,
+    great_temple.MAIN_ENERGY_CONTROLLER_MREA,
+}
+
+
+def change_map_visibility(editor: PatcherEditor, mlvl: Mlvl, area: Area, map_visibility: MapVisibility) -> None:
+    """
+    Changes the visibility mode of the map for the given area to be always visible or require a visit.
+    """
+    mapa_id = mlvl.mapw.get_mapa_id(area.index)
+    mapa = editor.get_file(mapa_id, Mapa)
+
+    if mapa.visibility_mode == AreaVisibility.Never:
+        return
+
+    always_visible = area.mrea_asset_id in _AREAS_THAT_ALWAYS_VISIBLE
+    never_visible = area.mrea_asset_id in map_visibility.areas_to_never_reveal
+
+    if (always_visible or map_visibility.reveal_map_at_start) and not never_visible:
+        mapa.visibility_mode = AreaVisibility.Always
+    else:
+        mapa.visibility_mode = AreaVisibility.VisitOrMapStation

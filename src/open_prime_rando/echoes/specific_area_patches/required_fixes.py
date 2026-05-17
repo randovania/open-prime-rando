@@ -4,6 +4,7 @@ import logging
 from typing import TYPE_CHECKING
 
 from retro_data_structures.enums.echoes import Message, State
+from retro_data_structures.formats.script_object import Connection
 from retro_data_structures.properties.echoes.archetypes.EditorProperties import EditorProperties
 from retro_data_structures.properties.echoes.archetypes.LayerSwitch import LayerSwitch
 from retro_data_structures.properties.echoes.archetypes.Transform import Transform
@@ -14,7 +15,9 @@ from retro_data_structures.properties.echoes.objects import (
     Pickup,
     Relay,
     ScriptLayerController,
+    SequenceTimer,
     SpawnPoint,
+    StreamedAudio,
     Switch,
     Timer,
     Trigger,
@@ -35,7 +38,7 @@ if TYPE_CHECKING:
 
     from retro_data_structures.formats.mlvl import Mlvl
     from retro_data_structures.formats.mrea import Area
-    from retro_data_structures.formats.script_object import InstanceIdRef
+    from retro_data_structures.formats.script_object import InstanceIdRef, InstanceRef
 
     from open_prime_rando.patcher_editor import PatcherEditor
 
@@ -87,11 +90,52 @@ def undertemple_access(editor: PatcherEditor, mlvl: Mlvl, area: Area) -> None:
 @decorate_patcher(AGON_WASTES_MLVL, agon_wastes.MAIN_REACTOR_MREA)
 def main_reactor(editor: PatcherEditor, mlvl: Mlvl, area: Area) -> None:
     """
-    Save some memory during DS1 fight.
+    Fix crashes related to room loading
+    and Dark Samus flashbang softlock.
     """
+
+    # Define Objects
     unload_relay = area.get_instance("Unload dock when door closed")
-    trigger = area.get_instance("Trigger Start DS Intro")
-    trigger.add_connection(State.Entered, Message.SetToZero, unload_relay)
+    spawn_point = area.get_instance("Spawn point Start DS Battle")
+    ds_death_stimer = area.get_instance("Dark Samus Death Sequence Transition")
+    start_death_cinema_relay = area.get_instance("[IN] Start Death Cinema")
+    intro_sequence_timer = area.get_instance("SequenceTimer Dark Samus Intro")
+
+    # Add a Looping Timer that always tries to start the Death Cinema
+    # cutscene, so if Dark Samus dies before the layer is finished loading
+    # it will start it when it does
+    death_cutscene_load_timer = area.get_layer("Dark Samus").add_instance_with(
+        Timer(
+            editor_properties=EditorProperties(
+                active=False,
+                name="Try to start Death Cinema",
+                transform=Transform(
+                    position=Vector(400.0, 92.0, 4.0),
+                    scale=Vector(2.0, 2.0, 2.0),
+                ),
+            ),
+            time=0.02,
+            auto_reset=True,
+            auto_start=True,
+        )
+    )
+
+    # Replace the Death Cinema start relay connection with the retry timer
+    sequence_connections = list(ds_death_stimer.connections)
+    sequence_connections[0] = Connection(State.Sequence, Message.Activate, death_cutscene_load_timer.id)
+    ds_death_stimer.connections = sequence_connections
+
+    # Make SequenceTimer reposition you immediately, so triggering the fight
+    # in wrong room will still properly stop room loading via AreaAutoLoadController
+    with intro_sequence_timer.edit_properties(SequenceTimer) as sequence_timer:
+        sequence_timer.sequence_connections[43].activation_times = [0.0]
+
+    # When player is in room, stop all room loading
+    spawn_point.add_connection(State.Zero, Message.SetToZero, unload_relay)
+
+    # Make looping timer start the death cinema, then make death cinema deactivate timer
+    death_cutscene_load_timer.add_connection(State.Zero, Message.SetToZero, start_death_cinema_relay)
+    start_death_cinema_relay.add_connection(State.Zero, Message.Deactivate, death_cutscene_load_timer)
 
 
 @decorate_patcher(TORVUS_BOG_MLVL, torvus_bog.SACRIFICIAL_CHAMBER_MREA)
@@ -133,22 +177,22 @@ def main_research(editor: PatcherEditor, mlvl: Mlvl, area: Area) -> None:
     relays = ((0x0B02E6, 0x0B02DE), (0x0B0303, 0x0B030D), (0x0B02F6, 0x0B02FA))
     _patch_echo_gate_softlock(area, 0x0B0315, relays)
 
+    # Make layer be inactive by default
     area.get_layer("Contraption").active = False
-    portal_spawn = area.get_instance(0x0B0056)
-    spawn_xfm = portal_spawn.get_properties_as(SpawnPoint).editor_properties.transform
 
-    contraption_controller = area.get_layer("Default").add_instance_with(
-        ScriptLayerController(
-            editor_properties=EditorProperties(name="Dynamic Increment Contraption", transform=spawn_xfm),
-            layer=LayerSwitch(
-                area_id=sanctuary_fortress.MAIN_RESEARCH_INTERNAL_ID, layer_number=area.get_layer("Contraption").index
-            ),
-            is_dynamic=True,
-        )
-    )
+    # Rename this existing object
+    contraption_layer_switch = area.get_instance("DYNAMIC Decrement Contraption")
+    contraption_layer_switch.name = "DYNAMIC Increment / Decrement Contraption"
+
+    # Add new Controller for the Spider Ball stuff, this layer
+    # gets incremented in Staging Area already but for room
+    # rando purposes, dynamically increment here as well
     spider_controller = area.get_layer("Default").add_instance_with(
         ScriptLayerController(
-            editor_properties=EditorProperties(name="Dynamic Increment Column Spiderball", transform=spawn_xfm),
+            editor_properties=EditorProperties(
+                name="Dynamic Increment Column Spiderball",
+                transform=Transform(position=Vector(-18.5, 150.6, -134.7), scale=Vector(2.0, 2.0, 2.0)),
+            ),
             layer=LayerSwitch(
                 area_id=sanctuary_fortress.MAIN_RESEARCH_INTERNAL_ID,
                 layer_number=area.get_layer("Column Spiderball").index,
@@ -157,9 +201,54 @@ def main_research(editor: PatcherEditor, mlvl: Mlvl, area: Area) -> None:
         )
     )
 
-    for controller in (contraption_controller, spider_controller):
-        portal_spawn.add_connection(State.Arrived, Message.Load, controller)
-        controller.add_connection(State.Arrived, Message.Play, controller)
+    # Same issue as previous layer controller
+    first_pass_controller = area.get_layer("Default").add_instance_with(
+        ScriptLayerController(
+            editor_properties=EditorProperties(
+                name="Dynamic Decrement 1st Pass Enemies",
+                transform=Transform(position=Vector(-20, 150.6, -134.7), scale=Vector(2.0, 2.0, 2.0)),
+            ),
+            layer=LayerSwitch(
+                area_id=sanctuary_fortress.MAIN_RESEARCH_INTERNAL_ID,
+                layer_number=area.get_layer("1st Pass Enemies").index,
+            ),
+            is_dynamic=True,
+        )
+    )
+
+    # Define objects
+    portal_spawn = area.get_instance(0xB0056)
+    initial_spiderball_trigger = area.get_instance(0xB015B)
+    short_battle_sAudio = area.get_instance("Short Battle (INACTIVE)")
+    demo_contraption_trigger = area.get_instance("Start Demo Contraption")
+    contraption_encounter_trigger = area.get_instance("Start Contraption Encounter")
+    memory_relay = area.get_instance("Unlock 0l")
+
+    # These objects get activated/deactivated upon lower portal spawn
+    # arrival, but since the layer they're from gets incremented dynamically
+    # upon spawn they won't receive said messages, so we're updating their
+    # default status from the start
+    with initial_spiderball_trigger.edit_properties(Trigger) as trigger1:
+        trigger1.editor_properties.active = True
+    with short_battle_sAudio.edit_properties(StreamedAudio) as sAudio:
+        sAudio.editor_properties.active = True
+    with demo_contraption_trigger.edit_properties(Trigger) as trigger2:
+        trigger2.editor_properties.active = False
+    with contraption_encounter_trigger.edit_properties(Trigger) as trigger3:
+        trigger3.editor_properties.active = True
+
+    # Activate/Deactivate layers upon lower portal arrival
+    portal_spawn.add_connection(State.Zero, Message.Decrement, first_pass_controller)
+    portal_spawn.add_connection(State.Zero, Message.Increment, spider_controller)
+    portal_spawn.add_connection(State.Zero, Message.Increment, contraption_layer_switch)
+    spider_controller.add_connection(State.Arrived, Message.Play, spider_controller)
+    contraption_layer_switch.add_connection(State.Arrived, Message.Play, contraption_layer_switch)
+
+    # Make memory relay deactivate controller objects
+    # so the caretaker stuff doesn't load again
+    memory_relay.add_connection(State.Active, Message.Deactivate, contraption_layer_switch)
+    memory_relay.add_connection(State.Active, Message.Deactivate, spider_controller)
+    memory_relay.add_connection(State.Active, Message.Deactivate, first_pass_controller)
 
 
 @decorate_patcher(TEMPLE_GROUNDS_MLVL, temple_grounds.HIVE_CHAMBER_B_MREA)
@@ -220,16 +309,17 @@ def torvus_temple(editor: PatcherEditor, mlvl: Mlvl, area: Area) -> None:
     """
     Remove cosmetic objects from Torvus Temple to minimize the chance of crash via alloc failure
     """
-    to_remove = [
-        "Thrust1",
+    to_remove: list[InstanceRef] = []
+
+    for name in (
         "Thrust1",
         "Thrust2",
-        "Thrust2",
         "Looping Thrust w/Doppler",
-        "Looping Thrust w/Doppler",
+        "SwampCrateDebris",
         "GENERATE GIBS",
-    ]
-    to_remove.extend(["SwampCrateDebris"] * 7)
+    ):
+        for layer in area.all_layers:
+            to_remove.extend(layer.get_all_instances_with_name(name))
 
     for obj in to_remove:
         area.remove_instance(obj)

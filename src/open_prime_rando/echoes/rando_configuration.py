@@ -2,12 +2,14 @@ from typing import Annotated
 
 from annotated_types import Interval
 from open_prime_rando_practice_mod import PracticeModMode
-from pydantic import BaseModel, StringConstraints
+from pydantic import BaseModel, Field, StringConstraints
 
 from open_prime_rando.echoes.asset_ids.temple_grounds import LANDING_SITE_MREA
 from open_prime_rando.echoes.asset_ids.world import TEMPLE_GROUNDS_MLVL
 from open_prime_rando.echoes.pickups.schema import PickupModification
 from open_prime_rando.echoes.starting_items import StartingItemConfig
+from open_prime_rando.echoes.suit_cosmetics import SuitMapping
+from open_prime_rando.echoes.translator_gates import TranslatorGateModification
 
 AssetId = Annotated[int, Interval(ge=0, le=0xFFFFFFFF)]
 
@@ -23,8 +25,11 @@ class AreaChange(BaseModel):
     mrea_id: AssetId
     """The asset id of the MREA for this change."""
 
-    pickups: list[PickupModification]
+    pickups: list[PickupModification] = Field(default_factory=list)
     """Either a modification for an existing pickup in this area, or a new pickup to add."""
+
+    translator_gates: list[TranslatorGateModification] = Field(default_factory=list)
+    """A modification for an existing translator gate in this area."""
 
 
 class WorldChange(BaseModel):
@@ -35,6 +40,16 @@ class WorldChange(BaseModel):
 
     area_changes: list[AreaChange]
     """The changes to apply to a MREA that belongs to this MLVL."""
+
+
+class MapVisibility(BaseModel):
+    """Configures how the map will be tweaked."""
+
+    reveal_map_at_start: bool = False
+    """Whether or not the map will be revealed at the start of the game."""
+
+    areas_to_never_reveal: list[AssetId] = Field(default_factory=list)
+    """Which areas are not revealed, even when `reveal_map_at_start` is True."""
 
 
 class RandoConfiguration(BaseModel):
@@ -57,8 +72,20 @@ class RandoConfiguration(BaseModel):
     starting_items: list[StartingItemConfig]
     """What is the starting inventory. Any item not listed will be set to 0."""
 
+    map_visibility: MapVisibility = Field(default_factory=MapVisibility)
+    """Settings for configuring the Map visibility."""
+
     practice_mod: PracticeModMode = PracticeModMode.disabled
     """How accessible is the Practice Mod."""
 
+    auto_enabled_elevators: bool = False
+    """Makes the elevators to different areas to be pre-scanned."""
+
+    inverted_mode: bool = False
+    """Whether or not to use inverted mode, where Light and Dark Aether is inverted."""
+
     world_changes: list[WorldChange]
-    """"""
+    """A list of World (and Area) specific changes."""
+
+    suit_replacement: SuitMapping = Field(default_factory=SuitMapping)
+    """Changes each of the three suit textures to one prepared custom texture set."""

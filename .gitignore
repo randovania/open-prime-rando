@@ -137,3 +137,5 @@ src/open_prime_rando/version.py
 # Deny certain files at root
 /*.txt
 /*.json
+
+.vscode/

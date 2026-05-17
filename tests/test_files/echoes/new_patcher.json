@@ -6,7 +6,11 @@
         "mlvl_id": 1006255871,
         "mrea_id": 1655756413
     },
+    "map_visibility": {
+        "reveal_map_at_start": true
+    },
     "practice_mod": "full",
+    "auto_enabled_elevators": true,
     "world_changes": [
         {
             "mlvl_id": 1006255871,
@@ -537,6 +541,244 @@
                                     "conversion": []
                                 }
                             ]
+                        },
+                        {
+                            "location": {
+                                "type": "custom",
+                                "exclude_memo_from_removal": false,
+                                "original_model": "MassiveDamage",
+                                "connections": [],
+                                "removals": [
+                                ],
+                                "collision_offset": {
+                                    "x": 0.0,
+                                    "y": 0.0,
+                                    "z": 1.0
+                                },
+                                "collision_size": {
+                                    "x": 1.0,
+                                    "y": 1.0,
+                                    "z": 2.0
+                                },
+                                "layer": "Default",
+                                "position": {
+                                    "x": -106,
+                                    "y": -172,
+                                    "z": -45
+                                }
+                            },
+                            "primary_stage": {
+                                "resources": [
+                                    {
+                                        "item": 58,
+                                        "amount": 1
+                                    }
+                                ],
+                                "appearance": {
+                                    "model_data": "MassiveDamage",
+                                    "sound": 0,
+                                    "jingle": {
+                                        "file_name": "/audio/itm_x_short_00.dsp",
+                                        "volume": 55
+                                    },
+                                    "hud_text": "Massive Damage acquired!",
+                                    "scan": "Massive Damage."
+                                },
+                                "conversion": []
+                            },
+                            "progressive_stages": []
+                        },
+                        {
+                            "location": {
+                                "type": "custom",
+                                "exclude_memo_from_removal": false,
+                                "original_model": "PowerBeam",
+                                "connections": [],
+                                "removals": [
+                                ],
+                                "collision_offset": {
+                                    "x": 0.0,
+                                    "y": 0.0,
+                                    "z": 1.0
+                                },
+                                "collision_size": {
+                                    "x": 1.0,
+                                    "y": 1.0,
+                                    "z": 2.0
+                                },
+                                "layer": "Default",
+                                "position": {
+                                    "x": -104,
+                                    "y": -172,
+                                    "z": -45
+                                }
+                            },
+                            "primary_stage": {
+                                "resources": [
+                                    {
+                                        "item": 0,
+                                        "amount": 1
+                                    }
+                                ],
+                                "appearance": {
+                                    "model_data": "PowerBeam",
+                                    "sound": 0,
+                                    "jingle": {
+                                        "file_name": "/audio/itm_x_short_00.dsp",
+                                        "volume": 55
+                                    },
+                                    "hud_text": "Power Beam acquired!",
+                                    "scan": "Power Beam."
+                                },
+                                "conversion": []
+                            },
+                            "progressive_stages": []
+                        },
+                        {
+                            "location": {
+                                "type": "custom",
+                                "exclude_memo_from_removal": false,
+                                "original_model": "ChargeBeam",
+                                "connections": [],
+                                "removals": [
+                                ],
+                                "collision_offset": {
+                                    "x": 0.0,
+                                    "y": 0.0,
+                                    "z": 1.0
+                                },
+                                "collision_size": {
+                                    "x": 1.0,
+                                    "y": 1.0,
+                                    "z": 2.0
+                                },
+                                "layer": "Default",
+                                "position": {
+                                    "x": -102,
+                                    "y": -172,
+                                    "z": -45
+                                }
+                            },
+                            "primary_stage": {
+                                "resources": [
+                                    {
+                                        "item": 22,
+                                        "amount": 1
+                                    }
+                                ],
+                                "appearance": {
+                                    "model_data": "ChargeBeam",
+                                    "sound": 0,
+                                    "jingle": {
+                                        "file_name": "/audio/itm_x_short_00.dsp",
+                                        "volume": 55
+                                    },
+                                    "hud_text": "Charge Beam acquired!",
+                                    "scan": "Charge Beam."
+                                },
+                                "conversion": []
+                            },
+                            "progressive_stages": []
+                        },
+                        {
+                            "location": {
+                                "type": "custom",
+                                "exclude_memo_from_removal": false,
+                                "original_model": "CombatVisor",
+                                "connections": [],
+                                "removals": [
+                                ],
+                                "collision_offset": {
+                                    "x": 0.0,
+                                    "y": 0.0,
+                                    "z": 1.0
+                                },
+                                "collision_size": {
+                                    "x": 1.0,
+                                    "y": 1.0,
+                                    "z": 2.0
+                                },
+                                "layer": "Default",
+                                "position": {
+                                    "x": -100,
+                                    "y": -172,
+                                    "z": -45
+                                }
+                            },
+                            "primary_stage": {
+                                "resources": [
+                                    {
+                                        "item": 8,
+                                        "amount": 1
+                                    }
+                                ],
+                                "appearance": {
+                                    "model_data": "CombatVisor",
+                                    "sound": 0,
+                                    "jingle": {
+                                        "file_name": "/audio/itm_x_short_00.dsp",
+                                        "volume": 55
+                                    },
+                                    "hud_text": "Combat Visor acquired!",
+                                    "scan": "Combat Visor."
+                                },
+                                "conversion": []
+                            },
+                            "progressive_stages": []
+                        },
+                        {
+                            "location": {
+                                "type": "custom",
+                                "exclude_memo_from_removal": false,
+                                "original_model": "ScanVisor",
+                                "connections": [],
+                                "removals": [
+                                ],
+                                "collision_offset": {
+                                    "x": 0.0,
+                                    "y": 0.0,
+                                    "z": 1.0
+                                },
+                                "collision_size": {
+                                    "x": 1.0,
+                                    "y": 1.0,
+                                    "z": 2.0
+                                },
+                                "layer": "Default",
+                                "position": {
+                                    "x": -98,
+                                    "y": -172,
+                                    "z": -45
+                                }
+                            },
+                            "primary_stage": {
+                                "resources": [
+                                    {
+                                        "item": 8,
+                                        "amount": 1
+                                    }
+                                ],
+                                "appearance": {
+                                    "model_data": "ScanVisor",
+                                    "sound": 0,
+                                    "jingle": {
+                                        "file_name": "/audio/itm_x_short_00.dsp",
+                                        "volume": 55
+                                    },
+                                    "hud_text": "Scan Visor acquired!",
+                                    "scan": "Scan Visor."
+                                },
+                                "conversion": []
+                            },
+                            "progressive_stages": []
+                        }
+                    ]
+                },
+                {
+                    "mrea_id": 2970881060,
+                    "translator_gates": [
+                        {
+                            "translator": "unlocked"
                         }
                     ]
                 },
@@ -1537,6 +1779,47 @@
                                 "conversion": []
                             },
                             "progressive_stages": []
+                        }
+                    ]
+                },
+                {
+                    "mrea_id": 2731245106,
+                    "translator_gates": [
+                        {
+                            "holo1": {
+                                "hologram": 131426,
+                                "glow": 131431
+                            },
+                            "holo2": {
+                                "hologram": 131408,
+                                "glow": 131415
+                            },
+                            "conditional_relay": 131459,
+                            "translator": "cobalt"
+                        },
+                        {
+                            "holo1": {
+                                "hologram": 131268,
+                                "glow": 131323
+                            },
+                            "holo2": {
+                                "hologram": 131273,
+                                "glow": 131237
+                            },
+                            "conditional_relay": 131458,
+                            "translator": "cobalt"
+                        },
+                        {
+                            "holo1": {
+                                "hologram": 131438,
+                                "glow": 131442
+                            },
+                            "holo2": {
+                                "hologram": 131441,
+                                "glow": 131444
+                            },
+                            "conditional_relay": 131460,
+                            "translator": "cobalt"
                         }
                     ]
                 }
@@ -2898,6 +3181,30 @@
         {
             "mlvl_id": 1039999561,
             "area_changes": [
+                {
+                    "mrea_id": 3863006870,
+                    "translator_gates": [
+                        {
+                            "holo1": {
+                                "hologram": "Gate Holo 1",
+                                "glow": 1770227
+                            },
+                            "translator": "amber"
+                        },
+                        {
+                            "holo1": {
+                                "hologram": "Lore Hologram",
+                                "glow": 1769711
+                            },
+                            "holo2": {
+                                "hologram": "Lore Hologram",
+                                "glow": 1769711
+                            },
+                            "conditional_relay": "Does Player Have Correct Translator?",
+                            "translator": "violet"
+                        }
+                    ]
+                },
                 {
                     "mrea_id": 2114709145,
                     "pickups": [
@@ -4752,5 +5059,10 @@
             "item": 97,
             "capacity": 1
         }
-    ]
+    ],
+    "suit_replacement": {
+        "varia": "player1",
+        "dark": "player2",
+        "light": "player3"
+    }
 }

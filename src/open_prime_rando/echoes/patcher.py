@@ -27,6 +27,8 @@ from open_prime_rando.echoes import (
     small_randomizations,
     specific_area_patches,
     starting_items,
+    suit_cosmetics,
+    translator_gates,
 )
 from open_prime_rando.echoes.asset_ids import world
 from open_prime_rando.echoes.elevators import auto_enabled_elevator_patches
@@ -39,7 +41,6 @@ if TYPE_CHECKING:
 
     from open_prime_rando.dol_patching.echoes.dol_patches import EchoesDolVersion
     from open_prime_rando.echoes.rando_configuration import AreaReference, RandoConfiguration
-
 
 LOG = logging.getLogger("echoes_patcher")
 
@@ -96,9 +97,6 @@ def _default_dol_patches() -> dol_patcher.EchoesDolPatchesData:
         teleporter_sounds=True,
         dangerous_energy_tank=False,
     )
-
-
-_ALL_FEATURES = False
 
 
 def edit_starting_area_dol(editor: PatcherEditor, version: EchoesDolVersion, starting_area: AreaReference) -> None:
@@ -178,6 +176,9 @@ def _apply_patches(editor: PatcherEditor, configuration: RandoConfiguration, out
     custom_assets.create_custom_assets(editor)
     dol_version = dol_patcher.apply_patches(editor.dol, _default_dol_patches())
 
+    if configuration.inverted_mode:
+        inverted.apply_inverted(editor)
+
     area_patcher = AreaPatcher(editor, list(world.NAME_TO_ID_MLVL.values()))
     rng = Random(configuration.seed)
 
@@ -186,6 +187,7 @@ def _apply_patches(editor: PatcherEditor, configuration: RandoConfiguration, out
     specific_area_patches.rebalance_patches.register_all(area_patcher)
 
     add_pickup_map_icon(editor)
+    suit_cosmetics.apply_custom_suits(editor, configuration.suit_replacement)
 
     # edit frontend
     area_patcher.add_frontend_function(
@@ -212,8 +214,15 @@ def _apply_patches(editor: PatcherEditor, configuration: RandoConfiguration, out
     )
 
     # general changes
+    general_changes.apply_corrupted_memory_card_change(editor)
     area_patcher.add_global_function(general_changes.allow_skippable_cutscenes)
     area_patcher.add_global_function(general_changes.loop_conditional_relays)
+    area_patcher.add_global_function(
+        functools.partial(general_changes.change_map_visibility, map_visibility=configuration.map_visibility)
+    )
+
+    if configuration.auto_enabled_elevators:
+        auto_enabled_elevator_patches.register(area_patcher)
 
     # area changes
     small_randomizations.register_small_randomizations(area_patcher, rng)
@@ -232,9 +241,15 @@ def _apply_patches(editor: PatcherEditor, configuration: RandoConfiguration, out
                     ),
                 )
 
-    if _ALL_FEATURES:
-        auto_enabled_elevator_patches.apply_auto_enabled_elevators_patch(editor)
-        inverted.apply_inverted(editor)
+            for translator_gate_change in area_change.translator_gates:
+                area_patcher.add_raw_function(
+                    world_change.mlvl_id,
+                    area_change.mrea_id,
+                    functools.partial(
+                        translator_gates.patch_translator_gate,
+                        modification=translator_gate_change,
+                    ),
+                )
 
     if configuration.practice_mod != open_prime_rando_practice_mod.PracticeModMode.disabled:
         practice_mod.patch_dol(
