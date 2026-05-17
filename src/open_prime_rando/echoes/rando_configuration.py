@@ -52,6 +52,13 @@ class MapVisibility(BaseModel):
     """Which areas are not revealed, even when `reveal_map_at_start` is True."""
 
 
+class StringChange(BaseModel):
+    """Contains a new list of strings to use for a given STRG."""
+
+    strg_id: AssetId
+    strings: list[str]
+
+
 class RandoConfiguration(BaseModel):
     """
     Configuration for randomizing Metroid Prime 2: Echoes.
@@ -89,3 +96,6 @@ class RandoConfiguration(BaseModel):
 
     suit_replacement: SuitMapping = Field(default_factory=SuitMapping)
     """Changes each of the three suit textures to one prepared custom texture set."""
+
+    string_changes: list[StringChange] = Field(default_factory=list)
+    """A list of changes to make to existing STRG files."""

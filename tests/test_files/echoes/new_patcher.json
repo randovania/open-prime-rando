@@ -5064,5 +5064,15 @@
         "varia": "player1",
         "dark": "player2",
         "light": "player3"
-    }
+    },
+    "string_changes": [
+        {
+            "strg_id": 3820230591,
+            "strings": [
+                "The Flying Ing Cache in &push;&main-color=#FF3333;Defiled Shrine&pop; contains &push;&main-color=#FF6705B3;an item&pop;.",
+                "",
+                "The Flying Ing Cache in &push;&main-color=#FF3333;Defiled Shrine&pop; contains &push;&main-color=#FF6705B3;an item&pop;."
+            ]
+        }
+    ]
 }

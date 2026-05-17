@@ -132,9 +132,8 @@ class HierarchyPatch:
 
 
 hierarchy_patch = [
-    # TODO: are these inventory stuff?
     HierarchyPatch(
-        25,
+        25,  # Inventory -> Miscellaneous -> Dark Temple Keys -> Sky Temple Keys
         None,
         (
             HierarchyPatch(81, "Keys 1, 2, 3", (148, 151, 156)),
@@ -143,7 +142,7 @@ hierarchy_patch = [
         ),
     ),
     HierarchyPatch(
-        318,
+        318,  # Logbook -> Lore
         None,
         (
             HierarchyPatch(
@@ -152,13 +151,13 @@ hierarchy_patch = [
                 (
                     HierarchyPatch(
                         60,
-                        "Regular Hints",
+                        "Lore Hints",
                         (
                             HierarchyPatch(
                                 38,
                                 "Violet",
                                 (
-                                    HierarchyPatch(4, "&line-spacing=75;Transport to\nAgon Wastes"),
+                                    HierarchyPatch(4, "Agon Gate"),
                                     HierarchyPatch(33, "Meeting Grounds"),
                                     HierarchyPatch(120, "Path of Eyes"),
                                     HierarchyPatch(251, "&line-spacing=75;Fortress\nTransport\nAccess"),
@@ -169,33 +168,33 @@ hierarchy_patch = [
                                 74,
                                 "Amber",
                                 (
-                                    HierarchyPatch(59, "Mining Plaza"),
+                                    HierarchyPatch(59, "&line-spacing=75;Agon Energy\nController"),
                                     HierarchyPatch(75, "Mining Station A"),
                                     HierarchyPatch(82, "Mining Station B"),
-                                    HierarchyPatch(102, "&line-spacing=75;Agon Energy\nController"),
-                                    HierarchyPatch(260, "Portal Terminal"),
+                                    HierarchyPatch(102, "Portal Terminal"),
+                                    HierarchyPatch(260, "Mining Plaza"),
                                 ),
                             ),
                             HierarchyPatch(
                                 154,
                                 "Emerald",
                                 (
-                                    HierarchyPatch(169, "Path of Roots"),
-                                    HierarchyPatch(200, "Underground Tunnel"),
+                                    HierarchyPatch(169, "Underground Tunnel"),
+                                    HierarchyPatch(200, "Training Chamber"),
                                     HierarchyPatch(228, "&line-spacing=75;Torvus Energy\nController"),
-                                    HierarchyPatch(243, "Training Chamber"),
-                                    HierarchyPatch(312, "Gathering Hall"),
-                                    HierarchyPatch(342, "Catacombs"),
+                                    HierarchyPatch(243, "Catacombs"),
+                                    HierarchyPatch(312, "Path of Roots"),
+                                    HierarchyPatch(342, "Gathering Hall"),
                                 ),
                             ),
                             HierarchyPatch(
                                 196,
                                 "Cobalt",
                                 (
-                                    HierarchyPatch(17, "Sanctuary Entrance"),
-                                    HierarchyPatch(19, "&line-spacing=75;Hall of Combat\nMastery"),
-                                    HierarchyPatch(23, "Main Gyro Chamber"),
-                                    HierarchyPatch(162, "&line-spacing=75;Sanctuary\nEnergy\nController"),
+                                    HierarchyPatch(17, "&line-spacing=75;Sanctuary\nEnergy\nController"),
+                                    HierarchyPatch(19, "Main Gyro Chamber"),
+                                    HierarchyPatch(23, "Sanctuary Entrance"),
+                                    HierarchyPatch(162, "&line-spacing=75;Hall of Combat\nMastery"),
                                     HierarchyPatch(183, "Watch Station"),
                                     HierarchyPatch(379, "Main Research"),
                                 ),
@@ -206,26 +205,79 @@ hierarchy_patch = [
                         254,
                         "&line-spacing=75;Sky Temple\nKey Hints",
                         (
-                            HierarchyPatch(129, "Keys 1, 2, 3", (29, 118, 367)),
-                            HierarchyPatch(233, "Keys 4, 5, 6", (58, 191, 373)),
-                            HierarchyPatch(319, "Keys 7, 8, 9", (52, 289, 329)),
+                            HierarchyPatch(
+                                129,
+                                "Keys 1, 2, 3",
+                                (
+                                    HierarchyPatch(367, "Sky Temple Key 1"),
+                                    HierarchyPatch(29, "Sky Temple Key 2"),
+                                    HierarchyPatch(118, "Sky Temple Key 3"),
+                                ),
+                            ),
+                            HierarchyPatch(
+                                233,
+                                "Keys 4, 5, 6",
+                                (
+                                    HierarchyPatch(58, "Sky Temple Key 4"),
+                                    HierarchyPatch(191, "Sky Temple Key 5"),
+                                    HierarchyPatch(373, "Sky Temple Key 6"),
+                                ),
+                            ),
+                            HierarchyPatch(
+                                319,
+                                "Keys 7, 8, 9",
+                                (
+                                    HierarchyPatch(329, "Sky Temple Key 7"),
+                                    HierarchyPatch(289, "Sky Temple Key 8"),
+                                    HierarchyPatch(52, "Sky Temple Key 9"),
+                                ),
+                            ),
                         ),
                     ),
                     HierarchyPatch(
                         326,
                         "&line-spacing=75;Flying Ing\nCache Hints",
                         (
-                            HierarchyPatch(124, "Temple Grounds", (35, 152, 355)),
-                            HierarchyPatch(194, "Agon Wastes", (1, 6)),
-                            HierarchyPatch(241, "Torvus Bog", (223, 284)),
-                            HierarchyPatch(327, "Sanctuary Fortress", (46, 275)),
+                            HierarchyPatch(
+                                124,
+                                "Temple Grounds",
+                                (
+                                    HierarchyPatch(35, "Landing Site"),
+                                    HierarchyPatch(152, "Storage Cavern A"),
+                                    HierarchyPatch(355, "Industrial Site"),
+                                ),
+                            ),
+                            HierarchyPatch(
+                                194,
+                                "Agon Wastes",
+                                (
+                                    HierarchyPatch(1, "&line-spacing=75;Central\nMining\nStation"),
+                                    HierarchyPatch(6, "Main Reactor"),
+                                ),
+                            ),
+                            HierarchyPatch(
+                                241,
+                                "Torvus Bog",
+                                (
+                                    HierarchyPatch(223, "Catacombs"),
+                                    HierarchyPatch(284, "Torvus Lagoon"),
+                                ),
+                            ),
+                            HierarchyPatch(
+                                327,
+                                "Sanctuary Fortress",
+                                (
+                                    HierarchyPatch(46, "Sanctuary Entrance"),
+                                    HierarchyPatch(275, "Dynamo Works"),
+                                ),
+                            ),
                         ),
                     ),
                 ),
             ),
-            216,
-            277,
-            343,
+            216,  # Pirate Logs
+            HierarchyPatch(277, "Champions of Aether"),
+            343,  # Trooper Logs
         ),
     ),
 ]
