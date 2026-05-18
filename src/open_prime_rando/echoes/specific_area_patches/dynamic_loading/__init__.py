@@ -12,6 +12,7 @@ from open_prime_rando.echoes.specific_area_patches.dynamic_loading.main_reactor 
 from open_prime_rando.echoes.specific_area_patches.dynamic_loading.main_research import (
     main_research_dynamic_layer_loading,
 )
+from open_prime_rando.echoes.specific_area_patches.dynamic_loading.torvus_temple import torvus_temple_second_pass
 
 if typing.TYPE_CHECKING:
     from open_prime_rando.area_patcher import AreaPatcher
@@ -30,5 +31,6 @@ def register_all(area_patcher: AreaPatcher) -> None:
         main_reactor_dynamic_layer_loading,
         storage_d_room_reload,
         main_research_dynamic_layer_loading,
+        torvus_temple_second_pass,
     ]:
         area_patcher.add_function(func)
