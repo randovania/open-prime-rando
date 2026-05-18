@@ -5075,6 +5075,64 @@
                             "progressive_stages": []
                         }
                     ]
+                },
+                {
+                    "mrea_id": 1564082177,
+                    "pickups": [
+                        {
+                            "location": {
+                                "type": "standard",
+                                "exclude_memo_from_removal": false,
+                                "original_model": "EchoVisor",
+                                "connections": [
+                                    {
+                                        "state": "ZERO",
+                                        "message": "ACTV",
+                                        "target": 272695764
+                                    },
+                                    {
+                                        "state": "ZERO",
+                                        "message": "ZERO",
+                                        "target": 272695764
+                                    }
+                                ],
+                                "removals": [
+                                    4260015,
+                                    272695742
+                                ],
+                                "collision_offset": {
+                                    "x": 0.0,
+                                    "y": 0.0,
+                                    "z": 1.0
+                                },
+                                "pickup": 4260007,
+                                "hud_memo": 4260014,
+                                "streamed_audio": 4260013,
+                                "sound": 4260009,
+                                "audio_fade": 4260016
+                            },
+                            "primary_stage": {
+                                "resources": [
+                                    {
+                                        "item": 11,
+                                        "amount": 1
+                                    }
+                                ],
+                                "appearance": {
+                                    "model_data": "EchoVisor",
+                                    "sound": 10057,
+                                    "jingle": {
+                                        "file_name": "/audio/itm_x_long_00.dsp",
+                                        "volume": 71
+                                    },
+                                    "hud_text": "Echo Visor acquired!",
+                                    "scan": "Echo Visor"
+                                },
+                                "conversion": []
+                            },
+                            "progressive_stages": []
+                        }
+                    ]
                 }
             ]
         }
