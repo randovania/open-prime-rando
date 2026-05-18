@@ -3183,6 +3183,71 @@
             "area_changes": [
                 {
                     "mrea_id": 3863006870,
+                    "pickups": [
+                        {
+                            "location": {
+                                "type": "standard",
+                                "exclude_memo_from_removal": false,
+                                "original_model": "SuperMissile",
+                                "connections": [
+                                    {
+                                        "target": 1770461,
+                                        "message": "ACTV",
+                                        "state": "ZERO"
+                                    },
+                                    {
+                                        "target": 1770207,
+                                        "message": "ACTV",
+                                        "state": "ZERO"
+                                    },
+                                    {
+                                        "target": 1770207,
+                                        "message": "ZERO",
+                                        "state": "ZERO"
+                                    }
+                                ],
+                                "removals": [
+                                    1769667,
+                                    538641266,
+                                    1769484
+                                ],
+                                "collision_offset": {
+                                    "x": 0.0,
+                                    "y": 0.0,
+                                    "z": 1.0
+                                },
+                                "pickup": 1770204,
+                                "hud_memo": 1770209,
+                                "streamed_audio": 1770210,
+                                "sound": 1770214,
+                                "audio_fade": 1770206
+                            },
+                            "primary_stage": {
+                                "resources": [
+                                    {
+                                        "item": 47,
+                                        "amount": 1
+                                    },
+                                    {
+                                        "item": 4,
+                                        "amount": 1
+                                    }
+                                ],
+                                "appearance": {
+                                    "model_data": "SuperMissile",
+                                    "sound": 0,
+                                    "jingle": {
+                                        "file_name": "/audio/itm_x_long_00.dsp",
+                                        "volume": 71
+                                    },
+                                    "hud_text": "Super Missile acquired!",
+                                    "scan": "Super Missile."
+                                },
+                                "conversion": []
+                            },
+                            "progressive_stages": []
+                        }
+                    ],
                     "translator_gates": [
                         {
                             "holo1": {

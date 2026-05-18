@@ -1,0 +1,123 @@
+from __future__ import annotations
+
+from typing import TYPE_CHECKING
+
+from retro_data_structures.enums.echoes import Message, State
+from retro_data_structures.properties.echoes.archetypes.EditorProperties import EditorProperties
+from retro_data_structures.properties.echoes.archetypes.LayerSwitch import LayerSwitch
+from retro_data_structures.properties.echoes.objects import (
+    MemoryRelay,
+    Relay,
+    ScriptLayerController,
+)
+
+from open_prime_rando.area_patcher import decorate_patcher
+from open_prime_rando.echoes.asset_ids import torvus_bog
+from open_prime_rando.echoes.asset_ids.world import (
+    TORVUS_BOG_MLVL,
+)
+
+if TYPE_CHECKING:
+    from retro_data_structures.formats.mlvl import Mlvl
+    from retro_data_structures.formats.mrea import Area
+
+    from open_prime_rando.patcher_editor import PatcherEditor
+
+
+@decorate_patcher(TORVUS_BOG_MLVL, torvus_bog.TORVUS_TEMPLE_MREA)
+def torvus_temple_second_pass(editor: PatcherEditor, mlvl: Mlvl, area: Area) -> None:
+    """
+    Activate the second pass after collecting the pickup. The Shriekers are moved
+    to a new layer, activated non-dynamically, as a courtesy to the player. The
+    central elevator and the rest of the second pass layer are activated dynamically.
+    """
+
+    _patch_elevator(editor, mlvl, area)
+    _patch_shriekers(editor, mlvl, area)
+
+
+def _patch_elevator(editor: PatcherEditor, mlvl: Mlvl, area: Area) -> None:
+    default = area.get_layer("Default")
+    second_pass = area.get_layer("2nd PAss")  # [sic]
+
+    # edit memory relay to activate immediately
+    with area.get_instance("Remember Central Elevator Active").edit_properties(MemoryRelay) as mem_relay:
+        mem_relay.delayed_action = False
+
+    # add layer controller for elevator
+    elevator_layer_controller = default.add_instance_with(
+        ScriptLayerController(
+            editor_properties=EditorProperties(
+                name="Increment - 2nd PAss (Dynamic)",
+            ),
+            layer=LayerSwitch(
+                area_id=torvus_bog.TORVUS_TEMPLE_INTERNAL_ID,
+                layer_number=second_pass.index,
+            ),
+            is_dynamic=True,
+        )
+    )
+
+    # start loading the layer when pickup is collected
+    area.get_instance("Post Pickup").add_connection(State.Zero, Message.Increment, elevator_layer_controller)
+
+    # activate the layer immediately once it's been loaded
+    elevator_layer_controller.add_connection(State.Arrived, Message.Play, elevator_layer_controller)
+
+    # use this relay as a surrogate, to automatically enable the elevator
+    # when the layer is loaded if the hologram was scanned already
+    check_elevator_relay = default.add_instance_with(
+        Relay(
+            editor_properties=EditorProperties(
+                name="Check if central elevator is active",
+                active=False,
+            ),
+        )
+    )
+    area.get_instance("Remember Central Elevator Active").add_connection(
+        State.Active, Message.Activate, check_elevator_relay
+    )
+    check_elevator_relay.add_connection(
+        State.Zero, Message.Activate, area.get_instance("OcclusionRelay - Enable Elevator")
+    )
+    elevator_layer_controller.add_connection(State.Arrived, Message.SetToZero, check_elevator_relay)
+
+    # Move waypoints to the Default layer
+    # so that the elevator actually moves
+    waypoints = (
+        second_pass.get_instance("Top"),
+        second_pass.get_instance("Bottom"),
+    )
+    for waypoint in waypoints:
+        area.move_instance(waypoint, "Default")
+
+
+def _patch_shriekers(editor: PatcherEditor, mlvl: Mlvl, area: Area) -> None:
+    # add new layer
+    shrieker_layer = area.add_layer("Shriekers", False)
+
+    # move shrieker instances to new layer
+    second_pass = area.get_layer("2nd PAss")  # [sic]
+    to_move = [
+        second_pass.get_instance("Generator 001"),
+        *second_pass.get_all_instances_with_name("ShriekerBuried"),
+    ]
+
+    for instance in to_move:
+        area.move_instance(instance, "Shriekers")
+
+    # add layer controller for elevator
+    shrieker_layer_controller = area.get_layer("Default").add_instance_with(
+        ScriptLayerController(
+            editor_properties=EditorProperties(
+                name="Increment - Shriekers",
+            ),
+            layer=LayerSwitch(
+                area_id=torvus_bog.TORVUS_TEMPLE_INTERNAL_ID,
+                layer_number=shrieker_layer.index,
+            ),
+        )
+    )
+
+    # activate the layer when pickup is collected
+    area.get_instance("Post Pickup").add_connection(State.Zero, Message.Increment, shrieker_layer_controller)

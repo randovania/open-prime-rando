@@ -56,6 +56,7 @@ def register_all(area_patcher: AreaPatcher) -> None:
         temple_sanctuary,
         main_reactor_post_ds_layer_changes,
         torvus_temple_barrier,
+        torvus_temple_translator_gate,
         torvus_energy_controller_fight_layers,
         gfmc_compound_gate,
         sanctuary_entrance_keybearer,
@@ -305,6 +306,14 @@ def torvus_temple_barrier(editor: PatcherEditor, mlvl: Mlvl, area: Area) -> None
         barrier.editor_properties.transform.position.x = -226.4198
         barrier.editor_properties.transform.position.z = 58.7156
         barrier.editor_properties.transform.scale.y = 2.019
+
+
+@decorate_patcher(TORVUS_BOG_MLVL, torvus_bog.TORVUS_TEMPLE_MREA)
+def torvus_temple_translator_gate(editor: PatcherEditor, mlvl: Mlvl, area: Area) -> None:
+    """
+    Make the translator gate always active.
+    """
+    area.get_layer("Load After 1st Pass").active = True
 
 
 @decorate_patcher(TEMPLE_GROUNDS_MLVL, temple_grounds.GFMC_COMPOUND_MREA)
