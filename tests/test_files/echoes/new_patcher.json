@@ -56,7 +56,7 @@
                                 ],
                                 "appearance": {
                                     "model_data": "LightSuit",
-                                    "sound": 0,
+                                    "sound": 10057,
                                     "jingle": {
                                         "file_name": "/audio/itm_x_short_00.dsp",
                                         "volume": 55
@@ -85,7 +85,7 @@
                                     ],
                                     "appearance": {
                                         "model_data": "DarkBeam",
-                                        "sound": 0,
+                                        "sound": 10057,
                                         "jingle": {
                                             "file_name": "/audio/itm_x_short_00.dsp",
                                             "volume": 55
@@ -113,7 +113,7 @@
                                     ],
                                     "appearance": {
                                         "model_data": "LightBeam",
-                                        "sound": 0,
+                                        "sound": 10057,
                                         "jingle": {
                                             "file_name": "/audio/itm_x_short_00.dsp",
                                             "volume": 55
@@ -137,7 +137,7 @@
                                     ],
                                     "appearance": {
                                         "model_data": "AnnihilatorBeam",
-                                        "sound": 0,
+                                        "sound": 10057,
                                         "jingle": {
                                             "file_name": "/audio/itm_x_short_00.dsp",
                                             "volume": 55
@@ -187,7 +187,7 @@
                                 ],
                                 "appearance": {
                                     "model_data": "LightSuit",
-                                    "sound": 0,
+                                    "sound": 10057,
                                     "jingle": {
                                         "file_name": "/audio/itm_x_short_00.dsp",
                                         "volume": 55
@@ -216,7 +216,7 @@
                                     ],
                                     "appearance": {
                                         "model_data": "DarkBeam",
-                                        "sound": 0,
+                                        "sound": 10057,
                                         "jingle": {
                                             "file_name": "/audio/itm_x_short_00.dsp",
                                             "volume": 55
@@ -244,7 +244,7 @@
                                     ],
                                     "appearance": {
                                         "model_data": "LightBeam",
-                                        "sound": 0,
+                                        "sound": 10057,
                                         "jingle": {
                                             "file_name": "/audio/itm_x_short_00.dsp",
                                             "volume": 55
@@ -268,7 +268,7 @@
                                     ],
                                     "appearance": {
                                         "model_data": "AnnihilatorBeam",
-                                        "sound": 0,
+                                        "sound": 10057,
                                         "jingle": {
                                             "file_name": "/audio/itm_x_short_00.dsp",
                                             "volume": 55
@@ -318,7 +318,7 @@
                                 ],
                                 "appearance": {
                                     "model_data": "LightSuit",
-                                    "sound": 0,
+                                    "sound": 10057,
                                     "jingle": {
                                         "file_name": "/audio/itm_x_short_00.dsp",
                                         "volume": 55
@@ -347,7 +347,7 @@
                                     ],
                                     "appearance": {
                                         "model_data": "DarkBeam",
-                                        "sound": 0,
+                                        "sound": 10057,
                                         "jingle": {
                                             "file_name": "/audio/itm_x_short_00.dsp",
                                             "volume": 55
@@ -375,7 +375,7 @@
                                     ],
                                     "appearance": {
                                         "model_data": "LightBeam",
-                                        "sound": 0,
+                                        "sound": 10057,
                                         "jingle": {
                                             "file_name": "/audio/itm_x_short_00.dsp",
                                             "volume": 55
@@ -399,7 +399,7 @@
                                     ],
                                     "appearance": {
                                         "model_data": "AnnihilatorBeam",
-                                        "sound": 0,
+                                        "sound": 10057,
                                         "jingle": {
                                             "file_name": "/audio/itm_x_short_00.dsp",
                                             "volume": 55
@@ -449,7 +449,7 @@
                                 ],
                                 "appearance": {
                                     "model_data": "LightSuit",
-                                    "sound": 0,
+                                    "sound": 10057,
                                     "jingle": {
                                         "file_name": "/audio/itm_x_short_00.dsp",
                                         "volume": 55
@@ -478,7 +478,7 @@
                                     ],
                                     "appearance": {
                                         "model_data": "DarkBeam",
-                                        "sound": 0,
+                                        "sound": 10057,
                                         "jingle": {
                                             "file_name": "/audio/itm_x_short_00.dsp",
                                             "volume": 55
@@ -506,7 +506,7 @@
                                     ],
                                     "appearance": {
                                         "model_data": "LightBeam",
-                                        "sound": 0,
+                                        "sound": 10057,
                                         "jingle": {
                                             "file_name": "/audio/itm_x_short_00.dsp",
                                             "volume": 55
@@ -530,7 +530,7 @@
                                     ],
                                     "appearance": {
                                         "model_data": "AnnihilatorBeam",
-                                        "sound": 0,
+                                        "sound": 10057,
                                         "jingle": {
                                             "file_name": "/audio/itm_x_short_00.dsp",
                                             "volume": 55
@@ -576,7 +576,7 @@
                                 ],
                                 "appearance": {
                                     "model_data": "MassiveDamage",
-                                    "sound": 0,
+                                    "sound": 10057,
                                     "jingle": {
                                         "file_name": "/audio/itm_x_short_00.dsp",
                                         "volume": 55
@@ -622,7 +622,7 @@
                                 ],
                                 "appearance": {
                                     "model_data": "PowerBeam",
-                                    "sound": 0,
+                                    "sound": 10057,
                                     "jingle": {
                                         "file_name": "/audio/itm_x_short_00.dsp",
                                         "volume": 55
@@ -668,7 +668,7 @@
                                 ],
                                 "appearance": {
                                     "model_data": "ChargeBeam",
-                                    "sound": 0,
+                                    "sound": 10057,
                                     "jingle": {
                                         "file_name": "/audio/itm_x_short_00.dsp",
                                         "volume": 55
@@ -714,7 +714,7 @@
                                 ],
                                 "appearance": {
                                     "model_data": "CombatVisor",
-                                    "sound": 0,
+                                    "sound": 10057,
                                     "jingle": {
                                         "file_name": "/audio/itm_x_short_00.dsp",
                                         "volume": 55
@@ -760,7 +760,7 @@
                                 ],
                                 "appearance": {
                                     "model_data": "ScanVisor",
-                                    "sound": 0,
+                                    "sound": 10057,
                                     "jingle": {
                                         "file_name": "/audio/itm_x_short_00.dsp",
                                         "volume": 55
@@ -818,7 +818,7 @@
                                 ],
                                 "appearance": {
                                     "model_data": "LightSuit",
-                                    "sound": 0,
+                                    "sound": 10057,
                                     "jingle": {
                                         "file_name": "/audio/itm_x_short_00.dsp",
                                         "volume": 55
@@ -847,7 +847,7 @@
                                     ],
                                     "appearance": {
                                         "model_data": "DarkBeam",
-                                        "sound": 0,
+                                        "sound": 10057,
                                         "jingle": {
                                             "file_name": "/audio/itm_x_short_00.dsp",
                                             "volume": 55
@@ -875,7 +875,7 @@
                                     ],
                                     "appearance": {
                                         "model_data": "LightBeam",
-                                        "sound": 0,
+                                        "sound": 10057,
                                         "jingle": {
                                             "file_name": "/audio/itm_x_short_00.dsp",
                                             "volume": 55
@@ -899,7 +899,7 @@
                                     ],
                                     "appearance": {
                                         "model_data": "AnnihilatorBeam",
-                                        "sound": 0,
+                                        "sound": 10057,
                                         "jingle": {
                                             "file_name": "/audio/itm_x_short_00.dsp",
                                             "volume": 55
@@ -962,7 +962,7 @@
                                 ],
                                 "appearance": {
                                     "model_data": "LightBeamAmmoExpansion",
-                                    "sound": 0,
+                                    "sound": 10057,
                                     "jingle": {
                                         "file_name": "/audio/itm_x_short_00.dsp",
                                         "volume": 55
@@ -1012,7 +1012,7 @@
                                 ],
                                 "appearance": {
                                     "model_data": "EnergyTank",
-                                    "sound": 0,
+                                    "sound": 10057,
                                     "jingle": {
                                         "file_name": "/audio/itm_x_long_00.dsp",
                                         "volume": 71
@@ -1062,7 +1062,7 @@
                                 ],
                                 "appearance": {
                                     "model_data": "GravityBoost",
-                                    "sound": 0,
+                                    "sound": 10057,
                                     "jingle": {
                                         "file_name": "/audio/itm_x_long_00.dsp",
                                         "volume": 71
@@ -1112,7 +1112,7 @@
                                 ],
                                 "appearance": {
                                     "model_data": "SpaceJumpBoots",
-                                    "sound": 0,
+                                    "sound": 10057,
                                     "jingle": {
                                         "file_name": "/audio/itm_x_long_00.dsp",
                                         "volume": 71
@@ -1162,7 +1162,7 @@
                                 ],
                                 "appearance": {
                                     "model_data": "EnergyTank",
-                                    "sound": 0,
+                                    "sound": 10057,
                                     "jingle": {
                                         "file_name": "/audio/itm_x_long_00.dsp",
                                         "volume": 71
@@ -1208,7 +1208,7 @@
                                 ],
                                 "appearance": {
                                     "model_data": "SkyTempleKey",
-                                    "sound": 1,
+                                    "sound": 1075,
                                     "jingle": {
                                         "file_name": "/audio/skytenkey-jin-short32.dsp",
                                         "volume": 110
@@ -1258,7 +1258,7 @@
                                 ],
                                 "appearance": {
                                     "model_data": "EnergyTank",
-                                    "sound": 0,
+                                    "sound": 10057,
                                     "jingle": {
                                         "file_name": "/audio/itm_x_long_00.dsp",
                                         "volume": 71
@@ -1305,7 +1305,7 @@
                                 ],
                                 "appearance": {
                                     "model_data": "DarkTempleKey",
-                                    "sound": 1,
+                                    "sound": 1075,
                                     "jingle": {
                                         "file_name": "/audio/skytenkey-jin-short32.dsp",
                                         "volume": 110
@@ -1355,7 +1355,7 @@
                                 ],
                                 "appearance": {
                                     "model_data": "GrappleBeam",
-                                    "sound": 0,
+                                    "sound": 10057,
                                     "jingle": {
                                         "file_name": "/audio/itm_x_long_00.dsp",
                                         "volume": 71
@@ -1380,7 +1380,7 @@
                                     ],
                                     "appearance": {
                                         "model_data": "ScrewAttack",
-                                        "sound": 0,
+                                        "sound": 10057,
                                         "jingle": {
                                             "file_name": "/audio/itm_x_long_00.dsp",
                                             "volume": 71
@@ -1431,7 +1431,7 @@
                                 ],
                                 "appearance": {
                                     "model_data": "EnergyTank",
-                                    "sound": 0,
+                                    "sound": 10057,
                                     "jingle": {
                                         "file_name": "/audio/itm_x_long_00.dsp",
                                         "volume": 71
@@ -1481,7 +1481,7 @@
                                 ],
                                 "appearance": {
                                     "model_data": "LightBeamAmmoExpansion",
-                                    "sound": 0,
+                                    "sound": 10057,
                                     "jingle": {
                                         "file_name": "/audio/itm_x_short_00.dsp",
                                         "volume": 55
@@ -1528,7 +1528,7 @@
                                 ],
                                 "appearance": {
                                     "model_data": "SkyTempleKey",
-                                    "sound": 1,
+                                    "sound": 1075,
                                     "jingle": {
                                         "file_name": "/audio/skytenkey-jin-short32.dsp",
                                         "volume": 110
@@ -1583,7 +1583,7 @@
                                 ],
                                 "appearance": {
                                     "model_data": "DarkBeamAmmoExpansion",
-                                    "sound": 0,
+                                    "sound": 10057,
                                     "jingle": {
                                         "file_name": "/audio/itm_x_short_00.dsp",
                                         "volume": 55
@@ -1633,7 +1633,7 @@
                                 ],
                                 "appearance": {
                                     "model_data": "SpiderBall",
-                                    "sound": 0,
+                                    "sound": 10057,
                                     "jingle": {
                                         "file_name": "/audio/itm_x_long_00.dsp",
                                         "volume": 71
@@ -1691,7 +1691,7 @@
                                 ],
                                 "appearance": {
                                     "model_data": "DarkBeamAmmoExpansion",
-                                    "sound": 0,
+                                    "sound": 10057,
                                     "jingle": {
                                         "file_name": "/audio/itm_x_short_00.dsp",
                                         "volume": 55
@@ -1768,7 +1768,7 @@
                                 ],
                                 "appearance": {
                                     "model_data": "EnergyTank",
-                                    "sound": 0,
+                                    "sound": 10057,
                                     "jingle": {
                                         "file_name": "/audio/itm_x_long_00.dsp",
                                         "volume": 71
@@ -1876,7 +1876,7 @@
                                 ],
                                 "appearance": {
                                     "model_data": "LightSuit",
-                                    "sound": 0,
+                                    "sound": 10057,
                                     "jingle": {
                                         "file_name": "/audio/itm_x_short_00.dsp",
                                         "volume": 55
@@ -1905,7 +1905,7 @@
                                     ],
                                     "appearance": {
                                         "model_data": "DarkBeam",
-                                        "sound": 0,
+                                        "sound": 10057,
                                         "jingle": {
                                             "file_name": "/audio/itm_x_short_00.dsp",
                                             "volume": 55
@@ -1933,7 +1933,7 @@
                                     ],
                                     "appearance": {
                                         "model_data": "LightBeam",
-                                        "sound": 0,
+                                        "sound": 10057,
                                         "jingle": {
                                             "file_name": "/audio/itm_x_short_00.dsp",
                                             "volume": 55
@@ -1957,7 +1957,7 @@
                                     ],
                                     "appearance": {
                                         "model_data": "AnnihilatorBeam",
-                                        "sound": 0,
+                                        "sound": 10057,
                                         "jingle": {
                                             "file_name": "/audio/itm_x_short_00.dsp",
                                             "volume": 55
@@ -2007,7 +2007,7 @@
                                 ],
                                 "appearance": {
                                     "model_data": "DarkBeamAmmoExpansion",
-                                    "sound": 0,
+                                    "sound": 10057,
                                     "jingle": {
                                         "file_name": "/audio/itm_x_short_00.dsp",
                                         "volume": 55
@@ -2061,7 +2061,7 @@
                                 ],
                                 "appearance": {
                                     "model_data": "LightBeam",
-                                    "sound": 0,
+                                    "sound": 10057,
                                     "jingle": {
                                         "file_name": "/audio/itm_x_long_00.dsp",
                                         "volume": 71
@@ -2123,7 +2123,7 @@
                                 ],
                                 "appearance": {
                                     "model_data": "DarkBeamAmmoExpansion",
-                                    "sound": 0,
+                                    "sound": 10057,
                                     "jingle": {
                                         "file_name": "/audio/itm_x_short_00.dsp",
                                         "volume": 55
@@ -2173,7 +2173,7 @@
                                 ],
                                 "appearance": {
                                     "model_data": "DarkBeamAmmoExpansion",
-                                    "sound": 0,
+                                    "sound": 10057,
                                     "jingle": {
                                         "file_name": "/audio/itm_x_short_00.dsp",
                                         "volume": 55
@@ -2223,7 +2223,7 @@
                                 ],
                                 "appearance": {
                                     "model_data": "SuperMissile",
-                                    "sound": 0,
+                                    "sound": 10057,
                                     "jingle": {
                                         "file_name": "/audio/itm_x_long_00.dsp",
                                         "volume": 71
@@ -2277,7 +2277,7 @@
                                 ],
                                 "appearance": {
                                     "model_data": "MissileLauncher",
-                                    "sound": 0,
+                                    "sound": 10057,
                                     "jingle": {
                                         "file_name": "/audio/itm_x_long_00.dsp",
                                         "volume": 71
@@ -2327,7 +2327,7 @@
                                 ],
                                 "appearance": {
                                     "model_data": "AmberTranslator",
-                                    "sound": 0,
+                                    "sound": 10057,
                                     "jingle": {
                                         "file_name": "/audio/itm_x_long_00.dsp",
                                         "volume": 71
@@ -2377,7 +2377,7 @@
                                 ],
                                 "appearance": {
                                     "model_data": "EmeraldTranslator",
-                                    "sound": 0,
+                                    "sound": 10057,
                                     "jingle": {
                                         "file_name": "/audio/itm_x_long_00.dsp",
                                         "volume": 71
@@ -2427,7 +2427,7 @@
                                 ],
                                 "appearance": {
                                     "model_data": "MorphBallBomb",
-                                    "sound": 0,
+                                    "sound": 10057,
                                     "jingle": {
                                         "file_name": "/audio/itm_x_long_00.dsp",
                                         "volume": 71
@@ -2494,7 +2494,7 @@
                                 ],
                                 "appearance": {
                                     "model_data": "DarkBeamAmmoExpansion",
-                                    "sound": 0,
+                                    "sound": 10057,
                                     "jingle": {
                                         "file_name": "/audio/itm_x_short_00.dsp",
                                         "volume": 55
@@ -2540,7 +2540,7 @@
                                 ],
                                 "appearance": {
                                     "model_data": "DarkTempleKey",
-                                    "sound": 1,
+                                    "sound": 1075,
                                     "jingle": {
                                         "file_name": "/audio/skytenkey-jin-short32.dsp",
                                         "volume": 110
@@ -2586,7 +2586,7 @@
                                 ],
                                 "appearance": {
                                     "model_data": "SkyTempleKey",
-                                    "sound": 1,
+                                    "sound": 1075,
                                     "jingle": {
                                         "file_name": "/audio/skytenkey-jin-short32.dsp",
                                         "volume": 110
@@ -2678,7 +2678,7 @@
                                 ],
                                 "appearance": {
                                     "model_data": "LightBeamAmmoExpansion",
-                                    "sound": 0,
+                                    "sound": 10057,
                                     "jingle": {
                                         "file_name": "/audio/itm_x_short_00.dsp",
                                         "volume": 55
@@ -2729,7 +2729,7 @@
                                 ],
                                 "appearance": {
                                     "model_data": "BoostBall",
-                                    "sound": 0,
+                                    "sound": 10057,
                                     "jingle": {
                                         "file_name": "/audio/itm_x_long_00.dsp",
                                         "volume": 71
@@ -2771,7 +2771,7 @@
                                 ],
                                 "appearance": {
                                     "model_data": "SkyTempleKey",
-                                    "sound": 1,
+                                    "sound": 1075,
                                     "jingle": {
                                         "file_name": "/audio/skytenkey-jin-short32.dsp",
                                         "volume": 110
@@ -2839,7 +2839,7 @@
                                 ],
                                 "appearance": {
                                     "model_data": "DarkBeam",
-                                    "sound": 0,
+                                    "sound": 10057,
                                     "jingle": {
                                         "file_name": "/audio/itm_x_long_00.dsp",
                                         "volume": 71
@@ -2890,7 +2890,7 @@
                                 ],
                                 "appearance": {
                                     "model_data": "EnergyTank",
-                                    "sound": 0,
+                                    "sound": 10057,
                                     "jingle": {
                                         "file_name": "/audio/itm_x_long_00.dsp",
                                         "volume": 71
@@ -2937,7 +2937,7 @@
                                 ],
                                 "appearance": {
                                     "model_data": "SkyTempleKey",
-                                    "sound": 1,
+                                    "sound": 1075,
                                     "jingle": {
                                         "file_name": "/audio/skytenkey-jin-short32.dsp",
                                         "volume": 110
@@ -2987,7 +2987,7 @@
                                 ],
                                 "appearance": {
                                     "model_data": "LightBeamAmmoExpansion",
-                                    "sound": 0,
+                                    "sound": 10057,
                                     "jingle": {
                                         "file_name": "/audio/itm_x_short_00.dsp",
                                         "volume": 55
@@ -3037,7 +3037,7 @@
                                 ],
                                 "appearance": {
                                     "model_data": "LightBeamAmmoExpansion",
-                                    "sound": 0,
+                                    "sound": 10057,
                                     "jingle": {
                                         "file_name": "/audio/itm_x_short_00.dsp",
                                         "volume": 55
@@ -3100,7 +3100,7 @@
                                 ],
                                 "appearance": {
                                     "model_data": "EnergyTank",
-                                    "sound": 0,
+                                    "sound": 10057,
                                     "jingle": {
                                         "file_name": "/audio/itm_x_long_00.dsp",
                                         "volume": 71
@@ -3162,7 +3162,7 @@
                                 ],
                                 "appearance": {
                                     "model_data": "DarkBeamAmmoExpansion",
-                                    "sound": 0,
+                                    "sound": 10057,
                                     "jingle": {
                                         "file_name": "/audio/itm_x_short_00.dsp",
                                         "volume": 55
@@ -3241,7 +3241,7 @@
                                 ],
                                 "appearance": {
                                     "model_data": "EnergyTank",
-                                    "sound": 0,
+                                    "sound": 10057,
                                     "jingle": {
                                         "file_name": "/audio/itm_x_long_00.dsp",
                                         "volume": 71
@@ -3291,7 +3291,7 @@
                                 ],
                                 "appearance": {
                                     "model_data": "PowerBomb",
-                                    "sound": 0,
+                                    "sound": 10057,
                                     "jingle": {
                                         "file_name": "/audio/itm_x_long_00.dsp",
                                         "volume": 71
@@ -3341,7 +3341,7 @@
                                 ],
                                 "appearance": {
                                     "model_data": "DarkBeamAmmoExpansion",
-                                    "sound": 0,
+                                    "sound": 10057,
                                     "jingle": {
                                         "file_name": "/audio/itm_x_short_00.dsp",
                                         "volume": 55
@@ -3388,7 +3388,7 @@
                                 ],
                                 "appearance": {
                                     "model_data": "SkyTempleKey",
-                                    "sound": 1,
+                                    "sound": 1075,
                                     "jingle": {
                                         "file_name": "/audio/skytenkey-jin-short32.dsp",
                                         "volume": 110
@@ -3438,7 +3438,7 @@
                                 ],
                                 "appearance": {
                                     "model_data": "LightBeamAmmoExpansion",
-                                    "sound": 0,
+                                    "sound": 10057,
                                     "jingle": {
                                         "file_name": "/audio/itm_x_short_00.dsp",
                                         "volume": 55
@@ -3484,7 +3484,7 @@
                                 ],
                                 "appearance": {
                                     "model_data": "DarkTempleKey",
-                                    "sound": 1,
+                                    "sound": 1075,
                                     "jingle": {
                                         "file_name": "/audio/skytenkey-jin-short32.dsp",
                                         "volume": 110
@@ -3535,7 +3535,7 @@
                                 ],
                                 "appearance": {
                                     "model_data": "EchoVisor",
-                                    "sound": 0,
+                                    "sound": 10057,
                                     "jingle": {
                                         "file_name": "/audio/itm_x_long_00.dsp",
                                         "volume": 71
@@ -3582,7 +3582,7 @@
                                 ],
                                 "appearance": {
                                     "model_data": "SkyTempleKey",
-                                    "sound": 1,
+                                    "sound": 1075,
                                     "jingle": {
                                         "file_name": "/audio/skytenkey-jin-short32.dsp",
                                         "volume": 110
@@ -3632,7 +3632,7 @@
                                 ],
                                 "appearance": {
                                     "model_data": "EnergyTank",
-                                    "sound": 0,
+                                    "sound": 10057,
                                     "jingle": {
                                         "file_name": "/audio/itm_x_long_00.dsp",
                                         "volume": 71
@@ -3679,7 +3679,7 @@
                                 ],
                                 "appearance": {
                                     "model_data": "DarkTempleKey",
-                                    "sound": 1,
+                                    "sound": 1075,
                                     "jingle": {
                                         "file_name": "/audio/skytenkey-jin-short32.dsp",
                                         "volume": 110
@@ -3729,7 +3729,7 @@
                                 ],
                                 "appearance": {
                                     "model_data": "SonicBoom",
-                                    "sound": 0,
+                                    "sound": 10057,
                                     "jingle": {
                                         "file_name": "/audio/itm_x_long_00.dsp",
                                         "volume": 71
@@ -3779,7 +3779,7 @@
                                 ],
                                 "appearance": {
                                     "model_data": "EnergyTank",
-                                    "sound": 0,
+                                    "sound": 10057,
                                     "jingle": {
                                         "file_name": "/audio/itm_x_long_00.dsp",
                                         "volume": 71
@@ -3849,7 +3849,7 @@
                                 ],
                                 "appearance": {
                                     "model_data": "AnnihilatorBeam",
-                                    "sound": 0,
+                                    "sound": 10057,
                                     "jingle": {
                                         "file_name": "/audio/itm_x_long_00.dsp",
                                         "volume": 71
@@ -3899,7 +3899,7 @@
                                 ],
                                 "appearance": {
                                     "model_data": "EnergyTank",
-                                    "sound": 0,
+                                    "sound": 10057,
                                     "jingle": {
                                         "file_name": "/audio/itm_x_long_00.dsp",
                                         "volume": 71
@@ -3945,7 +3945,7 @@
                                 ],
                                 "appearance": {
                                     "model_data": "DarkTempleKey",
-                                    "sound": 1,
+                                    "sound": 1075,
                                     "jingle": {
                                         "file_name": "/audio/skytenkey-jin-short32.dsp",
                                         "volume": 110
@@ -3992,7 +3992,7 @@
                                 ],
                                 "appearance": {
                                     "model_data": "EnergyTransferModule",
-                                    "sound": 0,
+                                    "sound": 10057,
                                     "jingle": {
                                         "file_name": "/audio/itm_x_long_00.dsp",
                                         "volume": 71
@@ -4042,7 +4042,7 @@
                                 ],
                                 "appearance": {
                                     "model_data": "Sunburst",
-                                    "sound": 0,
+                                    "sound": 10057,
                                     "jingle": {
                                         "file_name": "/audio/itm_x_long_00.dsp",
                                         "volume": 71
@@ -4092,7 +4092,7 @@
                                 ],
                                 "appearance": {
                                     "model_data": "DarkBeamAmmoExpansion",
-                                    "sound": 0,
+                                    "sound": 10057,
                                     "jingle": {
                                         "file_name": "/audio/itm_x_short_00.dsp",
                                         "volume": 55
@@ -4154,7 +4154,7 @@
                                 ],
                                 "appearance": {
                                     "model_data": "EnergyTank",
-                                    "sound": 0,
+                                    "sound": 10057,
                                     "jingle": {
                                         "file_name": "/audio/itm_x_long_00.dsp",
                                         "volume": 71
@@ -4204,7 +4204,7 @@
                                 ],
                                 "appearance": {
                                     "model_data": "LightBeamAmmoExpansion",
-                                    "sound": 0,
+                                    "sound": 10057,
                                     "jingle": {
                                         "file_name": "/audio/itm_x_short_00.dsp",
                                         "volume": 55
@@ -4254,7 +4254,7 @@
                                 ],
                                 "appearance": {
                                     "model_data": "LightBeamAmmoExpansion",
-                                    "sound": 0,
+                                    "sound": 10057,
                                     "jingle": {
                                         "file_name": "/audio/itm_x_short_00.dsp",
                                         "volume": 55
@@ -4301,7 +4301,7 @@
                                 ],
                                 "appearance": {
                                     "model_data": "DarkTempleKey",
-                                    "sound": 1,
+                                    "sound": 1075,
                                     "jingle": {
                                         "file_name": "/audio/skytenkey-jin-short32.dsp",
                                         "volume": 110
@@ -4351,7 +4351,7 @@
                                 ],
                                 "appearance": {
                                     "model_data": "CobaltTranslator",
-                                    "sound": 0,
+                                    "sound": 10057,
                                     "jingle": {
                                         "file_name": "/audio/itm_x_long_00.dsp",
                                         "volume": 71
@@ -4406,7 +4406,7 @@
                                 ],
                                 "appearance": {
                                     "model_data": "Darkburst",
-                                    "sound": 0,
+                                    "sound": 10057,
                                     "jingle": {
                                         "file_name": "/audio/itm_x_long_00.dsp",
                                         "volume": 71
@@ -4452,7 +4452,7 @@
                                 ],
                                 "appearance": {
                                     "model_data": "DarkTempleKey",
-                                    "sound": 1,
+                                    "sound": 1075,
                                     "jingle": {
                                         "file_name": "/audio/skytenkey-jin-short32.dsp",
                                         "volume": 110
@@ -4498,7 +4498,7 @@
                                 ],
                                 "appearance": {
                                     "model_data": "DarkTempleKey",
-                                    "sound": 1,
+                                    "sound": 1075,
                                     "jingle": {
                                         "file_name": "/audio/skytenkey-jin-short32.dsp",
                                         "volume": 110
@@ -4548,7 +4548,7 @@
                                 ],
                                 "appearance": {
                                     "model_data": "EnergyTank",
-                                    "sound": 0,
+                                    "sound": 10057,
                                     "jingle": {
                                         "file_name": "/audio/itm_x_long_00.dsp",
                                         "volume": 71
@@ -4610,7 +4610,7 @@
                                 ],
                                 "appearance": {
                                     "model_data": "GrappleBeam",
-                                    "sound": 0,
+                                    "sound": 10057,
                                     "jingle": {
                                         "file_name": "/audio/itm_x_long_00.dsp",
                                         "volume": 71
@@ -4655,7 +4655,7 @@
                                 ],
                                 "appearance": {
                                     "model_data": "DarkVisor",
-                                    "sound": 0,
+                                    "sound": 10057,
                                     "jingle": {
                                         "file_name": "/audio/itm_x_long_00.dsp",
                                         "volume": 71
@@ -4706,7 +4706,7 @@
                                 ],
                                 "appearance": {
                                     "model_data": "EnergyTank",
-                                    "sound": 0,
+                                    "sound": 10057,
                                     "jingle": {
                                         "file_name": "/audio/itm_x_long_00.dsp",
                                         "volume": 71
@@ -4757,7 +4757,7 @@
                                 ],
                                 "appearance": {
                                     "model_data": "LightBeamAmmoExpansion",
-                                    "sound": 0,
+                                    "sound": 10057,
                                     "jingle": {
                                         "file_name": "/audio/itm_x_short_00.dsp",
                                         "volume": 55
@@ -4807,7 +4807,7 @@
                                 ],
                                 "appearance": {
                                     "model_data": "LightBeamAmmoExpansion",
-                                    "sound": 0,
+                                    "sound": 10057,
                                     "jingle": {
                                         "file_name": "/audio/itm_x_short_00.dsp",
                                         "volume": 55
@@ -4858,7 +4858,7 @@
                                 ],
                                 "appearance": {
                                     "model_data": "DarkBeamAmmoExpansion",
-                                    "sound": 0,
+                                    "sound": 10057,
                                     "jingle": {
                                         "file_name": "/audio/itm_x_short_00.dsp",
                                         "volume": 55
@@ -4904,7 +4904,7 @@
                                 ],
                                 "appearance": {
                                     "model_data": "SkyTempleKey",
-                                    "sound": 1,
+                                    "sound": 1075,
                                     "jingle": {
                                         "file_name": "/audio/skytenkey-jin-short32.dsp",
                                         "volume": 110
@@ -4950,7 +4950,7 @@
                                 ],
                                 "appearance": {
                                     "model_data": "SkyTempleKey",
-                                    "sound": 1,
+                                    "sound": 1075,
                                     "jingle": {
                                         "file_name": "/audio/skytenkey-jin-short32.dsp",
                                         "volume": 110
@@ -4997,7 +4997,7 @@
                                 ],
                                 "appearance": {
                                     "model_data": "EnergyTransferModule",
-                                    "sound": 0,
+                                    "sound": 10057,
                                     "jingle": {
                                         "file_name": "/audio/itm_x_long_00.dsp",
                                         "volume": 71
