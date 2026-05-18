@@ -151,7 +151,7 @@ def patch_paks(
     area_patcher = AreaPatcher(
         editor, [TEMPLE_GROUNDS_MLVL, AGON_WASTES_MLVL, TORVUS_BOG_MLVL, SANCTUARY_FORTRESS_MLVL], rebuild_savw=False
     )
-    area_patcher.add_function(required_fixes.torvus_temple)
+    area_patcher.add_function(required_fixes.torvus_temple_remove_effects)
     area_patcher.add_function(required_fixes.command_center_door)
     register_small_randomizations(area_patcher, Random(configuration["small_randomizations"]["seed"]))
     area_patcher.perform_changes()
