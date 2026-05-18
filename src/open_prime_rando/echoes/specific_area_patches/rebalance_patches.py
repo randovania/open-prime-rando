@@ -59,7 +59,9 @@ def register_all(area_patcher: AreaPatcher) -> None:
         torvus_temple_translator_gate,
         torvus_energy_controller_fight_layers,
         gfmc_compound_gate,
+        gfmc_compound_ship_pickup,
         sanctuary_entrance_keybearer,
+        hive_chamber_a_dmt_active,
     ]:
         area_patcher.add_function(func)
 
@@ -344,3 +346,62 @@ def sanctuary_entrance_keybearer(editor: PatcherEditor, mlvl: Mlvl, area: Area) 
     """
     area.move_instance("Dead Luminoth 4 KeyBearer", "Default")
     area.move_instance("Luminoth Light Support", "Default")
+
+
+@decorate_patcher(TEMPLE_GROUNDS_MLVL, temple_grounds.GFMC_COMPOUND_MREA)
+def gfmc_compound_ship_pickup(editor: PatcherEditor, mlvl: Mlvl, area: Area) -> None:
+    """
+    Makes the ship pickup active by default, removing the Jump Guardian requirement.
+    """
+    pickup_layer = area.get_layer("Space Jump")
+
+    # unload the layer temporarily during the movie to save on memory
+    def get_controller(prefix: str) -> ScriptLayerController:
+        return ScriptLayerController(
+            editor_properties=EditorProperties(
+                name=f"{prefix} - Space Jump (Dynamic)",
+            ),
+            layer=LayerSwitch(
+                area_id=temple_grounds.GFMC_COMPOUND_INTERNAL_ID,
+                layer_number=pickup_layer.index,
+            ),
+            is_dynamic=True,
+        )
+
+    # unload when the cutscene starts
+    decrement_controller = area.get_layer("GFT Flashback Intro").add_instance_with(get_controller("Decrement"))
+
+    area.get_instance("Cinema Start - Intro").add_connection(State.Zero, Message.Decrement, decrement_controller)
+
+    # reload when the Dump During Movie layer activates
+    increment_controller = area.get_layer("Default").add_instance_with(get_controller("Increment"))
+
+    area.get_instance("Increment Dump During Movie (Dynamic)").add_connection(
+        State.Arrived, Message.Increment, increment_controller
+    )
+    increment_controller.add_connection(State.Arrived, Message.Play, increment_controller)
+
+    # # make the layer active by default
+    # pickup_layer.active = True
+
+    # use a timer to load the pickup layer immediately
+    # because apparently just making the layer active
+    # in the mlvl can cause a bizarre and specific crash
+    timer = area.get_layer("Default").add_instance_with(
+        Timer(
+            editor_properties=EditorProperties(name="Activate Ship Missile Layer"),
+            time=0.1,
+            auto_start=True,
+        )
+    )
+    timer.add_connection(State.Zero, Message.Increment, increment_controller)
+
+
+@decorate_patcher(TEMPLE_GROUNDS_MLVL, temple_grounds.HIVE_CHAMBER_A_MREA)
+def hive_chamber_a_dmt_active(editor: PatcherEditor, mlvl: Mlvl, area: Area) -> None:
+    """
+    Makes the Dark Missile Trooper layers active by default, removing the Bomb Guardian requirement.
+    """
+
+    area.get_layer("Missile Trooper").active = True
+    area.get_layer("Missile trooper gate").active = True

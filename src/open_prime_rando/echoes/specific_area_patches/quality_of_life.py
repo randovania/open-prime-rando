@@ -11,10 +11,7 @@ from retro_data_structures.properties.echoes.objects import (
     CameraFilterKeyframe,
     CameraHint,
     CameraShaker,
-    HUDMemo,
-    Pickup,
     SpawnPoint,
-    Timer,
     Trigger,
     TriggerOrientated,
 )
@@ -40,53 +37,12 @@ def register_all(area_patcher: AreaPatcher) -> None:
     """
 
     for func in [
-        gfmc_compound_hudmemo,
         landing_site_load_black_bars,
         temple_transport_c_black_bars,
         temple_sanctuary_music,
         minigyro_terminal_fall,
     ]:
         area_patcher.add_function(func)
-
-
-@decorate_patcher(TEMPLE_GROUNDS_MLVL, temple_grounds.GFMC_COMPOUND_MREA)
-def gfmc_compound_hudmemo(editor: PatcherEditor, mlvl: Mlvl, area: Area) -> None:
-    """
-    Add a HUDMemo for the ship missile.
-    """
-    pickup_xfm = area.get_instance(0x2B0324).get_properties_as(Pickup).editor_properties.transform
-    ship_trigger = area.get_layer("Default").add_instance_with(
-        Trigger(
-            editor_properties=EditorProperties(
-                name="Show Ship Missile HudMemo",
-                transform=Transform(
-                    position=pickup_xfm.position, rotation=Vector(0.0, 0.0, 45.0), scale=Vector(50.0, 50.0, 10.0)
-                ),
-            ),
-            deactivate_on_enter=True,
-        )
-    )
-    strg_id, _ = editor.create_strg(
-        "gfmc_jump_hudmemo.STRG", ["Defeating Jump Guardian is required for this item to appear."]
-    )
-    hud_memo = area.get_layer("Default").add_instance_with(
-        HUDMemo(
-            editor_properties=EditorProperties(name="Ship Missile HudMemo", transform=pickup_xfm),
-            display_time=6.0,
-            display_type=0,
-            string=strg_id,
-        )
-    )
-    ship_trigger.add_connection(State.Entered, Message.SetToZero, hud_memo)
-
-    timer = area.get_layer("Space Jump").add_instance_with(
-        Timer(
-            editor_properties=EditorProperties(name="Disable Ship Missile Trigger", transform=pickup_xfm),
-            time=0.1,
-            auto_start=True,
-        )
-    )
-    timer.add_connection(State.Zero, Message.Deactivate, ship_trigger)
 
 
 @decorate_patcher(TEMPLE_GROUNDS_MLVL, temple_grounds.LANDING_SITE_MREA)
