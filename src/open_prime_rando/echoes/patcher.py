@@ -189,8 +189,8 @@ def _apply_patches(editor: PatcherEditor, configuration: RandoConfiguration, out
     rng = Random(configuration.seed)
 
     specific_area_patches.required_fixes.register_all(area_patcher)
-    specific_area_patches.rebalance_patches.register_all(area_patcher)
     specific_area_patches.quality_of_life.register_all(area_patcher)
+    specific_area_patches.rebalance_patches.register_all(area_patcher)
     specific_area_patches.dynamic_loading.register_all(area_patcher)
 
     specific_area_patches.version_differences.register_all(area_patcher, dol_version.echoes_version)

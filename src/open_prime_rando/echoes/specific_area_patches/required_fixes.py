@@ -52,6 +52,7 @@ def register_all(area_patcher: AreaPatcher) -> None:
         mining_station_b_post_pickup_relay,
         undertemple_access_spawn_point,
         main_reactor_flashbang,
+        main_reactor_stop_loads,
         sacrificial_chamber_persist_pickup,
         aerie_echo_gate,
         main_research_echo_gate,
