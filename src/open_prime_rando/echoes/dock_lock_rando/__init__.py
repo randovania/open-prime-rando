@@ -19,7 +19,7 @@ def add_custom_models(editor: PatcherEditor) -> None:
         f = assets.joinpath(n)
         if not must_exist and not f.exists():
             return None
-        res = RawResource(type="TXTR", data=f.read_bytes())
+        res = RawResource(type="TXTR", raw_data=f.read_bytes())
         return editor.add_new_asset(n, res)
 
     greyscale_emissive = get_txtr("custom_door_lock_greyscale_emissive.TXTR")

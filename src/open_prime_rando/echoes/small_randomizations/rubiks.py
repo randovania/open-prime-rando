@@ -67,7 +67,7 @@ class RubiksColor:
     def txtr(self) -> RawResource:
         return RawResource(
             type="TXTR",
-            data=custom_asset_path().joinpath("rubiks", self.txtr_name).read_bytes(),
+            raw_data=custom_asset_path().joinpath("rubiks", self.txtr_name).read_bytes(),
         )
 
 

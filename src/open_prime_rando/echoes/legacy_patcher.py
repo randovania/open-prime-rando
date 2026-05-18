@@ -6,7 +6,8 @@ from pathlib import Path
 from random import Random
 from typing import TYPE_CHECKING
 
-from retro_data_structures.asset_manager import FileProvider, PathFileWriter
+from retro_data_structures.asset_manager import PathFileWriter
+from retro_data_structures.file_provider import FileProvider
 from retro_data_structures.formats.strg import Strg
 from retro_data_structures.game_check import Game
 
