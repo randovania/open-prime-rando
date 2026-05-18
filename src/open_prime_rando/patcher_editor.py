@@ -13,7 +13,6 @@ from retro_data_structures.formats.mlvl import Mlvl
 from retro_data_structures.formats.scan import Scan
 from retro_data_structures.formats.strg import Strg
 from retro_data_structures.game_check import Game
-from retro_data_structures.properties.base_property import BaseObjectType
 from retro_data_structures.properties.echoes.objects.ScannableObjectInfo import ScannableObjectInfo
 
 if typing.TYPE_CHECKING:
@@ -21,6 +20,37 @@ if typing.TYPE_CHECKING:
     from pathlib import Path
 
     from retro_data_structures.formats.mrea import Area
+    from retro_data_structures.properties.echoes.objects import (
+        TweakAutoMapper,
+        TweakBall,
+        TweakCameraBob,
+        TweakGame,
+        TweakGui,
+        TweakGuiColors,
+        TweakParticle,
+        TweakPlayer,
+        TweakPlayerControls,
+        TweakPlayerGun,
+        TweakPlayerRes,
+        TweakSlideShow,
+        TweakTargeting,
+    )
+
+    type TweakObject = (
+        TweakAutoMapper
+        | TweakBall
+        | TweakCameraBob
+        | TweakGame
+        | TweakGui
+        | TweakGuiColors
+        | TweakParticle
+        | TweakPlayer
+        | TweakPlayerControls
+        | TweakPlayerGun
+        | TweakPlayerRes
+        | TweakSlideShow
+        | TweakTargeting
+    )
 
 type LogbookScanStrings = tuple[str, str, str]
 """(Box 1, Box 2, Logbook)"""
@@ -252,7 +282,7 @@ class PatcherEditor(AssetManager):
         return self._create_scan((box1, box2, logbook), model)
 
     @contextlib.contextmanager
-    def edit_tweak[T: BaseObjectType](self, tweak_class: T) -> Generator[T, None, None]:
+    def edit_tweak[T: TweakObject](self, tweak_class: type[T]) -> Generator[T, None, None]:
         """Context manager for editing the single-player tweak of the given class."""
 
         for instance in self.tweaks.instances:
