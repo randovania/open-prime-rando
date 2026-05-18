@@ -56,6 +56,7 @@ def register_all(area_patcher: AreaPatcher) -> None:
         temple_sanctuary,
         main_reactor_post_ds_layer_changes,
         torvus_temple_barrier,
+        torvus_energy_controller_fight_layers,
         gfmc_compound_gate,
         sanctuary_entrance_keybearer,
     ]:
@@ -228,6 +229,8 @@ def torvus_energy_controller_fight_layers(editor: PatcherEditor, mlvl: Mlvl, are
     """
 
     _disable_layer_controllers(
+        editor,
+        mlvl,
         area,
         (
             "DECREMENT 04_Swamp_Temple 1st Pass",
