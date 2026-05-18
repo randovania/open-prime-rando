@@ -172,6 +172,11 @@ def aerie_echo_gate(editor: PatcherEditor, mlvl: Mlvl, area: Area) -> None:
     relays = ((0x410094, 0x41008D), (0x410077, 0x41007F), (0x4100B5, 0x4100B6))
     _patch_echo_gate_softlock(area, 0x4100BE, relays)
 
+    # Decrement the Puzzle Layer once it's complete
+    puzzle_controller = area.get_instance(0x410419)
+    puzzle_counter = area.get_instance(0x4100BE)
+    puzzle_counter.add_connection(State.MaxReached, Message.Decrement, puzzle_controller)
+
 
 @decorate_patcher(SANCTUARY_FORTRESS_MLVL, sanctuary_fortress.MAIN_RESEARCH_MREA)
 def main_research_echo_gate(editor: PatcherEditor, mlvl: Mlvl, area: Area) -> None:
