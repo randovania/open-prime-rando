@@ -4,7 +4,8 @@ import os
 from pathlib import Path
 
 import pytest
-from retro_data_structures.asset_manager import IsoFileProvider
+from retro_data_structures.asset_manager import PakExportStrategyAppend
+from retro_data_structures.file_provider import IsoFileProvider
 from retro_data_structures.game_check import Game
 
 from open_prime_rando.patcher_editor import PatcherEditor
@@ -20,7 +21,7 @@ class HashUtil:
 
         pak = Pak.parse(contents, target_game=Game.ECHOES)
 
-        result["named_resources"] = {name: file.id for name, file in pak._raw.named_resources.items()}
+        result["named_resources"] = {name: file.id for name, file in pak._raw.named_resources}
 
         result["files"] = files = {}
         for asset in pak._raw.files:
@@ -112,7 +113,7 @@ def prime2_editor(raw_prime2_editor: PatcherEditor):
     yield editor
     editor._memory_files = {}
     for custom_asset, asset_id in editor._custom_asset_ids.items():
-        editor._paks_for_asset_id.pop(asset_id)
+        editor.pak_strategy = PakExportStrategyAppend(editor)
     editor._custom_asset_ids = {}
     editor._modified_resources = {}
 

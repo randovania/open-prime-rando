@@ -7,8 +7,9 @@ import os
 import typing
 
 import typing_extensions
-from retro_data_structures.asset_manager import AssetManager, FileProvider, FileWriter
+from retro_data_structures.asset_manager import AssetManager, FileWriter
 from retro_data_structures.base_resource import AssetId, NameOrAssetId
+from retro_data_structures.file_provider import FileProvider
 from retro_data_structures.formats.mlvl import Mlvl
 from retro_data_structures.formats.scan import Scan
 from retro_data_structures.formats.strg import Strg
