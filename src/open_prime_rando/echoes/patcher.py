@@ -189,8 +189,11 @@ def _apply_patches(editor: PatcherEditor, configuration: RandoConfiguration, out
     rng = Random(configuration.seed)
 
     specific_area_patches.required_fixes.register_all(area_patcher)
-    specific_area_patches.version_differences.register_all(area_patcher, dol_version.echoes_version)
     specific_area_patches.rebalance_patches.register_all(area_patcher)
+    specific_area_patches.quality_of_life.register_all(area_patcher)
+    specific_area_patches.dynamic_loading.register_all(area_patcher)
+
+    specific_area_patches.version_differences.register_all(area_patcher, dol_version.echoes_version)
 
     add_pickup_map_icon(editor)
     suit_cosmetics.apply_custom_suits(editor, configuration.suit_replacement)

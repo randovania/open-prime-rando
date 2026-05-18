@@ -10,17 +10,15 @@ from retro_data_structures.properties.echoes.archetypes.LayerSwitch import Layer
 from retro_data_structures.properties.echoes.archetypes.Transform import Transform
 from retro_data_structures.properties.echoes.core.Vector import Vector
 from retro_data_structures.properties.echoes.objects import (
-    CameraFilterKeyframe,
-    HUDMemo,
+    IngSpiderballGuardian,
     Pickup,
     Relay,
     ScriptLayerController,
     SequenceTimer,
     SpawnPoint,
-    StreamedAudio,
+    Splinter,
     Switch,
     Timer,
-    Trigger,
 )
 
 from open_prime_rando.area_patcher import AreaPatcher, decorate_patcher
@@ -51,25 +49,23 @@ def register_all(area_patcher: AreaPatcher) -> None:
     """
 
     for func in [
-        mining_station_b,
-        undertemple_access,
-        main_reactor,
-        sacrificial_chamber,
-        aerie,
-        main_research,
-        hive_chamber_b,
-        gfmc_compound,
-        torvus_temple,
+        mining_station_b_post_pickup_relay,
+        undertemple_access_spawn_point,
+        main_reactor_flashbang,
+        sacrificial_chamber_persist_pickup,
+        aerie_echo_gate,
+        main_research_echo_gate,
+        hive_chamber_b_remove_item_loss,
+        torvus_temple_remove_effects,
         command_center_door,
-        landing_site_load_black_bars,
-        temple_transport_c_black_bars,
-        temple_sanctuary,
+        alpha_splinter,
+        dynamo_works_sg_pb_response,
     ]:
         area_patcher.add_function(func)
 
 
 @decorate_patcher(AGON_WASTES_MLVL, agon_wastes.MINING_STATION_B_MREA)
-def mining_station_b(editor: PatcherEditor, mlvl: Mlvl, area: Area) -> None:
+def mining_station_b_post_pickup_relay(editor: PatcherEditor, mlvl: Mlvl, area: Area) -> None:
     """
     Normally this relay is activated by the cutscene, but has an incoming connection from the pickup.
     Activating it like this means the pickup will trigger the relay without the cutscene
@@ -79,7 +75,7 @@ def mining_station_b(editor: PatcherEditor, mlvl: Mlvl, area: Area) -> None:
 
 
 @decorate_patcher(TORVUS_BOG_MLVL, torvus_bog.UNDERTEMPLE_ACCESS_MREA)
-def undertemple_access(editor: PatcherEditor, mlvl: Mlvl, area: Area) -> None:
+def undertemple_access_spawn_point(editor: PatcherEditor, mlvl: Mlvl, area: Area) -> None:
     """
     Move the default spawn point in-bounds.
     """
@@ -88,18 +84,35 @@ def undertemple_access(editor: PatcherEditor, mlvl: Mlvl, area: Area) -> None:
 
 
 @decorate_patcher(AGON_WASTES_MLVL, agon_wastes.MAIN_REACTOR_MREA)
-def main_reactor(editor: PatcherEditor, mlvl: Mlvl, area: Area) -> None:
+def main_reactor_stop_loads(editor: PatcherEditor, mlvl: Mlvl, area: Area) -> None:
     """
-    Fix crashes related to room loading
-    and Dark Samus flashbang softlock.
+    Fixes crashes related to loading rooms before
+    or during the Dark Samus 1 fight.
     """
 
     # Define Objects
     unload_relay = area.get_instance("Unload dock when door closed")
     spawn_point = area.get_instance("Spawn point Start DS Battle")
+    intro_sequence_timer = area.get_instance("SequenceTimer Dark Samus Intro")
+
+    # When player is in room, stop all room loading
+    spawn_point.add_connection(State.Zero, Message.SetToZero, unload_relay)
+
+    # Make SequenceTimer reposition you immediately, so triggering the fight
+    # in wrong room will still properly stop room loading via AreaAutoLoadController
+    with intro_sequence_timer.edit_properties(SequenceTimer) as sequence_timer:
+        sequence_timer.sequence_connections[43].activation_times = [0.0]
+
+
+@decorate_patcher(AGON_WASTES_MLVL, agon_wastes.MAIN_REACTOR_MREA)
+def main_reactor_flashbang(editor: PatcherEditor, mlvl: Mlvl, area: Area) -> None:
+    """
+    Fixes Dark Samus flashbang softlock.
+    """
+
+    # Define Objects
     ds_death_stimer = area.get_instance("Dark Samus Death Sequence Transition")
     start_death_cinema_relay = area.get_instance("[IN] Start Death Cinema")
-    intro_sequence_timer = area.get_instance("SequenceTimer Dark Samus Intro")
 
     # Add a Looping Timer that always tries to start the Death Cinema
     # cutscene, so if Dark Samus dies before the layer is finished loading
@@ -125,21 +138,13 @@ def main_reactor(editor: PatcherEditor, mlvl: Mlvl, area: Area) -> None:
     sequence_connections[0] = Connection(State.Sequence, Message.Activate, death_cutscene_load_timer.id)
     ds_death_stimer.connections = sequence_connections
 
-    # Make SequenceTimer reposition you immediately, so triggering the fight
-    # in wrong room will still properly stop room loading via AreaAutoLoadController
-    with intro_sequence_timer.edit_properties(SequenceTimer) as sequence_timer:
-        sequence_timer.sequence_connections[43].activation_times = [0.0]
-
-    # When player is in room, stop all room loading
-    spawn_point.add_connection(State.Zero, Message.SetToZero, unload_relay)
-
     # Make looping timer start the death cinema, then make death cinema deactivate timer
     death_cutscene_load_timer.add_connection(State.Zero, Message.SetToZero, start_death_cinema_relay)
     start_death_cinema_relay.add_connection(State.Zero, Message.Deactivate, death_cutscene_load_timer)
 
 
 @decorate_patcher(TORVUS_BOG_MLVL, torvus_bog.SACRIFICIAL_CHAMBER_MREA)
-def sacrificial_chamber(editor: PatcherEditor, mlvl: Mlvl, area: Area) -> None:
+def sacrificial_chamber_persist_pickup(editor: PatcherEditor, mlvl: Mlvl, area: Area) -> None:
     """
     Makes the pickup persistent, even if you exit the area and reload.
     """
@@ -159,7 +164,7 @@ def _patch_echo_gate_softlock(
 
 
 @decorate_patcher(SANCTUARY_FORTRESS_MLVL, sanctuary_fortress.AERIE_MREA)
-def aerie(editor: PatcherEditor, mlvl: Mlvl, area: Area) -> None:
+def aerie_echo_gate(editor: PatcherEditor, mlvl: Mlvl, area: Area) -> None:
     """
     Patches an echo gate softlock.
     """
@@ -168,95 +173,19 @@ def aerie(editor: PatcherEditor, mlvl: Mlvl, area: Area) -> None:
 
 
 @decorate_patcher(SANCTUARY_FORTRESS_MLVL, sanctuary_fortress.MAIN_RESEARCH_MREA)
-def main_research(editor: PatcherEditor, mlvl: Mlvl, area: Area) -> None:
+def main_research_echo_gate(editor: PatcherEditor, mlvl: Mlvl, area: Area) -> None:
     """
     Patches an echo gate softlock.
-    Disables the Contraption layer by default, activating it dynamically when exiting the lower portal.
-    This hopefully prevents OOM/object list full crashes.
     """
     relays = ((0x0B02E6, 0x0B02DE), (0x0B0303, 0x0B030D), (0x0B02F6, 0x0B02FA))
     _patch_echo_gate_softlock(area, 0x0B0315, relays)
 
-    # Make layer be inactive by default
-    area.get_layer("Contraption").active = False
-
-    # Rename this existing object
-    contraption_layer_switch = area.get_instance("DYNAMIC Decrement Contraption")
-    contraption_layer_switch.name = "DYNAMIC Increment / Decrement Contraption"
-
-    # Add new Controller for the Spider Ball stuff, this layer
-    # gets incremented in Staging Area already but for room
-    # rando purposes, dynamically increment here as well
-    spider_controller = area.get_layer("Default").add_instance_with(
-        ScriptLayerController(
-            editor_properties=EditorProperties(
-                name="Dynamic Increment Column Spiderball",
-                transform=Transform(position=Vector(-18.5, 150.6, -134.7), scale=Vector(2.0, 2.0, 2.0)),
-            ),
-            layer=LayerSwitch(
-                area_id=sanctuary_fortress.MAIN_RESEARCH_INTERNAL_ID,
-                layer_number=area.get_layer("Column Spiderball").index,
-            ),
-            is_dynamic=True,
-        )
-    )
-
-    # Same issue as previous layer controller
-    first_pass_controller = area.get_layer("Default").add_instance_with(
-        ScriptLayerController(
-            editor_properties=EditorProperties(
-                name="Dynamic Decrement 1st Pass Enemies",
-                transform=Transform(position=Vector(-20, 150.6, -134.7), scale=Vector(2.0, 2.0, 2.0)),
-            ),
-            layer=LayerSwitch(
-                area_id=sanctuary_fortress.MAIN_RESEARCH_INTERNAL_ID,
-                layer_number=area.get_layer("1st Pass Enemies").index,
-            ),
-            is_dynamic=True,
-        )
-    )
-
-    # Define objects
-    portal_spawn = area.get_instance(0xB0056)
-    initial_spiderball_trigger = area.get_instance(0xB015B)
-    short_battle_sAudio = area.get_instance("Short Battle (INACTIVE)")
-    demo_contraption_trigger = area.get_instance("Start Demo Contraption")
-    contraption_encounter_trigger = area.get_instance("Start Contraption Encounter")
-    memory_relay = area.get_instance("Unlock 0l")
-
-    # These objects get activated/deactivated upon lower portal spawn
-    # arrival, but since the layer they're from gets incremented dynamically
-    # upon spawn they won't receive said messages, so we're updating their
-    # default status from the start
-    with initial_spiderball_trigger.edit_properties(Trigger) as trigger1:
-        trigger1.editor_properties.active = True
-    with short_battle_sAudio.edit_properties(StreamedAudio) as sAudio:
-        sAudio.editor_properties.active = True
-    with demo_contraption_trigger.edit_properties(Trigger) as trigger2:
-        trigger2.editor_properties.active = False
-    with contraption_encounter_trigger.edit_properties(Trigger) as trigger3:
-        trigger3.editor_properties.active = True
-
-    # Activate/Deactivate layers upon lower portal arrival
-    portal_spawn.add_connection(State.Zero, Message.Decrement, first_pass_controller)
-    portal_spawn.add_connection(State.Zero, Message.Increment, spider_controller)
-    portal_spawn.add_connection(State.Zero, Message.Increment, contraption_layer_switch)
-    spider_controller.add_connection(State.Arrived, Message.Play, spider_controller)
-    contraption_layer_switch.add_connection(State.Arrived, Message.Play, contraption_layer_switch)
-
-    # Make memory relay deactivate controller objects
-    # so the caretaker stuff doesn't load again
-    memory_relay.add_connection(State.Active, Message.Deactivate, contraption_layer_switch)
-    memory_relay.add_connection(State.Active, Message.Deactivate, spider_controller)
-    memory_relay.add_connection(State.Active, Message.Deactivate, first_pass_controller)
-
 
 @decorate_patcher(TEMPLE_GROUNDS_MLVL, temple_grounds.HIVE_CHAMBER_B_MREA)
-def hive_chamber_b(editor: PatcherEditor, mlvl: Mlvl, area: Area) -> None:
+def hive_chamber_b_remove_item_loss(editor: PatcherEditor, mlvl: Mlvl, area: Area) -> None:
     """
     Removes item loss sequence.
     """
-    # FIXME: use layers API
     area.get_layer("DS Appears Part1").active = False
     area.get_layer("Pre Dark Samus Music").active = False
 
@@ -264,48 +193,8 @@ def hive_chamber_b(editor: PatcherEditor, mlvl: Mlvl, area: Area) -> None:
     area.get_layer("Post Dark Samus Music").active = True
 
 
-@decorate_patcher(TEMPLE_GROUNDS_MLVL, temple_grounds.GFMC_COMPOUND_MREA)
-def gfmc_compound(editor: PatcherEditor, mlvl: Mlvl, area: Area) -> None:
-    """
-    Add a HUDMemo for the ship missile.
-    """
-    pickup_xfm = area.get_instance(0x2B0324).get_properties_as(Pickup).editor_properties.transform
-    ship_trigger = area.get_layer("Default").add_instance_with(
-        Trigger(
-            editor_properties=EditorProperties(
-                name="Show Ship Missile HudMemo",
-                transform=Transform(
-                    position=pickup_xfm.position, rotation=Vector(0.0, 0.0, 45.0), scale=Vector(50.0, 50.0, 10.0)
-                ),
-            ),
-            deactivate_on_enter=True,
-        )
-    )
-    strg_id, _ = editor.create_strg(
-        "gfmc_jump_hudmemo.STRG", ["Defeating Jump Guardian is required for this item to appear."]
-    )
-    hud_memo = area.get_layer("Default").add_instance_with(
-        HUDMemo(
-            editor_properties=EditorProperties(name="Ship Missile HudMemo", transform=pickup_xfm),
-            display_time=6.0,
-            display_type=0,
-            string=strg_id,
-        )
-    )
-    ship_trigger.add_connection(State.Entered, Message.SetToZero, hud_memo)
-
-    timer = area.get_layer("Space Jump").add_instance_with(
-        Timer(
-            editor_properties=EditorProperties(name="Disable Ship Missile Trigger", transform=pickup_xfm),
-            time=0.1,
-            auto_start=True,
-        )
-    )
-    timer.add_connection(State.Zero, Message.Deactivate, ship_trigger)
-
-
 @decorate_patcher(TORVUS_BOG_MLVL, torvus_bog.TORVUS_TEMPLE_MREA)
-def torvus_temple(editor: PatcherEditor, mlvl: Mlvl, area: Area) -> None:
+def torvus_temple_remove_effects(editor: PatcherEditor, mlvl: Mlvl, area: Area) -> None:
     """
     Remove cosmetic objects from Torvus Temple to minimize the chance of crash via alloc failure
     """
@@ -360,39 +249,28 @@ def command_center_door(editor: PatcherEditor, mlvl: Mlvl, area: Area) -> None:
         )
 
 
-@decorate_patcher(TEMPLE_GROUNDS_MLVL, temple_grounds.LANDING_SITE_MREA)
-def landing_site_load_black_bars(editor: PatcherEditor, mlvl: Mlvl, area: Area) -> None:
-    """
-    Makes the "Load In" cutscene have cinematic black bars appear, this
-    CameraFilterKeyframe object is wrongfully sharing the same FilterIndex
-    value as the PlayerActor load wait black screen filter.
-    """
-    with area.get_instance(0x102).edit_properties(CameraFilterKeyframe) as blackbars:
-        blackbars.filter_stage = 1
-
-
-@decorate_patcher(TEMPLE_GROUNDS_MLVL, temple_grounds.TEMPLE_TRANSPORT_C_MREA)
-def temple_transport_c_black_bars(editor: PatcherEditor, mlvl: Mlvl, area: Area) -> None:
-    """
-    Makes the Departure cutscene black bars not hide if being hit by the light rays filter, this
-    CameraFilterKeyframe object is wrongfully sharing the same FilterIndex value as the Black Bars screen filter.
-    """
-    with area.get_instance(0x90010).edit_properties(CameraFilterKeyframe) as sunlight_filter:
-        sunlight_filter.filter_stage = 0
-
-
 @decorate_patcher(GREAT_TEMPLE_MLVL, great_temple.TEMPLE_SANCTUARY_MREA)
-def temple_sanctuary(editor: PatcherEditor, mlvl: Mlvl, area: Area) -> None:
+def alpha_splinter(editor: PatcherEditor, mlvl: Mlvl, area: Area) -> None:
     """
-    Makes Ing Battle music play even when other music layers are active
+    Patches Alpha Splinter to take damage properly from Power Bombs.
+    Also makes the Pickup fade in, rather than pop in.
     """
-    # Move StreamedAudio to "1st Pass Enemy" layer where all the Dark Splinters are
-    area.move_instance("Ing Encounter", "1st Pass Enemy")
-    # Make the "Cinema End" Relay also send a `Play` message to the StreamedAudios from other layers
-    boss_death_cinema_end_relay = area.get_instance("Cinema End")
-    for instance in (0x20115, 0x20006, 0x2013E):
-        boss_death_cinema_end_relay.add_connection(
-            State.Zero,
-            Message.Play,
-            instance,
-        )
+    with area.get_instance("MEGA Splinter Light").edit_properties(Splinter) as alpha:
+        custom_rule = editor.get_custom_asset("custom_knockback.RULE")
+        assert custom_rule is not None
+        alpha.patterned.knockback_rules = custom_rule
+        alpha.ing_possession_data.ing_vulnerability.power_bomb.damage_multiplier = 3000.0
+
+    with area.get_instance("Pickup Object").edit_properties(Pickup) as pickup:
+        pickup.fadetime = 1.0
+
+
+@decorate_patcher(SANCTUARY_FORTRESS_MLVL, sanctuary_fortress.DYNAMO_WORKS_MREA)
+def dynamo_works_sg_pb_response(editor: PatcherEditor, mlvl: Mlvl, area: Area) -> None:
+    """
+    Fix Spider Guardian's response to PBs.
+    """
+    with area.get_instance("IngSpiderballGuardian 001").edit_properties(IngSpiderballGuardian) as spider:
+        custom_rule = editor.get_custom_asset("custom_knockback.RULE")
+        assert custom_rule is not None
+        spider.patterned.knockback_rules = custom_rule
