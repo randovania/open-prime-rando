@@ -66,6 +66,6 @@ def apply_custom_suits(editor: PatcherEditor, mapping: SuitMapping) -> None:
 
             res = RawResource(
                 type="TXTR",
-                data=asset.read_bytes(),
+                raw_data=asset.read_bytes(),
             )
             editor.replace_asset(asset_id, res)
