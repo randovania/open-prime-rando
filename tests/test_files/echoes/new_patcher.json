@@ -5163,5 +5163,11 @@
                 "Three keys are required to access &push;&main-color=#FF6705B3;Hive Temple&pop;.\nThey are scattered throughout &push;&main-color=#FF3333;Ing Hive&pop;."
             ]
         }
-    ]
+    ],
+    "damage_changes": {
+        "energy_per_tank": 102,
+        "safe_zone_heal_per_second": 2,
+        "dark_world_damage": 8,
+        "dark_suit_protection": 0.5
+    }
 }

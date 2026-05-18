@@ -15,7 +15,7 @@ from open_prime_rando.dol_patching.echoes.dol_patches import (
     SafeZoneAddresses,
     StartingBeamVisorAddresses,
 )
-from open_prime_rando.echoes.specific_area_patches.version_differences import EchoesVersion
+from open_prime_rando.echoes.version import EchoesVersion
 
 ALL_VERSIONS = [
     EchoesDolVersion(

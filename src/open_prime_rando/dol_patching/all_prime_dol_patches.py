@@ -286,6 +286,7 @@ def apply_reverse_energy_tank_heal_patch(
     game: Game,
     dol_editor: DolEditor,
 ) -> None:
+    """Changes the health refill in incr_pickup with an update of health to 1"""
     if game == Game.ECHOES:
         health_offset = 0x14
         refill_item = 0x29

@@ -17,7 +17,7 @@ from open_prime_rando.dol_patching.all_prime_dol_patches import (
 )
 from open_prime_rando.dol_patching.echoes.beam_configuration import BeamAmmoConfiguration
 from open_prime_rando.dol_patching.echoes.user_preferences import OprEchoesUserPreferences
-from open_prime_rando.echoes.specific_area_patches.version_differences import EchoesVersion
+from open_prime_rando.echoes.version import EchoesVersion
 
 POWERUP_TO_INDEX = {
     "Double Damage": 58,

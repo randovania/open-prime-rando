@@ -6,6 +6,7 @@ from pydantic import BaseModel, Field, StringConstraints
 
 from open_prime_rando.echoes.asset_ids.temple_grounds import LANDING_SITE_MREA
 from open_prime_rando.echoes.asset_ids.world import TEMPLE_GROUNDS_MLVL
+from open_prime_rando.echoes.damage_changes import DamageChanges
 from open_prime_rando.echoes.pickups.schema import PickupModification
 from open_prime_rando.echoes.starting_items import StartingItemConfig
 from open_prime_rando.echoes.suit_cosmetics import SuitMapping
@@ -99,3 +100,6 @@ class RandoConfiguration(BaseModel):
 
     string_changes: list[StringChange] = Field(default_factory=list)
     """A list of changes to make to existing STRG files."""
+
+    damage_changes: DamageChanges = Field(default_factory=DamageChanges)
+    """Set of changes related to damage and health."""
