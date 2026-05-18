@@ -21,6 +21,7 @@ from open_prime_rando.dol_patching.echoes.beam_configuration import BeamAmmoConf
 from open_prime_rando.dol_patching.echoes.user_preferences import OprEchoesUserPreferences
 from open_prime_rando.echoes import (
     custom_assets,
+    damage_changes,
     general_changes,
     inverted,
     logbook,
@@ -180,7 +181,11 @@ def edit_string(editor: PatcherEditor, change: StringChange) -> None:
 
 def _apply_patches(editor: PatcherEditor, configuration: RandoConfiguration, output: IsoFileWriter) -> None:
     custom_assets.create_custom_assets(editor)
+
+    # FIXME: call all the patches directly somewhere else
     dol_version = dol_patcher.apply_patches(editor.dol, _default_dol_patches())
+
+    damage_changes.apply_damage_changes(editor, configuration.damage_changes, dol_version)
 
     if configuration.inverted_mode:
         inverted.apply_inverted(editor)

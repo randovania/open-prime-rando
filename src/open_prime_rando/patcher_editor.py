@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import contextlib
 import fnmatch
 import io
 import os
@@ -16,9 +17,41 @@ from retro_data_structures.game_check import Game
 from retro_data_structures.properties.echoes.objects.ScannableObjectInfo import ScannableObjectInfo
 
 if typing.TYPE_CHECKING:
+    from collections.abc import Generator
     from pathlib import Path
 
     from retro_data_structures.formats.mrea import Area
+    from retro_data_structures.properties.echoes.objects import (
+        TweakAutoMapper,
+        TweakBall,
+        TweakCameraBob,
+        TweakGame,
+        TweakGui,
+        TweakGuiColors,
+        TweakParticle,
+        TweakPlayer,
+        TweakPlayerControls,
+        TweakPlayerGun,
+        TweakPlayerRes,
+        TweakSlideShow,
+        TweakTargeting,
+    )
+
+    type TweakObject = (
+        TweakAutoMapper
+        | TweakBall
+        | TweakCameraBob
+        | TweakGame
+        | TweakGui
+        | TweakGuiColors
+        | TweakParticle
+        | TweakPlayer
+        | TweakPlayerControls
+        | TweakPlayerGun
+        | TweakPlayerRes
+        | TweakSlideShow
+        | TweakTargeting
+    )
 
 type LogbookScanStrings = tuple[str, str, str]
 """(Box 1, Box 2, Logbook)"""
@@ -248,3 +281,20 @@ class PatcherEditor(AssetManager):
         """
         # TODO: create the logbook entry as well?
         return self._create_scan((box1, box2, logbook), model)
+
+    @contextlib.contextmanager
+    def edit_tweak[T: TweakObject](self, tweak_class: type[T]) -> Generator[T, None, None]:
+        """Context manager for editing the single-player tweak of the given class."""
+
+        for instance in self.tweaks.instances:
+            if instance.script_type == tweak_class:
+                prop = instance.get_properties_as(tweak_class)
+                if prop.instance_name.endswith("2"):
+                    continue
+
+                yield prop
+
+                instance.set_properties(prop)
+                return
+
+        raise KeyError(f"Unknown tweak class: {tweak_class}")
