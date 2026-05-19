@@ -38,7 +38,7 @@ def test_ntsc_export(prime2_ntsc_iso_path, tmp_path, configuration, test_files_d
     patcher._apply_patches(editor, configuration, output)
 
     # Assert
-    hashes = {name: hash_util.hash_file(name, contents.data) for name, contents in output._files.items()}
+    hashes = hash_util.hash_iso_file_writer(output)
 
     # _update_hashes_file(test_files_dir.joinpath("ntsc_hashes.json"), hashes)
 
@@ -58,7 +58,7 @@ def test_pal_export(prime2_pal_iso_path, tmp_path, configuration, test_files_dir
     patcher._apply_patches(editor, configuration, output)
 
     # Assert
-    hashes = {name: hash_util.hash_file(name, contents.data) for name, contents in output._files.items()}
+    hashes = hash_util.hash_iso_file_writer(output)
 
     # _update_hashes_file(test_files_dir.joinpath("pal_hashes.json"), hashes)
 
