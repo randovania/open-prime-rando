@@ -325,8 +325,12 @@ def apply_beam_cost_patch(
 def apply_safe_zone_heal_patch(
     patch_addresses: SafeZoneAddresses, sda2_base: int, heal_per_second: float, dol_editor: DolEditor
 ) -> None:
+    """Changes safe zones to heal the given amount instead of 1/s."""
     offset = patch_addresses.heal_per_frame_constant - sda2_base
 
+    # Patches some unused float constant with our new per-tick amount
+    # Then changes the code to use that float instead of the dt argument.
+    # (which is fine because the dt argument is always 1/60)
     dol_editor.write(patch_addresses.heal_per_frame_constant, struct.pack(">f", heal_per_second / 60))
     dol_editor.write_instructions(patch_addresses.increment_health_fmr, [lfs(f1, offset, r2)])
 
@@ -397,14 +401,15 @@ class EchoesDolVersion(BasePrimeDolVersion):
     cworldtransmanager_sfxstart: int
     powerup_should_persist: int
     map_door_types: MapDoorTypeAddresses
-    double_damage_vfx: int
+    massive_damage_vfx: int
     starting_area_serialize_clean_slot_address: int
     inventory_slot_to_item_id_address: int
 
 
-def apply_fixes(version: EchoesDolVersion, dol_editor: DolEditor) -> None:
-    dol_editor.symbols["CMapWorldInfo::IsAnythingSet"] = version.anything_set_address
+def _all_worlds_visible(version: EchoesDolVersion, dol_editor: DolEditor) -> None:
+    """Makes it so that all worlds are always visible, even if you haven't visited them."""
 
+    dol_editor.symbols["CMapWorldInfo::IsAnythingSet"] = version.anything_set_address
     dol_editor.write_instructions(
         "CMapWorldInfo::IsAnythingSet",
         [
@@ -412,6 +417,11 @@ def apply_fixes(version: EchoesDolVersion, dol_editor: DolEditor) -> None:
             blr(),
         ],
     )
+    # NOTE: This creates 45 free instructions for other uses
+
+
+def _error_screen_enabled(version: EchoesDolVersion, dol_editor: DolEditor) -> None:
+    """Makes all crashes automatically show the error screen, without checking for controller input."""
 
     dol_editor.write_instructions(
         version.rs_debugger_printf_loop_address,
@@ -419,14 +429,32 @@ def apply_fixes(version: EchoesDolVersion, dol_editor: DolEditor) -> None:
             nop(),
         ],
     )
+    # NOTE: This creates 77 free instructions for other uses
+    # The patch can be improved to at least 2 more.
 
-    # Disable Double Damage VFX by checking for an invalid item id
+
+def _remove_massive_damage_vfx(version: EchoesDolVersion, dol_editor: DolEditor) -> None:
+    """
+    Disables the glowing red morph ball from when you have massive damage.
+
+    This effect has a visual bug where it flashes very badly when in a safe zone.
+    """
+
+    # Change the item check for to an invalid item id
     dol_editor.write_instructions(
-        version.double_damage_vfx,
+        version.massive_damage_vfx,
         [
             li(r4, 999),
         ],
     )
+
+
+def apply_mandatory_fixes(version: EchoesDolVersion, dol_editor: DolEditor) -> None:
+    """Mandatory fixes that we want applied no matter what."""
+
+    _all_worlds_visible(version, dol_editor)
+    _error_screen_enabled(version, dol_editor)
+    _remove_massive_damage_vfx(version, dol_editor)
 
 
 def change_powerup_should_persist(version: EchoesDolVersion, dol_editor: DolEditor, powerups: list[str]) -> None:
@@ -470,6 +498,8 @@ def freeze_player() -> Sequence[BaseInstruction]:
 
 
 def apply_map_door_changes(door_symbols: MapDoorTypeAddresses, dol_editor: DolEditor) -> None:
+    """Adds support for additional door colors"""
+
     # This ends up being a slow import, don't do it early
     from open_prime_rando.echoes.dock_lock_rando.map_icons import DoorMapIcon
 

@@ -15,8 +15,9 @@ from retro_data_structures.game_check import Game
 
 from open_prime_rando import practice_mod
 from open_prime_rando.area_patcher import AreaPatcher
-from open_prime_rando.dol_patching import ppc_helper
-from open_prime_rando.dol_patching.echoes import dol_patcher
+from open_prime_rando.dol_patching import all_prime_dol_patches, ppc_helper
+from open_prime_rando.dol_patching.dol_version import find_version_for_dol
+from open_prime_rando.dol_patching.echoes import dol_patcher, dol_patches, dol_versions
 from open_prime_rando.dol_patching.echoes.beam_configuration import BeamAmmoConfiguration
 from open_prime_rando.dol_patching.echoes.user_preferences import OprEchoesUserPreferences
 from open_prime_rando.echoes import (
@@ -179,11 +180,27 @@ def edit_string(editor: PatcherEditor, change: StringChange) -> None:
     strg.set_string_list(change.strings)
 
 
+def apply_dol_patches(editor: PatcherEditor, configuration: RandoConfiguration, dol_version: EchoesDolVersion) -> None:
+    """Applies all the dol patches that aren't specific to some other place."""
+
+    dol_patches.apply_mandatory_fixes(dol_version, editor.dol)
+    all_prime_dol_patches.apply_remote_execution_patch(Game.ECHOES, dol_version.string_display, editor.dol)
+    all_prime_dol_patches.apply_build_info_patch(dol_version, editor.dol, configuration.world_uuid)
+    dol_patches.apply_map_door_changes(dol_version.map_door_types, editor.dol)
+    dol_patches.apply_unvisited_room_names(dol_version, editor.dol, configuration.map_visibility.unvisited_room_names)
+
+    # TODO: the following patches needs more configuration stuff that I'm leaving for later
+    # dol_patches.apply_game_options_patch(
+    #     version.game_options_constructor_address, patches_data.user_preferences, dol_editor
+    # )
+    # dol_patches.apply_beam_cost_patch(version.beam_cost_addresses, patches_data.beam_configurations, dol_editor)
+
+
 def _apply_patches(editor: PatcherEditor, configuration: RandoConfiguration, output: IsoFileWriter) -> None:
     custom_assets.create_custom_assets(editor)
 
-    # FIXME: call all the patches directly somewhere else
-    dol_version = dol_patcher.apply_patches(editor.dol, _default_dol_patches())
+    dol_version: EchoesDolVersion = find_version_for_dol(editor.dol, dol_versions.ALL_VERSIONS)
+    apply_dol_patches(editor, configuration, dol_version)
 
     damage_changes.apply_damage_changes(editor, configuration.damage_changes, dol_version)
 
