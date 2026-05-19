@@ -8,7 +8,7 @@ from retro_data_structures.asset_manager import PakExportStrategyAppend
 from retro_data_structures.file_provider import IsoFileProvider
 from retro_data_structures.game_check import Game
 
-from open_prime_rando.patcher_editor import PatcherEditor
+from open_prime_rando.patcher_editor import IsoFileWriter, PatcherEditor
 
 _FAIL_INSTEAD_OF_SKIP = True
 
@@ -45,6 +45,12 @@ class HashUtil:
             return json.loads(contents)
 
         return hashlib.sha256(contents).hexdigest()
+
+    def hash_iso_file_writer(self, output: IsoFileWriter) -> dict[str, str | dict]:
+        result = {name: self.hash_file(name, contents.data) for name, contents in output._files.items()}
+        if output._dol is not None:
+            result["default.dol"] = self.hash_file("default.dol", output._dol)
+        return result
 
 
 @pytest.fixture(scope="session")
