@@ -3,6 +3,9 @@ from __future__ import annotations
 import typing
 
 from open_prime_rando.echoes.specific_area_patches.dynamic_loading.aerie import aerie_dynamic_layer_loading
+from open_prime_rando.echoes.specific_area_patches.dynamic_loading.central_mining_station import (
+    central_mining_station_dynamic_layer_loading,
+)
 from open_prime_rando.echoes.specific_area_patches.dynamic_loading.dynamo_works import (
     dynamo_works_dynamic_layer_loading,
 )
@@ -34,5 +37,6 @@ def register_all(area_patcher: AreaPatcher) -> None:
         main_research_dynamic_layer_loading,
         torvus_temple_second_pass,
         aerie_dynamic_layer_loading,
+        central_mining_station_dynamic_layer_loading,
     ]:
         area_patcher.add_function(func)
