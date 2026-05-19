@@ -5,6 +5,8 @@ from annotated_types import Interval
 from open_prime_rando_practice_mod import PracticeModMode
 from pydantic import BaseModel, Field, StringConstraints
 
+from open_prime_rando.dol_patching.echoes.beam_cost import BeamConfiguration
+from open_prime_rando.dol_patching.echoes.game_options import GameOptionsDefaults
 from open_prime_rando.echoes.asset_ids.temple_grounds import LANDING_SITE_MREA
 from open_prime_rando.echoes.asset_ids.world import TEMPLE_GROUNDS_MLVL
 from open_prime_rando.echoes.damage_changes import DamageChanges
@@ -89,6 +91,12 @@ class RandoConfiguration(BaseModel):
 
     map_visibility: MapVisibility = Field(default_factory=MapVisibility)
     """Settings for configuring the Map visibility."""
+
+    beam_configuration: BeamConfiguration = Field(default_factory=BeamConfiguration)
+    """Changing how much ammo each beam take for each kind of shot, as well which ammo."""
+
+    game_options_defaults: GameOptionsDefaults = Field(default_factory=GameOptionsDefaults)
+    """Overrides for the in-game options defaults."""
 
     practice_mod: PracticeModMode = PracticeModMode.disabled
     """How accessible is the Practice Mod."""

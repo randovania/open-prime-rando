@@ -7,8 +7,8 @@ from open_prime_rando.dol_patching.all_prime_dol_patches import (
     PowerupFunctionsAddresses,
     StringDisplayPatchAddresses,
 )
+from open_prime_rando.dol_patching.echoes.beam_cost import BeamCostAddresses
 from open_prime_rando.dol_patching.echoes.dol_patches import (
-    BeamCostAddresses,
     EchoesDolVersion,
     IsDoorAddr,
     MapDoorTypeAddresses,
