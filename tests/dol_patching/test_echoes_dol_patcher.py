@@ -34,7 +34,7 @@ def test_apply_patches(mocker: pytest_mock.MockerFixture):
         "open_prime_rando.dol_patching.echoes.dol_patches.apply_starting_visor_patch", autospec=True
     )
     mock_apply_fixes: MagicMock = mocker.patch(
-        "open_prime_rando.dol_patching.echoes.dol_patches.apply_fixes", autospec=True
+        "open_prime_rando.dol_patching.echoes.dol_patches.apply_mandatory_fixes", autospec=True
     )
     mock_apply_unvisited_room_names: MagicMock = mocker.patch(
         "open_prime_rando.dol_patching.echoes.dol_patches.apply_unvisited_room_names", autospec=True

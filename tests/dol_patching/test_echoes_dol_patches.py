@@ -317,7 +317,7 @@ def test_apply_fixes(dol_file, header, version):
     # Run
     dol_file.set_editable(True)
     with dol_file:
-        dol_patches.apply_fixes(version, dol_file)
+        dol_patches.apply_mandatory_fixes(version, dol_file)
 
 
 @pytest.mark.parametrize(("header", "version"), DOLS)

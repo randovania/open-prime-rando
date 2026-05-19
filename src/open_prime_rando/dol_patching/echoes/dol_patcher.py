@@ -40,12 +40,12 @@ def apply_patches(dol_editor: DolEditor, patches_data: EchoesDolPatchesData) -> 
     version = dol_version.find_version_for_dol(dol_editor, dol_versions.ALL_VERSIONS)
     assert isinstance(version, dol_patches.EchoesDolVersion)
 
-    dol_patches.apply_fixes(version, dol_editor)
+    dol_patches.apply_mandatory_fixes(version, dol_editor)
     dol_patches.change_powerup_should_persist(
         version, dol_editor, ["Double Damage", "Unlimited Missiles", "Unlimited Beam Ammo"]
     )
 
-    all_prime_dol_patches.apply_build_info_patch(dol_editor, patches_data.world_uuid, version)
+    all_prime_dol_patches.apply_build_info_patch(version, dol_editor, patches_data.world_uuid)
     all_prime_dol_patches.apply_remote_execution_patch(version.game, version.string_display, dol_editor)
     all_prime_dol_patches.apply_energy_tank_capacity_patch(
         version.health_capacity, patches_data.energy_per_tank, dol_editor
