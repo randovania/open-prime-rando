@@ -60,6 +60,7 @@ def register_all(area_patcher: AreaPatcher) -> None:
         torvus_energy_controller_fight_layers,
         gfmc_compound_gate,
         sanctuary_entrance_keybearer,
+        main_reactor_keybearer,
     ]:
         area_patcher.add_function(func)
 
@@ -343,4 +344,13 @@ def sanctuary_entrance_keybearer(editor: PatcherEditor, mlvl: Mlvl, area: Area) 
     Change the Keybearer to spawn on the Default layer, removing the Spider Guardian requirement.
     """
     area.move_instance("Dead Luminoth 4 KeyBearer", "Default")
+    area.move_instance("Luminoth Light Support", "Default")
+
+
+@decorate_patcher(AGON_WASTES_MLVL, agon_wastes.MAIN_REACTOR_MREA)
+def main_reactor_keybearer(editor: PatcherEditor, mlvl: Mlvl, area: Area) -> None:
+    """
+    Change the Keybearer to spawn on the Default layer, removing the Dark Samus 1 requirement.
+    """
+    area.move_instance("Dead Luminoth 3 KeyBearer ", "Default")
     area.move_instance("Luminoth Light Support", "Default")
