@@ -318,7 +318,13 @@ def apply_reverse_energy_tank_heal_patch(
     dol_editor.write_instructions(addresses.incr_pickup + patch_offset, patch)
 
 
-def apply_build_info_patch(dol_file: DolEditor, uid: uuid.UUID, version: DolVersion) -> None:
+def apply_build_info_patch(version: DolVersion, dol_file: DolEditor, uid: uuid.UUID) -> None:
+    """
+    Inserts the UUID in the middle of the build string.
+
+    The initial bytes are left untouched to be able to quickly identify by checking the first
+    few bytes of each possible build string address.
+    """
     dol_file.write(
         version.build_string_address + 6,
         uid.bytes,

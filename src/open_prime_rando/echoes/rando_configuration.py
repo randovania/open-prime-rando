@@ -1,3 +1,4 @@
+import uuid
 from typing import Annotated
 
 from annotated_types import Interval
@@ -52,6 +53,9 @@ class MapVisibility(BaseModel):
     areas_to_never_reveal: list[AssetId] = Field(default_factory=list)
     """Which areas are not revealed, even when `reveal_map_at_start` is True."""
 
+    unvisited_room_names: bool = True
+    """When true, unvisited rooms in the map show their name."""
+
 
 class StringChange(BaseModel):
     """Contains a new list of strings to use for a given STRG."""
@@ -73,6 +77,9 @@ class RandoConfiguration(BaseModel):
 
     seed: int
     """Seed number of a random number generator. Used for small changes."""
+
+    world_uuid: uuid.UUID = uuid.UUID("00000000-0000-1111-0000-000000000000")
+    """An UUID to uniquely identify this export. Can be fetched from the in-game memory."""
 
     starting_area: AreaReference = AreaReference(mlvl_id=TEMPLE_GROUNDS_MLVL, mrea_id=LANDING_SITE_MREA)
     """The game will start at the given area. When not set, starts at Landing Site."""
