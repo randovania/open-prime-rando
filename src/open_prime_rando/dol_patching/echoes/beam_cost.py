@@ -144,7 +144,7 @@ def _is_out_of_ammo_patch(symbols: dict[str, int], ammo_types: list[tuple[int, i
         return body
 
     get_uncharged_cost = [
-        custom_ppc.load_unsigned_32bit(r4, symbols["BeamIdToChargedShotAmmoCost"]),
+        custom_ppc.load_unsigned_32bit(r4, symbols["BeamIdToUnchargedShotAmmoCost"]),
         lwz(r5, 0x774, r30),  # r5 = get current beam
         rlwinm(r5, r5, 0x2, 0x0, 0x1D),  # r5 *= 4
         lwzx(r4, r4, r5),  # ammoCost_r4 = UnchargedCosts_r4[currentBeam]
@@ -248,8 +248,8 @@ def apply_patch(
     ]
 
     # FIXME: depend on version
-    dol_editor.symbols["BeamIdToChargedShotAmmoCost"] = patch_addresses.uncharged_cost
-    dol_editor.symbols["BeamIdToUnchargedShotAmmoCost"] = patch_addresses.charged_cost
+    dol_editor.symbols["BeamIdToUnchargedShotAmmoCost"] = patch_addresses.uncharged_cost
+    dol_editor.symbols["BeamIdToChargedShotAmmoCost"] = patch_addresses.charged_cost
     dol_editor.symbols["BeamIdToChargeComboAmmoCost"] = patch_addresses.charge_combo_ammo_cost
     dol_editor.symbols["g_ChargeComboMissileCosts"] = patch_addresses.charge_combo_missile_cost
     dol_editor.symbols["CPlayerGun::IsOutOfAmmoToShoot"] = patch_addresses.is_out_of_ammo_to_shoot
@@ -261,8 +261,8 @@ def apply_patch(
     combo_costs_patch = struct.pack(">llll", *combo_costs)
     missile_costs_patch = struct.pack(">llll", *missile_costs)
 
-    dol_editor.write("BeamIdToChargedShotAmmoCost", uncharged_costs_patch)
-    dol_editor.write("BeamIdToUnchargedShotAmmoCost", charged_costs_patch)
+    dol_editor.write("BeamIdToUnchargedShotAmmoCost", uncharged_costs_patch)
+    dol_editor.write("BeamIdToChargedShotAmmoCost", charged_costs_patch)
     dol_editor.write("BeamIdToChargeComboAmmoCost", combo_costs_patch)
     dol_editor.write("g_ChargeComboMissileCosts", missile_costs_patch)
     dol_editor.write_instructions(
