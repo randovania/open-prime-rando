@@ -77,6 +77,25 @@ class StartingBeamVisorAddresses:
     reset_visor: int
 
 
+@dataclasses.dataclass(frozen=True)
+class StkMapIconSymbols:
+    map_key_lut: int
+    check_entry: int
+
+    temple_key_found_icon: int
+    temple_key_not_found_icon: int
+
+    get_item_amount: int
+    get_string_with_name: int
+
+    wstring_append: int
+
+    string_table: int
+
+    increment_lut_entry: int
+    check_lut_finished: int
+
+
 _PREFERENCES_ORDER = (
     "sound_mode",
     "screen_brightness",
@@ -405,6 +424,7 @@ class EchoesDolVersion(BasePrimeDolVersion):
     massive_damage_vfx: int
     starting_area_serialize_clean_slot_address: int
     inventory_slot_to_item_id_address: int
+    stk_map_icon: StkMapIconSymbols
 
 
 def _all_worlds_visible(version: EchoesDolVersion, dol_editor: DolEditor) -> None:
@@ -545,26 +565,25 @@ def apply_map_door_changes(door_symbols: MapDoorTypeAddresses, dol_editor: DolEd
     dol_editor.write("CTweakAutoMapper::GetDoorColor::DoorColorArray", DoorMapIcon.get_surface_colors_as_bytes())
 
 
-def apply_stk_on_map(dol_editor: DolEditor) -> None:
+def apply_stk_on_map(stk_symbols: StkMapIconSymbols, dol_editor: DolEditor) -> None:
     """
     Displays STKs on the map for Temple Grounds and Great Temple
     """
 
-    # TODO: get offsets according to version
-    dol_editor.symbols["CAutoMapper::UpdateTempleKeys::MapKeyLUT"] = 0x803A74F0
-    dol_editor.symbols["CAutoMapper::UpdateTempleKeys::CheckEntry"] = 0x80086EF0
+    dol_editor.symbols["CAutoMapper::UpdateTempleKeys::MapKeyLUT"] = stk_symbols.map_key_lut
+    dol_editor.symbols["CAutoMapper::UpdateTempleKeys::CheckEntry"] = stk_symbols.check_entry
 
-    dol_editor.symbols["CAutoMapper::UpdateTempleKeys::TempleKeyNotFoundIcon"] = 0x803A777B
-    dol_editor.symbols["CAutoMapper::UpdateTempleKeys::TempleKeyFoundIcon"] = 0x803A7768
+    dol_editor.symbols["CAutoMapper::UpdateTempleKeys::TempleKeyNotFoundIcon"] = stk_symbols.temple_key_not_found_icon
+    dol_editor.symbols["CAutoMapper::UpdateTempleKeys::TempleKeyFoundIcon"] = stk_symbols.temple_key_found_icon
 
-    dol_editor.symbols["CPlayerState::GetItemAmount"] = 0x80085514
-    dol_editor.symbols["CStringTable::GetStringWithName"] = 0x8031258C
-    dol_editor.symbols["wstring::append"] = 0x802FE3D4
+    dol_editor.symbols["CPlayerState::GetItemAmount"] = stk_symbols.get_item_amount
+    dol_editor.symbols["CStringTable::GetStringWithName"] = stk_symbols.get_string_with_name
+    dol_editor.symbols["wstring::append"] = stk_symbols.wstring_append
 
-    dol_editor.symbols["gpStringTable"] = 0x80418EB0
+    dol_editor.symbols["gpStringTable"] = stk_symbols.string_table
 
-    dol_editor.symbols["CAutoMapper::UpdateTempleKeys::IncrementLUTEntry"] = 0x80086F88
-    dol_editor.symbols["CAutoMapper::UpdateTempleKeys::CheckLUTFinished"] = 0x80086F90
+    dol_editor.symbols["CAutoMapper::UpdateTempleKeys::IncrementLUTEntry"] = stk_symbols.increment_lut_entry
+    dol_editor.symbols["CAutoMapper::UpdateTempleKeys::CheckLUTFinished"] = stk_symbols.check_lut_finished
 
     # update the lookup table to fit the necessary data in a smaller size
     # so that we can then include sky temple keys in the LUT as well
@@ -591,34 +610,17 @@ def apply_stk_on_map(dol_editor: DolEditor) -> None:
 
     lut_data = b"".join(struct.pack(">hh", item, world_key_id) for item, world_key_id in lut)
 
-    dol_editor.symbols["CAutoMapper::UpdateTempleKeys::STKoff"] = dol_editor.symbols[
+    dol_editor.symbols["CAutoMapper::UpdateTempleKeys::STKon"] = dol_editor.symbols[
         "CAutoMapper::UpdateTempleKeys::MapKeyLUT"
     ] + len(lut_data)
-    # stk_off = b"STKOff\0"
-    stk_off = b"No\0"
-
-    dol_editor.symbols["CAutoMapper::UpdateTempleKeys::STKon"] = dol_editor.symbols[
-        "CAutoMapper::UpdateTempleKeys::STKoff"
-    ] + len(stk_off)
-    # stk_on = b"STKOn\0"
-    stk_on = b"Yes\0"
+    stk_on = b"STKOn\0"
 
     orig_lut_len = 9 * 3 * 4
-    if len(lut_data + stk_off + stk_on) > orig_lut_len:
+    if len(lut_data + stk_on) > orig_lut_len:
         raise RuntimeError("Overflowed map entry LUT")
 
     dol_editor.write("CAutoMapper::UpdateTempleKeys::MapKeyLUT", lut_data)
-    dol_editor.write("CAutoMapper::UpdateTempleKeys::STKoff", stk_off)
     dol_editor.write("CAutoMapper::UpdateTempleKeys::STKon", stk_on)
-
-    def check_key_is_stk(stk_symbol: str, red_key_symbol: str) -> Sequence[Instruction]:
-        return [
-            cmpwi(r0, 0x0),  # check if world index is 0
-            bne(4 * 4, relative=True),  # if not, skip the next few instructions
-            custom_ppc.load_unsigned_32bit(r4, stk_symbol),
-            b(3 * 4, relative=True),
-            custom_ppc.load_unsigned_32bit(r4, red_key_symbol),
-        ]
 
     dol_editor.write_instructions(
         "CAutoMapper::UpdateTempleKeys::CheckEntry",
@@ -635,20 +637,28 @@ def apply_stk_on_map(dol_editor: DolEditor) -> None:
             # make sure world index is back in r0
             lhz(r0, 0x2, r29),
             cmpwi(r3, 0x0),
-            ble(9 * 4, relative=True),
+            ble("CAutoMapper::UpdateTempleKeys::case_NO_KEY"),
             # player has key
-            *check_key_is_stk(
-                dol_editor.symbols["CAutoMapper::UpdateTempleKeys::STKon"],
-                dol_editor.symbols["CAutoMapper::UpdateTempleKeys::TempleKeyFoundIcon"],
+            cmpwi(r0, 0x0),
+            bne("CAutoMapper::UpdateTempleKeys::case_RED_KEY"),
+            # key is an STK
+            custom_ppc.load_unsigned_32bit(r4, dol_editor.symbols["CAutoMapper::UpdateTempleKeys::STKon"]).with_label(
+                "CAutoMapper::UpdateTempleKeys::case_STK"
             ),
-            b(8 * 4, relative=True),
+            b("CAutoMapper::UpdateTempleKeys::LoadString"),
+            # key is a red key
+            custom_ppc.load_unsigned_32bit(
+                r4, dol_editor.symbols["CAutoMapper::UpdateTempleKeys::TempleKeyFoundIcon"]
+            ).with_label("CAutoMapper::UpdateTempleKeys::case_RED_KEY"),
+            b("CAutoMapper::UpdateTempleKeys::LoadString"),
             # player does not have key
-            *check_key_is_stk(
-                dol_editor.symbols["CAutoMapper::UpdateTempleKeys::STKoff"],
-                dol_editor.symbols["CAutoMapper::UpdateTempleKeys::TempleKeyNotFoundIcon"],
-            ),
+            custom_ppc.load_unsigned_32bit(
+                r4, dol_editor.symbols["CAutoMapper::UpdateTempleKeys::TempleKeyNotFoundIcon"]
+            ).with_label("CAutoMapper::UpdateTempleKeys::case_NO_KEY"),
             # load appropriate string
-            custom_ppc.load_unsigned_32bit(r3, dol_editor.symbols["gpStringTable"]),
+            custom_ppc.load_unsigned_32bit(r3, dol_editor.symbols["gpStringTable"]).with_label(
+                "CAutoMapper::UpdateTempleKeys::LoadString"
+            ),
             lwz(r3, 0x0, r3),
             bl("CStringTable::GetStringWithName"),
             # append to our string

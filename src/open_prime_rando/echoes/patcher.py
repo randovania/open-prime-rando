@@ -37,6 +37,7 @@ from open_prime_rando.echoes import (
 from open_prime_rando.echoes.asset_ids import world
 from open_prime_rando.echoes.elevators import auto_enabled_elevator_patches
 from open_prime_rando.echoes.specific_area_patches import front_end
+from open_prime_rando.echoes.version import EchoesVersion
 from open_prime_rando.patcher_editor import IsoFileProvider, IsoFileWriter, PatcherEditor
 
 if TYPE_CHECKING:
@@ -182,9 +183,16 @@ def edit_string(editor: PatcherEditor, change: StringChange) -> None:
 
 
 def apply_stk_on_map(editor: PatcherEditor, dol_version: EchoesDolVersion) -> None:
-    dol_patches.apply_stk_on_map(editor.dol)
+    dol_patches.apply_stk_on_map(dol_version.stk_map_icon, editor.dol)
 
-    map_screen = editor.get_file(0x834E8FA4, Frme)  # FRME_MapScreen_0
+    if dol_version.echoes_version == EchoesVersion.NTSC_U:
+        frme_id = 0x834E8FA4
+    elif dol_version.echoes_version == EchoesVersion.PAL:
+        frme_id = 0xBAF48D93
+    else:
+        raise RuntimeError(f"Unsupported EchoesVersion: {dol_version.echoes_version}")
+
+    map_screen = editor.get_file(frme_id, Frme)  # FRME_MapScreen_0
 
     for widget in map_screen.raw.widgets:
         if widget.name != "textpane_keylegend":
@@ -192,10 +200,14 @@ def apply_stk_on_map(editor: PatcherEditor, dol_version: EchoesDolVersion) -> No
         widget.specific.vec[0] -= 1.3  # shift to the left a bit
         widget.specific.word_wrap = 2  # change justification to Right
 
-    # TODO: add STK-specific textures
+    main_strg = editor.get_file(0xB4590AC3, Strg)
+    main_strg.append_string(
+        f"&image=SI,1.0,1.0,{editor.resolve_asset_id('stk_icon_found.TXTR'):08X};",
+        name="STKOn",
+    )
 
-    # TODO: add entries to Main.STRG for "STKOn" and "STKOff"
-    #       that use the new textures
+    for pak in editor.find_paks(0x07180ADA):
+        editor.ensure_present(pak, "stk_icon_found.TXTR")
 
 
 def apply_dol_patches(editor: PatcherEditor, configuration: RandoConfiguration, dol_version: EchoesDolVersion) -> None:
