@@ -255,6 +255,7 @@ def apply_patch(
     dol_editor.symbols["CPlayerGun::IsOutOfAmmoToShoot"] = patch_addresses.is_out_of_ammo_to_shoot
     dol_editor.symbols["CPlayerGun::GetPlayer"] = patch_addresses.gun_get_player
     dol_editor.symbols["CPlayerState::GetItemAmount"] = patch_addresses.get_item_amount
+    dol_editor.symbols["CSamusGun::GetBeamAmmoTypeAndCosts"] = patch_addresses.get_beam_ammo_type_and_costs
 
     uncharged_costs_patch = struct.pack(">llll", *uncharged_costs)
     charged_costs_patch = struct.pack(">llll", *charged_costs)
@@ -265,9 +266,7 @@ def apply_patch(
     dol_editor.write("BeamIdToChargedShotAmmoCost", charged_costs_patch)
     dol_editor.write("BeamIdToChargeComboAmmoCost", combo_costs_patch)
     dol_editor.write("g_ChargeComboMissileCosts", missile_costs_patch)
-    dol_editor.write_instructions(
-        patch_addresses.get_beam_ammo_type_and_costs + ammo_type_patch_offset, ammo_type_patch
-    )
+    dol_editor.write_instructions(("CSamusGun::GetBeamAmmoTypeAndCosts", ammo_type_patch_offset), ammo_type_patch)
     dol_editor.write_instructions(
         "CPlayerGun::IsOutOfAmmoToShoot", _is_out_of_ammo_patch(dol_editor.symbols, ammo_types)
     )
