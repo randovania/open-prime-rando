@@ -126,7 +126,7 @@ def edit_string(editor: PatcherEditor, change: StringChange) -> None:
 def apply_dol_patches(editor: PatcherEditor, configuration: RandoConfiguration, dol_version: EchoesDolVersion) -> None:
     """Applies all the dol patches that aren't specific to some other place."""
 
-    dol_patches.apply_mandatory_fixes(dol_version, editor.dol)
+    dol_patches.apply_mandatory_fixes(dol_version, editor.dol, editor.code_cave)
     all_prime_dol_patches.apply_remote_execution_patch(Game.ECHOES, dol_version.string_display, editor.dol)
     all_prime_dol_patches.apply_build_info_patch(dol_version, editor.dol, configuration.world_uuid)
     dol_patches.apply_map_door_changes(dol_version.map_door_types, editor.dol)
