@@ -1,10 +1,11 @@
 import pytest
 from ppc_asm.dol_file import DolHeader, Section
+from retro_data_structures.enums.echoes import PlayerItemEnum
 
-from open_prime_rando.dol_patching.echoes import dol_patches, dol_versions
-from open_prime_rando.dol_patching.echoes.beam_configuration import BeamAmmoConfiguration
+from open_prime_rando.dol_patching.echoes import beam_cost, dol_patches, dol_versions, game_options
+from open_prime_rando.dol_patching.echoes.beam_cost import BeamAmmoConfiguration, BeamConfiguration
 from open_prime_rando.dol_patching.echoes.dol_patches import StartingBeamVisorAddresses
-from open_prime_rando.dol_patching.echoes.user_preferences import OprEchoesUserPreferences
+from open_prime_rando.dol_patching.echoes.game_options import GameOptionsDefaults
 
 DOLS = [
     (
@@ -67,13 +68,13 @@ DOLS = [
 
 
 def test_apply_game_options_patch(dol_file):
-    user_preferences = OprEchoesUserPreferences()
+    game_options_defaults = GameOptionsDefaults()
     offset = 0x2000
 
     # Run
     dol_file.set_editable(True)
     with dol_file:
-        dol_patches.apply_game_options_patch(offset, user_preferences, dol_file)
+        game_options.apply_patch(offset, dol_file, game_options_defaults)
 
     # Assert
     results = dol_file.dol_path.read_bytes()[0x100:]
@@ -105,7 +106,7 @@ def test_apply_game_options_patch(dol_file):
 
 
 def test_apply_beam_cost_patch(dol_file):
-    patch_addresses = dol_patches.BeamCostAddresses(
+    patch_addresses = beam_cost.BeamCostAddresses(
         uncharged_cost=0x2000,
         charged_cost=0x2010,
         charge_combo_ammo_cost=0x2020,
@@ -115,49 +116,45 @@ def test_apply_beam_cost_patch(dol_file):
         gun_get_player=0x4000,
         get_item_amount=0x5000,
     )
-    beam_configurations = [
-        BeamAmmoConfiguration(
-            item_index=0,
-            ammo_a=-1,
-            ammo_b=-1,
+    beam_configuration = BeamConfiguration(
+        power=BeamAmmoConfiguration(
+            ammo_a=None,
+            ammo_b=None,
             uncharged_cost=0,
             charged_cost=0,
             combo_missile_cost=5,
             combo_ammo_cost=0,
         ),
-        BeamAmmoConfiguration(
-            item_index=1,
-            ammo_a=45,
-            ammo_b=-1,
+        dark=BeamAmmoConfiguration(
+            ammo_a=PlayerItemEnum.DarkAmmo,
+            ammo_b=None,
             uncharged_cost=1,
             charged_cost=5,
             combo_missile_cost=5,
             combo_ammo_cost=30,
         ),
-        BeamAmmoConfiguration(
-            item_index=2,
-            ammo_a=46,
-            ammo_b=-1,
+        light=BeamAmmoConfiguration(
+            ammo_a=PlayerItemEnum.LightAmmo,
+            ammo_b=None,
             uncharged_cost=1,
             charged_cost=5,
             combo_missile_cost=5,
             combo_ammo_cost=30,
         ),
-        BeamAmmoConfiguration(
-            item_index=3,
-            ammo_a=46,
-            ammo_b=45,
+        annihilator=BeamAmmoConfiguration(
+            ammo_a=PlayerItemEnum.LightAmmo,
+            ammo_b=PlayerItemEnum.DarkAmmo,
             uncharged_cost=1,
             charged_cost=5,
             combo_missile_cost=5,
             combo_ammo_cost=30,
         ),
-    ]
+    )
 
     # Run
     dol_file.set_editable(True)
     with dol_file:
-        dol_patches.apply_beam_cost_patch(patch_addresses, beam_configurations, dol_file)
+        beam_cost.apply_patch(patch_addresses, dol_file, beam_configuration)
 
     # Assert
     results = dol_file.dol_path.read_bytes()[0x100:]
