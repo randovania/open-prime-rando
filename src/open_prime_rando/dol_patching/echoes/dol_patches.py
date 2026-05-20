@@ -8,6 +8,7 @@ import open_prime_rando_practice_mod
 from ppc_asm.assembler import custom_ppc
 from ppc_asm.assembler.ppc import *  # noqa: F403
 from ppc_asm.dol_file import DolEditor
+from retro_data_structures.enums.echoes import PlayerItemEnum
 
 # ruff: noqa: F405
 from open_prime_rando.dol_patching.all_prime_dol_patches import (
@@ -542,3 +543,131 @@ def apply_map_door_changes(door_symbols: MapDoorTypeAddresses, dol_editor: DolEd
 
     dol_editor.symbols["CTweakAutoMapper::GetDoorColor::DoorColorArray"] = door_color_array
     dol_editor.write("CTweakAutoMapper::GetDoorColor::DoorColorArray", DoorMapIcon.get_surface_colors_as_bytes())
+
+
+def apply_stk_on_map(dol_editor: DolEditor) -> None:
+    """
+    Displays STKs on the map for Temple Grounds and Great Temple
+    """
+
+    # TODO: get offsets according to version
+    dol_editor.symbols["CAutoMapper::UpdateTempleKeys::MapKeyLUT"] = 0x803A74F0
+    dol_editor.symbols["CAutoMapper::UpdateTempleKeys::CheckEntry"] = 0x80086EF0
+
+    dol_editor.symbols["CAutoMapper::UpdateTempleKeys::TempleKeyNotFoundIcon"] = 0x803A777B
+    dol_editor.symbols["CAutoMapper::UpdateTempleKeys::TempleKeyFoundIcon"] = 0x803A7768
+
+    dol_editor.symbols["CPlayerState::GetItemAmount"] = 0x80085514
+    dol_editor.symbols["CStringTable::GetStringWithName"] = 0x8031258C
+    dol_editor.symbols["wstring::append"] = 0x802FE3D4
+
+    dol_editor.symbols["gpStringTable"] = 0x80418EB0
+
+    dol_editor.symbols["CAutoMapper::UpdateTempleKeys::IncrementLUTEntry"] = 0x80086F88
+    dol_editor.symbols["CAutoMapper::UpdateTempleKeys::CheckLUTFinished"] = 0x80086F90
+
+    # update the lookup table to fit the necessary data in a smaller size
+    # so that we can then include sky temple keys in the LUT as well
+    lut = [
+        (PlayerItemEnum.DarkAgonKey1, 2),
+        (PlayerItemEnum.DarkAgonKey2, 2),
+        (PlayerItemEnum.DarkAgonKey3, 2),
+        (PlayerItemEnum.DarkTorvusKey1, 3),
+        (PlayerItemEnum.DarkTorvusKey2, 3),
+        (PlayerItemEnum.DarkTorvusKey3, 3),
+        (PlayerItemEnum.IngHiveKey1, 4),
+        (PlayerItemEnum.IngHiveKey2, 4),
+        (PlayerItemEnum.IngHiveKey3, 4),
+        (PlayerItemEnum.SkyTempleKey1, 0),
+        (PlayerItemEnum.SkyTempleKey2, 0),
+        (PlayerItemEnum.SkyTempleKey3, 0),
+        (PlayerItemEnum.SkyTempleKey4, 0),
+        (PlayerItemEnum.SkyTempleKey5, 0),
+        (PlayerItemEnum.SkyTempleKey6, 0),
+        (PlayerItemEnum.SkyTempleKey7, 0),
+        (PlayerItemEnum.SkyTempleKey8, 0),
+        (PlayerItemEnum.SkyTempleKey9, 0),
+    ]
+
+    lut_data = b"".join(struct.pack(">hh", item, world_key_id) for item, world_key_id in lut)
+
+    dol_editor.symbols["CAutoMapper::UpdateTempleKeys::STKoff"] = dol_editor.symbols[
+        "CAutoMapper::UpdateTempleKeys::MapKeyLUT"
+    ] + len(lut_data)
+    # stk_off = b"STKOff\0"
+    stk_off = b"No\0"
+
+    dol_editor.symbols["CAutoMapper::UpdateTempleKeys::STKon"] = dol_editor.symbols[
+        "CAutoMapper::UpdateTempleKeys::STKoff"
+    ] + len(stk_off)
+    # stk_on = b"STKOn\0"
+    stk_on = b"Yes\0"
+
+    orig_lut_len = 9 * 3 * 4
+    if len(lut_data + stk_off + stk_on) > orig_lut_len:
+        raise RuntimeError("Overflowed map entry LUT")
+
+    dol_editor.write("CAutoMapper::UpdateTempleKeys::MapKeyLUT", lut_data)
+    dol_editor.write("CAutoMapper::UpdateTempleKeys::STKoff", stk_off)
+    dol_editor.write("CAutoMapper::UpdateTempleKeys::STKon", stk_on)
+
+    def check_key_is_stk(stk_symbol: str, red_key_symbol: str) -> Sequence[Instruction]:
+        return [
+            cmpwi(r0, 0x0),  # check if world index is 0
+            bne(4 * 4, relative=True),  # if not, skip the next few instructions
+            custom_ppc.load_unsigned_32bit(r4, stk_symbol),
+            b(3 * 4, relative=True),
+            custom_ppc.load_unsigned_32bit(r4, red_key_symbol),
+        ]
+
+    dol_editor.write_instructions(
+        "CAutoMapper::UpdateTempleKeys::CheckEntry",
+        [
+            # check if current world index matches this entry's
+            lhz(r0, 0x2, r29),
+            cmpw(0, r31, r0),
+            bne("CAutoMapper::UpdateTempleKeys::IncrementLUTEntry"),
+            # check if we have the item
+            lhz(r4, 0x0, r29),
+            or_(r3, r30, r30),
+            li(r5, 0x1),
+            bl("CPlayerState::GetItemAmount"),
+            # make sure world index is back in r0
+            lhz(r0, 0x2, r29),
+            cmpwi(r3, 0x0),
+            ble(9 * 4, relative=True),
+            # player has key
+            *check_key_is_stk(
+                dol_editor.symbols["CAutoMapper::UpdateTempleKeys::STKon"],
+                dol_editor.symbols["CAutoMapper::UpdateTempleKeys::TempleKeyFoundIcon"],
+            ),
+            b(8 * 4, relative=True),
+            # player does not have key
+            *check_key_is_stk(
+                dol_editor.symbols["CAutoMapper::UpdateTempleKeys::STKoff"],
+                dol_editor.symbols["CAutoMapper::UpdateTempleKeys::TempleKeyNotFoundIcon"],
+            ),
+            # load appropriate string
+            custom_ppc.load_unsigned_32bit(r3, dol_editor.symbols["gpStringTable"]),
+            lwz(r3, 0x0, r3),
+            bl("CStringTable::GetStringWithName"),
+            # append to our string
+            or_(r4, r3, r3),
+            addi(r3, r1, 0x18),
+            li(r5, -0x1),
+            bl("wstring::append"),
+            b("CAutoMapper::UpdateTempleKeys::IncrementLUTEntry"),
+        ],
+    )
+
+    # update the increment to use the new size of the entries
+    dol_editor.write_instructions(
+        "CAutoMapper::UpdateTempleKeys::IncrementLUTEntry",
+        [
+            addi(r28, r28, 0x1),
+            addi(r29, r29, 0x4),
+        ],
+    )
+
+    # update the bounds check to use the new length of the LUT
+    dol_editor.write_instructions("CAutoMapper::UpdateTempleKeys::CheckLUTFinished", [cmpwi(r28, 18)])

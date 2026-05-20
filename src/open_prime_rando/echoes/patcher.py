@@ -10,6 +10,7 @@ import open_prime_rando_practice_mod
 from PIL import Image
 from ppc_asm.assembler import ppc
 from retro_data_structures.formats.banner import Banner
+from retro_data_structures.formats.frme import Frme
 from retro_data_structures.formats.strg import Strg
 from retro_data_structures.game_check import Game
 
@@ -180,6 +181,23 @@ def edit_string(editor: PatcherEditor, change: StringChange) -> None:
     strg.set_string_list(change.strings)
 
 
+def apply_stk_on_map(editor: PatcherEditor, dol_version: EchoesDolVersion) -> None:
+    dol_patches.apply_stk_on_map(editor.dol)
+
+    map_screen = editor.get_file(0x834E8FA4, Frme)  # FRME_MapScreen_0
+
+    for widget in map_screen.raw.widgets:
+        if widget.name != "textpane_keylegend":
+            continue
+        widget.specific.vec[0] -= 1.3  # shift to the left a bit
+        widget.specific.word_wrap = 2  # change justification to Right
+
+    # TODO: add STK-specific textures
+
+    # TODO: add entries to Main.STRG for "STKOn" and "STKOff"
+    #       that use the new textures
+
+
 def apply_dol_patches(editor: PatcherEditor, configuration: RandoConfiguration, dol_version: EchoesDolVersion) -> None:
     """Applies all the dol patches that aren't specific to some other place."""
 
@@ -201,6 +219,8 @@ def _apply_patches(editor: PatcherEditor, configuration: RandoConfiguration, out
 
     dol_version: EchoesDolVersion = find_version_for_dol(editor.dol, dol_versions.ALL_VERSIONS)
     apply_dol_patches(editor, configuration, dol_version)
+
+    apply_stk_on_map(editor, dol_version)
 
     damage_changes.apply_damage_changes(editor, configuration.damage_changes, dol_version)
 
