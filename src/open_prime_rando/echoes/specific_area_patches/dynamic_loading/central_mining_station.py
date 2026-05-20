@@ -94,8 +94,8 @@ def central_mining_station_dynamic_layer_loading(editor: PatcherEditor, mlvl: Ml
     # Resume room loading when 2nd Pass is finished loading
     second_pass_controller.add_connection(State.Arrived, Message.Start, stop_room_loading_sf)
 
-    # Remove layer change relay forced
-    # room reload on Central Station Access
+    # Remove layer change relay forcing a room reload on Central Station Access
+    # since the AreaAutoLoadController is now stopping room loading
     layer_change_relay = area.get_instance("Set up post-pirate battle layers")
     layer_change_relay.remove_connection(layer_change_relay.connections[4])
 
