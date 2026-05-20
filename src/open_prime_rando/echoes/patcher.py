@@ -2,7 +2,6 @@ from __future__ import annotations
 
 import functools
 import logging
-import uuid
 from random import Random
 from typing import TYPE_CHECKING
 
@@ -17,9 +16,7 @@ from open_prime_rando import practice_mod
 from open_prime_rando.area_patcher import AreaPatcher
 from open_prime_rando.dol_patching import all_prime_dol_patches, ppc_helper
 from open_prime_rando.dol_patching.dol_version import find_version_for_dol
-from open_prime_rando.dol_patching.echoes import dol_patcher, dol_patches, dol_versions
-from open_prime_rando.dol_patching.echoes.beam_configuration import BeamAmmoConfiguration
-from open_prime_rando.dol_patching.echoes.user_preferences import OprEchoesUserPreferences
+from open_prime_rando.dol_patching.echoes import beam_cost, dol_patches, dol_versions, game_options
 from open_prime_rando.echoes import (
     custom_assets,
     damage_changes,
@@ -46,60 +43,6 @@ if TYPE_CHECKING:
     from open_prime_rando.echoes.rando_configuration import AreaReference, RandoConfiguration, StringChange
 
 LOG = logging.getLogger("echoes_patcher")
-
-
-def _default_dol_patches() -> dol_patcher.EchoesDolPatchesData:
-    return dol_patcher.EchoesDolPatchesData(
-        world_uuid=uuid.UUID("00000000-0000-1111-0000-000000000000"),
-        energy_per_tank=100,
-        beam_configurations=[
-            BeamAmmoConfiguration.from_json(it)
-            for it in [
-                {
-                    "item_index": 0,
-                    "ammo_a": -1,
-                    "ammo_b": -1,
-                    "uncharged_cost": 0,
-                    "charged_cost": 0,
-                    "combo_missile_cost": 5,
-                    "combo_ammo_cost": 0,
-                },
-                {
-                    "item_index": 1,
-                    "ammo_a": 45,
-                    "ammo_b": -1,
-                    "uncharged_cost": 1,
-                    "charged_cost": 5,
-                    "combo_missile_cost": 5,
-                    "combo_ammo_cost": 30,
-                },
-                {
-                    "item_index": 2,
-                    "ammo_a": 46,
-                    "ammo_b": -1,
-                    "uncharged_cost": 1,
-                    "charged_cost": 5,
-                    "combo_missile_cost": 5,
-                    "combo_ammo_cost": 30,
-                },
-                {
-                    "item_index": 3,
-                    "ammo_a": 46,
-                    "ammo_b": 45,
-                    "uncharged_cost": 1,
-                    "charged_cost": 5,
-                    "combo_missile_cost": 5,
-                    "combo_ammo_cost": 30,
-                },
-            ]
-        ],
-        safe_zone_heal_per_second=1.0,
-        user_preferences=OprEchoesUserPreferences(),
-        default_items={"visor": "Combat Visor", "beam": "Power Beam"},
-        unvisited_room_names=True,
-        teleporter_sounds=True,
-        dangerous_energy_tank=False,
-    )
 
 
 def edit_starting_area_dol(editor: PatcherEditor, version: EchoesDolVersion, starting_area: AreaReference) -> None:
@@ -188,12 +131,10 @@ def apply_dol_patches(editor: PatcherEditor, configuration: RandoConfiguration, 
     all_prime_dol_patches.apply_build_info_patch(dol_version, editor.dol, configuration.world_uuid)
     dol_patches.apply_map_door_changes(dol_version.map_door_types, editor.dol)
     dol_patches.apply_unvisited_room_names(dol_version, editor.dol, configuration.map_visibility.unvisited_room_names)
-
-    # TODO: the following patches needs more configuration stuff that I'm leaving for later
-    # dol_patches.apply_game_options_patch(
-    #     version.game_options_constructor_address, patches_data.user_preferences, dol_editor
-    # )
-    # dol_patches.apply_beam_cost_patch(version.beam_cost_addresses, patches_data.beam_configurations, dol_editor)
+    beam_cost.apply_patch(dol_version.beam_cost_addresses, editor.dol, configuration.beam_configuration)
+    game_options.apply_patch(
+        dol_version.game_options_constructor_address, editor.dol, configuration.game_options_defaults
+    )
 
 
 def _apply_patches(editor: PatcherEditor, configuration: RandoConfiguration, output: IsoFileWriter) -> None:
