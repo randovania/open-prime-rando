@@ -1,14 +1,14 @@
 from __future__ import annotations
 
 import dataclasses
+import logging
 import traceback
+from collections.abc import Callable, Sequence
 from typing import TYPE_CHECKING, overload
 
 from ppc_asm import assembler
 
 if TYPE_CHECKING:
-    from collections.abc import Sequence
-
     from ppc_asm.dol_file import DolEditor
 
 type MemoryAddress = int
@@ -23,17 +23,27 @@ class Section:
     derived_from: Section | None = None
 
 
+@dataclasses.dataclass(frozen=True)
+class CaveRequest:
+    size: int
+    instructions: Sequence[assembler.BaseInstruction]
+    callback: Callable[[int], None]
+    created_at: tuple[traceback.FrameSummary, ...]
+
+
 class CodeCaveTracker:
     """Tracks of all known code caves in the Dol, and provides APIs for requesting space for use."""
 
     dol_editor: DolEditor
     _symbol_sizes: dict[str, int]
     _sections: list[Section]
+    _requests: list[CaveRequest]
 
     def __init__(self, dol_editor: DolEditor):
         self.dol_editor = dol_editor
         self._symbol_sizes = {}
         self._sections = []
+        self._requests = []
 
     @overload
     def add_empty_space(self, start: MemoryAddress, *, length: int) -> None: ...
@@ -93,3 +103,60 @@ class CodeCaveTracker:
             symbol,
             instructions,
         )
+
+    def request_cave_for(
+        self,
+        instructions: Sequence[assembler.BaseInstruction],
+        callback: Callable[[int], None],
+    ) -> None:
+        """
+        Creates a request for a block of memory with enough size to fit given instructions.
+        These instructions are automatically placed
+        :param instructions:
+        :param callback: A function to be called with the address of the allocated cave.
+        :return:
+        """
+        self._requests.append(
+            CaveRequest(
+                size=assembler.byte_count(instructions),
+                instructions=instructions,
+                callback=callback,
+                created_at=tuple(traceback.extract_stack()[:-1]),
+            )
+        )
+
+    def fulfill_requests(self) -> None:
+        """Fulfill all cave requests, using empty space registered."""
+
+        self._requests.sort(key=lambda x: x.size)
+
+        while self._requests:
+            request = self._requests.pop()
+            logging.debug(f"Fulfilling request: {request}")
+
+            address = None
+            self._sections.sort(key=lambda x: x.length)
+
+            for i, section in enumerate(self._sections):
+                logging.debug(f"Inspecting section: {section}")
+                if section.length >= request.size:
+                    self._sections.pop(i)
+                    address = section.start
+                    if section.length > request.size:
+                        new_section = Section(
+                            start=section.start + request.size,
+                            length=section.length - request.size,
+                            created_at=request.created_at,
+                            derived_from=section,
+                        )
+                        self._sections.append(new_section)
+                    break
+
+            if address is None:
+                raise ValueError(f"Unable to find a section to fulfill {request}.")
+
+            request.callback(address)
+
+            # write the instructions after, in case they reference a symbol created in the callback
+            # (like the address of a cave!)
+            self.dol_editor.write_instructions(address, request.instructions)

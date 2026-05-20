@@ -571,7 +571,7 @@
                                 "resources": [
                                     {
                                         "item": 58,
-                                        "amount": 1
+                                        "amount": 5
                                     }
                                 ],
                                 "appearance": {
@@ -5227,5 +5227,11 @@
         "safe_zone_heal_per_second": 2,
         "dark_world_damage": 8,
         "dark_suit_protection": 0.5
+    },
+    "custom_items": {
+        "massive_damage_config": {
+            "damage_multiplier": 1.0,
+            "max_count": 5
+        }
     }
 }

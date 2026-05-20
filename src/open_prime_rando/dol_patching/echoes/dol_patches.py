@@ -136,6 +136,7 @@ def apply_starting_visor_patch(
 class EchoesDolVersion(BasePrimeDolVersion):
     echoes_version: EchoesVersion
     practice_mod_version: open_prime_rando_practice_mod.GameVersion
+    fp_unsigned_bias: int
     health_capacity: HealthCapacityAddresses
     dangerous_energy_tank: DangerousEnergyTankAddresses
     game_options_constructor_address: int
@@ -148,10 +149,13 @@ class EchoesDolVersion(BasePrimeDolVersion):
     unvisited_room_names_address: int
     cworldtransmanager_sfxstart: int
     powerup_should_persist: int
+    powerup_max: int
     map_door_types: MapDoorTypeAddresses
     massive_damage_vfx: int
     starting_area_serialize_clean_slot_address: int
     inventory_slot_to_item_id_address: int
+    apply_double_damage_address: int
+    apply_double_damage_float: int
 
 
 def _all_worlds_visible(version: EchoesDolVersion, cave: CodeCaveTracker) -> None:

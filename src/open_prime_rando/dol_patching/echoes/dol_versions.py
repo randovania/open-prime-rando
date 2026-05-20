@@ -42,6 +42,7 @@ ALL_VERSIONS = [
         ),
         echoes_version=EchoesVersion.NTSC_U,
         practice_mod_version=open_prime_rando_practice_mod.GameVersion.GC_NTSC,
+        fp_unsigned_bias=0x8041EA10,
         health_capacity=HealthCapacityAddresses(
             base_health_capacity=0x8041ABE4,
             energy_tank_capacity=0x8041ABE0,
@@ -80,6 +81,7 @@ ALL_VERSIONS = [
         unvisited_room_names_address=0x8008B714,
         cworldtransmanager_sfxstart=0x80158E50,
         powerup_should_persist=0x803A743C,
+        powerup_max=0x803A7288,
         map_door_types=MapDoorTypeAddresses(
             get_correct_transform=IsDoorAddr(0x800BB4D8, 0x800BB4E0, 3),
             map_obj_draw=IsDoorAddr(0x800BB960, 0x800BB96C, 7),
@@ -93,6 +95,8 @@ ALL_VERSIONS = [
         massive_damage_vfx=0x80017F28,
         starting_area_serialize_clean_slot_address=0x80143548,
         inventory_slot_to_item_id_address=0x803ACAE0,
+        apply_double_damage_address=0x8018A098,
+        apply_double_damage_float=0x8041CA20,
     ),
     EchoesDolVersion(
         game=Game.ECHOES,
@@ -118,6 +122,7 @@ ALL_VERSIONS = [
         ),
         echoes_version=EchoesVersion.PAL,
         practice_mod_version=open_prime_rando_practice_mod.GameVersion.GC_PAL,
+        fp_unsigned_bias=0x8041FCE8,
         health_capacity=HealthCapacityAddresses(
             base_health_capacity=0x8041BEDC,
             energy_tank_capacity=0x8041BED8,
@@ -156,6 +161,7 @@ ALL_VERSIONS = [
         unvisited_room_names_address=0x8008B850,
         cworldtransmanager_sfxstart=0x801590A4,
         powerup_should_persist=0x803A7B94,
+        powerup_max=0x803A79E0,
         map_door_types=MapDoorTypeAddresses(
             get_correct_transform=IsDoorAddr(0x800BB56C, 0x800BB574, 3),
             map_obj_draw=IsDoorAddr(0x800BB9F0, 0x800BB9FC, 3),
@@ -169,5 +175,7 @@ ALL_VERSIONS = [
         massive_damage_vfx=0x80017FC4,
         starting_area_serialize_clean_slot_address=0x80143784,
         inventory_slot_to_item_id_address=0x803ADE40,
+        apply_double_damage_address=0x8018A398,
+        apply_double_damage_float=0x8041DD10,
     ),
 ]
