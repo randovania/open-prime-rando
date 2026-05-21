@@ -5,7 +5,7 @@ import functools
 import typing
 from typing import TYPE_CHECKING
 
-from retro_data_structures.enums.echoes import Message, State
+from retro_data_structures.enums.echoes import Message, PlayerItemEnum, State
 from retro_data_structures.properties.base_property import BaseObjectType
 from retro_data_structures.properties.echoes.archetypes.EditorProperties import EditorProperties
 from retro_data_structures.properties.echoes.archetypes.LayerSwitch import LayerSwitch
@@ -29,6 +29,7 @@ from open_prime_rando.echoes.asset_ids.world import (
     TEMPLE_GROUNDS_MLVL,
     TORVUS_BOG_MLVL,
 )
+from open_prime_rando.echoes.pickups.pickup_editing import add_conditional_relay
 
 if TYPE_CHECKING:
     from collections.abc import Iterable
@@ -361,11 +362,14 @@ def main_reactor_keybearer(editor: PatcherEditor, mlvl: Mlvl, area: Area) -> Non
 @decorate_patcher(TEMPLE_GROUNDS_MLVL, temple_grounds.GFMC_COMPOUND_MREA)
 def gfmc_compound_ship_pickup(editor: PatcherEditor, mlvl: Mlvl, area: Area) -> None:
     """
-    Makes the ship pickup active by default, removing the Jump Guardian requirement.
+    Activate the ship pickup when the player has Space Jump,
+    rather than when they defeat Jump Guardian.
     """
+
+    default = area.get_layer("Default")
     pickup_layer = area.get_layer("Space Jump")
 
-    # unload the layer temporarily during the movie to save on memory
+    # create layer controllers
     def get_controller(prefix: str) -> ScriptLayerController:
         return ScriptLayerController(
             editor_properties=EditorProperties(
@@ -378,33 +382,47 @@ def gfmc_compound_ship_pickup(editor: PatcherEditor, mlvl: Mlvl, area: Area) -> 
             is_dynamic=True,
         )
 
-    # unload when the cutscene starts
     decrement_controller = area.get_layer("GFT Flashback Intro").add_instance_with(get_controller("Decrement"))
-
-    area.get_instance("Cinema Start - Intro").add_connection(State.Zero, Message.Decrement, decrement_controller)
-
-    # reload when the Dump During Movie layer activates
     increment_controller = area.get_layer("Default").add_instance_with(get_controller("Increment"))
-
-    area.get_instance("Increment Dump During Movie (Dynamic)").add_connection(
-        State.Arrived, Message.Increment, increment_controller
-    )
     increment_controller.add_connection(State.Arrived, Message.Play, increment_controller)
 
-    # # make the layer active by default
-    # pickup_layer.active = True
-
-    # use a timer to load the pickup layer immediately
-    # because apparently just making the layer active
-    # in the mlvl can cause a bizarre and specific crash
-    timer = area.get_layer("Default").add_instance_with(
+    # conditional relay with looping timer
+    conditional = add_conditional_relay(
+        item=PlayerItemEnum.SpaceJumpBoots,
+        immediate=False,
+        layer=default,
+        name="Check for Space Jump",
+    )
+    timer = default.add_instance_with(
         Timer(
-            editor_properties=EditorProperties(name="Activate Ship Missile Layer"),
+            editor_properties=EditorProperties(name="Looping Timer"),
+            # slightly slower than usual, so there's time for the
+            # memory relay to deactivate the conditional on room load
             time=0.1,
+            auto_reset=True,
             auto_start=True,
         )
     )
-    timer.add_connection(State.Zero, Message.Increment, increment_controller)
+    timer.add_connection(State.Zero, Message.SetToZero, conditional)
+    conditional.add_connection(State.Open, Message.Deactivate, timer)
+
+    # load the layer when the conditional relay fires
+    conditional.add_connection(State.Open, Message.Increment, increment_controller)
+
+    # unload the layer temporarily during the movie to save on memory
+    cinema_start = area.get_instance("Cinema Start - Intro")
+    cinema_start.add_connection(State.Zero, Message.Decrement, decrement_controller)
+
+    # deactivate the looping timer at the same time so it doesn't reload the layer
+    cinema_start.add_connection(State.Zero, Message.Deactivate, timer)
+
+    # reactivate the looping timer when the Dump During Movie layer activates
+    area.get_instance("Increment Dump During Movie (Dynamic)").add_connection(State.Arrived, Message.Activate, timer)
+
+    # deactivate the conditional relay via the memory relay, to prevent duping
+    memory_relay = pickup_layer.get_instance("Deactivate Pickup")
+    memory_relay.add_connection(State.Active, Message.Deactivate, conditional)
+    memory_relay.add_connection(State.Active, Message.Deactivate, timer)
 
 
 @decorate_patcher(TEMPLE_GROUNDS_MLVL, temple_grounds.HIVE_CHAMBER_A_MREA)
