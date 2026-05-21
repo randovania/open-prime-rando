@@ -1,16 +1,19 @@
 from __future__ import annotations
 
+import dataclasses
 import logging
 from typing import TYPE_CHECKING
 
 from retro_data_structures.enums.echoes import Message, State
 from retro_data_structures.formats.script_object import Connection
+from retro_data_structures.properties.echoes.archetypes.Connection import Connection as SequenceConnection
 from retro_data_structures.properties.echoes.archetypes.EditorProperties import EditorProperties
 from retro_data_structures.properties.echoes.archetypes.LayerSwitch import LayerSwitch
 from retro_data_structures.properties.echoes.archetypes.Transform import Transform
 from retro_data_structures.properties.echoes.core.Vector import Vector
 from retro_data_structures.properties.echoes.objects import (
     IngSpiderballGuardian,
+    MemoryRelay,
     Pickup,
     Relay,
     ScriptLayerController,
@@ -53,14 +56,16 @@ def register_all(area_patcher: AreaPatcher) -> None:
         undertemple_access_spawn_point,
         main_reactor_flashbang,
         main_reactor_stop_loads,
-        sacrificial_chamber_persist_pickup,
         aerie_echo_gate,
         main_research_echo_gate,
         hive_chamber_b_remove_item_loss,
         torvus_temple_remove_effects,
         command_center_door,
-        alpha_splinter,
+        alpha_splinter_pb_response,
         dynamo_works_sg_pb_response,
+        sacrificial_chamber_persist_pickup,
+        undertemple_persist_pickup,
+        temple_sanctuary_persist_pickup,
     ]:
         area_patcher.add_function(func)
 
@@ -149,8 +154,280 @@ def sacrificial_chamber_persist_pickup(editor: PatcherEditor, mlvl: Mlvl, area: 
     """
     Makes the pickup persistent, even if you exit the area and reload.
     """
-    with area.get_instance("If grapple attainment is loaded, then end battle").edit_properties(Switch) as switch:
-        switch.is_open = True
+    pickup_active = area.get_layer("1st Pass").add_instance_with(
+        MemoryRelay(
+            editor_properties=EditorProperties(
+                active=False,
+                name="Keep Pickup Active",
+                transform=Transform(
+                    position=Vector(-168.0, 27.0, -29.0),
+                    scale=Vector(2.0, 2.0, 2.0),
+                ),
+            ),
+            delayed_action=True,
+        )
+    )
+    pickup = area.get_instance(0x3B022F)
+    entered_from_bottom_relay = area.get_instance("Entered from bottom floor")
+    entered_from_top_relay = area.get_instance("Entered from top floor")
+    post_pickup_relay = area.get_instance("Post Pickup")
+
+    # Setup stuff for if Player left room then came back
+    music_player = area.get_instance("Music Player For Area")
+    dark_torvus_music = area.get_instance("Swamp Chika Dark")
+    battle_end_relay = area.get_instance("[IN] Do End Battle")
+    dark_torvus_music = area.get_instance("Swamp Chika Dark")
+    boss_go_music = area.get_instance("Boss Go")
+    layer_swap_relay = area.get_instance("Layer Swap")
+    raise_gates_relay = area.get_instance("Raise gates")
+    destroy_sticky_platforms_relay = area.get_instance("Destroy sticky platforms")
+
+    music_status = area.get_layer("Default").add_instance_with(
+        Switch(
+            editor_properties=EditorProperties(
+                name="CLOSED: Swamp Chika Dark / OPEN: Boss Go",
+                transform=Transform(
+                    position=Vector(-172.0, -15.0, -25.0),
+                    scale=Vector(2.0, 2.0, 2.0),
+                ),
+            ),
+        )
+    )
+
+    # Do layer swap after Pickup and not when Boss dead
+    battle_end_relay.remove_connection(battle_end_relay.connections[0])
+    post_pickup_relay.add_connection(State.Zero, Message.SetToZero, layer_swap_relay)
+
+    # Activate Pickup, setup reload stuff
+    battle_end_relay.add_connection(State.Zero, Message.Open, music_status)
+    battle_end_relay.add_connection(State.Zero, Message.Close, music_status)
+    battle_end_relay.add_connection(State.Zero, Message.Activate, pickup_active)
+    pickup_active.add_connection(State.Active, Message.Activate, pickup)
+    pickup_active.add_connection(State.Active, Message.Open, music_status)
+    pickup_active.add_connection(State.Active, Message.Deactivate, raise_gates_relay)
+    pickup_active.add_connection(State.Active, Message.SetToZero, destroy_sticky_platforms_relay)
+    pickup_active.add_connection(State.Active, Message.Deactivate, entered_from_bottom_relay)
+    pickup_active.add_connection(State.Active, Message.Deactivate, entered_from_top_relay)
+
+    # Deactivate once obtained
+    post_pickup_relay.add_connection(State.Zero, Message.Deactivate, pickup_active)
+    post_pickup_relay.add_connection(State.Zero, Message.Close, music_status)
+
+    # Keep Boss Go music if player hasn't collected Pickup
+    music_player.remove_connection(music_player.connections[0])
+    music_player.add_connection(State.Entered, Message.SetToZero, music_status)
+    music_status.add_connection(State.Closed, Message.Play, dark_torvus_music)
+    music_status.add_connection(State.Open, Message.Play, boss_go_music)
+
+
+@decorate_patcher(TORVUS_BOG_MLVL, torvus_bog.UNDERTEMPLE_MREA)
+def undertemple_persist_pickup(editor: PatcherEditor, mlvl: Mlvl, area: Area) -> None:
+    """
+    Makes the pickup persistent, even if you exit the area and reload.
+    """
+    pickup_active = area.get_layer("Ingsporb battle").add_instance_with(
+        MemoryRelay(
+            editor_properties=EditorProperties(
+                active=False,
+                name="Keep Pickup Active",
+                transform=Transform(
+                    position=Vector(-159.0, -126.0, -110.0),
+                    scale=Vector(2.0, 2.0, 2.0),
+                ),
+            ),
+            delayed_action=True,
+        )
+    )
+    pickup = area.get_instance(0x3C0217)
+    fight_trigger = area.get_instance(0x3C0234)
+
+    # Setup stuff for if Player left room then came back
+    music_player = area.get_instance("Music Player For Area")
+    dark_torvus_music = area.get_instance("Swamp Chika Dark")
+    boss_go_music = area.get_instance("Boss Go")
+    sporb_base = area.get_instance("SporbBase - MegaIng")
+    sporb_top = area.get_instance("SporbTop - MegaIng")
+    ingsporb_complete_memory_relay = area.get_instance("Ingsporb battle completed")
+    death_cinema_end = area.get_instance("[OUT] End Ingsporb Death Cinema")
+    post_pickup_relay = area.get_instance(0x3C021E)
+    ingsporb_layer_switch_relay = area.get_instance("Handle Timer Actions")
+    ingsporb_layer_switch = area.get_instance(0x3C01EC)
+
+    music_status = area.get_layer("Default").add_instance_with(
+        Switch(
+            editor_properties=EditorProperties(
+                name="CLOSED: Swamp Chika Dark / OPEN: Boss Go",
+                transform=Transform(
+                    position=Vector(-154.0, -51.0, -117.0),
+                    scale=Vector(2.0, 2.0, 2.0),
+                ),
+            ),
+        )
+    )
+
+    # Don't Decrement Ingsporb battle when Dead
+    ingsporb_layer_switch_relay.remove_connection(ingsporb_layer_switch_relay.connections[1])
+
+    # Decrement on Post Pickup instead
+    post_pickup_relay.add_connection(State.Zero, Message.Decrement, ingsporb_layer_switch)
+
+    # Activate MemoryRelay when dead
+    death_cinema_end.add_connection(State.Zero, Message.Activate, pickup_active)
+
+    # Activate Pickup, setup music
+    pickup_active.add_connection(State.Active, Message.Activate, pickup)
+    death_cinema_end.add_connection(State.Zero, Message.Open, music_status)
+    pickup_active.add_connection(State.Active, Message.Open, music_status)
+    post_pickup_relay.add_connection(State.Zero, Message.Close, music_status)
+
+    # Deactivate Fight stuff
+    ingsporb_complete_memory_relay.add_connection(State.Active, Message.Deactivate, sporb_base)
+    ingsporb_complete_memory_relay.add_connection(State.Active, Message.Deactivate, sporb_top)
+    ingsporb_complete_memory_relay.add_connection(State.Active, Message.Deactivate, fight_trigger)
+
+    # Move Slider platforms to retracted position
+    for sliders in (0x3C035B, 0x3C035E, 0x3C035D, 0x3C035C):
+        ingsporb_complete_memory_relay.add_connection(State.Active, Message.Next, sliders)
+
+    # Keep Boss Go music if player hasn't collected Pickup
+    music_player.remove_connection(music_player.connections[0])
+    music_player.add_connection(State.Entered, Message.SetToZero, music_status)
+    music_status.add_connection(State.Closed, Message.Play, dark_torvus_music)
+    music_status.add_connection(State.Open, Message.Play, boss_go_music)
+
+
+@decorate_patcher(GREAT_TEMPLE_MLVL, great_temple.TEMPLE_SANCTUARY_MREA)
+def temple_sanctuary_persist_pickup(editor: PatcherEditor, mlvl: Mlvl, area: Area) -> None:
+    """
+    Makes the pickup persistent once spawned, even if you
+    exit the area and reload. This also makes it so the fight
+    can be activated again if reloaded room and returned.
+    """
+    pickup = area.get_instance(0x20127)
+    sequence_timer1 = area.get_instance("Unload Splinter Snatch / Load Boss Snatch (Dynamic)")
+    sequence_timer2 = area.get_instance("Unload Boss Snatch / Load Boss Death (Dynamic)")
+    turn_on_walls_relay = area.get_instance(0x2006A)
+    with turn_on_walls_relay.edit_properties(Relay) as old_relay_props:
+        old_relay_pos = old_relay_props.editor_properties.transform.position
+    cinema_start_relay = area.get_instance(0x201AF)
+    cinema_end_relay = area.get_instance(0x20198)
+
+    # MemoryRelay for Pickup
+    pickup_active = area.get_layer("Default").add_instance_with(
+        MemoryRelay(
+            editor_properties=EditorProperties(
+                active=False,
+                name="Keep Pickup Active",
+                transform=Transform(
+                    position=Vector(0.970526, -44.557369, -14.398048),
+                    scale=Vector(2.0, 2.0, 2.0),
+                ),
+            ),
+            delayed_action=True,
+        )
+    )
+
+    # non-dynamic layer controllers for room reload purposes
+    splinter_snatch_controller = area.get_layer("Default").add_instance_with(
+        ScriptLayerController(
+            editor_properties=EditorProperties(
+                name="Increment Splinter Snatch Cinematic",
+                transform=Transform(position=Vector(-66.4, -42.0, -17.0), scale=Vector(2.0, 2.0, 2.0)),
+            ),
+            layer=LayerSwitch(
+                area_id=great_temple.TEMPLE_SANCTUARY_INTERNAL_ID,
+                layer_number=area.get_layer("Splinter Snatch Cinematic").index,
+            ),
+        )
+    )
+
+    boss_snatch_controller = area.get_layer("Default").add_instance_with(
+        ScriptLayerController(
+            editor_properties=EditorProperties(
+                name="Decrement Boss Snatch Cinematic",
+                transform=Transform(position=Vector(-69.3, -43.8, -17.3), scale=Vector(2.0, 2.0, 2.0)),
+            ),
+            layer=LayerSwitch(
+                area_id=great_temple.TEMPLE_SANCTUARY_INTERNAL_ID,
+                layer_number=area.get_layer("Boss Snatch Cinematic").index,
+            ),
+        )
+    )
+
+    boss_dead_controller = area.get_layer("Default").add_instance_with(
+        ScriptLayerController(
+            editor_properties=EditorProperties(
+                name="Decrement Boss Death Cinematic",
+                transform=Transform(position=Vector(-66.4, -46.0, -17.0), scale=Vector(2.0, 2.0, 2.0)),
+            ),
+            layer=LayerSwitch(
+                area_id=great_temple.TEMPLE_SANCTUARY_INTERNAL_ID,
+                layer_number=area.get_layer("Boss Death Cinematic").index,
+            ),
+        )
+    )
+
+    # Activate/Deactivate Pickup MemoryRelay
+    cinema_start_relay.add_connection(State.Zero, Message.Activate, pickup_active)
+    cinema_end_relay.add_connection(State.Zero, Message.Deactivate, pickup_active)
+
+    # MemoryRelay connections
+    pickup_active.add_connection(State.Active, Message.Activate, pickup)
+
+    # Setup Stuff for when player leaves mid fight / post fight:
+
+    # Toggle layers non-dynamically after they're (un)loaded
+    with sequence_timer1.edit_properties(SequenceTimer) as timer1:
+        timer1.editor_properties.name = (
+            "Unload Splinter Snatch / Load Boss Snatch (Dynamic) / Decrement Boss Snatch / Increment Splinter Snatch"
+        )
+        timer1.sequence_connections.extend(
+            [
+                SequenceConnection(
+                    connection_index=2,
+                    activation_times=[3.0],
+                ),
+                SequenceConnection(
+                    connection_index=3,
+                    activation_times=[3.0],
+                ),
+            ]
+        )
+    sequence_timer1.add_connection(State.Sequence, Message.Decrement, boss_snatch_controller)
+    sequence_timer1.add_connection(State.Sequence, Message.Increment, splinter_snatch_controller)
+
+    with sequence_timer2.edit_properties(SequenceTimer) as timer2:
+        timer2.editor_properties.name = "Unload Boss Snatch / Load Boss Death (Dynamic) / Decrement Boss Death"
+        timer2.sequence_connections.append(
+            SequenceConnection(
+                connection_index=2,
+                activation_times=[3.0],
+            ),
+        )
+    sequence_timer2.add_connection(State.Sequence, Message.Decrement, boss_dead_controller)
+
+    # Setup layers again if killed Dark Alpha Splinter
+    cinema_start_relay.add_connection(State.Zero, Message.Increment, boss_dead_controller)
+    cinema_start_relay.add_connection(State.Zero, Message.Decrement, boss_snatch_controller)
+    cinema_start_relay.add_connection(State.Zero, Message.Decrement, splinter_snatch_controller)
+
+    # Activate wall barriers instead of Fade them in by copying the
+    # existing connections of the wall fader relay, and replacing
+    # "Increment" message with "Activate"
+    new_turn_on_walls_relay = area.get_layer("Default").add_instance_with(
+        Relay(
+            editor_properties=EditorProperties(
+                name="Activate Walls for Room Reload",
+                transform=Transform(position=old_relay_pos + Vector(1.0, 0.0, 0.0), scale=Vector(2.0, 2.0, 2.0)),
+            )
+        )
+    )
+    new_walls_relay_connections = list(turn_on_walls_relay.connections)
+    new_walls_relay_connections[0:8] = [
+        dataclasses.replace(conn, message=Message.Activate) for conn in new_walls_relay_connections[0:8]
+    ]
+    new_turn_on_walls_relay.connections = new_walls_relay_connections
+    pickup_active.add_connection(State.Active, Message.SetToZero, new_turn_on_walls_relay)
 
 
 def _patch_echo_gate_softlock(
@@ -256,7 +533,7 @@ def command_center_door(editor: PatcherEditor, mlvl: Mlvl, area: Area) -> None:
 
 
 @decorate_patcher(GREAT_TEMPLE_MLVL, great_temple.TEMPLE_SANCTUARY_MREA)
-def alpha_splinter(editor: PatcherEditor, mlvl: Mlvl, area: Area) -> None:
+def alpha_splinter_pb_response(editor: PatcherEditor, mlvl: Mlvl, area: Area) -> None:
     """
     Patches Alpha Splinter to take damage properly from Power Bombs.
     Also makes the Pickup fade in, rather than pop in.
