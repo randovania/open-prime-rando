@@ -47,6 +47,18 @@ if TYPE_CHECKING:
 LOG = logging.getLogger("echoes_patcher")
 
 
+def _fix_dumb_broken_strg(editor: PatcherEditor):
+    """These assets have an outdated version in FrontEnd.pak."""
+
+    for asset_id, source in [
+        (0xB4590AC3, "MiscData.pak"),
+        (0xA5C74B8B, "LogBook.pak"),
+    ]:
+        asset = editor.pak_group.get_pak(source).get_asset(asset_id)
+        if asset is not None:
+            editor.replace_asset(asset_id, asset)
+
+
 def edit_starting_area_dol(editor: PatcherEditor, version: EchoesDolVersion, starting_area: AreaReference) -> None:
     function_address = version.starting_area_serialize_clean_slot_address  # CGameState::SerializeNewForCleanSlot
 
@@ -171,6 +183,10 @@ def _apply_patches(editor: PatcherEditor, configuration: RandoConfiguration, out
     custom_assets.create_custom_assets(editor)
 
     dol_version: EchoesDolVersion = find_version_for_dol(editor.dol, dol_versions.ALL_VERSIONS)
+
+    if dol_version.echoes_version == EchoesVersion.NTSC_U:
+        _fix_dumb_broken_strg(editor)
+
     apply_dol_patches(editor, configuration, dol_version)
 
     apply_stk_on_map(editor, dol_version)
