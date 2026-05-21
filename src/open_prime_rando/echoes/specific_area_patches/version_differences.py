@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import logging
-from enum import Enum
 from typing import TYPE_CHECKING
 
 from retro_data_structures.properties.echoes.archetypes.Transform import Transform
@@ -16,6 +15,7 @@ from open_prime_rando.echoes.asset_ids.world import (
     TEMPLE_GROUNDS_MLVL,
     TORVUS_BOG_MLVL,
 )
+from open_prime_rando.echoes.version import EchoesVersion
 
 if TYPE_CHECKING:
     from retro_data_structures.formats.mlvl import Mlvl
@@ -24,15 +24,6 @@ if TYPE_CHECKING:
     from open_prime_rando.patcher_editor import PatcherEditor
 
 LOG = logging.getLogger("echoes_patcher")
-
-
-class EchoesVersion(float, Enum):
-    NTSC_U = 1.028
-    PAL = 1.035
-    NTSC_J = 1.036
-    NEW_PLAY_CONTROL = 3.561
-    TRILOGY_NTSC = 3.593
-    TRILOGY_PAL = 3.629
 
 
 def register_all(area_patcher: AreaPatcher, version: EchoesVersion) -> None:

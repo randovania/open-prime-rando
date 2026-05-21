@@ -41,6 +41,7 @@ def register_all(area_patcher: AreaPatcher) -> None:
         temple_transport_c_black_bars,
         temple_sanctuary_music,
         minigyro_terminal_fall,
+        sacred_bridge_platform_scan,
     ]:
         area_patcher.add_function(func)
 
@@ -287,3 +288,24 @@ def minigyro_terminal_fall(editor: PatcherEditor, mlvl: Mlvl, area: Area) -> Non
     east_side_camerahint_reset_trigger.add_connection(State.Connect, Message.Attach, supertrigger)
     # Attach failsafe Trigger to main Fall Trigger
     fall_failsafe_trigger.add_connection(State.Connect, Message.Attach, fall_Trigger)
+
+
+@decorate_patcher(TEMPLE_GROUNDS_MLVL, temple_grounds.SACRED_BRIDGE_MREA)
+def sacred_bridge_platform_scan(editor: PatcherEditor, mlvl: Mlvl, area: Area) -> None:
+    """
+    Add a Trigger on the Sacred Path side that
+    activates the Kinetic Orb Cannon scan panel.
+    """
+    primary_scan_trigger = area.get_instance("Activate MB Control Scan")
+    secondary_scan_trigger = area.get_layer("Default").add_instance_with(
+        Trigger(
+            editor_properties=EditorProperties(
+                name="Activate MB Control Scan (Extension)",
+                transform=Transform(
+                    position=Vector(-8.0, 290.0, -36.0),
+                    scale=Vector(10.0, 10.0, 10.0),
+                ),
+            )
+        )
+    )
+    secondary_scan_trigger.add_connection(State.Connect, Message.Attach, primary_scan_trigger)

@@ -2,7 +2,6 @@ from __future__ import annotations
 
 import functools
 import logging
-import uuid
 from random import Random
 from typing import TYPE_CHECKING
 
@@ -10,17 +9,18 @@ import open_prime_rando_practice_mod
 from PIL import Image
 from ppc_asm.assembler import ppc
 from retro_data_structures.formats.banner import Banner
+from retro_data_structures.formats.frme import Frme
 from retro_data_structures.formats.strg import Strg
 from retro_data_structures.game_check import Game
 
 from open_prime_rando import practice_mod
 from open_prime_rando.area_patcher import AreaPatcher
-from open_prime_rando.dol_patching import ppc_helper
-from open_prime_rando.dol_patching.echoes import dol_patcher
-from open_prime_rando.dol_patching.echoes.beam_configuration import BeamAmmoConfiguration
-from open_prime_rando.dol_patching.echoes.user_preferences import OprEchoesUserPreferences
+from open_prime_rando.dol_patching import all_prime_dol_patches, ppc_helper
+from open_prime_rando.dol_patching.dol_version import find_version_for_dol
+from open_prime_rando.dol_patching.echoes import beam_cost, dol_patches, dol_versions, game_options, stk_on_map
 from open_prime_rando.echoes import (
     custom_assets,
+    damage_changes,
     general_changes,
     inverted,
     logbook,
@@ -34,6 +34,7 @@ from open_prime_rando.echoes import (
 from open_prime_rando.echoes.asset_ids import world
 from open_prime_rando.echoes.elevators import auto_enabled_elevator_patches
 from open_prime_rando.echoes.specific_area_patches import front_end
+from open_prime_rando.echoes.version import EchoesVersion
 from open_prime_rando.patcher_editor import IsoFileProvider, IsoFileWriter, PatcherEditor
 
 if TYPE_CHECKING:
@@ -46,58 +47,16 @@ if TYPE_CHECKING:
 LOG = logging.getLogger("echoes_patcher")
 
 
-def _default_dol_patches() -> dol_patcher.EchoesDolPatchesData:
-    return dol_patcher.EchoesDolPatchesData(
-        world_uuid=uuid.UUID("00000000-0000-1111-0000-000000000000"),
-        energy_per_tank=100,
-        beam_configurations=[
-            BeamAmmoConfiguration.from_json(it)
-            for it in [
-                {
-                    "item_index": 0,
-                    "ammo_a": -1,
-                    "ammo_b": -1,
-                    "uncharged_cost": 0,
-                    "charged_cost": 0,
-                    "combo_missile_cost": 5,
-                    "combo_ammo_cost": 0,
-                },
-                {
-                    "item_index": 1,
-                    "ammo_a": 45,
-                    "ammo_b": -1,
-                    "uncharged_cost": 1,
-                    "charged_cost": 5,
-                    "combo_missile_cost": 5,
-                    "combo_ammo_cost": 30,
-                },
-                {
-                    "item_index": 2,
-                    "ammo_a": 46,
-                    "ammo_b": -1,
-                    "uncharged_cost": 1,
-                    "charged_cost": 5,
-                    "combo_missile_cost": 5,
-                    "combo_ammo_cost": 30,
-                },
-                {
-                    "item_index": 3,
-                    "ammo_a": 46,
-                    "ammo_b": 45,
-                    "uncharged_cost": 1,
-                    "charged_cost": 5,
-                    "combo_missile_cost": 5,
-                    "combo_ammo_cost": 30,
-                },
-            ]
-        ],
-        safe_zone_heal_per_second=1.0,
-        user_preferences=OprEchoesUserPreferences(),
-        default_items={"visor": "Combat Visor", "beam": "Power Beam"},
-        unvisited_room_names=True,
-        teleporter_sounds=True,
-        dangerous_energy_tank=False,
-    )
+def _fix_dumb_broken_strg(editor: PatcherEditor):
+    """These assets have an outdated version in FrontEnd.pak."""
+
+    for asset_id, source in [
+        (0xB4590AC3, "MiscData.pak"),
+        (0xA5C74B8B, "LogBook.pak"),
+    ]:
+        asset = editor.pak_group.get_pak(source).get_asset(asset_id)
+        if asset is not None:
+            editor.replace_asset(asset_id, asset)
 
 
 def edit_starting_area_dol(editor: PatcherEditor, version: EchoesDolVersion, starting_area: AreaReference) -> None:
@@ -178,9 +137,61 @@ def edit_string(editor: PatcherEditor, change: StringChange) -> None:
     strg.set_string_list(change.strings)
 
 
+def apply_stk_on_map(editor: PatcherEditor, dol_version: EchoesDolVersion) -> None:
+    stk_on_map.apply_stk_on_map(dol_version.stk_map_icon, editor.dol)
+
+    if dol_version.echoes_version == EchoesVersion.NTSC_U:
+        frme_id = 0x834E8FA4
+    elif dol_version.echoes_version == EchoesVersion.PAL:
+        frme_id = 0xBAF48D93
+    else:
+        raise RuntimeError(f"Unsupported EchoesVersion: {dol_version.echoes_version}")
+
+    map_screen = editor.get_file(frme_id, Frme)  # FRME_MapScreen_0
+
+    for widget in map_screen.raw.widgets:
+        if widget.name != "textpane_keylegend":
+            continue
+        widget.specific.vec[0] -= 1.3  # shift to the left a bit
+        widget.specific.word_wrap = 2  # change justification to Right
+
+    main_strg = editor.get_file(0xB4590AC3, Strg)
+    main_strg.append_string(
+        f"&image=SI,1.0,1.0,{editor.resolve_asset_id('stk_icon_found.TXTR'):08X};",
+        name="STKOn",
+    )
+
+    for pak in editor.find_paks(0x07180ADA):
+        editor.ensure_present(pak, "stk_icon_found.TXTR")
+
+
+def apply_dol_patches(editor: PatcherEditor, configuration: RandoConfiguration, dol_version: EchoesDolVersion) -> None:
+    """Applies all the dol patches that aren't specific to some other place."""
+
+    dol_patches.apply_mandatory_fixes(dol_version, editor.dol)
+    all_prime_dol_patches.apply_remote_execution_patch(Game.ECHOES, dol_version.string_display, editor.dol)
+    all_prime_dol_patches.apply_build_info_patch(dol_version, editor.dol, configuration.world_uuid)
+    dol_patches.apply_map_door_changes(dol_version.map_door_types, editor.dol)
+    dol_patches.apply_unvisited_room_names(dol_version, editor.dol, configuration.map_visibility.unvisited_room_names)
+    beam_cost.apply_patch(dol_version.beam_cost_addresses, editor.dol, configuration.beam_configuration)
+    game_options.apply_patch(
+        dol_version.game_options_constructor_address, editor.dol, configuration.game_options_defaults
+    )
+
+
 def _apply_patches(editor: PatcherEditor, configuration: RandoConfiguration, output: IsoFileWriter) -> None:
     custom_assets.create_custom_assets(editor)
-    dol_version = dol_patcher.apply_patches(editor.dol, _default_dol_patches())
+
+    dol_version: EchoesDolVersion = find_version_for_dol(editor.dol, dol_versions.ALL_VERSIONS)
+
+    if dol_version.echoes_version == EchoesVersion.NTSC_U:
+        _fix_dumb_broken_strg(editor)
+
+    apply_dol_patches(editor, configuration, dol_version)
+
+    apply_stk_on_map(editor, dol_version)
+
+    damage_changes.apply_damage_changes(editor, configuration.damage_changes, dol_version)
 
     if configuration.inverted_mode:
         inverted.apply_inverted(editor)

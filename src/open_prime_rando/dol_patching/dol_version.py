@@ -15,7 +15,7 @@ class DolVersion:
     sda13_base: int
 
 
-def find_version_for_dol(dol_editor: DolEditor, all_versions: Iterable[DolVersion]) -> DolVersion:
+def find_version_for_dol[T: DolVersion](dol_editor: DolEditor, all_versions: Iterable[T]) -> T:
     for version in all_versions:
         build_string = dol_editor.read(version.build_string_address, len(version.build_string))
         if (build_string[:6], build_string[6 + 16 :]) == (version.build_string[:6], version.build_string[6 + 16 :]):

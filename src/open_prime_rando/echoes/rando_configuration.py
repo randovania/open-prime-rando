@@ -1,11 +1,15 @@
+import uuid
 from typing import Annotated
 
 from annotated_types import Interval
 from open_prime_rando_practice_mod import PracticeModMode
 from pydantic import BaseModel, Field, StringConstraints
 
+from open_prime_rando.dol_patching.echoes.beam_cost import BeamConfiguration
+from open_prime_rando.dol_patching.echoes.game_options import GameOptionsDefaults
 from open_prime_rando.echoes.asset_ids.temple_grounds import LANDING_SITE_MREA
 from open_prime_rando.echoes.asset_ids.world import TEMPLE_GROUNDS_MLVL
+from open_prime_rando.echoes.damage_changes import DamageChanges
 from open_prime_rando.echoes.pickups.schema import PickupModification
 from open_prime_rando.echoes.starting_items import StartingItemConfig
 from open_prime_rando.echoes.suit_cosmetics import SuitMapping
@@ -51,6 +55,9 @@ class MapVisibility(BaseModel):
     areas_to_never_reveal: list[AssetId] = Field(default_factory=list)
     """Which areas are not revealed, even when `reveal_map_at_start` is True."""
 
+    unvisited_room_names: bool = True
+    """When true, unvisited rooms in the map show their name."""
+
 
 class StringChange(BaseModel):
     """Contains a new list of strings to use for a given STRG."""
@@ -73,6 +80,9 @@ class RandoConfiguration(BaseModel):
     seed: int
     """Seed number of a random number generator. Used for small changes."""
 
+    world_uuid: uuid.UUID = uuid.UUID("00000000-0000-1111-0000-000000000000")
+    """An UUID to uniquely identify this export. Can be fetched from the in-game memory."""
+
     starting_area: AreaReference = AreaReference(mlvl_id=TEMPLE_GROUNDS_MLVL, mrea_id=LANDING_SITE_MREA)
     """The game will start at the given area. When not set, starts at Landing Site."""
 
@@ -81,6 +91,12 @@ class RandoConfiguration(BaseModel):
 
     map_visibility: MapVisibility = Field(default_factory=MapVisibility)
     """Settings for configuring the Map visibility."""
+
+    beam_configuration: BeamConfiguration = Field(default_factory=BeamConfiguration)
+    """Changing how much ammo each beam take for each kind of shot, as well which ammo."""
+
+    game_options_defaults: GameOptionsDefaults = Field(default_factory=GameOptionsDefaults)
+    """Overrides for the in-game options defaults."""
 
     practice_mod: PracticeModMode = PracticeModMode.disabled
     """How accessible is the Practice Mod."""
@@ -99,3 +115,6 @@ class RandoConfiguration(BaseModel):
 
     string_changes: list[StringChange] = Field(default_factory=list)
     """A list of changes to make to existing STRG files."""
+
+    damage_changes: DamageChanges = Field(default_factory=DamageChanges)
+    """Set of changes related to damage and health."""

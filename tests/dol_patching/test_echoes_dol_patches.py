@@ -1,10 +1,11 @@
 import pytest
 from ppc_asm.dol_file import DolHeader, Section
+from retro_data_structures.enums.echoes import PlayerItemEnum
 
-from open_prime_rando.dol_patching.echoes import dol_patches, dol_versions
-from open_prime_rando.dol_patching.echoes.beam_configuration import BeamAmmoConfiguration
+from open_prime_rando.dol_patching.echoes import beam_cost, dol_patches, dol_versions, game_options, stk_on_map
+from open_prime_rando.dol_patching.echoes.beam_cost import BeamAmmoConfiguration, BeamConfiguration
 from open_prime_rando.dol_patching.echoes.dol_patches import StartingBeamVisorAddresses
-from open_prime_rando.dol_patching.echoes.user_preferences import OprEchoesUserPreferences
+from open_prime_rando.dol_patching.echoes.game_options import GameOptionsDefaults
 
 DOLS = [
     (
@@ -67,13 +68,13 @@ DOLS = [
 
 
 def test_apply_game_options_patch(dol_file):
-    user_preferences = OprEchoesUserPreferences()
+    game_options_defaults = GameOptionsDefaults()
     offset = 0x2000
 
     # Run
     dol_file.set_editable(True)
     with dol_file:
-        dol_patches.apply_game_options_patch(offset, user_preferences, dol_file)
+        game_options.apply_patch(offset, dol_file, game_options_defaults)
 
     # Assert
     results = dol_file.dol_path.read_bytes()[0x100:]
@@ -105,7 +106,7 @@ def test_apply_game_options_patch(dol_file):
 
 
 def test_apply_beam_cost_patch(dol_file):
-    patch_addresses = dol_patches.BeamCostAddresses(
+    patch_addresses = beam_cost.BeamCostAddresses(
         uncharged_cost=0x2000,
         charged_cost=0x2010,
         charge_combo_ammo_cost=0x2020,
@@ -115,49 +116,45 @@ def test_apply_beam_cost_patch(dol_file):
         gun_get_player=0x4000,
         get_item_amount=0x5000,
     )
-    beam_configurations = [
-        BeamAmmoConfiguration(
-            item_index=0,
-            ammo_a=-1,
-            ammo_b=-1,
+    beam_configuration = BeamConfiguration(
+        power=BeamAmmoConfiguration(
+            ammo_a=None,
+            ammo_b=None,
             uncharged_cost=0,
             charged_cost=0,
             combo_missile_cost=5,
             combo_ammo_cost=0,
         ),
-        BeamAmmoConfiguration(
-            item_index=1,
-            ammo_a=45,
-            ammo_b=-1,
+        dark=BeamAmmoConfiguration(
+            ammo_a=PlayerItemEnum.DarkAmmo,
+            ammo_b=None,
             uncharged_cost=1,
             charged_cost=5,
             combo_missile_cost=5,
             combo_ammo_cost=30,
         ),
-        BeamAmmoConfiguration(
-            item_index=2,
-            ammo_a=46,
-            ammo_b=-1,
+        light=BeamAmmoConfiguration(
+            ammo_a=PlayerItemEnum.LightAmmo,
+            ammo_b=None,
             uncharged_cost=1,
             charged_cost=5,
             combo_missile_cost=5,
             combo_ammo_cost=30,
         ),
-        BeamAmmoConfiguration(
-            item_index=3,
-            ammo_a=46,
-            ammo_b=45,
+        annihilator=BeamAmmoConfiguration(
+            ammo_a=PlayerItemEnum.LightAmmo,
+            ammo_b=PlayerItemEnum.DarkAmmo,
             uncharged_cost=1,
             charged_cost=5,
             combo_missile_cost=5,
             combo_ammo_cost=30,
         ),
-    ]
+    )
 
     # Run
     dol_file.set_editable(True)
     with dol_file:
-        dol_patches.apply_beam_cost_patch(patch_addresses, beam_configurations, dol_file)
+        beam_cost.apply_patch(patch_addresses, dol_file, beam_configuration)
 
     # Assert
     results = dol_file.dol_path.read_bytes()[0x100:]
@@ -310,6 +307,61 @@ def test_apply_safe_zone_heal_patch(dol_file):
     assert results == expected
 
 
+def test_apply_stk_on_map(dol_file):
+    addresses = dol_patches.StkMapIconSymbols(
+        check_entry=0x2000,
+        increment_lut_entry=0x2030,
+        check_lut_finished=0x2038,
+        map_key_lut=0x2040,
+        temple_key_found_icon=0x3000,
+        temple_key_not_found_icon=0x3010,
+        get_item_amount=0x4000,
+        get_string_with_name=0x4010,
+        wstring_append=0x4020,
+        string_table=0x5000,
+    )
+
+    # Run
+    dol_file.set_editable(True)
+    with dol_file:
+        stk_on_map.apply_stk_on_map(addresses, dol_file)
+
+    # Assert
+    results = dol_file.dol_path.read_bytes()[0x100:]
+    # print("")
+    # for i in range(40):
+    #     a = i * 20
+    #     print("b'" + "".join([f"\\x{i:02x}" for i in results[a:a + 20]]) + "'")
+
+    expected = (
+        b"\xa0\x1d\x00\x02\x7c\x1f\x00\x00\x40\x82\x00\x28\xa0\x9d\x00\x00\x7f\xc3\xf3\x78"
+        b"\x38\xa0\x00\x01\x48\x00\x1f\xe9\xa0\x1d\x00\x02\x2c\x03\x00\x00\x40\x81\x00\x24"
+        b"\x2c\x00\x00\x00\x40\x82\x00\x10\x3b\x9c\x00\x01\x3b\xbd\x00\x04\x2c\x1c\x00\x12"
+        b"\x3c\x80\x00\x00\x60\x84\x30\x00\x48\x00\x00\x0c\x3c\x80\x00\x00\x60\x84\x30\x10"
+        b"\x3c\x60\x00\x00\x60\x63\x50\x00\x80\x63\x00\x00\x48\x00\x1f\xb5\x7c\x64\x1b\x78"
+        b"\x38\x61\x00\x18\x38\xa0\xff\xff\x48\x00\x1f\xb5\x4b\xff\xff\xc0\x00\x66\x00\x00"
+        b"\x00\x67\x00\x00\x00\x68\x00\x00\x00\x69\x00\x00\x00\x6a\x00\x00\x53\x54\x4b\x4f"
+        b"\x6e\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00"
+        b"\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00"
+        b"\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00"
+        b"\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00"
+        b"\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00"
+        b"\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00"
+        b"\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00"
+        b"\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00"
+        b"\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00"
+        b"\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00"
+        b"\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00"
+        b"\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00"
+        b"\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00"
+        b"\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00"
+        b"\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00"
+        b"\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00"
+    )
+
+    assert results == expected
+
+
 @pytest.mark.parametrize(("header", "version"), DOLS)
 def test_apply_fixes(dol_file, header, version):
     dol_file.header = header
@@ -317,7 +369,7 @@ def test_apply_fixes(dol_file, header, version):
     # Run
     dol_file.set_editable(True)
     with dol_file:
-        dol_patches.apply_fixes(version, dol_file)
+        dol_patches.apply_mandatory_fixes(version, dol_file)
 
 
 @pytest.mark.parametrize(("header", "version"), DOLS)

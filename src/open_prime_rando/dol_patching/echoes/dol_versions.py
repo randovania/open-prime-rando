@@ -7,15 +7,16 @@ from open_prime_rando.dol_patching.all_prime_dol_patches import (
     PowerupFunctionsAddresses,
     StringDisplayPatchAddresses,
 )
+from open_prime_rando.dol_patching.echoes.beam_cost import BeamCostAddresses
 from open_prime_rando.dol_patching.echoes.dol_patches import (
-    BeamCostAddresses,
     EchoesDolVersion,
     IsDoorAddr,
     MapDoorTypeAddresses,
     SafeZoneAddresses,
     StartingBeamVisorAddresses,
+    StkMapIconSymbols,
 )
-from open_prime_rando.echoes.specific_area_patches.version_differences import EchoesVersion
+from open_prime_rando.echoes.version import EchoesVersion
 
 ALL_VERSIONS = [
     EchoesDolVersion(
@@ -88,9 +89,21 @@ ALL_VERSIONS = [
             get_door_color=0x802175B4,
             map_icon_jumptable=0x803B3638,
         ),
-        double_damage_vfx=0x80017F28,
+        massive_damage_vfx=0x80017F28,
         starting_area_serialize_clean_slot_address=0x80143548,
         inventory_slot_to_item_id_address=0x803ACAE0,
+        stk_map_icon=StkMapIconSymbols(
+            map_key_lut=0x803A74F0,
+            check_entry=0x80086EF0,
+            temple_key_not_found_icon=0x803A777B,
+            temple_key_found_icon=0x803A7768,
+            get_item_amount=0x80085514,
+            get_string_with_name=0x8031258C,
+            wstring_append=0x802FE3D4,
+            string_table=0x80418EB0,
+            increment_lut_entry=0x80086F88,
+            check_lut_finished=0x80086F90,
+        ),
     ),
     EchoesDolVersion(
         game=Game.ECHOES,
@@ -162,8 +175,20 @@ ALL_VERSIONS = [
             get_door_color=0x802178D4,
             map_icon_jumptable=0x803B4A80,
         ),
-        double_damage_vfx=0x80017FC4,
+        massive_damage_vfx=0x80017FC4,
         starting_area_serialize_clean_slot_address=0x80143784,
         inventory_slot_to_item_id_address=0x803ADE40,
+        stk_map_icon=StkMapIconSymbols(
+            map_key_lut=0x803A7C48,
+            check_entry=0x8008702C,
+            temple_key_not_found_icon=0x803A7ED3,
+            temple_key_found_icon=0x803A7EC0,
+            get_item_amount=0x80085650,
+            get_string_with_name=0x80312A00,
+            wstring_append=0x802FE72C,
+            string_table=0x8041A194,
+            increment_lut_entry=0x800870C4,
+            check_lut_finished=0x800870CC,
+        ),
     ),
 ]
