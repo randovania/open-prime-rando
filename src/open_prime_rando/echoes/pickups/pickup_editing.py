@@ -85,7 +85,7 @@ def _attach_etm_particle_and_sound(target: ScriptInstance, layer: ScriptLayer) -
     particle = layer.add_instance_with(Effect())
     with particle.edit_properties(Effect) as etm_particle:
         etm_particle.editor_properties.active = target_editor_properties.active
-        etm_sound.editor_properties.transform.scale = Vector(3.0, 3.0, 3.0)
+        etm_particle.editor_properties.transform.scale = Vector(3.0, 3.0, 3.0)
         etm_particle.particle_effect = 0x95C37749
         etm_particle.restart_on_activate = True
         etm_particle.unknown_0xbe931927 = True
