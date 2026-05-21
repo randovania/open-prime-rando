@@ -13,6 +13,7 @@ from retro_data_structures.properties.echoes.archetypes.ConditionalTest import (
 )
 from retro_data_structures.properties.echoes.archetypes.EditorProperties import EditorProperties
 from retro_data_structures.properties.echoes.core.Spline import Spline
+from retro_data_structures.properties.echoes.core.Vector import Vector
 from retro_data_structures.properties.echoes.objects import (
     ConditionalRelay,
     Effect,
@@ -49,18 +50,47 @@ class ObjectWithModel(typing.Protocol):
     animation_information: AnimationParameters
 
 
-def _attach_etm_particle(target: ScriptInstance, layer: ScriptLayer) -> None:
+def _attach_etm_particle_and_sound(target: ScriptInstance, layer: ScriptLayer) -> None:
     target_editor_properties: EditorProperties = getattr(target.get_properties(), "editor_properties")
 
+    sound = layer.add_instance_with(Sound())
+    with sound.edit_properties(Sound) as etm_sound:
+        etm_sound.editor_properties.transform = target_editor_properties.transform
+        etm_sound.editor_properties.active = True
+        etm_sound.sound = 215
+        etm_sound.max_audible_distance = 50.0
+        etm_sound.drop_off = 0.2
+        etm_sound.delay_time = 0.0
+        etm_sound.min_volume = 20
+        etm_sound.max_volume = 127
+        etm_sound.priority = 127
+        etm_sound.surround_pan.pan = 0.0
+        etm_sound.surround_pan.surround_pan = 1.0
+        etm_sound.loop = True
+        etm_sound.ambient = False
+        etm_sound.unknown = False
+        etm_sound.auto_start = False
+        etm_sound.can_occlude = False
+        etm_sound.use_room_acoustics = True
+        etm_sound.persistent = False
+        etm_sound.play_always = False
+        etm_sound.all_area = False
+        etm_sound.sound_is_music = False
+        etm_sound.pitch = 0
+        etm_sound.echo_visor_max_volume = 0
+    target.add_connection(State.Active, Message.Play, sound)
+    target.add_connection(State.Inactive, Message.Stop, sound)
+    target.add_connection(State.Arrived, Message.Stop, sound)
+
     particle = layer.add_instance_with(Effect())
-    with particle.edit_properties(Effect) as etm:
-        etm.editor_properties.active = target_editor_properties.active
-        etm.editor_properties.transform = target_editor_properties.transform
-        etm.particle_effect = 0x95C37749
-        etm.restart_on_activate = True
-        etm.unknown_0xbe931927 = True
-        etm.motion_spline_duration = 5.0
-        etm.motion_control_spline = Spline.from_bytes(
+    with particle.edit_properties(Effect) as etm_particle:
+        etm_particle.editor_properties.active = target_editor_properties.active
+        etm_sound.editor_properties.transform.scale = Vector(3.0, 3.0, 3.0)
+        etm_particle.particle_effect = 0x95C37749
+        etm_particle.restart_on_activate = True
+        etm_particle.unknown_0xbe931927 = True
+        etm_particle.motion_spline_duration = 5.0
+        etm_particle.motion_control_spline = Spline.from_bytes(
             bytes.fromhex(
                 "00 00 00 00 00 03 00 00"
                 "00 00 00 00 00 00 01 01"
@@ -78,10 +108,10 @@ def _attach_etm_particle(target: ScriptInstance, layer: ScriptLayer) -> None:
     target.add_connection(State.Inactive, Message.Deactivate, particle)
     target.add_connection(State.Arrived, Message.Deactivate, particle)
 
-    follow_sf = layer.add_instance_with(
+    effect_follow_sf = layer.add_instance_with(
         SpecialFunction(
             editor_properties=EditorProperties(
-                name="ETM Follow Pickup",
+                name="Effect Follow Pickup",
                 transform=target_editor_properties.transform,
             ),
             function=Function.ObjectFollowObject,
@@ -90,8 +120,23 @@ def _attach_etm_particle(target: ScriptInstance, layer: ScriptLayer) -> None:
             sound3=-1,
         )
     )
-    follow_sf.add_connection(State.Play, Message.Deactivate, particle)
-    follow_sf.add_connection(State.Play, Message.Activate, target)
+
+    sound_follow_sf = layer.add_instance_with(
+        SpecialFunction(
+            editor_properties=EditorProperties(
+                name="Sound Follow Pickup",
+                transform=target_editor_properties.transform,
+            ),
+            function=Function.ObjectFollowObject,
+            sound1=-1,
+            sound2=-1,
+            sound3=-1,
+        )
+    )
+    effect_follow_sf.add_connection(State.Play, Message.Deactivate, particle)
+    effect_follow_sf.add_connection(State.Play, Message.Activate, target)
+    sound_follow_sf.add_connection(State.Play, Message.Deactivate, sound)
+    sound_follow_sf.add_connection(State.Play, Message.Activate, target)
 
 
 def _add_modify_inventory_sf(item: PlayerItemEnum, amount: int, layer: ScriptLayer) -> ScriptInstance:
@@ -203,7 +248,7 @@ def _patch_single_pickup_stage_appearance(
     # ETM particle
     if model_data.model == ETM_MODEL:
         layer = location.get_layer(area)
-        _attach_etm_particle(instances.pickup, layer)
+        _attach_etm_particle_and_sound(instances.pickup, layer)
 
     # cutscene model
     if location.cutscene_model is not None:
@@ -217,7 +262,7 @@ def _patch_single_pickup_stage_appearance(
 
         if model_data.model == ETM_MODEL:
             layer = area.get_layer(location.cutscene_model.layer)
-            _attach_etm_particle(inst, layer)
+            _attach_etm_particle_and_sound(inst, layer)
 
     # sound
     with instances.sound.edit_properties(Sound) as sound:
