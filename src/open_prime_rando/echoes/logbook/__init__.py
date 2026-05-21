@@ -9,10 +9,11 @@ from retro_data_structures.formats.scan import Scan
 from retro_data_structures.formats.tree import Tree
 from retro_data_structures.properties.echoes.objects import ScannableObjectInfo, ScanTreeInventory
 
-from open_prime_rando.echoes.logbook.hierarchy_patch import HIERARCHY_PATCHES
+from open_prime_rando.echoes.logbook.hierarchy_patch import get_hierarchy_patches
 
 if typing.TYPE_CHECKING:
     from open_prime_rando.dol_patching.echoes.dol_patches import EchoesDolVersion
+    from open_prime_rando.echoes.rando_configuration import RandoConfiguration
     from open_prime_rando.patcher_editor import PatcherEditor
 
 
@@ -37,7 +38,7 @@ def _patch_dark_temple_key_scans(editor: PatcherEditor) -> None:
             info.animated_model.initial_anim = 1
 
 
-def patch_logbook(editor: PatcherEditor, version: EchoesDolVersion) -> None:
+def patch_logbook(editor: PatcherEditor, version: EchoesDolVersion, configuration: RandoConfiguration) -> None:
     """
     Makes the needed modifications to the Logbook:
     - Add entries for the translators
@@ -55,7 +56,7 @@ def patch_logbook(editor: PatcherEditor, version: EchoesDolVersion) -> None:
 
     _patch_dark_temple_key_scans(editor)
 
-    for patch in HIERARCHY_PATCHES:
+    for patch in get_hierarchy_patches(configuration):
         patch.apply(editor, tree, hierarchy_entries, version)
 
     hierarchy.entries = hierarchy_entries

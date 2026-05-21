@@ -1,9 +1,10 @@
 from __future__ import annotations
 
 import dataclasses
+import functools
 import logging
 import traceback
-from collections.abc import Callable, Sequence
+from collections.abc import Callable, Iterable, Sequence
 from typing import TYPE_CHECKING, overload
 
 from ppc_asm import assembler
@@ -26,9 +27,16 @@ class Section:
 @dataclasses.dataclass(frozen=True)
 class CaveRequest:
     size: int
-    instructions: Sequence[assembler.BaseInstruction]
+    alignment: int
     callback: Callable[[int], None]
     created_at: tuple[traceback.FrameSummary, ...]
+
+
+def _align_address(address: MemoryAddress, alignment: int) -> MemoryAddress:
+    remainder = address % alignment
+    if remainder == 0:
+        return address
+    return address + (alignment - remainder)
 
 
 class CodeCaveTracker:
@@ -89,22 +97,47 @@ class CodeCaveTracker:
         self.dol_editor.symbols[symbol] = start
         self._symbol_sizes[symbol] = end - start
 
+    def replace_address(self, address: MemoryAddress, length: int, data: bytes | Iterable[int]) -> None:
+        """Replaces the data at the given address and size with the given data, marking the remaining space as empty."""
+
+        if not isinstance(data, bytes):
+            data = bytes(data)
+
+        self.add_empty_space(address + len(data), length=length - len(data))
+        self.dol_editor.write(address, data)
+
     def replace_symbol(self, symbol: str, instructions: Sequence[assembler.BaseInstruction]) -> None:
         """Replaces the code at the given symbol with the given instructions, marking the remaining space as empty."""
 
         address = self.dol_editor.resolve_symbol(symbol)
-        symbol_end = address + self._symbol_sizes[symbol]
+        assembled = bytes(assembler.assemble_instructions(address, instructions, symbols=self.dol_editor.symbols))
+        self.replace_address(address, self._symbol_sizes[symbol], assembled)
 
-        assembled = list(assembler.assemble_instructions(address, instructions, symbols=self.dol_editor.symbols))
-        self.dol_editor.write(address, assembled)
-        self.add_empty_space(address + len(assembled), end=symbol_end)
+    def request_data_cave(self, data: bytes, alignment: int, callback: Callable[[int], None]) -> None:
+        """
+        Creates a request for a block of memory with enough size to fit given bytes.
+        :param data:
+        :param alignment: What kind of alignment is required for this data.
+        :param callback: A function to be called with the address of the allocated cave.
+        :return:
+        """
 
-        self.dol_editor.write_instructions(
-            symbol,
-            instructions,
+        @functools.wraps(callback)
+        def wrap_callback(address: MemoryAddress) -> None:
+            callback(address)
+            logging.debug("Writing to %d: %s", address, data)
+            self.dol_editor.write(address, data)
+
+        self._requests.append(
+            CaveRequest(
+                size=len(data),
+                alignment=alignment,
+                callback=wrap_callback,
+                created_at=tuple(traceback.extract_stack()[:-1]),
+            )
         )
 
-    def request_cave_for(
+    def request_code_cave(
         self,
         instructions: Sequence[assembler.BaseInstruction],
         callback: Callable[[int], None],
@@ -116,11 +149,18 @@ class CodeCaveTracker:
         :param callback: A function to be called with the address of the allocated cave.
         :return:
         """
+
+        @functools.wraps(callback)
+        def wrap_callback(address: MemoryAddress) -> None:
+            callback(address)
+            logging.debug("Writing to %d: %s", address, instructions)
+            self.dol_editor.write_instructions(address, instructions)
+
         self._requests.append(
             CaveRequest(
                 size=assembler.byte_count(instructions),
-                instructions=instructions,
-                callback=callback,
+                alignment=4,
+                callback=wrap_callback,
                 created_at=tuple(traceback.extract_stack()[:-1]),
             )
         )
@@ -134,29 +174,45 @@ class CodeCaveTracker:
             request = self._requests.pop()
             logging.debug(f"Fulfilling request: {request}")
 
+            def _sort_section_for_alignment(s: Section) -> int:
+                return s.length - (_align_address(s.start, request.alignment) - s.start)
+
             address = None
-            self._sections.sort(key=lambda x: x.length)
+            self._sections.sort(key=_sort_section_for_alignment)
 
             for i, section in enumerate(self._sections):
                 logging.debug(f"Inspecting section: {section}")
-                if section.length >= request.size:
+
+                adjusted_start = _align_address(section.start, request.alignment)
+                adjustment = adjusted_start - section.start
+                adjusted_length = section.length - adjustment
+
+                if adjusted_length >= request.size:
                     self._sections.pop(i)
-                    address = section.start
-                    if section.length > request.size:
-                        new_section = Section(
-                            start=section.start + request.size,
-                            length=section.length - request.size,
-                            created_at=request.created_at,
-                            derived_from=section,
+                    address = adjusted_start
+
+                    if adjustment > 0:
+                        self._sections.append(
+                            Section(
+                                start=section.start,
+                                length=adjustment,
+                                created_at=request.created_at,
+                                derived_from=section,
+                            )
                         )
-                        self._sections.append(new_section)
+
+                    if section.length > request.size + adjustment:
+                        self._sections.append(
+                            Section(
+                                start=section.start + adjustment + request.size,
+                                length=section.length - adjustment - request.size,
+                                created_at=request.created_at,
+                                derived_from=section,
+                            )
+                        )
                     break
 
             if address is None:
                 raise ValueError(f"Unable to find a section to fulfill {request}.")
 
             request.callback(address)
-
-            # write the instructions after, in case they reference a symbol created in the callback
-            # (like the address of a cave!)
-            self.dol_editor.write_instructions(address, request.instructions)

@@ -110,10 +110,7 @@ class NewInventoryEntry(NewHierarchyEntry[ScanTreeInventory]):
         self, editor: PatcherEditor, tree: Tree, hierarchy_entries: list[HierEntry], dol_version: EchoesDolVersion
     ) -> ScriptInstance:
         # Patch the inventory slot to check for the intended item
-        editor.dol.write(
-            dol_version.inventory_slot_to_item_id_address + 4 * self.slot_index.value,
-            self.item_index.value.to_bytes(4, "big"),
-        )
+        editor.assign_item_to_inventory_slot(self.item_index, self.slot_index)
 
         return super().apply(editor, tree, hierarchy_entries, dol_version)
 

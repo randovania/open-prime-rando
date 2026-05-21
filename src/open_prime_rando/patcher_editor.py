@@ -9,6 +9,7 @@ import typing
 import typing_extensions
 from retro_data_structures.asset_manager import AssetManager, FileWriter
 from retro_data_structures.base_resource import AssetId, NameOrAssetId
+from retro_data_structures.enums.echoes import InventorySlotEnum, PlayerItemEnum
 from retro_data_structures.file_provider import FileProvider
 from retro_data_structures.formats.mlvl import Mlvl
 from retro_data_structures.formats.scan import Scan
@@ -303,3 +304,13 @@ class PatcherEditor(AssetManager):
                 return
 
         raise KeyError(f"Unknown tweak class: {tweak_class}")
+
+    # InventorySlot management
+    inventory_slot_to_item: list[PlayerItemEnum]
+
+    def assign_item_to_inventory_slot(self, item: PlayerItemEnum, slot: InventorySlotEnum) -> None:
+        while len(self.inventory_slot_to_item) <= slot.value:
+            # Using an item we're unlikely to use
+            self.inventory_slot_to_item.append(PlayerItemEnum.Invisibility)
+
+        self.inventory_slot_to_item[slot.value] = item

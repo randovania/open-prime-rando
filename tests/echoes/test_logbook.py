@@ -10,16 +10,26 @@ from retro_data_structures.properties.echoes.objects import ScanTreeCategory, Sc
 
 from open_prime_rando.dol_patching.echoes import dol_versions
 from open_prime_rando.echoes import logbook
+from open_prime_rando.echoes.rando_configuration import RandoConfiguration
 
 if TYPE_CHECKING:
     from open_prime_rando.patcher_editor import PatcherEditor
 
 
 def test_patch_logbook(prime2_editor: PatcherEditor) -> None:
-    logbook.patch_logbook(prime2_editor, dol_versions.ALL_VERSIONS[0])
+    prime2_editor.inventory_slot_to_item = []
+    logbook.patch_logbook(
+        prime2_editor,
+        dol_versions.ALL_VERSIONS[0],
+        RandoConfiguration(
+            game_title="OPR",
+            title_screen_text="Foo",
+            seed=0,
+        ),
+    )
 
     tree = prime2_editor.get_file(0x95B61279, Tree)
-    nodes = list(tree.nodes)[-9:]
+    nodes = list(tree.nodes)[-10:]
     props = [node.get_properties() for node in nodes]
 
     assert props == [
@@ -54,6 +64,13 @@ def test_patch_logbook(prime2_editor: PatcherEditor) -> None:
             name_string_table=ANY,
             name_string_name="CobaltTranslator",
             inventory_slot=InventorySlotEnum.BeamCombo,
+            scannable_parameters=ScannableParameters(scannable_info0=ANY),
+        ),
+        ScanTreeInventory(
+            editor_properties=EditorProperties(name="MassiveDamage"),
+            name_string_table=ANY,
+            name_string_name="MassiveDamage",
+            inventory_slot=InventorySlotEnum(53),
             scannable_parameters=ScannableParameters(scannable_info0=ANY),
         ),
         ScanTreeCategory(

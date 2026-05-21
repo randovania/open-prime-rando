@@ -77,7 +77,7 @@ def apply_dol_patches(version: EchoesDolVersion, cave: CodeCaveTracker, config: 
             ],
         )
 
-    cave.request_cave_for(
+    cave.request_code_cave(
         [
             # Convert the item count (at r3) to a float at f1
             # this conversion must involve the memory, so we use the stack below r1 since we're not calling anything
