@@ -66,11 +66,11 @@ class CodeCaveTracker:
         :return:
         """
         if end is not None:
-            if length is not None:
+            if length is not None:  # pragma: no cover
                 raise TypeError("Pass either 'length' or 'end', not both.")
             length = end - start
 
-        if length is None:
+        if length is None:  # pragma: no cover
             raise TypeError("Must pass either 'length' or 'end'.")
 
         if length <= 0:
