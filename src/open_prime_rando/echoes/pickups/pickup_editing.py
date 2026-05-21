@@ -56,31 +56,14 @@ def _attach_etm_particle_and_sound(target: ScriptInstance, layer: ScriptLayer) -
     sound = layer.add_instance_with(Sound())
     with sound.edit_properties(Sound) as etm_sound:
         etm_sound.editor_properties.transform = target_editor_properties.transform
-        etm_sound.editor_properties.active = True
+        etm_sound.editor_properties.active = False
         etm_sound.sound = 215
-        etm_sound.max_audible_distance = 50.0
-        etm_sound.drop_off = 0.2
-        etm_sound.delay_time = 0.0
-        etm_sound.min_volume = 20
-        etm_sound.max_volume = 127
-        etm_sound.priority = 127
-        etm_sound.surround_pan.pan = 0.0
         etm_sound.surround_pan.surround_pan = 1.0
         etm_sound.loop = True
-        etm_sound.ambient = False
-        etm_sound.unknown = False
-        etm_sound.auto_start = False
-        etm_sound.can_occlude = False
-        etm_sound.use_room_acoustics = True
-        etm_sound.persistent = False
-        etm_sound.play_always = False
-        etm_sound.all_area = False
-        etm_sound.sound_is_music = False
-        etm_sound.pitch = 0
-        etm_sound.echo_visor_max_volume = 0
-    target.add_connection(State.Active, Message.Play, sound)
-    target.add_connection(State.Inactive, Message.Stop, sound)
-    target.add_connection(State.Arrived, Message.Stop, sound)
+        etm_sound.auto_start = True
+    target.add_connection(State.Active, Message.Activate, sound)
+    target.add_connection(State.Inactive, Message.Deactivate, sound)
+    target.add_connection(State.Arrived, Message.Deactivate, sound)
 
     particle = layer.add_instance_with(Effect())
     with particle.edit_properties(Effect) as etm_particle:
