@@ -26,4 +26,4 @@ def apply_changes(version: EchoesDolVersion, cave: CodeCaveTracker, config: Cust
     """
     Makes the necessary changes for our custom items to work.
     """
-    massive_damage.apply_dol_patches(version, cave, config.massive_damage_config)
+    cave.add_task(massive_damage.apply_dol_patches(version, cave, config.massive_damage_config))

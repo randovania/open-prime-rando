@@ -38,7 +38,7 @@ class MassiveDamageConfig(pydantic.BaseModel):
     max_count: Annotated[int, Interval(ge=1, le=255)] = 1
 
 
-def apply_dol_patches(version: EchoesDolVersion, cave: CodeCaveTracker, config: MassiveDamageConfig) -> None:
+async def apply_dol_patches(version: EchoesDolVersion, cave: CodeCaveTracker, config: MassiveDamageConfig) -> None:
     """
     Patches Massive Damage to scale the damage multiplier by how many copies of it you have.
     Also changes how much each copy gives, allows you to have multiple and so it persists on save.
@@ -74,25 +74,26 @@ def apply_dol_patches(version: EchoesDolVersion, cave: CodeCaveTracker, config: 
             ],
         )
 
-    cave.request_cave_for(
-        [
-            # Convert the item count (at r3) to a float at f1
-            # this conversion must involve the memory, so we use the stack below r1 since we're not calling anything
-            lis(r0, 0x4330),  # load upper half of double constant
-            stw(r0, -0x8, r1),
-            stw(r3, -0x4, r1),
-            lfd(f1, -0x8, r1),  # load as double
-            lfd(f2, (version.fp_unsigned_bias - version.sda2_base), r2),  # load the bias constant
-            fsubs(f1, f1, f2),  # subtract bias constant
-            # Load the float with the per count multiplier
-            lfs(f0, (version.apply_double_damage_float - version.sda2_base), r2),
-            # Multiply the base multiplier by the item count and put the result at f0
-            fmuls(f0, f0, f1),
-            # Load 1.0 to f1. Conveniently it's just after our float!
-            lfs(f1, (version.apply_double_damage_float + 4 - version.sda2_base), r2),
-            fadds(f0, f0, f1),
-            # Go back to ApplyDoubleDamage
-            b(return_address),
-        ],
-        with_cave,
+    with_cave(
+        await cave.request_cave_for(
+            [
+                # Convert the item count (at r3) to a float at f1
+                # this conversion must involve the memory, so we use the stack below r1 since we're not calling anything
+                lis(r0, 0x4330),  # load upper half of double constant
+                stw(r0, -0x8, r1),
+                stw(r3, -0x4, r1),
+                lfd(f1, -0x8, r1),  # load as double
+                lfd(f2, (version.fp_unsigned_bias - version.sda2_base), r2),  # load the bias constant
+                fsubs(f1, f1, f2),  # subtract bias constant
+                # Load the float with the per count multiplier
+                lfs(f0, (version.apply_double_damage_float - version.sda2_base), r2),
+                # Multiply the base multiplier by the item count and put the result at f0
+                fmuls(f0, f0, f1),
+                # Load 1.0 to f1. Conveniently it's just after our float!
+                lfs(f1, (version.apply_double_damage_float + 4 - version.sda2_base), r2),
+                fadds(f0, f0, f1),
+                # Go back to ApplyDoubleDamage
+                b(return_address),
+            ]
+        )
     )

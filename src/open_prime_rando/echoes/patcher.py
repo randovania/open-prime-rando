@@ -180,7 +180,7 @@ def apply_dol_patches(editor: PatcherEditor, configuration: RandoConfiguration, 
     )
 
 
-def _apply_patches(editor: PatcherEditor, configuration: RandoConfiguration, output: IsoFileWriter) -> None:
+async def _apply_patches(editor: PatcherEditor, configuration: RandoConfiguration, output: IsoFileWriter) -> None:
     custom_assets.create_custom_assets(editor)
 
     dol_version: EchoesDolVersion = find_version_for_dol(editor.dol, dol_versions.ALL_VERSIONS)
@@ -287,7 +287,7 @@ def _apply_patches(editor: PatcherEditor, configuration: RandoConfiguration, out
     editor.build_modified_files()
     patch_game_name_and_id(editor, output, new_name=configuration.game_title, id_suffix="NR")
     remove_attract_videos(editor, output)
-    editor.code_cave.fulfill_requests()
+    await editor.code_cave.fulfill_requests()
     editor.save_modifications(output)
 
 

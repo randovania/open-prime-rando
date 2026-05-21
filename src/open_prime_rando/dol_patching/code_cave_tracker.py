@@ -1,9 +1,10 @@
 from __future__ import annotations
 
+import asyncio
 import dataclasses
 import logging
 import traceback
-from collections.abc import Callable, Sequence
+from collections.abc import Coroutine, Sequence
 from typing import TYPE_CHECKING, overload
 
 from ppc_asm import assembler
@@ -27,7 +28,7 @@ class Section:
 class CaveRequest:
     size: int
     instructions: Sequence[assembler.BaseInstruction]
-    callback: Callable[[int], None]
+    future: asyncio.Future[MemoryAddress]
     created_at: tuple[traceback.FrameSummary, ...]
 
 
@@ -44,6 +45,7 @@ class CodeCaveTracker:
         self._symbol_sizes = {}
         self._sections = []
         self._requests = []
+        self._tasks = []
 
     @overload
     def add_empty_space(self, start: MemoryAddress, *, length: int) -> None: ...
@@ -104,28 +106,36 @@ class CodeCaveTracker:
             instructions,
         )
 
-    def request_cave_for(
+    def add_task(self, coro: Coroutine) -> None:
+        coro.send(None)
+        self._tasks.append(coro)
+        task = asyncio.create_task(coro)
+        self._tasks.append(task)
+
+    async def request_cave_for(
         self,
         instructions: Sequence[assembler.BaseInstruction],
-        callback: Callable[[int], None],
-    ) -> None:
+    ) -> MemoryAddress:
         """
         Creates a request for a block of memory with enough size to fit given instructions.
         These instructions are automatically placed
         :param instructions:
-        :param callback: A function to be called with the address of the allocated cave.
         :return:
         """
+        future: asyncio.Future[MemoryAddress] = asyncio.get_running_loop().create_future()
         self._requests.append(
             CaveRequest(
                 size=assembler.byte_count(instructions),
                 instructions=instructions,
-                callback=callback,
+                future=future,
                 created_at=tuple(traceback.extract_stack()[:-1]),
             )
         )
+        address = await future
+        self.dol_editor.write_instructions(address, instructions)
+        return address
 
-    def fulfill_requests(self) -> None:
+    async def fulfill_requests(self) -> None:
         """Fulfill all cave requests, using empty space registered."""
 
         self._requests.sort(key=lambda x: x.size)
@@ -153,10 +163,7 @@ class CodeCaveTracker:
                     break
 
             if address is None:
-                raise ValueError(f"Unable to find a section to fulfill {request}.")
-
-            request.callback(address)
-
-            # write the instructions after, in case they reference a symbol created in the callback
-            # (like the address of a cave!)
-            self.dol_editor.write_instructions(address, request.instructions)
+                request.future.set_exception(ValueError(f"Unable to find a section to fulfill {request}."))
+            else:
+                request.future.set_result(address)
+            await asyncio.sleep(0)
