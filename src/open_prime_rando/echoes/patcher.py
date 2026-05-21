@@ -9,6 +9,7 @@ import open_prime_rando_practice_mod
 from PIL import Image
 from ppc_asm.assembler import ppc
 from retro_data_structures.formats.banner import Banner
+from retro_data_structures.formats.frme import Frme
 from retro_data_structures.formats.strg import Strg
 from retro_data_structures.game_check import Game
 
@@ -33,6 +34,7 @@ from open_prime_rando.echoes import (
 from open_prime_rando.echoes.asset_ids import world
 from open_prime_rando.echoes.elevators import auto_enabled_elevator_patches
 from open_prime_rando.echoes.specific_area_patches import front_end
+from open_prime_rando.echoes.version import EchoesVersion
 from open_prime_rando.patcher_editor import IsoFileProvider, IsoFileWriter, PatcherEditor
 
 if TYPE_CHECKING:
@@ -123,6 +125,34 @@ def edit_string(editor: PatcherEditor, change: StringChange) -> None:
     strg.set_string_list(change.strings)
 
 
+def apply_stk_on_map(editor: PatcherEditor, dol_version: EchoesDolVersion) -> None:
+    dol_patches.apply_stk_on_map(dol_version.stk_map_icon, editor.dol)
+
+    if dol_version.echoes_version == EchoesVersion.NTSC_U:
+        frme_id = 0x834E8FA4
+    elif dol_version.echoes_version == EchoesVersion.PAL:
+        frme_id = 0xBAF48D93
+    else:
+        raise RuntimeError(f"Unsupported EchoesVersion: {dol_version.echoes_version}")
+
+    map_screen = editor.get_file(frme_id, Frme)  # FRME_MapScreen_0
+
+    for widget in map_screen.raw.widgets:
+        if widget.name != "textpane_keylegend":
+            continue
+        widget.specific.vec[0] -= 1.3  # shift to the left a bit
+        widget.specific.word_wrap = 2  # change justification to Right
+
+    main_strg = editor.get_file(0xB4590AC3, Strg)
+    main_strg.append_string(
+        f"&image=SI,1.0,1.0,{editor.resolve_asset_id('stk_icon_found.TXTR'):08X};",
+        name="STKOn",
+    )
+
+    for pak in editor.find_paks(0x07180ADA):
+        editor.ensure_present(pak, "stk_icon_found.TXTR")
+
+
 def apply_dol_patches(editor: PatcherEditor, configuration: RandoConfiguration, dol_version: EchoesDolVersion) -> None:
     """Applies all the dol patches that aren't specific to some other place."""
 
@@ -142,6 +172,8 @@ def _apply_patches(editor: PatcherEditor, configuration: RandoConfiguration, out
 
     dol_version: EchoesDolVersion = find_version_for_dol(editor.dol, dol_versions.ALL_VERSIONS)
     apply_dol_patches(editor, configuration, dol_version)
+
+    apply_stk_on_map(editor, dol_version)
 
     damage_changes.apply_damage_changes(editor, configuration.damage_changes, dol_version)
 
