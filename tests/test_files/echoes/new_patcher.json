@@ -1821,6 +1821,68 @@
                             "conditional_relay": 131460,
                             "translator": "cobalt"
                         }
+                    ],
+                    "pickups": [
+                        {
+                            "location": {
+                                "type": "standard",
+                                "exclude_memo_from_removal": false,
+                                "original_model": "EnergyTransferModule",
+                                "connections": [
+                                    {
+                                        "state": "ZERO",
+                                        "message": "ACTV",
+                                        "target": 268566936
+                                    },
+                                    {
+                                        "state": "ZERO",
+                                        "message": "ZERO",
+                                        "target": 268566936
+                                    }
+                                ],
+                                "removals": [
+                                    131365,
+                                    268566702,
+                                    268566946,
+                                    268566994
+                                ],
+                                "collision_size": {
+                                    "x": 1.0,
+                                    "y": 1.0,
+                                    "z": 2.0
+                                },
+                                "collision_offset": {
+                                    "x": 0.0,
+                                    "y": 0.0,
+                                    "z": 1.0
+                                },
+                                "pickup": 131367,
+                                "hud_memo": 131360,
+                                "streamed_audio": 131379,
+                                "sound": 131343,
+                                "audio_fade": 131359
+                            },
+                            "primary_stage": {
+                                "resources": [
+                                    {
+                                        "item": 28,
+                                        "amount": 1
+                                    }
+                                ],
+                                "appearance": {
+                                    "model_data": "EnergyTransferModule",
+                                    "sound": 10057,
+                                    "jingle": {
+                                        "file_name": "/audio/skytenkey-jin-short32.dsp",
+                                        "volume": 110
+                                    },
+                                    "hud_text": "Energy Transfer Module acquired!",
+                                    "scan": "Energy Transfer Module"
+                                },
+                                "conversion": []
+                            },
+                            "progressive_stages": []
+                        }
                     ]
                 }
             ]

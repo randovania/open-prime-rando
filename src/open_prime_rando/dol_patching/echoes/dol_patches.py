@@ -7,6 +7,7 @@ from typing import TYPE_CHECKING, NamedTuple
 import open_prime_rando_practice_mod
 from ppc_asm.assembler import custom_ppc
 from ppc_asm.assembler.ppc import *  # noqa: F403
+from ppc_asm.dol_file import DolEditor
 
 # ruff: noqa: F405
 from open_prime_rando.dol_patching.all_prime_dol_patches import (
@@ -15,6 +16,7 @@ from open_prime_rando.dol_patching.all_prime_dol_patches import (
     HealthCapacityAddresses,
 )
 from open_prime_rando.dol_patching.echoes.beam_cost import BeamCostAddresses
+from open_prime_rando.dol_patching.echoes.stk_on_map import StkMapIconSymbols
 from open_prime_rando.echoes.version import EchoesVersion
 
 if TYPE_CHECKING:
@@ -149,6 +151,7 @@ class EchoesDolVersion(BasePrimeDolVersion):
     massive_damage_vfx: int
     starting_area_serialize_clean_slot_address: int
     inventory_slot_to_item_id_address: int
+    stk_map_icon: StkMapIconSymbols
 
 
 def _all_worlds_visible(version: EchoesDolVersion, dol_editor: DolEditor) -> None:
