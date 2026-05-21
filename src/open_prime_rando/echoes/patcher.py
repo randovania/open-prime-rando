@@ -17,7 +17,7 @@ from open_prime_rando import practice_mod
 from open_prime_rando.area_patcher import AreaPatcher
 from open_prime_rando.dol_patching import all_prime_dol_patches, ppc_helper
 from open_prime_rando.dol_patching.dol_version import find_version_for_dol
-from open_prime_rando.dol_patching.echoes import beam_cost, dol_patches, dol_versions, game_options
+from open_prime_rando.dol_patching.echoes import beam_cost, dol_patches, dol_versions, game_options, stk_on_map
 from open_prime_rando.echoes import (
     custom_assets,
     damage_changes,
@@ -138,7 +138,7 @@ def edit_string(editor: PatcherEditor, change: StringChange) -> None:
 
 
 def apply_stk_on_map(editor: PatcherEditor, dol_version: EchoesDolVersion) -> None:
-    dol_patches.apply_stk_on_map(dol_version.stk_map_icon, editor.dol)
+    stk_on_map.apply_stk_on_map(dol_version.stk_map_icon, editor.dol)
 
     if dol_version.echoes_version == EchoesVersion.NTSC_U:
         frme_id = 0x834E8FA4

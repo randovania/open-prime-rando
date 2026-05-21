@@ -2,7 +2,7 @@ import pytest
 from ppc_asm.dol_file import DolHeader, Section
 from retro_data_structures.enums.echoes import PlayerItemEnum
 
-from open_prime_rando.dol_patching.echoes import beam_cost, dol_patches, dol_versions, game_options
+from open_prime_rando.dol_patching.echoes import beam_cost, dol_patches, dol_versions, game_options, stk_on_map
 from open_prime_rando.dol_patching.echoes.beam_cost import BeamAmmoConfiguration, BeamConfiguration
 from open_prime_rando.dol_patching.echoes.dol_patches import StartingBeamVisorAddresses
 from open_prime_rando.dol_patching.echoes.game_options import GameOptionsDefaults
@@ -324,7 +324,7 @@ def test_apply_stk_on_map(dol_file):
     # Run
     dol_file.set_editable(True)
     with dol_file:
-        dol_patches.apply_stk_on_map(addresses, dol_file)
+        stk_on_map.apply_stk_on_map(addresses, dol_file)
 
     # Assert
     results = dol_file.dol_path.read_bytes()[0x100:]
