@@ -22,6 +22,8 @@ if TYPE_CHECKING:
 
     from ppc_asm.dol_file import DolEditor
 
+    from open_prime_rando.dol_patching.code_cave_tracker import CodeCaveTracker
+
 POWERUP_TO_INDEX = {
     "Double Damage": 58,
     "Unlimited Missiles": 81,
@@ -134,48 +136,63 @@ def apply_starting_visor_patch(
 class EchoesDolVersion(BasePrimeDolVersion):
     echoes_version: EchoesVersion
     practice_mod_version: open_prime_rando_practice_mod.GameVersion
+    fp_unsigned_bias: int
     health_capacity: HealthCapacityAddresses
     dangerous_energy_tank: DangerousEnergyTankAddresses
     game_options_constructor_address: int
     beam_cost_addresses: BeamCostAddresses
     safe_zone: SafeZoneAddresses
     starting_beam_visor: StartingBeamVisorAddresses
-    anything_set_address: int
-    rs_debugger_printf_loop_address: int
+    anything_set_start_address: int
+    anything_set_end_address: int
+    error_handler_start_address: int
     unvisited_room_names_address: int
     cworldtransmanager_sfxstart: int
     powerup_should_persist: int
+    powerup_max: int
     map_door_types: MapDoorTypeAddresses
     massive_damage_vfx: int
     starting_area_serialize_clean_slot_address: int
     inventory_slot_to_item_id_address: int
+    apply_double_damage_address: int
+    apply_double_damage_float: int
 
 
-def _all_worlds_visible(version: EchoesDolVersion, dol_editor: DolEditor) -> None:
+def _all_worlds_visible(version: EchoesDolVersion, cave: CodeCaveTracker) -> None:
     """Makes it so that all worlds are always visible, even if you haven't visited them."""
 
-    dol_editor.symbols["CMapWorldInfo::IsAnythingSet"] = version.anything_set_address
-    dol_editor.write_instructions(
+    cave.register_symbol(
+        "CMapWorldInfo::IsAnythingSet",
+        version.anything_set_start_address,
+        end=version.anything_set_end_address,
+    )
+    cave.replace_symbol(
         "CMapWorldInfo::IsAnythingSet",
         [
             li(r3, 1),
             blr(),
         ],
     )
-    # NOTE: This creates 45 free instructions for other uses
 
 
-def _error_screen_enabled(version: EchoesDolVersion, dol_editor: DolEditor) -> None:
+def _error_screen_enabled(version: EchoesDolVersion, cave: CodeCaveTracker) -> None:
     """Makes all crashes automatically show the error screen, without checking for controller input."""
 
-    dol_editor.write_instructions(
-        version.rs_debugger_printf_loop_address,
+    # On NTSC,
+    # 8028c3f4: start
+    # 8028c4b8: bl OSGetTime
+    # 8028c608: first instruction after
+
+    get_time_call_address = (0x8028C4B8 - 0x8028C3F4) + version.error_handler_start_address
+    end_block_address = (0x8028C608 - 0x8028C3F4) + version.error_handler_start_address
+
+    cave.dol_editor.write_instructions(
+        get_time_call_address,
         [
-            nop(),
+            b(end_block_address),
         ],
     )
-    # NOTE: This creates 77 free instructions for other uses
-    # The patch can be improved to at least 2 more.
+    cave.add_empty_space(get_time_call_address + 4, end=end_block_address)
 
 
 def _remove_massive_damage_vfx(version: EchoesDolVersion, dol_editor: DolEditor) -> None:
@@ -194,12 +211,12 @@ def _remove_massive_damage_vfx(version: EchoesDolVersion, dol_editor: DolEditor)
     )
 
 
-def apply_mandatory_fixes(version: EchoesDolVersion, dol_editor: DolEditor) -> None:
+def apply_mandatory_fixes(version: EchoesDolVersion, cave: CodeCaveTracker) -> None:
     """Mandatory fixes that we want applied no matter what."""
 
-    _all_worlds_visible(version, dol_editor)
-    _error_screen_enabled(version, dol_editor)
-    _remove_massive_damage_vfx(version, dol_editor)
+    _all_worlds_visible(version, cave)
+    _error_screen_enabled(version, cave)
+    _remove_massive_damage_vfx(version, cave.dol_editor)
 
 
 def change_powerup_should_persist(version: EchoesDolVersion, dol_editor: DolEditor, powerups: list[str]) -> None:

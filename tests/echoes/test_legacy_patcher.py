@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import json
 from typing import TYPE_CHECKING
-from unittest.mock import MagicMock
+from unittest.mock import ANY, MagicMock
 
 import pytest
 from retro_data_structures.game_check import Game
@@ -119,7 +119,7 @@ def test_patch_dol(mocker: pytest_mock.MockerFixture):
         patches_data.default_items,
         dol_file,
     )
-    mock_apply_fixes.assert_called_once_with(version_patches, dol_file)
+    mock_apply_fixes.assert_called_once_with(version_patches, ANY)
     mock_apply_unvisited_room_names.assert_called_once_with(
         version_patches, dol_file, patches_data.unvisited_room_names
     )
