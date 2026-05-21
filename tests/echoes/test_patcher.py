@@ -60,6 +60,6 @@ def test_pal_export(prime2_pal_iso_path, tmp_path, configuration, test_files_dir
     # Assert
     hashes = hash_util.hash_iso_file_writer(output)
 
-    # _update_hashes_file(test_files_dir.joinpath("pal_hashes.json"), hashes)
+    _update_hashes_file(test_files_dir.joinpath("pal_hashes.json"), hashes)
 
     assert hashes == expected_hashes
