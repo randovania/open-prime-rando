@@ -5230,7 +5230,7 @@
     },
     "custom_items": {
         "massive_damage_config": {
-            "damage_multiplier": 1.0,
+            "damage_increase_multiplier": 1.0,
             "max_count": 5
         }
     }

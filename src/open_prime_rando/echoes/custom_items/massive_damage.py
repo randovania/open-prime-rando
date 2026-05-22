@@ -34,8 +34,11 @@ if TYPE_CHECKING:
 class MassiveDamageConfig(pydantic.BaseModel):
     """Control how strong Massive Damage is and how many copies you can have."""
 
-    damage_multiplier: float = 1.0
+    damage_increase_multiplier: float = 1.0
+    """By how much damage each copy of the item gives."""
+
     max_count: Annotated[int, Interval(ge=1, le=255)] = 1
+    """How many copies of the item you're allowed to have."""
 
 
 def apply_dol_patches(version: EchoesDolVersion, cave: CodeCaveTracker, config: MassiveDamageConfig) -> None:
@@ -55,7 +58,7 @@ def apply_dol_patches(version: EchoesDolVersion, cave: CodeCaveTracker, config: 
         version.apply_double_damage_float,
         struct.pack(
             ">f",
-            config.damage_multiplier,
+            config.damage_increase_multiplier,
         ),
     )
 
