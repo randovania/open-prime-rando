@@ -154,70 +154,8 @@ def sacrificial_chamber_persist_pickup(editor: PatcherEditor, mlvl: Mlvl, area: 
     """
     Makes the pickup persistent, even if you exit the area and reload.
     """
-    pickup_active = area.get_layer("1st Pass").add_instance_with(
-        MemoryRelay(
-            editor_properties=EditorProperties(
-                active=False,
-                name="Keep Pickup Active",
-                transform=Transform(
-                    position=Vector(-168.0, 27.0, -29.0),
-                    scale=Vector(2.0, 2.0, 2.0),
-                ),
-            ),
-            delayed_action=True,
-        )
-    )
-    pickup = area.get_instance(0x3B022F)
-    entered_from_bottom_relay = area.get_instance("Entered from bottom floor")
-    entered_from_top_relay = area.get_instance("Entered from top floor")
-    post_pickup_relay = area.get_instance("Post Pickup")
-
-    # Setup stuff for if Player left room then came back
-    music_player = area.get_instance("Music Player For Area")
-    dark_torvus_music = area.get_instance("Swamp Chika Dark")
-    battle_end_relay = area.get_instance("[IN] Do End Battle")
-    dark_torvus_music = area.get_instance("Swamp Chika Dark")
-    boss_go_music = area.get_instance("Boss Go")
-    layer_swap_relay = area.get_instance("Layer Swap")
-    raise_gates_relay = area.get_instance("Raise gates")
-    destroy_sticky_platforms_relay = area.get_instance("Destroy sticky platforms")
-
-    music_status = area.get_layer("Default").add_instance_with(
-        Switch(
-            editor_properties=EditorProperties(
-                name="CLOSED: Swamp Chika Dark / OPEN: Boss Go",
-                transform=Transform(
-                    position=Vector(-172.0, -15.0, -25.0),
-                    scale=Vector(2.0, 2.0, 2.0),
-                ),
-            ),
-        )
-    )
-
-    # Do layer swap after Pickup and not when Boss dead
-    battle_end_relay.remove_connection(battle_end_relay.connections[0])
-    post_pickup_relay.add_connection(State.Zero, Message.SetToZero, layer_swap_relay)
-
-    # Activate Pickup, setup reload stuff
-    battle_end_relay.add_connection(State.Zero, Message.Open, music_status)
-    battle_end_relay.add_connection(State.Zero, Message.Close, music_status)
-    battle_end_relay.add_connection(State.Zero, Message.Activate, pickup_active)
-    pickup_active.add_connection(State.Active, Message.Activate, pickup)
-    pickup_active.add_connection(State.Active, Message.Open, music_status)
-    pickup_active.add_connection(State.Active, Message.Deactivate, raise_gates_relay)
-    pickup_active.add_connection(State.Active, Message.SetToZero, destroy_sticky_platforms_relay)
-    pickup_active.add_connection(State.Active, Message.Deactivate, entered_from_bottom_relay)
-    pickup_active.add_connection(State.Active, Message.Deactivate, entered_from_top_relay)
-
-    # Deactivate once obtained
-    post_pickup_relay.add_connection(State.Zero, Message.Deactivate, pickup_active)
-    post_pickup_relay.add_connection(State.Zero, Message.Close, music_status)
-
-    # Keep Boss Go music if player hasn't collected Pickup
-    music_player.remove_connection(music_player.connections[0])
-    music_player.add_connection(State.Entered, Message.SetToZero, music_status)
-    music_status.add_connection(State.Closed, Message.Play, dark_torvus_music)
-    music_status.add_connection(State.Open, Message.Play, boss_go_music)
+    with area.get_instance("If grapple attainment is loaded, then end battle").edit_properties(Switch) as switch:
+        switch.is_open = True
 
 
 @decorate_patcher(TORVUS_BOG_MLVL, torvus_bog.UNDERTEMPLE_MREA)
