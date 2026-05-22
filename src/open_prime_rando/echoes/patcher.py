@@ -20,6 +20,7 @@ from open_prime_rando.dol_patching.dol_version import find_version_for_dol
 from open_prime_rando.dol_patching.echoes import beam_cost, dol_patches, dol_versions, game_options, stk_on_map
 from open_prime_rando.echoes import (
     custom_assets,
+    custom_items,
     damage_changes,
     dock_lock_rando,
     general_changes,
@@ -169,7 +170,7 @@ def apply_stk_on_map(editor: PatcherEditor, dol_version: EchoesDolVersion) -> No
 def apply_dol_patches(editor: PatcherEditor, configuration: RandoConfiguration, dol_version: EchoesDolVersion) -> None:
     """Applies all the dol patches that aren't specific to some other place."""
 
-    dol_patches.apply_mandatory_fixes(dol_version, editor.dol)
+    dol_patches.apply_mandatory_fixes(dol_version, editor.code_cave)
     all_prime_dol_patches.apply_remote_execution_patch(Game.ECHOES, dol_version.string_display, editor.dol)
     all_prime_dol_patches.apply_build_info_patch(dol_version, editor.dol, configuration.world_uuid)
     dol_patches.apply_map_door_changes(dol_version.map_door_types, editor.dol)
@@ -228,6 +229,7 @@ def _apply_patches(editor: PatcherEditor, configuration: RandoConfiguration, out
         _fix_dumb_broken_strg(editor)
 
     apply_dol_patches(editor, configuration, dol_version)
+    custom_items.apply_changes(dol_version, editor.code_cave, configuration.custom_items)
 
     apply_stk_on_map(editor, dol_version)
 
@@ -302,6 +304,7 @@ def _apply_patches(editor: PatcherEditor, configuration: RandoConfiguration, out
     editor.build_modified_files()
     patch_game_name_and_id(editor, output, new_name=configuration.game_title, id_suffix="NR")
     remove_attract_videos(editor, output)
+    editor.code_cave.fulfill_requests()
     editor.save_modifications(output)
 
 

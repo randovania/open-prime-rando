@@ -1,10 +1,10 @@
-from typing import Annotated, Any
+import typing
 
-from pydantic import BeforeValidator, PlainSerializer, WithJsonSchema
 from retro_data_structures.properties.echoes.archetypes.LightParameters import WorldLightingOptions
 from retro_data_structures.properties.echoes.core.Color import Color
 from retro_data_structures.properties.echoes.core.Vector import Vector
 
+from open_prime_rando import pydantic_util
 from open_prime_rando.echoes.pickups.models import ModelAnim, ModelLighting, ModelTransform, PickupModel
 
 PICKUP_MODELS = {
@@ -453,26 +453,4 @@ PICKUP_MODELS = {
 }
 
 
-def _validate_pickup_model_name(value: Any) -> PickupModel:
-    if isinstance(value, PickupModel):
-        return value
-    if not isinstance(value, str):
-        raise ValueError(f"Expected string pickup model name, got {type(value).__name__}")
-    if value not in PICKUP_MODELS:
-        raise ValueError(f"Unknown pickup model: {value}. Valid options: {', '.join(PICKUP_MODELS.keys())}")
-    return PICKUP_MODELS[value]
-
-
-def _serialize_pickup_model_name(value: PickupModel) -> str:
-    for name, model in PICKUP_MODELS.items():
-        if model is value:
-            return name
-    raise ValueError("PickupModel not found in PICKUP_MODELS database")
-
-
-PickupModelByName = Annotated[
-    PickupModel,
-    BeforeValidator(_validate_pickup_model_name),
-    PlainSerializer(_serialize_pickup_model_name, return_type=str),
-    WithJsonSchema({"type": "string", "enum": list(PICKUP_MODELS.keys())}),
-]
+PickupModelByName = typing.Annotated[PickupModel, *pydantic_util.by_name_annotators(PickupModel, PICKUP_MODELS)]

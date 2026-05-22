@@ -16,6 +16,7 @@ from retro_data_structures.game_check import Game
 
 from open_prime_rando.area_patcher import AreaPatcher
 from open_prime_rando.dol_patching import all_prime_dol_patches, dol_version
+from open_prime_rando.dol_patching.code_cave_tracker import CodeCaveTracker
 from open_prime_rando.dol_patching.echoes import beam_cost, dol_patches, dol_versions, game_options
 from open_prime_rando.echoes import (
     asset_ids,
@@ -201,7 +202,9 @@ def patch_dol(dol_editor: DolEditor, patches_data: DolPatchesData) -> None:
     version = dol_version.find_version_for_dol(dol_editor, dol_versions.ALL_VERSIONS)
     assert isinstance(version, dol_patches.EchoesDolVersion)
 
-    dol_patches.apply_mandatory_fixes(version, dol_editor)
+    cave = CodeCaveTracker(dol_editor)
+
+    dol_patches.apply_mandatory_fixes(version, cave)
     dol_patches.change_powerup_should_persist(
         version, dol_editor, ["Double Damage", "Unlimited Missiles", "Unlimited Beam Ammo"]
     )
@@ -225,3 +228,5 @@ def patch_dol(dol_editor: DolEditor, patches_data: DolPatchesData) -> None:
     )
     dol_patches.apply_starting_visor_patch(version.starting_beam_visor, patches_data.default_items, dol_editor)
     dol_patches.apply_map_door_changes(version.map_door_types, dol_editor)
+
+    cave.fulfill_requests()
