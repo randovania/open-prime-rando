@@ -81,7 +81,7 @@ def apply_door_rando(
     changes: DockTypeChange,
 ) -> None:
     if isinstance(changes.old_door_type, dock_type.VanillaBlastShieldDoorType):
-        changes.old_door_type.remove_blast_shield()
+        changes.old_door_type.remove_blast_shield(editor, mlvl, area, changes.dock_name)
 
     changes.new_door_type.patch_door(editor, mlvl, area, changes.dock_name, low_memory=False)
 
