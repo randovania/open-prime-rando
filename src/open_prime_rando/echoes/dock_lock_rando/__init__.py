@@ -58,6 +58,8 @@ def apply_door_rando_legacy(
     old_door_type: str | None,
     low_memory: bool,
 ) -> None:
+    """Change a door from having one lock type to another. Used by the legacy patcher."""
+
     world_file = world.load_dedicated_file(world_name)
     mlvl_id = world.NAME_TO_ID_MLVL[world_name]
 
@@ -78,12 +80,14 @@ def apply_door_rando(
     editor: PatcherEditor,
     mlvl: Mlvl,
     area: Area,
-    changes: DockTypeChange,
+    change: DockTypeChange,
 ) -> None:
-    if isinstance(changes.old_door_type, dock_type.VanillaBlastShieldDoorType):
-        changes.old_door_type.remove_blast_shield(editor, mlvl, area, changes.dock_name)
+    """Change a door from having one lock type to another."""
 
-    changes.new_door_type.patch_door(editor, mlvl, area, changes.dock_name, low_memory=False)
+    if isinstance(change.old_door_type, dock_type.VanillaBlastShieldDoorType):
+        change.old_door_type.remove_blast_shield(editor, mlvl, area, change.dock_name)
+
+    change.new_door_type.patch_door(editor, mlvl, area, change.dock_name, low_memory=False)
 
 
 class DockTypeChange(BaseModel):

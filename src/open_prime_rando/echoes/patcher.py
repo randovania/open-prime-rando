@@ -180,7 +180,9 @@ def apply_dol_patches(editor: PatcherEditor, configuration: RandoConfiguration, 
     )
 
 
-def apply_world_changes(area_patcher: AreaPatcher, world_changes: list[WorldChange]) -> None:
+def register_world_changes(area_patcher: AreaPatcher, world_changes: list[WorldChange]) -> None:
+    """Register all WorldChanges in the AreaPatcher."""
+
     disable_hud_popup = True
     for world_change in world_changes:
         for area_change in world_change.area_changes:
@@ -211,7 +213,7 @@ def apply_world_changes(area_patcher: AreaPatcher, world_changes: list[WorldChan
                     area_change.mrea_id,
                     functools.partial(
                         dock_lock_rando.apply_door_rando,
-                        changes=dock_type_change,
+                        change=dock_type_change,
                     ),
                 )
 
@@ -287,7 +289,7 @@ def _apply_patches(editor: PatcherEditor, configuration: RandoConfiguration, out
 
     # area changes
     small_randomizations.register_small_randomizations(area_patcher, rng)
-    apply_world_changes(area_patcher, configuration.world_changes)
+    register_world_changes(area_patcher, configuration.world_changes)
 
     if configuration.practice_mod != open_prime_rando_practice_mod.PracticeModMode.disabled:
         practice_mod.patch_dol(

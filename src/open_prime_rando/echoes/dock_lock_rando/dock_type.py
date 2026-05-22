@@ -1,4 +1,5 @@
 import dataclasses
+import typing
 
 from retro_data_structures.asset_manager import NameOrAssetId
 from retro_data_structures.base_resource import AssetId
@@ -69,7 +70,9 @@ class DoorType:
 
     patched_scan: AssetId | None = None
 
+    @typing.final
     def get_door_from_dock_name(self, area: Area, dock_name: str) -> ScriptInstance:
+        """Given the name of a Dock instance, returns the attached Door instance."""
         dock = next(inst for inst in area.all_instances if inst.script_type == Dock and inst.name == dock_name)
 
         for instance in area.all_instances:
@@ -80,7 +83,9 @@ class DoorType:
                     return instance
         raise KeyError(f"no door found with a connection to {dock} in {area.name}")
 
+    @typing.final
     def patch_map_icon(self, mapa: Mapa, door: ScriptInstance) -> None:
+        """Edit this door's map icon to use its new value."""
         for obj in mapa.mappable_objects:
             if door.id.matches(obj.editor_id):
                 obj.object_type = self.map_icon.value
@@ -88,13 +93,20 @@ class DoorType:
 
     @staticmethod
     def get_scan_templates(editor: PatcherEditor) -> tuple[AssetId, AssetId]:
+        """Returns templates to use when creating the new SCAN and STRG for a door type's scan."""
         # Uncategorized/There is a Blast Shield on the door blocking acces_0.SCAN
         scan = 0x36DE1342
         # Strings/Uncategorized/There is a Blast Shield on the door blocking acces_0_0.STRG
         strg = 0x49DF4448
         return scan, strg
 
+    @typing.final
     def get_patched_scan(self, editor: PatcherEditor) -> AssetId:
+        """
+        Returns the asset ID for this door type's SCAN.
+        Creates the SCAN first, if necessary, then caches
+        it for future use.
+        """
         if self.patched_scan is None or not editor.does_asset_exists(self.patched_scan):
             template_scan_id, template_strg_id = DoorType.get_scan_templates(editor)
 
@@ -118,6 +130,8 @@ class DoorType:
     def patch_door(
         self, editor: PatcherEditor, mlvl: Mlvl, area: Area, dock_name: str, low_memory: bool
     ) -> BlastShieldActors | None:
+        """Changes the door into this door type."""
+
         mapa_id = mlvl.mapw.get_mapa_id(area.index)
         mapa = editor.get_file(mapa_id, Mapa)
 
@@ -139,6 +153,7 @@ class DoorType:
 
 @dataclasses.dataclass(kw_only=True)
 class NormalDoorType(DoorType):
+    @typing.override
     def patch_door(
         self, editor: PatcherEditor, mlvl: Mlvl, area: Area, dock_name: str, low_memory: bool
     ) -> BlastShieldActors | None:
@@ -157,6 +172,7 @@ class BlastShieldDoorType(DoorType):
     shield_collision_box: Vector = dataclasses.field(default_factory=lambda: Vector(0.35, 5.0, 4.0))
     shield_collision_offset: Vector = dataclasses.field(default_factory=lambda: Vector(-2 / 3, 0, 2.0))
 
+    @typing.final
     def find_attached_instance(
         self,
         area: Area,
@@ -166,6 +182,11 @@ class BlastShieldDoorType(DoorType):
         target_type: type[BaseObjectType],
         target_name: str | None = None,
     ) -> ScriptInstance:
+        """
+        Finds the first instance of a given type (and optionally, name)
+        that the source instance has a given connection to.
+        """
+
         for connection in source.connections:
             if connection.state == state and connection.message == message:
                 target = area.get_instance(connection.target)
@@ -174,12 +195,15 @@ class BlastShieldDoorType(DoorType):
         name = f"{target_type} named {target_name}" if target_name is not None else str(target_type)
         raise TypeError(f"No {name} connected to {source}")
 
+    @typing.final
     def get_spline(self) -> Spline:
+        """Creates a Spline to use for the gibs."""
         return Spline.from_bytes(
             b"\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x00\x02"
             b"\x02A \x00\x00?\x80\x00\x00\x02\x02\x01\x00\x00\x00\x00?\x80\x00\x00"
         )
 
+    @typing.final
     def create_trigger(
         self,
         name: str,
@@ -190,6 +214,11 @@ class BlastShieldDoorType(DoorType):
         seeker_lock_on: bool = True,
         orbitable: bool = False,
     ) -> DamageableTriggerOrientated:
+        """
+        Creates a damageable trigger, for use when a
+        simple damage vulnerability is insufficient.
+        """
+
         pos = Vector(door_xfm.position.x, door_xfm.position.y, door_xfm.position.z + 1.8)
 
         return DamageableTriggerOrientated(
@@ -205,6 +234,7 @@ class BlastShieldDoorType(DoorType):
             visor=VisorParameters(visor_flags=visor_flags),
         )
 
+    @typing.override
     def patch_door(
         self, editor: PatcherEditor, mlvl: Mlvl, area: Area, dock_name: str, low_memory: bool
     ) -> BlastShieldActors | None:
@@ -307,6 +337,11 @@ class BlastShieldDoorType(DoorType):
 @dataclasses.dataclass(kw_only=True)
 class VanillaBlastShieldDoorType(BlastShieldDoorType):
     def remove_blast_shield(self, editor: PatcherEditor, mlvl: Mlvl, area: Area, dock_name: str) -> None:
+        """
+        Removes an existing blast shield from the area,
+        before applying the new door type.
+        """
+
         door = self.get_door_from_dock_name(area, dock_name)
 
         relay = self.find_attached_instance(area, door, State.Open, Message.Activate, MemoryRelay)
@@ -319,6 +354,7 @@ class VanillaBlastShieldDoorType(BlastShieldDoorType):
 
 @dataclasses.dataclass(kw_only=True)
 class SeekerBlastShieldDoorType(VanillaBlastShieldDoorType):
+    @typing.override
     def patch_door(
         self, editor: PatcherEditor, mlvl: Mlvl, area: Area, dock_name: str, low_memory: bool
     ) -> BlastShieldActors:
@@ -384,6 +420,7 @@ class SeekerBlastShieldDoorType(VanillaBlastShieldDoorType):
 
         return actors
 
+    @typing.override
     def remove_blast_shield(self, editor: PatcherEditor, mlvl: Mlvl, area: Area, dock_name: str) -> None:
         door = self.get_door_from_dock_name(area, dock_name)
 
@@ -404,6 +441,7 @@ class SeekerBlastShieldDoorType(VanillaBlastShieldDoorType):
 class PlanetaryEnergyDoorType(DoorType):
     planetary_energy_item_id: int
 
+    @typing.override
     def patch_door(
         self, editor: PatcherEditor, mlvl: Mlvl, area: Area, dock_name: str, low_memory: bool
     ) -> BlastShieldActors | None:
@@ -412,6 +450,7 @@ class PlanetaryEnergyDoorType(DoorType):
 
 @dataclasses.dataclass(kw_only=True)
 class GrappleDoorType(BlastShieldDoorType):
+    @typing.override
     def patch_door(
         self, editor: PatcherEditor, mlvl: Mlvl, area: Area, dock_name: str, low_memory: bool
     ) -> BlastShieldActors | None:
@@ -429,6 +468,7 @@ class VisorDoorType(BlastShieldDoorType):
     visor_flags: VisorFlags
     player_controller_proxy: int
 
+    @typing.override
     def patch_door(
         self, editor: PatcherEditor, mlvl: Mlvl, area: Area, dock_name: str, low_memory: bool
     ) -> BlastShieldActors | None:
@@ -475,6 +515,7 @@ class VisorDoorType(BlastShieldDoorType):
 
 @dataclasses.dataclass(kw_only=True)
 class DarkVisorDoorType(VisorDoorType):
+    @typing.override
     def patch_door(
         self, editor: PatcherEditor, mlvl: Mlvl, area: Area, dock_name: str, low_memory: bool
     ) -> BlastShieldActors | None:
@@ -491,6 +532,7 @@ class DarkVisorDoorType(VisorDoorType):
 
 @dataclasses.dataclass(kw_only=True)
 class EchoVisorDoorType(VisorDoorType):
+    @typing.override
     def patch_door(
         self, editor: PatcherEditor, mlvl: Mlvl, area: Area, dock_name: str, low_memory: bool
     ) -> BlastShieldActors | None:
@@ -590,6 +632,7 @@ class EchoVisorDoorType(VisorDoorType):
 
 @dataclasses.dataclass(kw_only=True)
 class ScanVisorDoorType(BlastShieldDoorType):
+    @typing.override
     def patch_door(
         self, editor: PatcherEditor, mlvl: Mlvl, area: Area, dock_name: str, low_memory: bool
     ) -> BlastShieldActors | None:
@@ -600,6 +643,7 @@ class ScanVisorDoorType(BlastShieldDoorType):
 class TranslatorDoorType(ScanVisorDoorType):
     translator_item_id: int
 
+    @typing.override
     def patch_door(
         self, editor: PatcherEditor, mlvl: Mlvl, area: Area, dock_name: str, low_memory: bool
     ) -> BlastShieldActors | None:
