@@ -4,10 +4,16 @@ from collections.abc import Mapping
 from pydantic import BeforeValidator, PlainSerializer, WithJsonSchema
 
 
-def model_by_name[T](
+def by_name_annotators[T](
     base_type: type[T],
     database: Mapping[str, T],
-) -> type[T]:
+) -> list:
+    """
+    Provides the necessary typing.Annotation fields for configuring Pydantic to fetch instances from a mapping by name,
+    when de-serializing.
+
+    >>> PickupModelByName = typing.Annotated[PickupModel, *pydantic_util.by_name_annotators(PickupModel, PICKUP_MODELS)]
+    """
 
     def _validate_name(value: typing.Any) -> T:
         if isinstance(value, base_type):
@@ -22,10 +28,9 @@ def model_by_name[T](
         for name, model in database.items():
             if model is value:
                 return name
-        raise ValueError(f"{base_type.__name__} not found in database")
+        raise ValueError(f"{value} not found in database")
 
-    return typing.Annotated[  # ty: ignore[invalid-return-type]
-        T,
+    return [
         BeforeValidator(_validate_name),
         PlainSerializer(_serialize_name, return_type=str),
         WithJsonSchema({"type": "string", "enum": list(database.keys())}),

@@ -1,3 +1,5 @@
+import typing
+
 from retro_data_structures.properties.echoes.archetypes.LightParameters import WorldLightingOptions
 from retro_data_structures.properties.echoes.core.Color import Color
 from retro_data_structures.properties.echoes.core.Vector import Vector
@@ -451,4 +453,4 @@ PICKUP_MODELS = {
 }
 
 
-PickupModelByName = pydantic_util.model_by_name(PickupModel, PICKUP_MODELS)
+PickupModelByName = typing.Annotated[PickupModel, *pydantic_util.by_name_annotators(PickupModel, PICKUP_MODELS)]
