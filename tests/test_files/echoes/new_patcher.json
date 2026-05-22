@@ -1237,6 +1237,13 @@
                             },
                             "progressive_stages": []
                         }
+                    ],
+                    "door_locks": [
+                        {
+                            "dock_name": "North",
+                            "old_door_type": "Missile",
+                            "new_door_type": "Normal"
+                        }
                     ]
                 },
                 {
