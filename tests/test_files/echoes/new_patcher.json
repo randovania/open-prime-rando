@@ -772,6 +772,23 @@
                             },
                             "progressive_stages": []
                         }
+                    ],
+                    "door_locks": [
+                        {
+                            "dock_name": "North",
+                            "old_door_type": "Normal",
+                            "new_door_type": "Sunburst"
+                        }
+                    ]
+                },
+                {
+                    "mrea_id": 2679590972,
+                    "door_locks": [
+                        {
+                            "dock_name": "South",
+                            "old_door_type": "Normal",
+                            "new_door_type": "Sunburst"
+                        }
                     ]
                 },
                 {

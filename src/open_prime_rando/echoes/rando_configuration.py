@@ -10,6 +10,7 @@ from open_prime_rando.dol_patching.echoes.game_options import GameOptionsDefault
 from open_prime_rando.echoes.asset_ids.temple_grounds import LANDING_SITE_MREA
 from open_prime_rando.echoes.asset_ids.world import TEMPLE_GROUNDS_MLVL
 from open_prime_rando.echoes.damage_changes import DamageChanges
+from open_prime_rando.echoes.dock_lock_rando import DockTypeChange
 from open_prime_rando.echoes.pickups.schema import PickupModification
 from open_prime_rando.echoes.starting_items import StartingItemConfig
 from open_prime_rando.echoes.suit_cosmetics import SuitMapping
@@ -34,6 +35,9 @@ class AreaChange(BaseModel):
 
     translator_gates: list[TranslatorGateModification] = Field(default_factory=list)
     """A modification for an existing translator gate in this area."""
+
+    door_locks: list[DockTypeChange] = Field(default_factory=list)
+    """A modification for a door lock in this area."""
 
 
 class WorldChange(BaseModel):
