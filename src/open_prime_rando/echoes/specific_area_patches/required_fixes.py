@@ -190,6 +190,10 @@ def undertemple_persist_pickup(editor: PatcherEditor, mlvl: Mlvl, area: Area) ->
     post_pickup_relay = area.get_instance(0x3C021E)
     ingsporb_layer_switch_relay = area.get_instance("Handle Timer Actions")
     ingsporb_layer_switch = area.get_instance(0x3C01EC)
+    release_ball_relay1 = area.get_instance(0x3C01FF)
+    release_ball_relay2 = area.get_instance(0x3C01E5)
+    release_ball_relay3 = area.get_instance(0x3C0209)
+    release_ball_relay4 = area.get_instance(0x3C01DB)
 
     music_status = area.get_layer("Default").add_instance_with(
         Switch(
@@ -222,6 +226,10 @@ def undertemple_persist_pickup(editor: PatcherEditor, mlvl: Mlvl, area: Area) ->
     ingsporb_complete_memory_relay.add_connection(State.Active, Message.Deactivate, sporb_base)
     ingsporb_complete_memory_relay.add_connection(State.Active, Message.Deactivate, sporb_top)
     ingsporb_complete_memory_relay.add_connection(State.Active, Message.Deactivate, fight_trigger)
+    ingsporb_complete_memory_relay.add_connection(State.Active, Message.SetToZero, release_ball_relay1)
+    ingsporb_complete_memory_relay.add_connection(State.Active, Message.SetToZero, release_ball_relay2)
+    ingsporb_complete_memory_relay.add_connection(State.Active, Message.SetToZero, release_ball_relay3)
+    ingsporb_complete_memory_relay.add_connection(State.Active, Message.SetToZero, release_ball_relay4)
 
     # Move Slider platforms to retracted position
     for sliders in (0x3C035B, 0x3C035E, 0x3C035D, 0x3C035C):
