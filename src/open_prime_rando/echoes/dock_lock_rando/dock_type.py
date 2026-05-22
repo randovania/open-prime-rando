@@ -3,42 +3,42 @@ import dataclasses
 from retro_data_structures.asset_manager import NameOrAssetId
 from retro_data_structures.base_resource import AssetId
 from retro_data_structures.enums.echoes import Message, State
-from retro_data_structures.formats.mapa import Mapa
+from retro_data_structures.formats import Mapa, Mlvl, Scan, Strg
 from retro_data_structures.formats.mrea import Area
-from retro_data_structures.formats.scan import Scan
 from retro_data_structures.formats.script_object import ScriptInstance
-from retro_data_structures.formats.strg import Strg
 from retro_data_structures.properties.base_property import BaseObjectType
-from retro_data_structures.properties.echoes.archetypes.ActorParameters import ActorParameters
-from retro_data_structures.properties.echoes.archetypes.DamageVulnerability import DamageVulnerability
-from retro_data_structures.properties.echoes.archetypes.EditorProperties import EditorProperties
-from retro_data_structures.properties.echoes.archetypes.HealthInfo import HealthInfo
-from retro_data_structures.properties.echoes.archetypes.ScannableParameters import ScannableParameters
-from retro_data_structures.properties.echoes.archetypes.SurroundPan import SurroundPan
-from retro_data_structures.properties.echoes.archetypes.Transform import Transform
-from retro_data_structures.properties.echoes.archetypes.VisorParameters import VisorFlags, VisorParameters
-from retro_data_structures.properties.echoes.archetypes.WeaponVulnerability import WeaponVulnerability
-from retro_data_structures.properties.echoes.core.Color import Color
-from retro_data_structures.properties.echoes.core.Spline import Spline
-from retro_data_structures.properties.echoes.core.Vector import Vector
-from retro_data_structures.properties.echoes.objects.Actor import Actor
-from retro_data_structures.properties.echoes.objects.CameraShaker import CameraShaker
-from retro_data_structures.properties.echoes.objects.Counter import Counter
-from retro_data_structures.properties.echoes.objects.DamageableTrigger import DamageableTrigger
-from retro_data_structures.properties.echoes.objects.DamageableTriggerOrientated import DamageableTriggerOrientated
-from retro_data_structures.properties.echoes.objects.Dock import Dock
-from retro_data_structures.properties.echoes.objects.Door import Door
-from retro_data_structures.properties.echoes.objects.Effect import Effect
-from retro_data_structures.properties.echoes.objects.HUDHint import HUDHint
-from retro_data_structures.properties.echoes.objects.MemoryRelay import MemoryRelay
-from retro_data_structures.properties.echoes.objects.PlayerController import PlayerController
-from retro_data_structures.properties.echoes.objects.Relay import Relay
-from retro_data_structures.properties.echoes.objects.ScannableObjectInfo import ScannableObjectInfo
-from retro_data_structures.properties.echoes.objects.Sound import Sound
-from retro_data_structures.properties.echoes.objects.StreamedAudio import StreamedAudio
-from retro_data_structures.properties.echoes.objects.Timer import Timer
+from retro_data_structures.properties.echoes.archetypes import (
+    ActorParameters,
+    DamageVulnerability,
+    EditorProperties,
+    HealthInfo,
+    ScannableParameters,
+    SurroundPan,
+    Transform,
+    VisorParameters,
+    WeaponVulnerability,
+)
+from retro_data_structures.properties.echoes.archetypes.VisorParameters import VisorFlags
+from retro_data_structures.properties.echoes.core import Color, Spline, Vector
+from retro_data_structures.properties.echoes.objects import (
+    Actor,
+    CameraShaker,
+    Counter,
+    DamageableTrigger,
+    DamageableTriggerOrientated,
+    Dock,
+    Door,
+    Effect,
+    HUDHint,
+    MemoryRelay,
+    PlayerController,
+    Relay,
+    ScannableObjectInfo,
+    Sound,
+    StreamedAudio,
+    Timer,
+)
 
-from open_prime_rando.echoes.asset_ids import world
 from open_prime_rando.echoes.dock_lock_rando.map_icons import DoorMapIcon
 from open_prime_rando.echoes.vulnerabilities import resist_all_vuln
 from open_prime_rando.patcher_editor import PatcherEditor
@@ -69,25 +69,9 @@ class DoorType:
 
     patched_scan: AssetId | None = None
 
-    def get_files(self, editor: PatcherEditor, world_name: str, area_name: str) -> tuple[Area, Mapa]:
-        world_file = world.load_dedicated_file(world_name)
-        area = editor.get_area(world.NAME_TO_ID_MLVL[world_name], world_file.NAME_TO_ID_MREA[area_name])
-        mapa = editor.get_file(world_file.NAME_TO_ID_MAPA[area_name], type_hint=Mapa)
-        return area, mapa
+    def get_door_from_dock_name(self, area: Area, dock_name: str) -> ScriptInstance:
+        dock = next(inst for inst in area.all_instances if inst.script_type == Dock and inst.name == dock_name)
 
-    def get_dock_index(self, world_name: str, area_name: str, dock_name: str) -> int:
-        world_file = world.load_dedicated_file(world_name)
-        return world_file.DOCK_NAMES[area_name][dock_name]
-
-    def get_area(self, editor: PatcherEditor, world_name: str, area_name: str) -> Area:
-        return self.get_files(editor, world_name, area_name)[0]
-
-    def get_door_from_dock_index(self, area: Area, dock_index: int) -> ScriptInstance:
-        dock = next(
-            inst
-            for inst in area.all_instances
-            if (inst.script_type == Dock and inst.get_properties_as(Dock).dock_number == dock_index)
-        )
         for instance in area.all_instances:
             if instance.script_type != Door:
                 continue
@@ -110,7 +94,7 @@ class DoorType:
         strg = 0x49DF4448
         return scan, strg
 
-    def get_patched_scan(self, editor: PatcherEditor, world_name: str, area_name: str) -> AssetId:
+    def get_patched_scan(self, editor: PatcherEditor) -> AssetId:
         if self.patched_scan is None or not editor.does_asset_exists(self.patched_scan):
             template_scan_id, template_strg_id = DoorType.get_scan_templates(editor)
 
@@ -132,10 +116,12 @@ class DoorType:
         return self.patched_scan
 
     def patch_door(
-        self, editor: PatcherEditor, world_name: str, area_name: str, dock_name: str, low_memory: bool
+        self, editor: PatcherEditor, mlvl: Mlvl, area: Area, dock_name: str, low_memory: bool
     ) -> BlastShieldActors | None:
-        area, mapa = self.get_files(editor, world_name, area_name)
-        door = self.get_door_from_dock_index(area, self.get_dock_index(world_name, area_name, dock_name))
+        mapa_id = mlvl.mapw.get_mapa_id(area.index)
+        mapa = editor.get_file(mapa_id, Mapa)
+
+        door = self.get_door_from_dock_name(area, dock_name)
         self.patch_map_icon(mapa, door)
 
         shell_model = editor.resolve_asset_id(self.shell_model)
@@ -144,7 +130,7 @@ class DoorType:
             door_props.shell_model = shell_model
             door_props.shell_color = self.shell_color
             if self.scan_text is not None:
-                door_props.alt_scannable.scannable_info0 = self.get_patched_scan(editor, world_name, area_name)
+                door_props.alt_scannable.scannable_info0 = self.get_patched_scan(editor)
             else:
                 door_props.alt_scannable.scannable_info0 = 0xFFFFFFFF
 
@@ -154,11 +140,10 @@ class DoorType:
 @dataclasses.dataclass(kw_only=True)
 class NormalDoorType(DoorType):
     def patch_door(
-        self, editor: PatcherEditor, world_name: str, area_name: str, dock_name: str, low_memory: bool
+        self, editor: PatcherEditor, mlvl: Mlvl, area: Area, dock_name: str, low_memory: bool
     ) -> BlastShieldActors | None:
-        super().patch_door(editor, world_name, area_name, dock_name, low_memory)
-        area = self.get_area(editor, world_name, area_name)
-        door = self.get_door_from_dock_index(area, self.get_dock_index(world_name, area_name, dock_name))
+        super().patch_door(editor, mlvl, area, dock_name, low_memory)
+        door = self.get_door_from_dock_name(area, dock_name)
 
         with door.edit_properties(Door) as door_props:
             door_props.vulnerability = self.vulnerability
@@ -221,7 +206,7 @@ class BlastShieldDoorType(DoorType):
         )
 
     def patch_door(
-        self, editor: PatcherEditor, world_name: str, area_name: str, dock_name: str, low_memory: bool
+        self, editor: PatcherEditor, mlvl: Mlvl, area: Area, dock_name: str, low_memory: bool
     ) -> BlastShieldActors | None:
         """
         blast shield connections:
@@ -237,9 +222,8 @@ class BlastShieldDoorType(DoorType):
             ACTV -> door, RSET
             ACTV -> blast shield, DCTV
         """
-        super().patch_door(editor, world_name, area_name, dock_name, low_memory)
-        area = self.get_area(editor, world_name, area_name)
-        door = self.get_door_from_dock_index(area, self.get_dock_index(world_name, area_name, dock_name))
+        super().patch_door(editor, mlvl, area, dock_name, low_memory)
+        door = self.get_door_from_dock_name(area, dock_name)
 
         with door.edit_properties(Door) as _door:
             door_transform = _door.editor_properties.transform
@@ -260,7 +244,7 @@ class BlastShieldDoorType(DoorType):
                 vulnerability=self.vulnerability,
                 model=model,
                 actor_information=ActorParameters(
-                    scannable=ScannableParameters(scannable_info0=self.get_patched_scan(editor, world_name, area_name))
+                    scannable=ScannableParameters(scannable_info0=self.get_patched_scan(editor))
                 ),
             )
         )
@@ -322,9 +306,8 @@ class BlastShieldDoorType(DoorType):
 
 @dataclasses.dataclass(kw_only=True)
 class VanillaBlastShieldDoorType(BlastShieldDoorType):
-    def remove_blast_shield(self, editor: PatcherEditor, world_name: str, area_name: str, dock_name: str) -> None:
-        area = self.get_area(editor, world_name, area_name)
-        door = self.get_door_from_dock_index(area, self.get_dock_index(world_name, area_name, dock_name))
+    def remove_blast_shield(self, editor: PatcherEditor, mlvl: Mlvl, area: Area, dock_name: str) -> None:
+        door = self.get_door_from_dock_name(area, dock_name)
 
         relay = self.find_attached_instance(area, door, State.Open, Message.Activate, MemoryRelay)
         lock = self.find_attached_instance(area, relay, State.Active, Message.Deactivate, Actor)
@@ -337,12 +320,11 @@ class VanillaBlastShieldDoorType(BlastShieldDoorType):
 @dataclasses.dataclass(kw_only=True)
 class SeekerBlastShieldDoorType(VanillaBlastShieldDoorType):
     def patch_door(
-        self, editor: PatcherEditor, world_name: str, area_name: str, dock_name: str, low_memory: bool
+        self, editor: PatcherEditor, mlvl: Mlvl, area: Area, dock_name: str, low_memory: bool
     ) -> BlastShieldActors:
-        actors = super().patch_door(editor, world_name, area_name, dock_name, low_memory)
+        actors = super().patch_door(editor, mlvl, area, dock_name, low_memory)
         assert actors is not None
 
-        area = self.get_area(editor, world_name, area_name)
         default = area.get_layer("Default")
 
         # immune instead of reflect so that it explodes on the lock
@@ -402,9 +384,8 @@ class SeekerBlastShieldDoorType(VanillaBlastShieldDoorType):
 
         return actors
 
-    def remove_blast_shield(self, editor: PatcherEditor, world_name: str, area_name: str, dock_name: str) -> None:
-        area = self.get_area(editor, world_name, area_name)
-        door = self.get_door_from_dock_index(area, self.get_dock_index(world_name, area_name, dock_name))
+    def remove_blast_shield(self, editor: PatcherEditor, mlvl: Mlvl, area: Area, dock_name: str) -> None:
+        door = self.get_door_from_dock_name(area, dock_name)
 
         memory_relay = self.find_attached_instance(area, door, State.Open, Message.Activate, MemoryRelay)
         trigger = self.find_attached_instance(area, memory_relay, State.Active, Message.Deactivate, DamageableTrigger)
@@ -424,7 +405,7 @@ class PlanetaryEnergyDoorType(DoorType):
     planetary_energy_item_id: int
 
     def patch_door(
-        self, editor: PatcherEditor, world_name: str, area_name: str, dock_name: str, low_memory: bool
+        self, editor: PatcherEditor, mlvl: Mlvl, area: Area, dock_name: str, low_memory: bool
     ) -> BlastShieldActors | None:
         raise NotImplementedError
 
@@ -432,7 +413,7 @@ class PlanetaryEnergyDoorType(DoorType):
 @dataclasses.dataclass(kw_only=True)
 class GrappleDoorType(BlastShieldDoorType):
     def patch_door(
-        self, editor: PatcherEditor, world_name: str, area_name: str, dock_name: str, low_memory: bool
+        self, editor: PatcherEditor, mlvl: Mlvl, area: Area, dock_name: str, low_memory: bool
     ) -> BlastShieldActors | None:
         raise NotImplementedError
 
@@ -449,11 +430,11 @@ class VisorDoorType(BlastShieldDoorType):
     player_controller_proxy: int
 
     def patch_door(
-        self, editor: PatcherEditor, world_name: str, area_name: str, dock_name: str, low_memory: bool
+        self, editor: PatcherEditor, mlvl: Mlvl, area: Area, dock_name: str, low_memory: bool
     ) -> BlastShieldActors | None:
-        actors = super().patch_door(editor, world_name, area_name, dock_name, low_memory)
+        actors = super().patch_door(editor, mlvl, area, dock_name, low_memory)
         assert actors is not None
-        area = self.get_area(editor, world_name, area_name)
+
         default = area.get_layer("Default")
 
         with actors.door.edit_properties(Door) as door:
@@ -495,9 +476,9 @@ class VisorDoorType(BlastShieldDoorType):
 @dataclasses.dataclass(kw_only=True)
 class DarkVisorDoorType(VisorDoorType):
     def patch_door(
-        self, editor: PatcherEditor, world_name: str, area_name: str, dock_name: str, low_memory: bool
+        self, editor: PatcherEditor, mlvl: Mlvl, area: Area, dock_name: str, low_memory: bool
     ) -> BlastShieldActors | None:
-        actors = super().patch_door(editor, world_name, area_name, dock_name, low_memory)
+        actors = super().patch_door(editor, mlvl, area, dock_name, low_memory)
         assert isinstance(actors, VisorBlastShieldActors)
 
         with actors.lock.edit_properties(Actor) as lock:
@@ -511,12 +492,11 @@ class DarkVisorDoorType(VisorDoorType):
 @dataclasses.dataclass(kw_only=True)
 class EchoVisorDoorType(VisorDoorType):
     def patch_door(
-        self, editor: PatcherEditor, world_name: str, area_name: str, dock_name: str, low_memory: bool
+        self, editor: PatcherEditor, mlvl: Mlvl, area: Area, dock_name: str, low_memory: bool
     ) -> BlastShieldActors | None:
-        actors = super().patch_door(editor, world_name, area_name, dock_name, low_memory)
+        actors = super().patch_door(editor, mlvl, area, dock_name, low_memory)
         assert isinstance(actors, VisorBlastShieldActors)
 
-        area = self.get_area(editor, world_name, area_name)
         default = area.get_layer("Default")
 
         door_xfm = actors.door.get_properties_as(Door).editor_properties.transform
@@ -611,7 +591,7 @@ class EchoVisorDoorType(VisorDoorType):
 @dataclasses.dataclass(kw_only=True)
 class ScanVisorDoorType(BlastShieldDoorType):
     def patch_door(
-        self, editor: PatcherEditor, world_name: str, area_name: str, dock_name: str, low_memory: bool
+        self, editor: PatcherEditor, mlvl: Mlvl, area: Area, dock_name: str, low_memory: bool
     ) -> BlastShieldActors | None:
         raise NotImplementedError
 
@@ -621,6 +601,6 @@ class TranslatorDoorType(ScanVisorDoorType):
     translator_item_id: int
 
     def patch_door(
-        self, editor: PatcherEditor, world_name: str, area_name: str, dock_name: str, low_memory: bool
+        self, editor: PatcherEditor, mlvl: Mlvl, area: Area, dock_name: str, low_memory: bool
     ) -> BlastShieldActors | None:
         raise NotImplementedError

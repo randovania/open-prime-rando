@@ -1,5 +1,7 @@
 import dataclasses
+from typing import Annotated, Any
 
+from pydantic import BeforeValidator, PlainSerializer, WithJsonSchema
 from retro_data_structures.properties.echoes.archetypes.VisorParameters import VisorFlags
 from retro_data_structures.properties.echoes.core.Color import Color
 from retro_data_structures.properties.echoes.core.Vector import Vector
@@ -312,3 +314,28 @@ DOCK_TYPES: dict[str, dock_type.DoorType] = {
         map_icon=DoorMapIcon.PowerBomb,  # TODO: give it its own?
     ),
 }
+
+
+def _validate_dock_type_name(value: Any) -> dock_type.DoorType:
+    if isinstance(value, dock_type.DoorType):
+        return value
+    if not isinstance(value, str):
+        raise ValueError(f"Expected string dock type name, got {type(value).__name__}")
+    if value not in DOCK_TYPES:
+        raise ValueError(f"Unknown dock type: {value}. Valid options: {', '.join(DOCK_TYPES.keys())}")
+    return DOCK_TYPES[value]
+
+
+def _serialize_pickup_model_name(value: dock_type.DoorType) -> str:
+    for name, model in DOCK_TYPES.items():
+        if model is value:
+            return name
+    raise ValueError("DoorType not found in DOCK_TYPES database")
+
+
+DockTypeByName = Annotated[
+    dock_type.DoorType,
+    BeforeValidator(_validate_dock_type_name),
+    PlainSerializer(_serialize_pickup_model_name, return_type=str),
+    WithJsonSchema({"type": "string", "enum": list(DOCK_TYPES.keys())}),
+]

@@ -73,6 +73,6 @@ def test_apply_door_rando(prime2_editor, new_door_type, old_door_type, low_memor
 
     world_name, area_name, dock_name = vanilla_doors[old_door_type]
     with expectation:
-        dock_lock_rando.apply_door_rando(
+        dock_lock_rando.apply_door_rando_legacy(
             prime2_editor, world_name, area_name, dock_name, new_door_type, old_door_type, low_memory
         )

@@ -85,7 +85,7 @@ def apply_area_modifications(
 
             for dock_name, dock_config in area_config["docks"].items():
                 if "new_door_type" in dock_config:
-                    dock_lock_rando.apply_door_rando(
+                    dock_lock_rando.apply_door_rando_legacy(
                         editor,
                         world_name,
                         area_name,
