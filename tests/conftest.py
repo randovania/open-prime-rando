@@ -4,7 +4,6 @@ import os
 from pathlib import Path
 
 import pytest
-from retro_data_structures.asset_manager import PakExportStrategyAppend
 from retro_data_structures.file_provider import IsoFileProvider
 from retro_data_structures.game_check import Game
 
@@ -137,8 +136,7 @@ def prime2_editor(raw_prime2_editor: PatcherEditor):
     editor = raw_prime2_editor
     yield editor
     editor._memory_files = {}
-    for custom_asset, asset_id in editor._custom_asset_ids.items():
-        editor.pak_strategy = PakExportStrategyAppend(editor)
+    editor._pak_strategy = {pak_name: editor._pak_strategy_factory(editor, pak_name) for pak_name in editor.all_paks}
     editor._custom_asset_ids = {}
     editor._modified_resources = {}
 
