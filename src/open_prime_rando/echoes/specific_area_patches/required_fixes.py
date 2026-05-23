@@ -490,6 +490,9 @@ def alpha_splinter_pb_response(editor: PatcherEditor, mlvl: Mlvl, area: Area) ->
         alpha.patterned.knockback_rules = custom_rule
         alpha.ing_possession_data.ing_vulnerability.power_bomb.damage_multiplier = 3000.0
 
+    # FIXME: Pickup already has a FadeInTime of 1.0, needs to
+    # receive the messsage `Increment` instead of `Activate`
+    # and also account for Progressive Pickups
     with area.get_instance("Pickup Object").edit_properties(Pickup) as pickup:
         pickup.fadetime = 1.0
 

@@ -13,11 +13,12 @@ from retro_data_structures.properties.echoes.archetypes.Transform import Transfo
 from retro_data_structures.properties.echoes.core.Vector import Vector
 from retro_data_structures.properties.echoes.objects import (
     Actor,
-    MemoryRelay,
     Platform,
     ScriptLayerController,
+    Sound,
     SpawnPoint,
     Timer,
+    TriggerEllipsoid,
 )
 
 from open_prime_rando.area_patcher import AreaPatcher, decorate_patcher
@@ -53,7 +54,7 @@ def register_all(area_patcher: AreaPatcher) -> None:
         bionergy_production_pirates_trigger,
         hive_tunnel_webbing,
         agon_temple_door_locks,
-        temple_sanctuary,
+        temple_sanctuary_emerald_gate,
         main_reactor_post_ds_layer_changes,
         torvus_temple_barrier,
         torvus_temple_translator_gate,
@@ -263,15 +264,41 @@ def agon_temple_door_locks(editor: PatcherEditor, mlvl: Mlvl, area: Area) -> Non
 
 
 @decorate_patcher(GREAT_TEMPLE_MLVL, great_temple.TEMPLE_SANCTUARY_MREA)
-def temple_sanctuary(editor: PatcherEditor, mlvl: Mlvl, area: Area) -> None:
+def temple_sanctuary_emerald_gate(editor: PatcherEditor, mlvl: Mlvl, area: Area) -> None:
     """
-    Patches Alpha Splinter to take damage properly from Power Bombs.
     Keep the Emerald gate active from the beginning.
-    Fade in the Pickup.
     """
+    area.remove_instance("Activate Gate ")
 
-    with area.get_instance(0x0200B0).edit_properties(MemoryRelay) as relay:
-        relay.editor_properties.active = True
+    instances_to_activate = [
+        0x200A5,  # Glow For Holo 2
+        0x200C4,  # Gate Holo 1
+        0x200C5,  # Luminoth Gate
+        0x200C9,  # Gate Holo 2
+        0x200FB,  # Glow For Holo 1
+    ]
+
+    for instances in instances_to_activate:
+        with area.get_instance(instances).edit_properties(BaseObjectType) as props:
+            assert isinstance(props, ObjectWithEditorProperties)
+            props.editor_properties.active = True
+
+    # Sound - Translator Gate Idle
+    with area.get_instance(0x200AB).edit_properties(Sound) as sound_props:
+        sound_props.auto_start = True
+
+    # Don't make trigger also activate the gate
+    fight_trigger = area.get_instance(0x2000D)
+    fight_trigger_connections = list(fight_trigger.connections)
+    fight_trigger.remove_connection(fight_trigger_connections[0])
+    fight_trigger.remove_connection(fight_trigger_connections[1])
+    fight_trigger.remove_connection(fight_trigger_connections[2])
+    fight_trigger.remove_connection(fight_trigger_connections[3])
+    fight_trigger.remove_connection(fight_trigger_connections[4])
+    fight_trigger.remove_connection(fight_trigger_connections[6])
+    fight_trigger.remove_connection(fight_trigger_connections[7])
+    with fight_trigger.edit_properties(TriggerEllipsoid) as trigger_props:
+        trigger_props.deactivate_on_enter = True
 
 
 @decorate_patcher(AGON_WASTES_MLVL, agon_wastes.MAIN_REACTOR_MREA)
