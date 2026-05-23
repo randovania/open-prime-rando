@@ -10,6 +10,24 @@ from retro_data_structures.game_check import Game
 
 from open_prime_rando.patcher_editor import IsoFileWriter, PatcherEditor
 
+_REPO_ROOT = Path(__file__).parent.parent
+_DOT_ENV: dict[str, str] | None = None
+
+
+def _load_dot_env() -> dict[str, str]:
+    global _DOT_ENV  # noqa: PLW0603
+    if _DOT_ENV is None:
+        _DOT_ENV = {}
+        dot_env_path = _REPO_ROOT / ".env"
+        if dot_env_path.exists():
+            for raw_line in dot_env_path.read_text().splitlines():
+                stripped = raw_line.strip()
+                if stripped and not stripped.startswith("#") and "=" in stripped:
+                    key, _, value = stripped.partition("=")
+                    _DOT_ENV[key.strip()] = value.strip()
+    return _DOT_ENV
+
+
 _FAIL_INSTEAD_OF_SKIP = True
 
 
@@ -63,12 +81,13 @@ def get_env_or_skip(env_name: str, override_fail: bool | None = None) -> str:
         fail_or_skip = _FAIL_INSTEAD_OF_SKIP
     else:
         fail_or_skip = override_fail
-    if env_name not in os.environ:
+    value = os.environ.get(env_name) or _load_dot_env().get(env_name)
+    if value is None:
         if fail_or_skip:
             pytest.fail(f"Missing environment variable {env_name}")
         else:
             pytest.skip(f"Skipped due to missing environment variable {env_name}")
-    return os.environ[env_name]
+    return value
 
 
 class TestFilesDir:
@@ -132,8 +151,30 @@ def pytest_addoption(parser) -> None:
         default=True,
         help="Skip tests instead of missing, in case any asset is missing",
     )
+    parser.addoption(
+        "--update-hashes",
+        action="store_true",
+        dest="update_hashes",
+        default=False,
+        help="Update hash files instead of comparing; only runs test_ntsc_export, test_pal_export, and test_ntsc_paks",
+    )
 
 
 def pytest_configure(config: pytest.Config) -> None:
     global _FAIL_INSTEAD_OF_SKIP  # noqa: PLW0603
     _FAIL_INSTEAD_OF_SKIP = config.option.fail_if_missing
+
+
+def pytest_collection_modifyitems(config: pytest.Config, items: list) -> None:
+    if not getattr(config.option, "update_hashes", False):
+        return
+
+    selected = [item for item in items if "update_hashes" in item.fixturenames]
+    deselected = [item for item in items if "update_hashes" not in item.fixturenames]
+    config.hook.pytest_deselected(items=deselected)
+    items[:] = selected
+
+
+@pytest.fixture(scope="session")
+def update_hashes(request) -> bool:
+    return bool(getattr(request.config.option, "update_hashes", False))

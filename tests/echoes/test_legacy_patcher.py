@@ -4,7 +4,6 @@ import json
 from typing import TYPE_CHECKING
 from unittest.mock import ANY, MagicMock
 
-import pytest
 from retro_data_structures.game_check import Game
 
 from open_prime_rando.dol_patching.echoes import dol_versions
@@ -29,14 +28,17 @@ def hash_all_paks(base_path: Path, hash_util: HashUtil) -> dict:
 
 def _update_hashes_file(path: Path, hashes: dict) -> None:
     path.write_text(json.dumps(hashes, indent=4))
-    pytest.fail("updated hashes file")
 
 
-def test_ntsc_paks(prime2_iso_provider, tmp_path, test_files_dir, hash_util: HashUtil) -> None:
+def test_ntsc_paks(
+    prime2_iso_provider,
+    tmp_path,
+    test_files_dir,
+    hash_util: HashUtil,
+    update_hashes: bool,
+) -> None:
     output_path = tmp_path.joinpath("out")
     configuration = test_files_dir.read_json("echoes", "door_lock.json")
-
-    expected_hashes = test_files_dir.read_json("legacy_ntsc_hashes.json")
 
     legacy_patcher.patch_paks(
         file_provider=prime2_iso_provider,
@@ -45,9 +47,11 @@ def test_ntsc_paks(prime2_iso_provider, tmp_path, test_files_dir, hash_util: Has
     )
     hashes = hash_all_paks(output_path, hash_util)
 
-    # _update_hashes_file(test_files_dir.joinpath("legacy_ntsc_hashes.json"), hashes)
-
-    assert hashes == expected_hashes
+    if update_hashes:
+        _update_hashes_file(test_files_dir.joinpath("legacy_ntsc_hashes.json"), hashes)
+    else:
+        expected_hashes = test_files_dir.read_json("legacy_ntsc_hashes.json")
+        assert hashes == expected_hashes
 
 
 def test_pal_paks(pal_prime2_iso_provider, tmp_path, test_files_dir):

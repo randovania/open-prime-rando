@@ -24,15 +24,18 @@ def configuration(test_files_dir):
 
 def _update_hashes_file(path: Path, hashes: dict[str, str | dict]) -> None:
     path.write_text(json.dumps(hashes, indent=4, sort_keys=True))
-    pytest.fail("updated hashes file")
 
 
-def test_ntsc_export(prime2_ntsc_iso_path, tmp_path, configuration, test_files_dir, hash_util: HashUtil) -> None:
+def test_ntsc_export(
+    prime2_ntsc_iso_path,
+    configuration,
+    test_files_dir,
+    hash_util: HashUtil,
+    update_hashes: bool,
+) -> None:
     file_provider = IsoFileProvider(prime2_ntsc_iso_path)
     editor = PatcherEditor(file_provider, Game.ECHOES)
     output = IsoFileWriter(file_provider)
-
-    expected_hashes = test_files_dir.read_json("ntsc_hashes.json")
 
     # Run
     patcher._apply_patches(editor, configuration, output)
@@ -40,26 +43,34 @@ def test_ntsc_export(prime2_ntsc_iso_path, tmp_path, configuration, test_files_d
     # Assert
     hashes = hash_util.hash_iso_file_writer(output)
 
-    # _update_hashes_file(test_files_dir.joinpath("ntsc_hashes.json"), hashes)
+    if update_hashes:
+        _update_hashes_file(test_files_dir.joinpath("ntsc_hashes.json"), hashes)
+    else:
+        expected_hashes = test_files_dir.read_json("ntsc_hashes.json")
+        assert hashes == expected_hashes
 
-    assert hashes == expected_hashes
 
-
-def test_pal_export(prime2_pal_iso_path, tmp_path, configuration, test_files_dir, hash_util: HashUtil) -> None:
+def test_pal_export(
+    prime2_pal_iso_path,
+    configuration,
+    test_files_dir,
+    hash_util: HashUtil,
+    update_hashes: bool,
+) -> None:
     configuration.practice_mod = PracticeModMode.disabled
 
     file_provider = IsoFileProvider(prime2_pal_iso_path)
     editor = PatcherEditor(file_provider, Game.ECHOES)
     output = IsoFileWriter(file_provider)
 
-    expected_hashes = test_files_dir.read_json("pal_hashes.json")
-
     # Run
     patcher._apply_patches(editor, configuration, output)
 
     # Assert
     hashes = hash_util.hash_iso_file_writer(output)
 
-    # _update_hashes_file(test_files_dir.joinpath("pal_hashes.json"), hashes)
-
-    assert hashes == expected_hashes
+    if update_hashes:
+        _update_hashes_file(test_files_dir.joinpath("pal_hashes.json"), hashes)
+    else:
+        expected_hashes = test_files_dir.read_json("pal_hashes.json")
+        assert hashes == expected_hashes

@@ -1,0 +1,51 @@
+name: Update Hashes
+
+on:
+  issue_comment:
+    types: [created]
+
+jobs:
+  update-hashes:
+    if: >
+      github.event.issue.pull_request &&
+      github.event.comment.body == '/update-hashes' &&
+      contains(fromJSON('["OWNER", "MEMBER", "COLLABORATOR"]'), github.event.comment.author_association)
+    runs-on: self-hosted
+
+    permissions:
+      contents: write
+      pull-requests: read
+
+    steps:
+      - name: Get PR branch
+        id: pr
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const pr = await github.rest.pulls.get({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: context.issue.number,
+            });
+            core.setOutput('head_ref', pr.data.head.ref);
+
+      - name: Checkout PR branch
+        uses: actions/checkout@v6
+        with:
+          ref: ${{ steps.pr.outputs.head_ref }}
+          fetch-depth: 0
+          submodules: 'recursive'
+
+      - name: Install dependencies
+        run: uv sync --locked --all-extras
+
+      - name: Run pytest --update-hashes
+        run: uv run pytest --update-hashes
+
+      - name: Commit and push updated hashes
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add tests/test_files/ntsc_hashes.json tests/test_files/pal_hashes.json tests/test_files/legacy_ntsc_hashes.json
+          git diff --staged --quiet || git commit -m "Update hash files"
+          git push
