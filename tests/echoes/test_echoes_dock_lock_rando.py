@@ -4,7 +4,14 @@ from unittest.mock import MagicMock
 import pytest
 
 from open_prime_rando.echoes import dock_lock_rando
-from open_prime_rando.echoes.dock_lock_rando import DOCK_TYPES
+from open_prime_rando.echoes.asset_ids.temple_grounds import GFMC_COMPOUND_MREA, PATH_OF_HONOR_MREA
+from open_prime_rando.echoes.asset_ids.torvus_bog import (
+    GATHERING_HALL_MREA,
+    TORVUS_TEMPLE_MREA,
+    UNDERGROUND_TUNNEL_MREA,
+)
+from open_prime_rando.echoes.asset_ids.world import TEMPLE_GROUNDS_MLVL, TORVUS_BOG_MLVL
+from open_prime_rando.echoes.dock_lock_rando import DOCK_TYPES, DockTypeChange
 from open_prime_rando.patcher_editor import PatcherEditor
 
 _custom_asset_ids = {
@@ -49,21 +56,20 @@ def test_add_custom_models(prime2_editor: PatcherEditor):
 
 
 vanilla_doors = {
-    "Normal": ("Torvus Bog", "Gathering Hall", "North"),
-    "Dark": ("Torvus Bog", "Torvus Temple", "EastTop"),
-    "Light": ("Torvus Bog", "Underground Tunnel", "North"),
-    "Annihilator": ("Torvus Bog", "Gathering Hall", "East_0P"),
-    "Missile": ("Temple Grounds", "GFMC Compound", "WestTop"),
-    "SuperMissile": ("Torvus Bog", "Torvus Temple", "WestGenerator"),
-    "SeekerMissile": ("Temple Grounds", "Path of Honor", "North"),
-    "PowerBomb": ("Temple Grounds", "GFMC Compound", "West"),
+    "Normal": (TORVUS_BOG_MLVL, GATHERING_HALL_MREA, "North"),
+    "Dark": (TORVUS_BOG_MLVL, TORVUS_TEMPLE_MREA, "EastTop"),
+    "Light": (TORVUS_BOG_MLVL, UNDERGROUND_TUNNEL_MREA, "North"),
+    "Annihilator": (TORVUS_BOG_MLVL, GATHERING_HALL_MREA, "East_0P"),
+    "Missile": (TEMPLE_GROUNDS_MLVL, GFMC_COMPOUND_MREA, "WestTop"),
+    "SuperMissile": (TORVUS_BOG_MLVL, TORVUS_TEMPLE_MREA, "WestGenerator"),
+    "SeekerMissile": (TEMPLE_GROUNDS_MLVL, PATH_OF_HONOR_MREA, "North"),
+    "PowerBomb": (TEMPLE_GROUNDS_MLVL, GFMC_COMPOUND_MREA, "West"),
 }
 
 
 @pytest.mark.parametrize("new_door_type", DOCK_TYPES.keys())
 @pytest.mark.parametrize("old_door_type", vanilla_doors.keys())
-@pytest.mark.parametrize("low_memory", [False])  # too slow to run twice for now
-def test_apply_door_rando(prime2_editor, new_door_type, old_door_type, low_memory):
+def test_apply_door_rando(prime2_editor, new_door_type, old_door_type):
     prime2_editor.ensure_present = MagicMock()
 
     if new_door_type in {"Grapple", "AgonEnergy", "TorvusEnergy", "SanctuaryEnergy"}:
@@ -71,8 +77,15 @@ def test_apply_door_rando(prime2_editor, new_door_type, old_door_type, low_memor
     else:
         expectation = contextlib.nullcontext()
 
-    world_name, area_name, dock_name = vanilla_doors[old_door_type]
+    world_id, area_id, dock_name = vanilla_doors[old_door_type]
+    area = prime2_editor.get_area(world_id, area_id)
+    mlvl = area.parent_mlvl
+
+    change = DockTypeChange(
+        dock_name=dock_name,
+        old_door_type=DOCK_TYPES[old_door_type],
+        new_door_type=DOCK_TYPES[new_door_type],
+    )
+
     with expectation:
-        dock_lock_rando.apply_door_rando(
-            prime2_editor, world_name, area_name, dock_name, new_door_type, old_door_type, low_memory
-        )
+        dock_lock_rando.apply_door_rando(prime2_editor, mlvl, area, change)
