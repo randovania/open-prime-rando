@@ -8,8 +8,7 @@ jobs:
   update-hashes:
     if: >
       github.event.issue.pull_request &&
-      github.event.comment.body == '/update-hashes' &&
-      contains(fromJSON('["OWNER", "MEMBER", "COLLABORATOR"]'), github.event.comment.author_association)
+      github.event.comment.body == '/update-hashes'
     runs-on: self-hosted
 
     permissions:
@@ -17,11 +16,19 @@ jobs:
       pull-requests: read
 
     steps:
-      - name: Get PR branch
+      - name: Get PR branch and verify permissions
         id: pr
         uses: actions/github-script@v7
         with:
           script: |
+            const { data: perm } = await github.rest.repos.getCollaboratorPermissionLevel({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              username: context.actor,
+            });
+            if (!['admin', 'write'].includes(perm.permission)) {
+              core.setFailed(`${context.actor} does not have write access`);
+            }
             const pr = await github.rest.pulls.get({
               owner: context.repo.owner,
               repo: context.repo.repo,
