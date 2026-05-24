@@ -14,6 +14,7 @@ jobs:
     permissions:
       contents: write
       pull-requests: read
+      issues: write
 
     steps:
       - name: Get PR branch and verify permissions
@@ -50,9 +51,40 @@ jobs:
         run: uv run pytest --update-hashes
 
       - name: Commit and push updated hashes
+        id: commit
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add tests/test_files/ntsc_hashes.json tests/test_files/pal_hashes.json tests/test_files/legacy_ntsc_hashes.json
-          git diff --staged --quiet || git commit -m "Update hash files"
-          git push
+          if git diff --staged --quiet; then
+            echo "changed=false" >> $GITHUB_OUTPUT
+          else
+            git commit -m "Update hash files"
+            git push
+            echo "changed=true" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Comment success
+        if: success()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const changed = '${{ steps.commit.outputs.changed }}' === 'true';
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              body: changed ? 'Hash files updated and pushed to this PR.' : 'No hash changes were needed.',
+            });
+
+      - name: Comment failure
+        if: failure()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              body: `Failed to update hashes. Check the [workflow run](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}) for details.`,
+            });
