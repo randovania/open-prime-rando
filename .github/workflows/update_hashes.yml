@@ -5,21 +5,18 @@ on:
     types: [created]
 
 jobs:
-  update-hashes:
+  verify:
     if: >
       github.event.issue.pull_request &&
       github.event.comment.body == '/update-hashes'
-    runs-on: self-hosted
+    runs-on: ubuntu-slim
 
     permissions:
-      contents: write
-      pull-requests: read
-      issues: write
+      pull-requests: write
 
     steps:
-      - name: Get PR branch and verify permissions
-        id: pr
-        uses: actions/github-script@v7
+      - name: Verify permissions and acknowledge
+        uses: actions/github-script@v9
         with:
           script: |
             const { data: perm } = await github.rest.repos.getCollaboratorPermissionLevel({
@@ -29,20 +26,38 @@ jobs:
             });
             if (!['admin', 'write'].includes(perm.permission)) {
               core.setFailed(`${context.actor} does not have write access`);
+              return;
             }
-            const pr = await github.rest.pulls.get({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              pull_number: context.issue.number,
-            });
-            core.setOutput('head_ref', pr.data.head.ref);
+            try {
+              await github.rest.reactions.createForIssueComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                comment_id: context.payload.comment.id,
+                content: '+1',
+              });
+            } catch (e) {
+              core.warning(`Failed to react to comment: ${e.message}`);
+            }
 
-      - name: Checkout PR branch
+  update-hashes:
+    needs: verify
+    runs-on: self-hosted
+
+    permissions:
+      contents: write
+      pull-requests: write
+
+    steps:
+      - name: Checkout
         uses: actions/checkout@v6
         with:
-          ref: ${{ steps.pr.outputs.head_ref }}
           fetch-depth: 0
-          submodules: 'recursive'
+
+      - name: Checkout PR branch
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh pr checkout ${{ github.event.issue.number }}
 
       - name: Install dependencies
         run: uv sync --locked --all-extras
@@ -52,6 +67,8 @@ jobs:
 
       - name: Commit and push updated hashes
         id: commit
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
@@ -66,7 +83,7 @@ jobs:
 
       - name: Comment success
         if: success()
-        uses: actions/github-script@v7
+        uses: actions/github-script@v9
         with:
           script: |
             const changed = '${{ steps.commit.outputs.changed }}' === 'true';
@@ -79,7 +96,7 @@ jobs:
 
       - name: Comment failure
         if: failure()
-        uses: actions/github-script@v7
+        uses: actions/github-script@v9
         with:
           script: |
             await github.rest.issues.createComment({
