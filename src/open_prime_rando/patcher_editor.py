@@ -16,6 +16,8 @@ from retro_data_structures.formats.strg import Strg
 from retro_data_structures.game_check import Game
 from retro_data_structures.properties.echoes.objects.ScannableObjectInfo import ScannableObjectInfo
 
+from open_prime_rando.dol_patching.code_cave_tracker import CodeCaveTracker
+
 if typing.TYPE_CHECKING:
     from collections.abc import Generator
     from pathlib import Path
@@ -193,9 +195,12 @@ class PatcherEditor(AssetManager):
     pooled_scans: dict[ScanContents, AssetId]
     """Map scan contents to a SCAN asset ID"""
 
+    code_cave: CodeCaveTracker
+
     def __init__(self, provider: FileProvider, target_game: Game):
         super().__init__(provider, target_game)
         self.pooled_scans = {}
+        self.code_cave = CodeCaveTracker(self.dol)
 
     def get_mlvl(self, name: NameOrAssetId) -> Mlvl:
         return self.get_file(name, Mlvl)

@@ -1,9 +1,11 @@
 import dataclasses
+from typing import Annotated
 
 from retro_data_structures.properties.echoes.archetypes.VisorParameters import VisorFlags
 from retro_data_structures.properties.echoes.core.Color import Color
 from retro_data_structures.properties.echoes.core.Vector import Vector
 
+from open_prime_rando import pydantic_util
 from open_prime_rando.echoes.dock_lock_rando import dock_type
 from open_prime_rando.echoes.dock_lock_rando.map_icons import DoorMapIcon
 from open_prime_rando.echoes.vulnerabilities import normal_vuln, resist_all_vuln, vulnerable, vulnerable_no_splash
@@ -312,3 +314,5 @@ DOCK_TYPES: dict[str, dock_type.DoorType] = {
         map_icon=DoorMapIcon.PowerBomb,  # TODO: give it its own?
     ),
 }
+
+DockTypeByName = Annotated[dock_type.DoorType, *pydantic_util.by_name_annotators(dock_type.DoorType, DOCK_TYPES)]
