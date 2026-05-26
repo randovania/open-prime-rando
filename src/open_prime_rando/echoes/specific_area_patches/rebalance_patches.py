@@ -268,7 +268,7 @@ def temple_sanctuary_emerald_gate(editor: PatcherEditor, mlvl: Mlvl, area: Area)
     """
     Keep the Emerald gate active from the beginning.
     """
-    area.remove_instance("Activate Gate ")
+    area.remove_instance("Activate Gate ")  # Intentional
 
     instances_to_activate = [
         0x200A5,  # Glow For Holo 2
@@ -289,14 +289,12 @@ def temple_sanctuary_emerald_gate(editor: PatcherEditor, mlvl: Mlvl, area: Area)
 
     # Don't make trigger also activate the gate
     fight_trigger = area.get_instance(0x2000D)
+    fight_start_relay = area.get_instance("Cinema Start - Splinter Snatch Cinematic")
     fight_trigger_connections = list(fight_trigger.connections)
-    fight_trigger.remove_connection(fight_trigger_connections[0])
-    fight_trigger.remove_connection(fight_trigger_connections[1])
-    fight_trigger.remove_connection(fight_trigger_connections[2])
-    fight_trigger.remove_connection(fight_trigger_connections[3])
-    fight_trigger.remove_connection(fight_trigger_connections[4])
-    fight_trigger.remove_connection(fight_trigger_connections[6])
-    fight_trigger.remove_connection(fight_trigger_connections[7])
+    for connection in fight_trigger_connections[:8]:
+        fight_trigger.remove_connection(connection)
+    fight_trigger.add_connection(State.Entered, Message.SetToZero, fight_start_relay)
+
     with fight_trigger.edit_properties(TriggerEllipsoid) as trigger_props:
         trigger_props.deactivate_on_enter = True
 
