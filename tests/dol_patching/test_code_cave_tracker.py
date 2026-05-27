@@ -32,7 +32,7 @@ def test_fulfill_requests_valid(dol_file: DolFile) -> None:
     section = cave._sections[0]
     cave.add_empty_space(0x2100, length=4)
 
-    cave.request_cave_for(
+    cave.request_code_cave(
         [ppc.b(0, relative=True)],
         callback,
     )
@@ -44,7 +44,7 @@ def test_fulfill_requests_valid(dol_file: DolFile) -> None:
 
 
 def test_fulfill_requests_no_section(cave: CodeCaveTracker) -> None:
-    cave.request_cave_for(
+    cave.request_code_cave(
         [ppc.b(0, relative=True)],
         MagicMock(),
     )

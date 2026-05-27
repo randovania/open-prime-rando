@@ -91,7 +91,7 @@ class RandoConfiguration(BaseModel):
     starting_area: AreaReference = AreaReference(mlvl_id=TEMPLE_GROUNDS_MLVL, mrea_id=LANDING_SITE_MREA)
     """The game will start at the given area. When not set, starts at Landing Site."""
 
-    starting_items: list[StartingItemConfig]
+    starting_items: list[StartingItemConfig] = Field(default_factory=list)
     """What is the starting inventory. Any item not listed will be set to 0."""
 
     map_visibility: MapVisibility = Field(default_factory=MapVisibility)
@@ -112,7 +112,7 @@ class RandoConfiguration(BaseModel):
     inverted_mode: bool = False
     """Whether or not to use inverted mode, where Light and Dark Aether is inverted."""
 
-    world_changes: list[WorldChange]
+    world_changes: list[WorldChange] = Field(default_factory=list)
     """A list of World (and Area) specific changes."""
 
     suit_replacement: SuitMapping = Field(default_factory=SuitMapping)

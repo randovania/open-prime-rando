@@ -155,6 +155,7 @@ class EchoesDolVersion(BasePrimeDolVersion):
     massive_damage_vfx: int
     starting_area_serialize_clean_slot_address: int
     inventory_slot_to_item_id_address: int
+    load_scan_tree_inventory_slot_usage: int
     stk_map_icon: StkMapIconSymbols
     apply_double_damage_address: int
     apply_double_damage_float: int

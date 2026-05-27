@@ -23,7 +23,7 @@ license = "GPL-3.0-or-later"
 dependencies = [
     "retro-data-structures>=0.43",
     "jsonschema>=4.0.0",
-    "ppc-asm>=1.7.0",
+    "ppc-asm>=1.9.0",
     "py_randomprime", # for Prime 1 symbols
     "pydantic>=2.12.5",
     "pyelftools>=0.32",

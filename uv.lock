@@ -268,7 +268,7 @@ requires-dist = [
     { name = "jsonschema", specifier = ">=4.0.0" },
     { name = "nod-rs", marker = "extra == 'nod'" },
     { name = "open-prime-rando-practice-mod", specifier = ">=0.2.3" },
-    { name = "ppc-asm", specifier = ">=1.7.0" },
+    { name = "ppc-asm", specifier = ">=1.9.0" },
     { name = "pre-commit", marker = "extra == 'test'" },
     { name = "py-randomprime" },
     { name = "pydantic", specifier = ">=2.12.5" },
@@ -391,11 +391,11 @@ wheels = [
 
 [[package]]
 name = "ppc-asm"
-version = "1.7.0"
+version = "1.9.0"
 source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/b8/d8/666a9af241722710d155b8f89c73aed8db9a86243f5fd871bd38dcd676df/ppc_asm-1.7.0.tar.gz", hash = "sha256:edf539bb08527086b6a21cf53f2170304f3dceca6331dd86133e3d95a08afcf4", size = 26412, upload-time = "2026-05-20T23:25:01.51Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/23/1e/ed2a1534b0d788ab8ee3d6d1f08a074e83263c573aa25d38a9ca8ba26787/ppc_asm-1.9.0.tar.gz", hash = "sha256:e3776301b308328f69d3ee36b0bf3d13a27091ee0012f036ac746077c584f7a9", size = 45290, upload-time = "2026-05-22T18:27:38.934Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/75/63/966a6ec40dc0f14890f2e0b29cf33d5336e4671c0548e0c9fd9c441c2e0b/ppc_asm-1.7.0-py3-none-any.whl", hash = "sha256:6d4d3f4914ab6c8f4541634d598843256480682e0f2d563bff8cda9b4ebcbc42", size = 21701, upload-time = "2026-05-20T23:25:00.345Z" },
+    { url = "https://files.pythonhosted.org/packages/3e/4c/c2eed780f32fc5b77c5b6c33bdf1792dc362e838f2bb3491dd486a329ecc/ppc_asm-1.9.0-py3-none-any.whl", hash = "sha256:dea9c111131723fd01199feb8b638b06ddb791826b0c7275e58a5bb612b5b577", size = 22315, upload-time = "2026-05-22T18:27:37.531Z" },
 ]
 
 [[package]]
