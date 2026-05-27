@@ -571,7 +571,7 @@
                                 "resources": [
                                     {
                                         "item": 58,
-                                        "amount": 1
+                                        "amount": 5
                                     }
                                 ],
                                 "appearance": {
@@ -771,6 +771,23 @@
                                 "conversion": []
                             },
                             "progressive_stages": []
+                        }
+                    ],
+                    "door_locks": [
+                        {
+                            "dock_name": "North",
+                            "old_door_type": "Normal",
+                            "new_door_type": "Sunburst"
+                        }
+                    ]
+                },
+                {
+                    "mrea_id": 2679590972,
+                    "door_locks": [
+                        {
+                            "dock_name": "South",
+                            "old_door_type": "Normal",
+                            "new_door_type": "Sunburst"
                         }
                     ]
                 },
@@ -1219,6 +1236,13 @@
                                 "conversion": []
                             },
                             "progressive_stages": []
+                        }
+                    ],
+                    "door_locks": [
+                        {
+                            "dock_name": "North",
+                            "old_door_type": "Missile",
+                            "new_door_type": "Normal"
                         }
                     ]
                 },
@@ -1820,6 +1844,68 @@
                             },
                             "conditional_relay": 131460,
                             "translator": "cobalt"
+                        }
+                    ],
+                    "pickups": [
+                        {
+                            "location": {
+                                "type": "standard",
+                                "exclude_memo_from_removal": false,
+                                "original_model": "EnergyTransferModule",
+                                "connections": [
+                                    {
+                                        "state": "ZERO",
+                                        "message": "ACTV",
+                                        "target": 268566936
+                                    },
+                                    {
+                                        "state": "ZERO",
+                                        "message": "ZERO",
+                                        "target": 268566936
+                                    }
+                                ],
+                                "removals": [
+                                    131365,
+                                    268566702,
+                                    268566946,
+                                    268566994
+                                ],
+                                "collision_size": {
+                                    "x": 1.0,
+                                    "y": 1.0,
+                                    "z": 2.0
+                                },
+                                "collision_offset": {
+                                    "x": 0.0,
+                                    "y": 0.0,
+                                    "z": 1.0
+                                },
+                                "pickup": 131367,
+                                "hud_memo": 131360,
+                                "streamed_audio": 131379,
+                                "sound": 131343,
+                                "audio_fade": 131359
+                            },
+                            "primary_stage": {
+                                "resources": [
+                                    {
+                                        "item": 28,
+                                        "amount": 1
+                                    }
+                                ],
+                                "appearance": {
+                                    "model_data": "EnergyTransferModule",
+                                    "sound": 10057,
+                                    "jingle": {
+                                        "file_name": "/audio/skytenkey-jin-short32.dsp",
+                                        "volume": 110
+                                    },
+                                    "hud_text": "Energy Transfer Module acquired!",
+                                    "scan": "Energy Transfer Module"
+                                },
+                                "conversion": []
+                            },
+                            "progressive_stages": []
                         }
                     ]
                 }
@@ -5227,5 +5313,11 @@
         "safe_zone_heal_per_second": 2,
         "dark_world_damage": 8,
         "dark_suit_protection": 0.5
+    },
+    "custom_items": {
+        "massive_damage_config": {
+            "damage_increase_multiplier": 1.0,
+            "max_count": 5
+        }
     }
 }

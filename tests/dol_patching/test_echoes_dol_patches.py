@@ -1,7 +1,8 @@
 import pytest
-from ppc_asm.dol_file import DolHeader, Section
+from ppc_asm.dol_file import DolFile, DolHeader, Section
 from retro_data_structures.enums.echoes import PlayerItemEnum
 
+from open_prime_rando.dol_patching.code_cave_tracker import CodeCaveTracker
 from open_prime_rando.dol_patching.echoes import beam_cost, dol_patches, dol_versions, game_options, stk_on_map
 from open_prime_rando.dol_patching.echoes.beam_cost import BeamAmmoConfiguration, BeamConfiguration
 from open_prime_rando.dol_patching.echoes.dol_patches import StartingBeamVisorAddresses
@@ -363,13 +364,14 @@ def test_apply_stk_on_map(dol_file):
 
 
 @pytest.mark.parametrize(("header", "version"), DOLS)
-def test_apply_fixes(dol_file, header, version):
+def test_apply_fixes(dol_file: DolFile, header, version):
     dol_file.header = header
+    cave = CodeCaveTracker(dol_file)
 
     # Run
     dol_file.set_editable(True)
     with dol_file:
-        dol_patches.apply_mandatory_fixes(version, dol_file)
+        dol_patches.apply_mandatory_fixes(version, cave)
 
 
 @pytest.mark.parametrize(("header", "version"), DOLS)

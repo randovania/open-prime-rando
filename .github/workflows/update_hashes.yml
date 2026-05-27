@@ -1,0 +1,107 @@
+name: Update Hashes
+
+on:
+  issue_comment:
+    types: [created]
+
+jobs:
+  verify:
+    if: >
+      github.event.issue.pull_request &&
+      github.event.comment.body == '/update-hashes'
+    runs-on: ubuntu-slim
+
+    permissions:
+      pull-requests: write
+
+    steps:
+      - name: Verify permissions and acknowledge
+        uses: actions/github-script@v9
+        with:
+          script: |
+            const { data: perm } = await github.rest.repos.getCollaboratorPermissionLevel({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              username: context.actor,
+            });
+            if (!['admin', 'write'].includes(perm.permission)) {
+              core.setFailed(`${context.actor} does not have write access`);
+              return;
+            }
+            try {
+              await github.rest.reactions.createForIssueComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                comment_id: context.payload.comment.id,
+                content: '+1',
+              });
+            } catch (e) {
+              core.warning(`Failed to react to comment: ${e.message}`);
+            }
+
+  update-hashes:
+    needs: verify
+    runs-on: self-hosted
+
+    permissions:
+      contents: write
+      pull-requests: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Checkout PR branch
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh pr checkout ${{ github.event.issue.number }}
+
+      - name: Install dependencies
+        run: uv sync --locked --all-extras
+
+      - name: Run pytest --update-hashes
+        run: uv run pytest --update-hashes
+
+      - name: Commit and push updated hashes
+        id: commit
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add tests/test_files/ntsc_hashes.json tests/test_files/pal_hashes.json tests/test_files/legacy_ntsc_hashes.json
+          if git diff --staged --quiet; then
+            echo "changed=false" >> $GITHUB_OUTPUT
+          else
+            git commit -m "Update hash files"
+            git push
+            echo "changed=true" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Comment success
+        if: success()
+        uses: actions/github-script@v9
+        with:
+          script: |
+            const changed = '${{ steps.commit.outputs.changed }}' === 'true';
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              body: changed ? 'Hash files updated and pushed to this PR.' : 'No hash changes were needed.',
+            });
+
+      - name: Comment failure
+        if: failure()
+        uses: actions/github-script@v9
+        with:
+          script: |
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              body: `Failed to update hashes. Check the [workflow run](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}) for details.`,
+            });

@@ -20,7 +20,9 @@ from open_prime_rando.dol_patching.dol_version import find_version_for_dol
 from open_prime_rando.dol_patching.echoes import beam_cost, dol_patches, dol_versions, game_options, stk_on_map
 from open_prime_rando.echoes import (
     custom_assets,
+    custom_items,
     damage_changes,
+    dock_lock_rando,
     general_changes,
     inverted,
     logbook,
@@ -42,7 +44,7 @@ if TYPE_CHECKING:
     from pathlib import Path
 
     from open_prime_rando.dol_patching.echoes.dol_patches import EchoesDolVersion
-    from open_prime_rando.echoes.rando_configuration import AreaReference, RandoConfiguration, StringChange
+    from open_prime_rando.echoes.rando_configuration import AreaReference, RandoConfiguration, StringChange, WorldChange
 
 LOG = logging.getLogger("echoes_patcher")
 
@@ -168,7 +170,7 @@ def apply_stk_on_map(editor: PatcherEditor, dol_version: EchoesDolVersion) -> No
 def apply_dol_patches(editor: PatcherEditor, configuration: RandoConfiguration, dol_version: EchoesDolVersion) -> None:
     """Applies all the dol patches that aren't specific to some other place."""
 
-    dol_patches.apply_mandatory_fixes(dol_version, editor.dol)
+    dol_patches.apply_mandatory_fixes(dol_version, editor.code_cave)
     all_prime_dol_patches.apply_remote_execution_patch(Game.ECHOES, dol_version.string_display, editor.dol)
     all_prime_dol_patches.apply_build_info_patch(dol_version, editor.dol, configuration.world_uuid)
     dol_patches.apply_map_door_changes(dol_version.map_door_types, editor.dol)
@@ -179,8 +181,47 @@ def apply_dol_patches(editor: PatcherEditor, configuration: RandoConfiguration, 
     )
 
 
+def register_world_changes(area_patcher: AreaPatcher, world_changes: list[WorldChange]) -> None:
+    """Register all WorldChanges in the AreaPatcher."""
+
+    disable_hud_popup = True
+    for world_change in world_changes:
+        for area_change in world_change.area_changes:
+            for pickup_change in area_change.pickups:
+                area_patcher.add_raw_function(
+                    world_change.mlvl_id,
+                    area_change.mrea_id,
+                    functools.partial(
+                        pickups.patch_pickup,
+                        modification=pickup_change,
+                        disable_hud_popup=disable_hud_popup,
+                    ),
+                )
+
+            for translator_gate_change in area_change.translator_gates:
+                area_patcher.add_raw_function(
+                    world_change.mlvl_id,
+                    area_change.mrea_id,
+                    functools.partial(
+                        translator_gates.patch_translator_gate,
+                        modification=translator_gate_change,
+                    ),
+                )
+
+            for dock_type_change in area_change.door_locks:
+                area_patcher.add_raw_function(
+                    world_change.mlvl_id,
+                    area_change.mrea_id,
+                    functools.partial(
+                        dock_lock_rando.apply_door_rando,
+                        change=dock_type_change,
+                    ),
+                )
+
+
 def _apply_patches(editor: PatcherEditor, configuration: RandoConfiguration, output: IsoFileWriter) -> None:
     custom_assets.create_custom_assets(editor)
+    dock_lock_rando.add_custom_models(editor)
 
     dol_version: EchoesDolVersion = find_version_for_dol(editor.dol, dol_versions.ALL_VERSIONS)
 
@@ -188,6 +229,7 @@ def _apply_patches(editor: PatcherEditor, configuration: RandoConfiguration, out
         _fix_dumb_broken_strg(editor)
 
     apply_dol_patches(editor, configuration, dol_version)
+    custom_items.apply_changes(dol_version, editor.code_cave, configuration.custom_items)
 
     apply_stk_on_map(editor, dol_version)
 
@@ -249,30 +291,7 @@ def _apply_patches(editor: PatcherEditor, configuration: RandoConfiguration, out
 
     # area changes
     small_randomizations.register_small_randomizations(area_patcher, rng)
-
-    disable_hud_popup = True
-    for world_change in configuration.world_changes:
-        for area_change in world_change.area_changes:
-            for pickup_change in area_change.pickups:
-                area_patcher.add_raw_function(
-                    world_change.mlvl_id,
-                    area_change.mrea_id,
-                    functools.partial(
-                        pickups.patch_pickup,
-                        modification=pickup_change,
-                        disable_hud_popup=disable_hud_popup,
-                    ),
-                )
-
-            for translator_gate_change in area_change.translator_gates:
-                area_patcher.add_raw_function(
-                    world_change.mlvl_id,
-                    area_change.mrea_id,
-                    functools.partial(
-                        translator_gates.patch_translator_gate,
-                        modification=translator_gate_change,
-                    ),
-                )
+    register_world_changes(area_patcher, configuration.world_changes)
 
     if configuration.practice_mod != open_prime_rando_practice_mod.PracticeModMode.disabled:
         practice_mod.patch_dol(
@@ -285,6 +304,7 @@ def _apply_patches(editor: PatcherEditor, configuration: RandoConfiguration, out
     editor.build_modified_files()
     patch_game_name_and_id(editor, output, new_name=configuration.game_title, id_suffix="NR")
     remove_attract_videos(editor, output)
+    editor.code_cave.fulfill_requests()
     editor.save_modifications(output)
 
 
