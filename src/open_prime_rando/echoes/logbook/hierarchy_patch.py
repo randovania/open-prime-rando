@@ -62,11 +62,11 @@ class HierarchyPatch:
 
 
 def get_hierarchy_patches(configuration: RandoConfiguration) -> list[HierarchyPatch]:
-    """"""
+    """Get the list of HierarchyPatch objects to apply, adjusted to the given configuration."""
 
     massive_damage_config = configuration.custom_items.massive_damage_config
     massive_damage_scan_text = (
-        f"The Massive Damage increases your damage by {massive_damage_config.damage_multiplier * 100:.0f}% "
+        f"The Massive Damage increases your damage by {massive_damage_config.damage_increase_multiplier * 100:.0f}% "
         f"for every copy you find, up to {massive_damage_config.max_count}"
     )
     if massive_damage_config.max_count == 1:
