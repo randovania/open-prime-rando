@@ -60,10 +60,12 @@ def register_all(area_patcher: AreaPatcher) -> None:
         torvus_temple_translator_gate,
         torvus_energy_controller_fight_layers,
         gfmc_compound_gate,
-        gfmc_compound_ship_pickup,
         sanctuary_entrance_keybearer,
         main_reactor_keybearer,
+        gfmc_compound_ship_pickup,
+        judgment_pit_gfmc_layer,
         hive_chamber_a_dmt_active,
+        agon_temple_dmt_layer,
     ]:
         area_patcher.add_function(func)
 
@@ -425,6 +427,15 @@ def gfmc_compound_ship_pickup(editor: PatcherEditor, mlvl: Mlvl, area: Area) -> 
     memory_relay.add_connection(State.Active, Message.Deactivate, timer)
 
 
+@decorate_patcher(AGON_WASTES_MLVL, agon_wastes.JUDGMENT_PIT_MREA)
+def judgment_pit_gfmc_layer(editor: PatcherEditor, mlvl: Mlvl, area: Area) -> None:
+    """
+    Don't reactivate the GFMC ship pickup after Jump Guardian.
+    """
+
+    _disable_layer_controllers(editor, mlvl, area, ["Increment - 05_Temple - Space Jump"])
+
+
 @decorate_patcher(TEMPLE_GROUNDS_MLVL, temple_grounds.HIVE_CHAMBER_A_MREA)
 def hive_chamber_a_dmt_active(editor: PatcherEditor, mlvl: Mlvl, area: Area) -> None:
     """
@@ -433,3 +444,20 @@ def hive_chamber_a_dmt_active(editor: PatcherEditor, mlvl: Mlvl, area: Area) -> 
 
     area.get_layer("Missile Trooper").active = True
     area.get_layer("Missile trooper gate").active = True
+
+
+@decorate_patcher(AGON_WASTES_MLVL, agon_wastes.AGON_TEMPLE_MREA)
+def agon_temple_dmt_layer(editor: PatcherEditor, mlvl: Mlvl, area: Area) -> None:
+    """
+    Don't reactivate the Dark Missile Trooper layers after Bomb Guardian.
+    """
+
+    _disable_layer_controllers(
+        editor,
+        mlvl,
+        area,
+        [
+            "Increment -  01_Temple_Hive01 - Missile Trooper Gate",  # [sic]
+            "Increment - 01_Temple_Hive01 - Missile Trooper",
+        ],
+    )
