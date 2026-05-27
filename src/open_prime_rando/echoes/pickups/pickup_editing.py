@@ -145,7 +145,7 @@ def _add_relay(layer: ScriptLayer) -> ScriptInstance:
     )
 
 
-def _add_conditional_relay(
+def add_conditional_relay(
     item: PlayerItemEnum,
     immediate: bool,
     layer: ScriptLayer,
@@ -318,7 +318,7 @@ def _patch_single_pickup_stage_converted_resources(
 
     for from_item, to_item in conversion:
         relay = _add_relay(layer)
-        conditional = _add_conditional_relay(from_item, False, layer)
+        conditional = add_conditional_relay(from_item, False, layer)
 
         subtract_from = _add_modify_inventory_sf(from_item, -1, layer)
         add_to = _add_modify_inventory_sf(to_item, 1, layer)
@@ -449,7 +449,7 @@ def patch_complex_pickup(
         instances = original_instances.new_stage(layer, i + 1)
 
         # create the ConditionalRelay and looping Timer used to update to the correct stage
-        conditional = _add_conditional_relay(
+        conditional = add_conditional_relay(
             stage.required_item,
             False,
             layer,
