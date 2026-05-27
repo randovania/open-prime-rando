@@ -19,7 +19,7 @@ if TYPE_CHECKING:
 def hash_all_paks(base_path: Path, hash_util: HashUtil) -> dict:
     result = {
         pak_path.relative_to(base_path).as_posix(): hash_util.hash_pak(pak_path.read_bytes())
-        for pak_path in base_path.rglob("*.pak")
+        for pak_path in sorted(base_path.rglob("*.pak"))
     }
     path = base_path.joinpath("files/custom_names.json")
     result[path.relative_to(base_path).as_posix()] = json.loads(path.read_text())
