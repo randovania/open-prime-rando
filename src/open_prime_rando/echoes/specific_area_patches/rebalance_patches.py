@@ -331,12 +331,14 @@ def main_reactor_post_ds_layer_changes(editor: PatcherEditor, mlvl: Mlvl, area: 
 @decorate_patcher(TORVUS_BOG_MLVL, torvus_bog.TORVUS_TEMPLE_MREA)
 def torvus_temple_barrier(editor: PatcherEditor, mlvl: Mlvl, area: Area) -> None:
     """
-    Reduce the size of the barrier such that it doesn't block the path to lower Torvus.
+    Replace the Barrier's collision model with a
+    smaller one to allow access to/from Lower Torvus.
     """
+    # https://i.ibb.co/39LMBFTQ/torvus-temple-barrier.jpg
     with area.get_instance(0x1B00E0).edit_properties(Actor) as barrier:
-        barrier.editor_properties.transform.position.x = -226.4198
-        barrier.editor_properties.transform.position.z = 58.7156
-        barrier.editor_properties.transform.scale.y = 2.019
+        barrier.editor_properties.transform.position = Vector(-212.0, -118.0, 43.0)
+        barrier.editor_properties.transform.rotation = Vector(90.093697, -39.95039, 0.0)
+        barrier.collision_model = 0x3356D256
 
 
 @decorate_patcher(TORVUS_BOG_MLVL, torvus_bog.TORVUS_TEMPLE_MREA)
