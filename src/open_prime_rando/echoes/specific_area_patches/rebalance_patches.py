@@ -335,10 +335,28 @@ def torvus_temple_barrier(editor: PatcherEditor, mlvl: Mlvl, area: Area) -> None
     smaller one to allow access to/from Lower Torvus.
     """
     # https://i.ibb.co/39LMBFTQ/torvus-temple-barrier.jpg
-    with area.get_instance(0x1B00E0).edit_properties(Actor) as barrier:
+    with area.get_instance("Laser Barrier Blocking Volume").edit_properties(Actor) as barrier:
         barrier.editor_properties.transform.position = Vector(-212.0, -118.0, 43.0)
         barrier.editor_properties.transform.rotation = Vector(90.093697, -39.95039, 0.0)
         barrier.collision_model = 0x3356D256
+
+    memory_relay = area.get_instance("Remember Beams Off")
+    barrier = area.get_instance("Laser Barrier Blocking Volume")
+    barrier_extension = area.get_layer("Default").add_instance_with(
+        Actor(
+            editor_properties=EditorProperties(
+                name="Barrier Extendo",
+                transform=Transform(
+                    position=Vector(-217.484482, -118.0, 49.528767),
+                    rotation=Vector(90.093712, -39.727413, 0.0),
+                ),
+            ),
+            model=0x3801DE98,
+            collision_model=0x3356D256,
+        )
+    )
+    memory_relay.add_connection(State.Active, Message.Deactivate, barrier_extension)
+    barrier.add_connection(State.Inactive, Message.Deactivate, barrier_extension)
 
 
 @decorate_patcher(TORVUS_BOG_MLVL, torvus_bog.TORVUS_TEMPLE_MREA)
