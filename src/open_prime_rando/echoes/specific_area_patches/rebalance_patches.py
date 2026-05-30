@@ -334,14 +334,14 @@ def torvus_temple_barrier(editor: PatcherEditor, mlvl: Mlvl, area: Area) -> None
     Replace the Barrier's collision model with a
     smaller one to allow access to/from Lower Torvus.
     """
-    # https://i.ibb.co/39LMBFTQ/torvus-temple-barrier.jpg
-    with area.get_instance("Laser Barrier Blocking Volume").edit_properties(Actor) as barrier:
-        barrier.editor_properties.transform.position = Vector(-212.0, -118.0, 43.0)
-        barrier.editor_properties.transform.rotation = Vector(90.093697, -39.95039, 0.0)
-        barrier.collision_model = 0x3356D256
+    # https://i.ibb.co/W4L49TDj/torvus-temple-barrier.jpg
+    barrier = area.get_instance("Laser Barrier Blocking Volume")
+    with barrier.edit_properties(Actor) as barrier_props:
+        barrier_props.editor_properties.transform.position = Vector(-212.0, -118.0, 43.0)
+        barrier_props.editor_properties.transform.rotation = Vector(90.093697, -39.95039, 0.0)
+        barrier_props.collision_model = 0x3356D256
 
     memory_relay = area.get_instance("Remember Beams Off")
-    barrier = area.get_instance("Laser Barrier Blocking Volume")
     barrier_extension = area.get_layer("Default").add_instance_with(
         Actor(
             editor_properties=EditorProperties(
