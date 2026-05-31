@@ -99,8 +99,8 @@ def _patch_elevator(editor: PatcherEditor, mlvl: Mlvl, area: Area) -> None:
         second_pass.get_instance(0x1B040C),  # Elevator Holo
         second_pass.get_instance(0x1B03F7),  # Key Beam
     )
-    for objects in instances:
-        area.move_instance(objects, "Default")
+    for instance in instances:
+        area.move_instance(instance, "Default")
 
 
 def _patch_shriekers(editor: PatcherEditor, mlvl: Mlvl, area: Area) -> None:
@@ -139,7 +139,8 @@ def _patch_shriekers(editor: PatcherEditor, mlvl: Mlvl, area: Area) -> None:
 
 
 def _patch_music(editor: PatcherEditor, mlvl: Mlvl, area: Area) -> None:
-
+    # Prevent music interrupts caused by dynamic layer
+    # loading by adding relay checks
     default = area.get_layer("Default")
 
     # Move music player to Default
