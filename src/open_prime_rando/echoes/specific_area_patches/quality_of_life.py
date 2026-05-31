@@ -11,17 +11,19 @@ from retro_data_structures.properties.echoes.objects import (
     CameraFilterKeyframe,
     CameraHint,
     CameraShaker,
+    Platform,
     SpawnPoint,
     Trigger,
     TriggerOrientated,
 )
 
 from open_prime_rando.area_patcher import AreaPatcher, decorate_patcher
-from open_prime_rando.echoes.asset_ids import great_temple, sanctuary_fortress, temple_grounds
+from open_prime_rando.echoes.asset_ids import great_temple, sanctuary_fortress, temple_grounds, torvus_bog
 from open_prime_rando.echoes.asset_ids.world import (
     GREAT_TEMPLE_MLVL,
     SANCTUARY_FORTRESS_MLVL,
     TEMPLE_GROUNDS_MLVL,
+    TORVUS_BOG_MLVL,
 )
 
 if TYPE_CHECKING:
@@ -42,6 +44,7 @@ def register_all(area_patcher: AreaPatcher) -> None:
         temple_sanctuary_music,
         minigyro_terminal_fall,
         sacred_bridge_platform_scan,
+        torvus_temple_pickup_elevator_movement,
     ]:
         area_patcher.add_function(func)
 
@@ -309,3 +312,13 @@ def sacred_bridge_platform_scan(editor: PatcherEditor, mlvl: Mlvl, area: Area) -
         )
     )
     secondary_scan_trigger.add_connection(State.Connect, Message.Attach, primary_scan_trigger)
+
+
+@decorate_patcher(TORVUS_BOG_MLVL, torvus_bog.TORVUS_TEMPLE_MREA)
+def torvus_temple_pickup_elevator_movement(editor: PatcherEditor, mlvl: Mlvl, area: Area) -> None:
+    """
+    Prevent this Elevator from returning positions if the player
+    collided with the wall while still touching the elevator
+    """
+    with area.get_instance("Side Elevator").edit_properties(Platform) as platform_props:
+        platform_props.motion_properties.unknown = 260
