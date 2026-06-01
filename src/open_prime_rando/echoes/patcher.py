@@ -233,8 +233,9 @@ def _apply_patches(
     editor: PatcherEditor,
     configuration: RandoConfiguration,
     output: IsoFileWriter,
-    area_status_update: StatusUpdate | None = None,
-    build_files_status_update: StatusUpdate | None = None,
+    area_status_update: StatusUpdate,
+    build_files_status_update: StatusUpdate,
+    build_paks_status_update: StatusUpdate,
 ) -> None:
     custom_assets.create_custom_assets(editor)
     dock_lock_rando.add_custom_models(editor)
@@ -323,7 +324,7 @@ def _apply_patches(
     patch_game_name_and_id(editor, output, new_name=configuration.game_title, id_suffix="NR")
     remove_attract_videos(editor, output)
     editor.code_cave.fulfill_requests()
-    editor.save_modifications(output)
+    editor.save_modifications(output, build_paks_status_update)
 
 
 def patch_iso(
@@ -332,6 +333,7 @@ def patch_iso(
     configuration: RandoConfiguration,
     area_status_update: StatusUpdate | None = None,
     build_files_status_update: StatusUpdate | None = None,
+    build_paks_status_update: StatusUpdate | None = None,
     nod_status_update: StatusUpdate | None = None,
 ) -> None:
     """
@@ -352,6 +354,9 @@ def patch_iso(
     if build_files_status_update is None:
         build_files_status_update = default_status_update
 
+    if build_paks_status_update is None:
+        build_paks_status_update = default_status_update
+
     if nod_status_update is None:
         nod_status_update = default_status_update
 
@@ -359,7 +364,9 @@ def patch_iso(
 
     editor = PatcherEditor(file_provider, Game.ECHOES)
     output = IsoFileWriter(file_provider)
-    _apply_patches(editor, configuration, output, area_status_update, build_files_status_update)
+    _apply_patches(
+        editor, configuration, output, area_status_update, build_files_status_update, build_paks_status_update
+    )
 
     _last_percent = None
 

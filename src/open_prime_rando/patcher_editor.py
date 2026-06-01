@@ -251,6 +251,24 @@ class PatcherEditor(AssetManager):
         self._memory_files.clear()
         self.pooled_scans.clear()
 
+    def _export_paks(self, output: FileWriter) -> None:
+        strategies = {name: strategy for name, strategy in self._pak_strategy.items() if strategy.should_export()}
+        num_strategies = len(strategies)
+
+        for i, (name, strategy) in enumerate(strategies.items()):
+            self._pak_status_update(f"Building {name}", i / num_strategies)
+            strategy.export(output)
+        self._pak_status_update("Built PAKs", 1.0)
+
+    def save_modifications(self, output: FileWriter, status_update: StatusUpdate | None = None) -> None:
+        if status_update is None:
+
+            def status_update(s: str, p: float) -> None:
+                pass
+
+        self._pak_status_update: StatusUpdate = status_update
+        return super().save_modifications(output)
+
     def create_strg(
         self,
         name: str,
