@@ -30,8 +30,6 @@ from retro_data_structures.properties.echoes.objects.SpecialFunction import Func
 from open_prime_rando.echoes.pickups.models import ETM_MODEL
 
 if TYPE_CHECKING:
-    from collections.abc import Sequence
-
     from retro_data_structures.base_resource import AssetId
     from retro_data_structures.formats import Mlvl
     from retro_data_structures.formats.mrea import Area
@@ -313,8 +311,7 @@ def _patch_single_pickup_stage_converted_resources(
 ) -> None:
     layer = location.get_layer(area)
 
-    # TODO: ty should support this...
-    conversion = typing.cast("Sequence[tuple[PlayerItemEnum, PlayerItemEnum]]", stage.conversion)
+    conversion = [pair.as_tuple for pair in stage.conversion]
 
     for from_item, to_item in conversion:
         relay = _add_relay(layer)

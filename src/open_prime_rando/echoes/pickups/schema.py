@@ -27,6 +27,10 @@ class ResourceConversion(pydantic.BaseModel):
     from_item: PlayerItemEnum
     to_item: PlayerItemEnum
 
+    @property
+    def as_tuple(self) -> tuple[PlayerItemEnum, PlayerItemEnum]:
+        return self.from_item, self.to_item
+
 
 class PickupStage(pydantic.BaseModel):
     resources: list[ResourceGain]
