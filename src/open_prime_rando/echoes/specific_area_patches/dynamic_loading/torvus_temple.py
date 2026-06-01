@@ -186,7 +186,7 @@ def _patch_music(editor: PatcherEditor, mlvl: Mlvl, area: Area) -> None:
         )
     )
 
-    # Rewire Music Player connections
+    # Rewire Music Player connections, turn back music if player left room
     music_player = area.get_instance("Music Player For Area")
     swamp_world = area.get_instance("Swamp World")
     pirate_encounter = area.get_instance("Pirate Encounter")
@@ -195,6 +195,9 @@ def _patch_music(editor: PatcherEditor, mlvl: Mlvl, area: Area) -> None:
     music_player.add_connection(State.Entered, Message.SetToZero, swamp_world_relay)
     music_player.add_connection(State.Entered, Message.SetToZero, pirate_encounter_relay)
     music_player.add_connection(State.Entered, Message.SetToZero, pirate_encounter_finale_relay)
+    music_player.add_connection(State.Exited, Message.Activate, swamp_world_relay)
+    music_player.add_connection(State.Exited, Message.Deactivate, pirate_encounter_relay)
+    music_player.add_connection(State.Exited, Message.Deactivate, pirate_encounter_finale_relay)
 
     # Relay connections to music
     swamp_world_relay.add_connection(State.Zero, Message.Play, swamp_world)
