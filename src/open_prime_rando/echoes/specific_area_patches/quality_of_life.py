@@ -299,8 +299,14 @@ def sacred_bridge_platform_scan(editor: PatcherEditor, mlvl: Mlvl, area: Area) -
     """
     Add a Trigger on the Sacred Path side that
     activates the Kinetic Orb Cannon scan panel.
+    Prevent lower reposition if Samus is above area.
     """
     primary_scan_trigger = area.get_instance("Activate MB Control Scan")
+
+    lower_spawn = area.get_instance("Spawn Here After Cinematic")
+    with lower_spawn.edit_properties(SpawnPoint) as spawn_props:
+        spawn_props.editor_properties.active = False
+
     secondary_scan_trigger = area.get_layer("Default").add_instance_with(
         Trigger(
             editor_properties=EditorProperties(
@@ -312,7 +318,33 @@ def sacred_bridge_platform_scan(editor: PatcherEditor, mlvl: Mlvl, area: Area) -
             )
         )
     )
+    tertiary_scan_trigger = area.get_layer("Platform Down").add_instance_with(
+        Trigger(
+            editor_properties=EditorProperties(
+                name="Activate MB Control Scan (Bridge Down Extension)",
+                transform=Transform(
+                    position=Vector(35.0, 333.0, -34.0),
+                    scale=Vector(10.0, 10.0, 10.0),
+                ),
+            )
+        )
+    )
+    reposition_trigger = area.get_layer("Default").add_instance_with(
+        TriggerOrientated(
+            editor_properties=EditorProperties(
+                name="Allow Reposition",
+                transform=Transform(
+                    position=Vector(7.6, 318.0, -44.0),
+                    rotation=Vector(0.0, 0.0, 140.0),
+                    scale=Vector(17.0, 40.0, 8.0),
+                ),
+            )
+        )
+    )
     secondary_scan_trigger.add_connection(State.Connect, Message.Attach, primary_scan_trigger)
+    tertiary_scan_trigger.add_connection(State.Connect, Message.Attach, primary_scan_trigger)
+    reposition_trigger.add_connection(State.Entered, Message.Activate, lower_spawn)
+    reposition_trigger.add_connection(State.Exited, Message.Deactivate, lower_spawn)
 
 
 @decorate_patcher(TORVUS_BOG_MLVL, torvus_bog.TORVUS_TEMPLE_MREA)
