@@ -67,6 +67,7 @@ def register_all(area_patcher: AreaPatcher) -> None:
         judgment_pit_gfmc_layer,
         hive_chamber_a_dmt_active,
         agon_temple_dmt_layer,
+        dark_oasis_ing_cache,
     ]:
         area_patcher.add_function(func)
 
@@ -506,3 +507,11 @@ def agon_temple_dmt_layer(editor: PatcherEditor, mlvl: Mlvl, area: Area) -> None
             "Increment - 01_Temple_Hive01 - Missile Trooper",
         ],
     )
+
+
+@decorate_patcher(AGON_WASTES_MLVL, agon_wastes.DARK_OASIS_MREA)
+def dark_oasis_ing_cache(editor: PatcherEditor, mlvl: Mlvl, area: Area) -> None:
+    """
+    Activate 2nd Pass layer by default.
+    """
+    area.get_layer("2nd pass").active = True
