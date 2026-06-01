@@ -2195,7 +2195,12 @@
                                     "hud_text": "Missile Launcher acquired!",
                                     "scan": "Missile Launcher."
                                 },
-                                "conversion": []
+                                "conversion": [
+                                    {
+                                        "from_item": 43,
+                                        "to_item": 44
+                                    }
+                                ]
                             },
                             "progressive_stages": []
                         }

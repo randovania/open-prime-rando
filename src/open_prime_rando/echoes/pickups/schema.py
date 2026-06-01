@@ -29,6 +29,10 @@ class ResourceConversion(pydantic.BaseModel):
     from_item: PlayerItemEnum
     to_item: PlayerItemEnum
 
+    @property
+    def as_tuple(self) -> tuple[PlayerItemEnum, PlayerItemEnum]:
+        return self.from_item, self.to_item
+
 
 def _validate_not_item_percentage(gain: ResourceGain) -> ResourceGain:
     if gain.item == PlayerItemEnum.ItemPercentage:
