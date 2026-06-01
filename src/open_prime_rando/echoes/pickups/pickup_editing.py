@@ -278,17 +278,16 @@ def _patch_single_pickup_stage_basic_resources(
     stage: PickupStage,
     instances: PickupInstances,
 ) -> None:
-    percentage = next(
-        (resource for resource in stage.resources if resource.item == PlayerItemEnum.ItemPercentage), None
-    )
-    first = next((resource for resource in stage.resources if resource.item != percentage), None)
-    remaining = [resource for resource in stage.resources if resource not in (percentage, first)]
+    remaining = list(stage.resources)
+    if remaining:
+        first = remaining.pop(0)
+    else:
+        first = None
 
     with instances.pickup.edit_properties(RDSPickup) as pickup:
-        if percentage is not None:
-            pickup.item_percentage_increase = percentage.amount
-        else:
-            pickup.item_percentage_increase = 0
+        # Every pickup always increase the percentage by 1,
+        # making the total percentage count match how many pickups there are
+        pickup.item_percentage_increase = 1
 
         if first is not None:
             pickup.item_to_give = first.item

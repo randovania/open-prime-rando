@@ -48,10 +48,6 @@
                                     {
                                         "item": 14,
                                         "amount": 20
-                                    },
-                                    {
-                                        "item": 47,
-                                        "amount": 1
                                     }
                                 ],
                                 "appearance": {
@@ -77,10 +73,6 @@
                                         {
                                             "item": 45,
                                             "amount": 50
-                                        },
-                                        {
-                                            "item": 47,
-                                            "amount": 1
                                         }
                                     ],
                                     "appearance": {
@@ -105,10 +97,6 @@
                                         {
                                             "item": 46,
                                             "amount": 50
-                                        },
-                                        {
-                                            "item": 47,
-                                            "amount": 1
                                         }
                                     ],
                                     "appearance": {
@@ -128,10 +116,6 @@
                                     "resources": [
                                         {
                                             "item": 3,
-                                            "amount": 1
-                                        },
-                                        {
-                                            "item": 47,
                                             "amount": 1
                                         }
                                     ],
@@ -179,10 +163,6 @@
                                     {
                                         "item": 14,
                                         "amount": 20
-                                    },
-                                    {
-                                        "item": 47,
-                                        "amount": 1
                                     }
                                 ],
                                 "appearance": {
@@ -208,10 +188,6 @@
                                         {
                                             "item": 45,
                                             "amount": 50
-                                        },
-                                        {
-                                            "item": 47,
-                                            "amount": 1
                                         }
                                     ],
                                     "appearance": {
@@ -236,10 +212,6 @@
                                         {
                                             "item": 46,
                                             "amount": 50
-                                        },
-                                        {
-                                            "item": 47,
-                                            "amount": 1
                                         }
                                     ],
                                     "appearance": {
@@ -259,10 +231,6 @@
                                     "resources": [
                                         {
                                             "item": 3,
-                                            "amount": 1
-                                        },
-                                        {
-                                            "item": 47,
                                             "amount": 1
                                         }
                                     ],
@@ -310,10 +278,6 @@
                                     {
                                         "item": 14,
                                         "amount": 20
-                                    },
-                                    {
-                                        "item": 47,
-                                        "amount": 1
                                     }
                                 ],
                                 "appearance": {
@@ -339,10 +303,6 @@
                                         {
                                             "item": 45,
                                             "amount": 50
-                                        },
-                                        {
-                                            "item": 47,
-                                            "amount": 1
                                         }
                                     ],
                                     "appearance": {
@@ -367,10 +327,6 @@
                                         {
                                             "item": 46,
                                             "amount": 50
-                                        },
-                                        {
-                                            "item": 47,
-                                            "amount": 1
                                         }
                                     ],
                                     "appearance": {
@@ -390,10 +346,6 @@
                                     "resources": [
                                         {
                                             "item": 3,
-                                            "amount": 1
-                                        },
-                                        {
-                                            "item": 47,
                                             "amount": 1
                                         }
                                     ],
@@ -441,10 +393,6 @@
                                     {
                                         "item": 14,
                                         "amount": 20
-                                    },
-                                    {
-                                        "item": 47,
-                                        "amount": 1
                                     }
                                 ],
                                 "appearance": {
@@ -470,10 +418,6 @@
                                         {
                                             "item": 45,
                                             "amount": 50
-                                        },
-                                        {
-                                            "item": 47,
-                                            "amount": 1
                                         }
                                     ],
                                     "appearance": {
@@ -498,10 +442,6 @@
                                         {
                                             "item": 46,
                                             "amount": 50
-                                        },
-                                        {
-                                            "item": 47,
-                                            "amount": 1
                                         }
                                     ],
                                     "appearance": {
@@ -521,10 +461,6 @@
                                     "resources": [
                                         {
                                             "item": 3,
-                                            "amount": 1
-                                        },
-                                        {
-                                            "item": 47,
                                             "amount": 1
                                         }
                                     ],
@@ -827,10 +763,6 @@
                                     {
                                         "item": 14,
                                         "amount": 20
-                                    },
-                                    {
-                                        "item": 47,
-                                        "amount": 1
                                     }
                                 ],
                                 "appearance": {
@@ -856,10 +788,6 @@
                                         {
                                             "item": 45,
                                             "amount": 50
-                                        },
-                                        {
-                                            "item": 47,
-                                            "amount": 1
                                         }
                                     ],
                                     "appearance": {
@@ -884,10 +812,6 @@
                                         {
                                             "item": 46,
                                             "amount": 50
-                                        },
-                                        {
-                                            "item": 47,
-                                            "amount": 1
                                         }
                                     ],
                                     "appearance": {
@@ -907,10 +831,6 @@
                                     "resources": [
                                         {
                                             "item": 3,
-                                            "amount": 1
-                                        },
-                                        {
-                                            "item": 47,
                                             "amount": 1
                                         }
                                     ],
@@ -971,10 +891,6 @@
                                     {
                                         "item": 46,
                                         "amount": 20
-                                    },
-                                    {
-                                        "item": 47,
-                                        "amount": 1
                                     }
                                 ],
                                 "appearance": {
@@ -1018,10 +934,6 @@
                             },
                             "primary_stage": {
                                 "resources": [
-                                    {
-                                        "item": 47,
-                                        "amount": 1
-                                    },
                                     {
                                         "item": 42,
                                         "amount": 1
@@ -1069,10 +981,6 @@
                             "primary_stage": {
                                 "resources": [
                                     {
-                                        "item": 47,
-                                        "amount": 1
-                                    },
-                                    {
                                         "item": 25,
                                         "amount": 1
                                     }
@@ -1119,10 +1027,6 @@
                             "primary_stage": {
                                 "resources": [
                                     {
-                                        "item": 47,
-                                        "amount": 1
-                                    },
-                                    {
                                         "item": 24,
                                         "amount": 1
                                     }
@@ -1168,10 +1072,6 @@
                             },
                             "primary_stage": {
                                 "resources": [
-                                    {
-                                        "item": 47,
-                                        "amount": 1
-                                    },
                                     {
                                         "item": 42,
                                         "amount": 1
@@ -1272,10 +1172,6 @@
                             "primary_stage": {
                                 "resources": [
                                     {
-                                        "item": 47,
-                                        "amount": 1
-                                    },
-                                    {
                                         "item": 42,
                                         "amount": 1
                                     }
@@ -1369,10 +1265,6 @@
                             "primary_stage": {
                                 "resources": [
                                     {
-                                        "item": 47,
-                                        "amount": 1
-                                    },
-                                    {
                                         "item": 23,
                                         "amount": 1
                                     }
@@ -1393,10 +1285,6 @@
                                 {
                                     "required_item": 23,
                                     "resources": [
-                                        {
-                                            "item": 47,
-                                            "amount": 1
-                                        },
                                         {
                                             "item": 27,
                                             "amount": 1
@@ -1444,10 +1332,6 @@
                             },
                             "primary_stage": {
                                 "resources": [
-                                    {
-                                        "item": 47,
-                                        "amount": 1
-                                    },
                                     {
                                         "item": 42,
                                         "amount": 1
@@ -1497,10 +1381,6 @@
                                     {
                                         "item": 46,
                                         "amount": 20
-                                    },
-                                    {
-                                        "item": 47,
-                                        "amount": 1
                                     }
                                 ],
                                 "appearance": {
@@ -1599,10 +1479,6 @@
                                     {
                                         "item": 45,
                                         "amount": 20
-                                    },
-                                    {
-                                        "item": 47,
-                                        "amount": 1
                                     }
                                 ],
                                 "appearance": {
@@ -1646,10 +1522,6 @@
                             },
                             "primary_stage": {
                                 "resources": [
-                                    {
-                                        "item": 47,
-                                        "amount": 1
-                                    },
                                     {
                                         "item": 17,
                                         "amount": 1
@@ -1707,10 +1579,6 @@
                                     {
                                         "item": 45,
                                         "amount": 20
-                                    },
-                                    {
-                                        "item": 47,
-                                        "amount": 1
                                     }
                                 ],
                                 "appearance": {
@@ -1781,10 +1649,6 @@
                             },
                             "primary_stage": {
                                 "resources": [
-                                    {
-                                        "item": 47,
-                                        "amount": 1
-                                    },
                                     {
                                         "item": 42,
                                         "amount": 1
@@ -1954,10 +1818,6 @@
                                     {
                                         "item": 14,
                                         "amount": 20
-                                    },
-                                    {
-                                        "item": 47,
-                                        "amount": 1
                                     }
                                 ],
                                 "appearance": {
@@ -1983,10 +1843,6 @@
                                         {
                                             "item": 45,
                                             "amount": 50
-                                        },
-                                        {
-                                            "item": 47,
-                                            "amount": 1
                                         }
                                     ],
                                     "appearance": {
@@ -2011,10 +1867,6 @@
                                         {
                                             "item": 46,
                                             "amount": 50
-                                        },
-                                        {
-                                            "item": 47,
-                                            "amount": 1
                                         }
                                     ],
                                     "appearance": {
@@ -2034,10 +1886,6 @@
                                     "resources": [
                                         {
                                             "item": 3,
-                                            "amount": 1
-                                        },
-                                        {
-                                            "item": 47,
                                             "amount": 1
                                         }
                                     ],
@@ -2085,10 +1933,6 @@
                                     {
                                         "item": 45,
                                         "amount": 20
-                                    },
-                                    {
-                                        "item": 47,
-                                        "amount": 1
                                     }
                                 ],
                                 "appearance": {
@@ -2135,10 +1979,6 @@
                                     {
                                         "item": 46,
                                         "amount": 50
-                                    },
-                                    {
-                                        "item": 47,
-                                        "amount": 1
                                     },
                                     {
                                         "item": 2,
@@ -2201,10 +2041,6 @@
                                     {
                                         "item": 45,
                                         "amount": 20
-                                    },
-                                    {
-                                        "item": 47,
-                                        "amount": 1
                                     }
                                 ],
                                 "appearance": {
@@ -2251,10 +2087,6 @@
                                     {
                                         "item": 45,
                                         "amount": 20
-                                    },
-                                    {
-                                        "item": 47,
-                                        "amount": 1
                                     }
                                 ],
                                 "appearance": {
@@ -2298,10 +2130,6 @@
                             },
                             "primary_stage": {
                                 "resources": [
-                                    {
-                                        "item": 47,
-                                        "amount": 1
-                                    },
                                     {
                                         "item": 4,
                                         "amount": 1
@@ -2353,10 +2181,6 @@
                                         "amount": 5
                                     },
                                     {
-                                        "item": 47,
-                                        "amount": 1
-                                    },
-                                    {
                                         "item": 73,
                                         "amount": 1
                                     }
@@ -2402,10 +2226,6 @@
                             },
                             "primary_stage": {
                                 "resources": [
-                                    {
-                                        "item": 47,
-                                        "amount": 1
-                                    },
                                     {
                                         "item": 98,
                                         "amount": 1
@@ -2453,10 +2273,6 @@
                             "primary_stage": {
                                 "resources": [
                                     {
-                                        "item": 47,
-                                        "amount": 1
-                                    },
-                                    {
                                         "item": 99,
                                         "amount": 1
                                     }
@@ -2502,10 +2318,6 @@
                             },
                             "primary_stage": {
                                 "resources": [
-                                    {
-                                        "item": 47,
-                                        "amount": 1
-                                    },
                                     {
                                         "item": 18,
                                         "amount": 1
@@ -2572,10 +2384,6 @@
                                     {
                                         "item": 45,
                                         "amount": 20
-                                    },
-                                    {
-                                        "item": 47,
-                                        "amount": 1
                                     }
                                 ],
                                 "appearance": {
@@ -2756,10 +2564,6 @@
                                     {
                                         "item": 46,
                                         "amount": 20
-                                    },
-                                    {
-                                        "item": 47,
-                                        "amount": 1
                                     }
                                 ],
                                 "appearance": {
@@ -2804,10 +2608,6 @@
                             },
                             "primary_stage": {
                                 "resources": [
-                                    {
-                                        "item": 47,
-                                        "amount": 1
-                                    },
                                     {
                                         "item": 16,
                                         "amount": 1
@@ -2915,10 +2715,6 @@
                                         "amount": 50
                                     },
                                     {
-                                        "item": 47,
-                                        "amount": 1
-                                    },
-                                    {
                                         "item": 1,
                                         "amount": 1
                                     }
@@ -2965,10 +2761,6 @@
                             },
                             "primary_stage": {
                                 "resources": [
-                                    {
-                                        "item": 47,
-                                        "amount": 1
-                                    },
                                     {
                                         "item": 42,
                                         "amount": 1
@@ -3065,10 +2857,6 @@
                                     {
                                         "item": 46,
                                         "amount": 20
-                                    },
-                                    {
-                                        "item": 47,
-                                        "amount": 1
                                     }
                                 ],
                                 "appearance": {
@@ -3115,10 +2903,6 @@
                                     {
                                         "item": 46,
                                         "amount": 20
-                                    },
-                                    {
-                                        "item": 47,
-                                        "amount": 1
                                     }
                                 ],
                                 "appearance": {
@@ -3175,10 +2959,6 @@
                             },
                             "primary_stage": {
                                 "resources": [
-                                    {
-                                        "item": 47,
-                                        "amount": 1
-                                    },
                                     {
                                         "item": 42,
                                         "amount": 1
@@ -3240,10 +3020,6 @@
                                     {
                                         "item": 45,
                                         "amount": 20
-                                    },
-                                    {
-                                        "item": 47,
-                                        "amount": 1
                                     }
                                 ],
                                 "appearance": {
@@ -3310,10 +3086,6 @@
                             },
                             "primary_stage": {
                                 "resources": [
-                                    {
-                                        "item": 47,
-                                        "amount": 1
-                                    },
                                     {
                                         "item": 4,
                                         "amount": 1
@@ -3382,10 +3154,6 @@
                             "primary_stage": {
                                 "resources": [
                                     {
-                                        "item": 47,
-                                        "amount": 1
-                                    },
-                                    {
                                         "item": 42,
                                         "amount": 1
                                     }
@@ -3434,10 +3202,6 @@
                                     {
                                         "item": 43,
                                         "amount": 2
-                                    },
-                                    {
-                                        "item": 47,
-                                        "amount": 1
                                     }
                                 ],
                                 "appearance": {
@@ -3484,10 +3248,6 @@
                                     {
                                         "item": 45,
                                         "amount": 20
-                                    },
-                                    {
-                                        "item": 47,
-                                        "amount": 1
                                     }
                                 ],
                                 "appearance": {
@@ -3581,10 +3341,6 @@
                                     {
                                         "item": 46,
                                         "amount": 20
-                                    },
-                                    {
-                                        "item": 47,
-                                        "amount": 1
                                     }
                                 ],
                                 "appearance": {
@@ -3675,10 +3431,6 @@
                             },
                             "primary_stage": {
                                 "resources": [
-                                    {
-                                        "item": 47,
-                                        "amount": 1
-                                    },
                                     {
                                         "item": 11,
                                         "amount": 1
@@ -3773,10 +3525,6 @@
                             "primary_stage": {
                                 "resources": [
                                     {
-                                        "item": 47,
-                                        "amount": 1
-                                    },
-                                    {
                                         "item": 42,
                                         "amount": 1
                                     }
@@ -3870,10 +3618,6 @@
                             "primary_stage": {
                                 "resources": [
                                     {
-                                        "item": 47,
-                                        "amount": 1
-                                    },
-                                    {
                                         "item": 7,
                                         "amount": 1
                                     }
@@ -3919,10 +3663,6 @@
                             },
                             "primary_stage": {
                                 "resources": [
-                                    {
-                                        "item": 47,
-                                        "amount": 1
-                                    },
                                     {
                                         "item": 42,
                                         "amount": 1
@@ -3990,10 +3730,6 @@
                                         "amount": 0
                                     },
                                     {
-                                        "item": 47,
-                                        "amount": 1
-                                    },
-                                    {
                                         "item": 3,
                                         "amount": 1
                                     }
@@ -4039,10 +3775,6 @@
                             },
                             "primary_stage": {
                                 "resources": [
-                                    {
-                                        "item": 47,
-                                        "amount": 1
-                                    },
                                     {
                                         "item": 42,
                                         "amount": 1
@@ -4183,10 +3915,6 @@
                             "primary_stage": {
                                 "resources": [
                                     {
-                                        "item": 47,
-                                        "amount": 1
-                                    },
-                                    {
                                         "item": 6,
                                         "amount": 1
                                     }
@@ -4235,10 +3963,6 @@
                                     {
                                         "item": 45,
                                         "amount": 20
-                                    },
-                                    {
-                                        "item": 47,
-                                        "amount": 1
                                     }
                                 ],
                                 "appearance": {
@@ -4295,10 +4019,6 @@
                             "primary_stage": {
                                 "resources": [
                                     {
-                                        "item": 47,
-                                        "amount": 1
-                                    },
-                                    {
                                         "item": 42,
                                         "amount": 1
                                     }
@@ -4347,10 +4067,6 @@
                                     {
                                         "item": 46,
                                         "amount": 20
-                                    },
-                                    {
-                                        "item": 47,
-                                        "amount": 1
                                     }
                                 ],
                                 "appearance": {
@@ -4397,10 +4113,6 @@
                                     {
                                         "item": 46,
                                         "amount": 20
-                                    },
-                                    {
-                                        "item": 47,
-                                        "amount": 1
                                     }
                                 ],
                                 "appearance": {
@@ -4492,10 +4204,6 @@
                             "primary_stage": {
                                 "resources": [
                                     {
-                                        "item": 47,
-                                        "amount": 1
-                                    },
-                                    {
                                         "item": 100,
                                         "amount": 1
                                     }
@@ -4546,10 +4254,6 @@
                             },
                             "primary_stage": {
                                 "resources": [
-                                    {
-                                        "item": 47,
-                                        "amount": 1
-                                    },
                                     {
                                         "item": 5,
                                         "amount": 1
@@ -4689,10 +4393,6 @@
                             "primary_stage": {
                                 "resources": [
                                     {
-                                        "item": 47,
-                                        "amount": 1
-                                    },
-                                    {
                                         "item": 42,
                                         "amount": 1
                                     }
@@ -4751,10 +4451,6 @@
                             "primary_stage": {
                                 "resources": [
                                     {
-                                        "item": 47,
-                                        "amount": 1
-                                    },
-                                    {
                                         "item": 23,
                                         "amount": 1
                                     }
@@ -4795,10 +4491,6 @@
                             },
                             "primary_stage": {
                                 "resources": [
-                                    {
-                                        "item": 47,
-                                        "amount": 1
-                                    },
                                     {
                                         "item": 10,
                                         "amount": 1
@@ -4846,10 +4538,6 @@
                             },
                             "primary_stage": {
                                 "resources": [
-                                    {
-                                        "item": 47,
-                                        "amount": 1
-                                    },
                                     {
                                         "item": 42,
                                         "amount": 1
@@ -4900,10 +4588,6 @@
                                     {
                                         "item": 46,
                                         "amount": 20
-                                    },
-                                    {
-                                        "item": 47,
-                                        "amount": 1
                                     }
                                 ],
                                 "appearance": {
@@ -4950,10 +4634,6 @@
                                     {
                                         "item": 46,
                                         "amount": 20
-                                    },
-                                    {
-                                        "item": 47,
-                                        "amount": 1
                                     }
                                 ],
                                 "appearance": {
@@ -5001,10 +4681,6 @@
                                     {
                                         "item": 45,
                                         "amount": 20
-                                    },
-                                    {
-                                        "item": 47,
-                                        "amount": 1
                                     }
                                 ],
                                 "appearance": {
@@ -5227,10 +4903,6 @@
         {
             "item": 8,
             "capacity": 1
-        },
-        {
-            "item": 47,
-            "capacity": 13
         },
         {
             "item": 9,
