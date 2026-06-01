@@ -213,7 +213,7 @@ class PatcherEditor(AssetManager):
         return self.get_mlvl(mlvl).get_area(mrea)
 
     def build_modified_files(self, status_update: StatusUpdate | None = None) -> None:
-        # super().build_modified_files()
+        # FIXME: do this upstream in AssetManager
 
         if status_update is None:
 
@@ -261,6 +261,8 @@ class PatcherEditor(AssetManager):
         self._pak_status_update("Built PAKs", 1.0)
 
     def save_modifications(self, output: FileWriter, status_update: StatusUpdate | None = None) -> None:
+        # FIXME: do this upstream in AssetManager
+
         if status_update is None:
 
             def status_update(s: str, p: float) -> None:
