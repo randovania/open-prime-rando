@@ -331,12 +331,32 @@ def main_reactor_post_ds_layer_changes(editor: PatcherEditor, mlvl: Mlvl, area: 
 @decorate_patcher(TORVUS_BOG_MLVL, torvus_bog.TORVUS_TEMPLE_MREA)
 def torvus_temple_barrier(editor: PatcherEditor, mlvl: Mlvl, area: Area) -> None:
     """
-    Reduce the size of the barrier such that it doesn't block the path to lower Torvus.
+    Replace the Barrier's collision model with a
+    smaller one to allow access to/from Lower Torvus.
     """
-    with area.get_instance(0x1B00E0).edit_properties(Actor) as barrier:
-        barrier.editor_properties.transform.position.x = -226.4198
-        barrier.editor_properties.transform.position.z = 58.7156
-        barrier.editor_properties.transform.scale.y = 2.019
+    # https://i.ibb.co/W4L49TDj/torvus-temple-barrier.jpg
+    barrier = area.get_instance("Laser Barrier Blocking Volume")
+    with barrier.edit_properties(Actor) as barrier_props:
+        barrier_props.editor_properties.transform.position = Vector(-212.0, -118.0, 43.0)
+        barrier_props.editor_properties.transform.rotation = Vector(90.093697, -39.95039, 0.0)
+        barrier_props.collision_model = 0x3356D256
+
+    memory_relay = area.get_instance("Remember Beams Off")
+    barrier_extension = area.get_layer("Default").add_instance_with(
+        Actor(
+            editor_properties=EditorProperties(
+                name="Barrier Extendo",
+                transform=Transform(
+                    position=Vector(-217.484482, -118.0, 49.528767),
+                    rotation=Vector(90.093712, -39.727413, 0.0),
+                ),
+            ),
+            model=0x3801DE98,
+            collision_model=0x3356D256,
+        )
+    )
+    memory_relay.add_connection(State.Active, Message.Deactivate, barrier_extension)
+    barrier.add_connection(State.Inactive, Message.Deactivate, barrier_extension)
 
 
 @decorate_patcher(TORVUS_BOG_MLVL, torvus_bog.TORVUS_TEMPLE_MREA)

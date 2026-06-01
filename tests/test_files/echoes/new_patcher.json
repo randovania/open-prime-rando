@@ -3321,7 +3321,7 @@
                                 ],
                                 "appearance": {
                                     "model_data": "SuperMissile",
-                                    "sound": 0,
+                                    "sound": 10057,
                                     "jingle": {
                                         "file_name": "/audio/itm_x_long_00.dsp",
                                         "volume": 71
