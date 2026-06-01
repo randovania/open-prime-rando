@@ -55,6 +55,8 @@ if TYPE_CHECKING:
 
 LOG = logging.getLogger("echoes_patcher")
 
+type StatusUpdate = Callable[[str, float], None]
+
 
 def _fix_dumb_broken_strg(editor: PatcherEditor):
     """These assets have an outdated version in FrontEnd.pak."""
@@ -227,7 +229,14 @@ def register_world_changes(area_patcher: AreaPatcher, world_changes: list[WorldC
                 )
 
 
-def _apply_patches(editor: PatcherEditor, configuration: RandoConfiguration, output: IsoFileWriter) -> None:
+def _apply_patches(
+    editor: PatcherEditor,
+    configuration: RandoConfiguration,
+    output: IsoFileWriter,
+    area_status_update: StatusUpdate,
+    build_files_status_update: StatusUpdate,
+    build_paks_status_update: StatusUpdate,
+) -> None:
     custom_assets.create_custom_assets(editor)
     dock_lock_rando.add_custom_models(editor)
 
@@ -310,19 +319,22 @@ def _apply_patches(editor: PatcherEditor, configuration: RandoConfiguration, out
     inventory_slot.create_new_inventory_slot_array(dol_version, editor)
 
     # Save our changes
-    area_patcher.perform_changes()
-    editor.build_modified_files()
+    area_patcher.perform_changes(area_status_update)
+    editor.build_modified_files(build_files_status_update)
     patch_game_name_and_id(editor, output, new_name=configuration.game_title, id_suffix="NR")
     remove_attract_videos(editor, output)
     editor.code_cave.fulfill_requests()
-    editor.save_modifications(output)
+    editor.save_modifications(output, build_paks_status_update)
 
 
 def patch_iso(
     input_iso: Path,
     output_iso: Path,
     configuration: RandoConfiguration,
-    status_update: Callable[[str, float], None] = lambda s, _: LOG.info(s),
+    area_status_update: StatusUpdate | None = None,
+    build_files_status_update: StatusUpdate | None = None,
+    build_paks_status_update: StatusUpdate | None = None,
+    nod_status_update: StatusUpdate | None = None,
 ) -> None:
     """
 
@@ -332,11 +344,29 @@ def patch_iso(
     :param status_update:
     :return:
     """
+
+    def default_status_update(text: str, percent: float) -> None:
+        LOG.info(text)
+
+    if area_status_update is None:
+        area_status_update = default_status_update
+
+    if build_files_status_update is None:
+        build_files_status_update = default_status_update
+
+    if build_paks_status_update is None:
+        build_paks_status_update = default_status_update
+
+    if nod_status_update is None:
+        nod_status_update = default_status_update
+
     file_provider = IsoFileProvider(input_iso)
 
     editor = PatcherEditor(file_provider, Game.ECHOES)
     output = IsoFileWriter(file_provider)
-    _apply_patches(editor, configuration, output)
+    _apply_patches(
+        editor, configuration, output, area_status_update, build_files_status_update, build_paks_status_update
+    )
 
     _last_percent = None
 
@@ -344,7 +374,7 @@ def patch_iso(
         nonlocal _last_percent
         percent = int(100 * (bytes_written / total_bytes))
         if percent != _last_percent:
-            status_update(f"Writing ISO: {percent}%", bytes_written / total_bytes)
+            nod_status_update(f"Writing ISO: {percent}%", bytes_written / total_bytes)
             _last_percent = percent
 
     output.commit(
@@ -352,4 +382,4 @@ def patch_iso(
         callback=_write_callback,
     )
 
-    status_update("Finished", 1.0)
+    nod_status_update("Finished", 1.0)
