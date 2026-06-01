@@ -1,3 +1,5 @@
+import typing
+
 import pydantic
 from retro_data_structures.enums.echoes import PlayerItemEnum
 
@@ -27,9 +29,19 @@ class ResourceConversion(pydantic.BaseModel):
     from_item: PlayerItemEnum
     to_item: PlayerItemEnum
 
+    @property
+    def as_tuple(self) -> tuple[PlayerItemEnum, PlayerItemEnum]:
+        return self.from_item, self.to_item
+
+
+def _validate_not_item_percentage(gain: ResourceGain) -> ResourceGain:
+    if gain.item == PlayerItemEnum.ItemPercentage:
+        raise ValueError(f"{gain} must not be ItemPercentage")
+    return gain
+
 
 class PickupStage(pydantic.BaseModel):
-    resources: list[ResourceGain]
+    resources: list[typing.Annotated[ResourceGain, pydantic.AfterValidator(_validate_not_item_percentage)]]
     appearance: PickupAppearance
     conversion: list[ResourceConversion]
 

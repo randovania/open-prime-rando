@@ -32,7 +32,10 @@ def setup_inventory_slot_to_item(dol_version: EchoesDolVersion, editor: PatcherE
 
 
 def create_new_inventory_slot_array(dol_version: EchoesDolVersion, editor: PatcherEditor) -> None:
-    """"""
+    """
+    Patches the game code that uses kInventorySlotToItemType to load from somewhere else.
+    Also change the array to use 8-bit per index, instead of 32-bit ints.
+    """
 
     encoded_mapping = struct.pack(
         ">" + "B" * len(editor.inventory_slot_to_item),
@@ -50,13 +53,17 @@ def create_new_inventory_slot_array(dol_version: EchoesDolVersion, editor: Patch
             ],
         )
 
+        # `dol_version.load_scan_tree_inventory_slot_usage + 4` is a branch operation
+        # Leaving it untouched is a lot easier!
+
+        # Replace the code that reads the
         editor.dol.write_instructions(
             dol_version.load_scan_tree_inventory_slot_usage + 8,
             [
                 custom_ppc.load_address(r4, address),
                 # r0 contains the slot index
                 lbzx(r8, r4, r0),
-                nop(),
+                nop(),  # original code would expand the offset to be 4 times the index. that's not needed anymore
             ],
         )
 

@@ -3,6 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from retro_data_structures.enums.echoes import Message, State
+from retro_data_structures.properties.echoes.archetypes.Connection import Connection as SequenceConnection
 from retro_data_structures.properties.echoes.archetypes.EditorProperties import EditorProperties
 from retro_data_structures.properties.echoes.archetypes.Transform import Transform
 from retro_data_structures.properties.echoes.archetypes.TriggerInfo import FlagsTrigger
@@ -11,17 +12,19 @@ from retro_data_structures.properties.echoes.objects import (
     CameraFilterKeyframe,
     CameraHint,
     CameraShaker,
+    SequenceTimer,
     SpawnPoint,
     Trigger,
     TriggerOrientated,
 )
 
 from open_prime_rando.area_patcher import AreaPatcher, decorate_patcher
-from open_prime_rando.echoes.asset_ids import great_temple, sanctuary_fortress, temple_grounds
+from open_prime_rando.echoes.asset_ids import great_temple, sanctuary_fortress, temple_grounds, torvus_bog
 from open_prime_rando.echoes.asset_ids.world import (
     GREAT_TEMPLE_MLVL,
     SANCTUARY_FORTRESS_MLVL,
     TEMPLE_GROUNDS_MLVL,
+    TORVUS_BOG_MLVL,
 )
 
 if TYPE_CHECKING:
@@ -42,6 +45,7 @@ def register_all(area_patcher: AreaPatcher) -> None:
         temple_sanctuary_music,
         minigyro_terminal_fall,
         sacred_bridge_platform_scan,
+        torvus_temple_cutscene_skips_length,
     ]:
         area_patcher.add_function(func)
 
@@ -309,3 +313,28 @@ def sacred_bridge_platform_scan(editor: PatcherEditor, mlvl: Mlvl, area: Area) -
         )
     )
     secondary_scan_trigger.add_connection(State.Connect, Message.Attach, primary_scan_trigger)
+
+
+@decorate_patcher(TORVUS_BOG_MLVL, torvus_bog.TORVUS_TEMPLE_MREA)
+def torvus_temple_cutscene_skips_length(editor: PatcherEditor, mlvl: Mlvl, area: Area) -> None:
+    """
+    Temporarely stop room loading during the 2nd wave so
+    cutscene skips don't take a long time in a black screen.
+    """
+    stop_loading_relay = area.get_instance("Unload all adjacent areas, disable scripted loading")
+    resume_loading_relay = area.get_instance("re-enable scripted loading")
+    wave2_pirates_sequence_timer = area.get_instance("Pirate Skiff 2 Cinematic Sequence")
+    supermissile_cinematic_controller = area.get_instance("Increment - 04_Swamp - Supermissile Cinematic (Dynamic)")
+
+    # Add new connection to Wave 2 Cutscene SequenceTimer
+    with wave2_pirates_sequence_timer.edit_properties(SequenceTimer) as stimer_props:
+        stimer_props.sequence_connections.append(
+            SequenceConnection(
+                connection_index=27,
+                activation_times=[0.0],
+            ),
+        )
+    wave2_pirates_sequence_timer.add_connection(State.Sequence, Message.SetToZero, stop_loading_relay)
+
+    # Resume room loading once the barrier is gone
+    supermissile_cinematic_controller.add_connection(State.Arrived, Message.SetToZero, resume_loading_relay)

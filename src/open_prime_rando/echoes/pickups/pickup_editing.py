@@ -30,8 +30,6 @@ from retro_data_structures.properties.echoes.objects.SpecialFunction import Func
 from open_prime_rando.echoes.pickups.models import ETM_MODEL
 
 if TYPE_CHECKING:
-    from collections.abc import Sequence
-
     from retro_data_structures.base_resource import AssetId
     from retro_data_structures.formats import Mlvl
     from retro_data_structures.formats.mrea import Area
@@ -278,17 +276,16 @@ def _patch_single_pickup_stage_basic_resources(
     stage: PickupStage,
     instances: PickupInstances,
 ) -> None:
-    percentage = next(
-        (resource for resource in stage.resources if resource.item == PlayerItemEnum.ItemPercentage), None
-    )
-    first = next((resource for resource in stage.resources if resource.item != percentage), None)
-    remaining = [resource for resource in stage.resources if resource not in (percentage, first)]
+    remaining = list(stage.resources)
+    if remaining:
+        first = remaining.pop(0)
+    else:
+        first = None
 
     with instances.pickup.edit_properties(RDSPickup) as pickup:
-        if percentage is not None:
-            pickup.item_percentage_increase = percentage.amount
-        else:
-            pickup.item_percentage_increase = 0
+        # Every pickup always increase the percentage by 1,
+        # making the total percentage count match how many pickups there are
+        pickup.item_percentage_increase = 1
 
         if first is not None:
             pickup.item_to_give = first.item
@@ -313,8 +310,7 @@ def _patch_single_pickup_stage_converted_resources(
 ) -> None:
     layer = location.get_layer(area)
 
-    # TODO: ty should support this...
-    conversion = typing.cast("Sequence[tuple[PlayerItemEnum, PlayerItemEnum]]", stage.conversion)
+    conversion = [pair.as_tuple for pair in stage.conversion]
 
     for from_item, to_item in conversion:
         relay = _add_relay(layer)
