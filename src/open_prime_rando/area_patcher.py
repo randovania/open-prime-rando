@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import collections
 import logging
 import typing
@@ -5,8 +7,11 @@ import typing
 from retro_data_structures.formats.mlvl import Mlvl
 from retro_data_structures.formats.mrea import Area
 
-from open_prime_rando.echoes.rando_configuration import AssetId
 from open_prime_rando.patcher_editor import PatcherEditor
+
+if typing.TYPE_CHECKING:
+    from open_prime_rando.echoes.patcher import StatusUpdate
+    from open_prime_rando.echoes.rando_configuration import AssetId
 
 type RawPatcherFunction = typing.Callable[[PatcherEditor, Mlvl, Area], None]
 
@@ -75,13 +80,21 @@ class AreaPatcher:
             for area in mlvl.areas:
                 area_changes[area.mrea_asset_id].append(func)
 
-    def perform_changes(self) -> None:
+    def perform_changes(self, status_update: StatusUpdate | None = None) -> None:
         """
         Calls the registered functions.
         """
+        if status_update is None:
+
+            def status_update(s: str, p: float) -> None:
+                logging.info(s)
+
+        num_area_changes = sum(len(area_changes) for area_changes in self._patcher_functions.values())
+        areas_changed = 0
+
         for mlvl_id, area_changes in self._patcher_functions.items():
             mlvl = self.editor.get_mlvl(mlvl_id)
-            logging.info("Patching %s", mlvl.world_name)
+            status_update(f"Patching {mlvl.world_name}", areas_changed / num_area_changes)
 
             for area in mlvl.areas:
                 area_functions = area_changes[area.mrea_asset_id]
@@ -89,14 +102,15 @@ class AreaPatcher:
                     # Area unchanged
                     continue
 
-                logging.info("Patching %s", area.name)
+                status_update(f"Patching {area.name}", areas_changed / num_area_changes)
                 for func in area_functions:
                     func(self.editor, mlvl, area)
 
                 area.update_all_dependencies(only_modified=True)
+                areas_changed += 1
 
             if self.rebuild_savw:
-                logging.info("Rebuilding %s save format", mlvl.world_name)
+                status_update(f"Rebuilding {mlvl.world_name} save format", areas_changed / num_area_changes)
                 mlvl.rebuild_savw()
 
         if self._frontend_functions:
@@ -104,7 +118,7 @@ class AreaPatcher:
 
             area = front_end.get_front_end_area(self.editor)
 
-            logging.info("Patching FrontEnd")
+            status_update("Patching FrontEnd", 1.0)
 
             for func in self._frontend_functions:
                 func(self.editor, area._parent_mlvl, area)

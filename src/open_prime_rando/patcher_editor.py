@@ -5,6 +5,7 @@ import fnmatch
 import io
 import os
 import typing
+from concurrent.futures import ThreadPoolExecutor, as_completed
 
 import typing_extensions
 from retro_data_structures.asset_manager import AssetManager, FileWriter
@@ -55,6 +56,8 @@ if typing.TYPE_CHECKING:
         | TweakSlideShow
         | TweakTargeting
     )
+
+    from open_prime_rando.echoes.patcher import StatusUpdate
 
 type LogbookScanStrings = tuple[str, str, str]
 """(Box 1, Box 2, Logbook)"""
@@ -209,8 +212,43 @@ class PatcherEditor(AssetManager):
     def get_area(self, mlvl: NameOrAssetId, mrea: NameOrAssetId) -> Area:
         return self.get_mlvl(mlvl).get_area(mrea)
 
-    def build_modified_files(self) -> None:
-        super().build_modified_files()
+    def build_modified_files(self, status_update: StatusUpdate | None = None) -> None:
+        # super().build_modified_files()
+
+        if status_update is None:
+
+            def status_update(s: str, p: float) -> None:
+                pass
+
+        _last_percent = None
+
+        def _write_callback(files_built: int, total_files: int) -> None:
+            nonlocal _last_percent
+            percent = int(100 * (files_built / total_files))
+            if percent != _last_percent:
+                status_update(f"Building modified files: {percent}%", files_built / total_files)
+                _last_percent = percent
+
+        # flush dependencies before building to prevent inaccuracy
+        self._cached_dependencies.clear()
+        self._cached_ancs_per_char_dependencies.clear()
+
+        status_update("Building modified files", 0.0)
+        total_files = len(self._memory_files)
+
+        with ThreadPoolExecutor() as executor:
+            futures = []
+
+            for name, resource in self._memory_files.items():
+                future = executor.submit(self.replace_asset, name, resource, keep_in_memory=False)
+                futures.append(future)
+
+            for i, _ in enumerate(as_completed(futures)):
+                _write_callback(i, total_files)
+
+        status_update("Finalizing modification", 1.0)
+
+        self._memory_files.clear()
         self.pooled_scans.clear()
 
     def create_strg(
