@@ -26,6 +26,10 @@ def _update_hashes_file(path: Path, hashes: dict[str, str | dict]) -> None:
     path.write_text(json.dumps(hashes, indent=4, sort_keys=True))
 
 
+def _no_status_update(s: str, p: float) -> None:
+    pass
+
+
 def test_ntsc_export(
     prime2_ntsc_iso_path,
     configuration,
@@ -38,7 +42,14 @@ def test_ntsc_export(
     output = IsoFileWriter(file_provider)
 
     # Run
-    patcher._apply_patches(editor, configuration, output)
+    patcher._apply_patches(
+        editor,
+        configuration,
+        output,
+        _no_status_update,
+        _no_status_update,
+        _no_status_update,
+    )
 
     # Assert
     hashes = hash_util.hash_iso_file_writer(output)
@@ -64,7 +75,14 @@ def test_pal_export(
     output = IsoFileWriter(file_provider)
 
     # Run
-    patcher._apply_patches(editor, configuration, output)
+    patcher._apply_patches(
+        editor,
+        configuration,
+        output,
+        _no_status_update,
+        _no_status_update,
+        _no_status_update,
+    )
 
     # Assert
     hashes = hash_util.hash_iso_file_writer(output)
