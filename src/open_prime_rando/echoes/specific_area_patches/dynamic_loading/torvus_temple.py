@@ -35,7 +35,6 @@ def torvus_temple_second_pass(editor: PatcherEditor, mlvl: Mlvl, area: Area) -> 
 
     _patch_elevator(editor, mlvl, area)
     _patch_shriekers(editor, mlvl, area)
-    _patch_music(editor, mlvl, area)
 
 
 def _patch_elevator(editor: PatcherEditor, mlvl: Mlvl, area: Area) -> None:
@@ -136,78 +135,3 @@ def _patch_shriekers(editor: PatcherEditor, mlvl: Mlvl, area: Area) -> None:
 
     # activate the layer when pickup is collected
     area.get_instance("Post Pickup").add_connection(State.Zero, Message.Increment, shrieker_layer_controller)
-
-
-def _patch_music(editor: PatcherEditor, mlvl: Mlvl, area: Area) -> None:
-    # Prevent music interrupts caused by dynamic layer
-    # loading by adding relay checks
-    default = area.get_layer("Default")
-
-    # Move music player to Default
-    area.move_instance("Music Player For Area", "Default")
-    area.move_instance("Swamp World", "Default")
-
-    # Add relays to decide which music will play based on room state
-    swamp_world_relay = default.add_instance_with(
-        Relay(
-            editor_properties=EditorProperties(
-                name="Play Swamp World",
-                transform=Transform(
-                    position=Vector(-92.5, -124.8, 47.0),
-                    scale=Vector(2.0, 2.0, 2.0),
-                ),
-            )
-        )
-    )
-
-    pirate_encounter_relay = default.add_instance_with(
-        Relay(
-            editor_properties=EditorProperties(
-                name="Play Pirate Encounter",
-                transform=Transform(
-                    position=Vector(-92.5, -124.8, 46.0),
-                    scale=Vector(2.0, 2.0, 2.0),
-                ),
-                active=False,
-            )
-        )
-    )
-
-    pirate_encounter_finale_relay = default.add_instance_with(
-        Relay(
-            editor_properties=EditorProperties(
-                name="Play Pirate Encounter Finale",
-                transform=Transform(
-                    position=Vector(-88.8, -124.8, 46.0),
-                    scale=Vector(2.0, 2.0, 2.0),
-                ),
-                active=False,
-            )
-        )
-    )
-
-    # Rewire Music Player connections, turn back music if player left room
-    music_player = area.get_instance("Music Player For Area")
-    swamp_world = area.get_instance("Swamp World")
-    pirate_encounter = area.get_instance("Pirate Encounter")
-    pirate_encounter_finale = area.get_instance("Pirate Encounter Finale")
-    music_player.remove_connection(music_player.connections[0])
-    music_player.add_connection(State.Entered, Message.SetToZero, swamp_world_relay)
-    music_player.add_connection(State.Entered, Message.SetToZero, pirate_encounter_relay)
-    music_player.add_connection(State.Entered, Message.SetToZero, pirate_encounter_finale_relay)
-    music_player.add_connection(State.Exited, Message.Activate, swamp_world_relay)
-    music_player.add_connection(State.Exited, Message.Deactivate, pirate_encounter_relay)
-    music_player.add_connection(State.Exited, Message.Deactivate, pirate_encounter_finale_relay)
-
-    # Relay connections to music
-    swamp_world_relay.add_connection(State.Zero, Message.Play, swamp_world)
-    pirate_encounter_relay.add_connection(State.Zero, Message.Play, pirate_encounter)
-    pirate_encounter_finale_relay.add_connection(State.Zero, Message.Play, pirate_encounter_finale)
-
-    # Update music depending on room state
-    pirate_trigger = area.get_instance("Trigger Skiff Flyby")
-    barrier_cine_start = area.get_instance("[IN] Start Barriers Off Cinematic")
-    pirate_trigger.add_connection(State.Entered, Message.Deactivate, swamp_world_relay)
-    pirate_trigger.add_connection(State.Entered, Message.Activate, pirate_encounter_relay)
-    barrier_cine_start.add_connection(State.Zero, Message.Deactivate, pirate_encounter_relay)
-    barrier_cine_start.add_connection(State.Zero, Message.Activate, pirate_encounter_finale_relay)
