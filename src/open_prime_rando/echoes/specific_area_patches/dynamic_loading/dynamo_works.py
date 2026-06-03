@@ -42,7 +42,8 @@ def dynamo_works_dynamic_layer_loading(editor: PatcherEditor, mlvl: Mlvl, area: 
     can always be accessible, separate a huge amount of
     objects to a dedicated layer to be unloaded during the
     fight to save memory, then adjust scripting accordingly
-    to compensate for the changes.
+    to compensate for the changes. Also move Post-Spider
+    Guardian SpiderBallWaypoints to this dedicated layer.
     """
     # Add new layer to separate "Default" layer objects from
     dump_during_battle = area.add_layer("Dump During Battle")
@@ -461,6 +462,9 @@ _MOVE_TO_DUMP_DURING_BATTLE = [
     0x14037A,  # Cliff Crate
     0x14037B,  # Cliff Crate
     "Pickup Generator High",
+    0x1403CD,  # SpiderBallWaypoint 001
+    0x1403CC,  # SpiderBallWaypoint 001
+    0x140568,  # SpiderBallWaypoint 002
 ]
 
 _MOVE_TO_TUNNEL_HINTS = [
