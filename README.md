@@ -1,6 +1,12 @@
 # Open Prime Rando
 Open Source randomizer patcher for Prime 2 and eventually 3.
 
+## Using the patcher standalone
+
+```sh
+uv run python -m open_prime_rando
+```
+
 
 
 # Updating hash files
