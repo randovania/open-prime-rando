@@ -94,7 +94,6 @@ def sanctuary_entrance_dynamic_layer_loading(editor: PatcherEditor, mlvl: Mlvl, 
 
     door_opening_sequence_timer = area.get_instance("Door opening cut")
     with door_opening_sequence_timer.edit_properties(SequenceTimer) as sequence_timer:
-        sequence_timer.max_time = 8.0
         sequence_timer.sequence_connections.append(
             SequenceConnection(
                 connection_index=6,
