@@ -34,13 +34,13 @@ def sanctuary_entrance_dynamic_layer_loading(editor: PatcherEditor, mlvl: Mlvl, 
     battling the commandos, then adjust scripting
     accordingly to compensate for the changes.
     (non-dynamic layer change remains in case
-    player performs DLC)
+    player performs Door Lock Cancel)
     """
 
     default = area.get_layer("Default")
 
     # Move Phazon Crates to a dedicated layer so
-    # 1st Pass can be Decremented Dynamically
+    # they don't disappear when 1st Pass is unloaded
     phazon_crates = area.add_layer("Phazon Crates")
 
     for first_pass_instances in _MOVE_TO_PHAZON_CRATES:
