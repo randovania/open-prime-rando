@@ -16,6 +16,9 @@ from open_prime_rando.echoes.specific_area_patches.dynamic_loading.main_reactor 
 from open_prime_rando.echoes.specific_area_patches.dynamic_loading.main_research import (
     main_research_dynamic_layer_loading,
 )
+from open_prime_rando.echoes.specific_area_patches.dynamic_loading.sanctuary_entrance import (
+    sanctuary_entrance_dynamic_layer_loading,
+)
 from open_prime_rando.echoes.specific_area_patches.dynamic_loading.torvus_temple import torvus_temple_second_pass
 
 if typing.TYPE_CHECKING:
@@ -38,5 +41,6 @@ def register_all(area_patcher: AreaPatcher) -> None:
         torvus_temple_second_pass,
         aerie_dynamic_layer_loading,
         central_mining_station_dynamic_layer_loading,
+        sanctuary_entrance_dynamic_layer_loading,
     ]:
         area_patcher.add_function(func)
