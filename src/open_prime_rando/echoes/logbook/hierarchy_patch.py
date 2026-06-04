@@ -77,6 +77,15 @@ def get_hierarchy_patches(configuration: RandoConfiguration) -> list[HierarchyPa
     return [
         # # For reference
         # HierarchyPatch(
+        #     323,  # Root
+        #     None,
+        #     (
+        #         188, # Inventory
+        #         192, # Logbook
+        #         259, # Options
+        #     ),
+        # ),
+        # HierarchyPatch(
         #     188,  # Inventory
         #     None,
         #     (
@@ -371,6 +380,17 @@ def get_hierarchy_patches(configuration: RandoConfiguration) -> list[HierarchyPa
                 216,  # Pirate Logs
                 HierarchyPatch(277, "Champions of Aether"),
                 343,  # Trooper Logs
+            ),
+        ),
+        HierarchyPatch(
+            282,  # Options -> Visors
+            None,
+            (
+                9,  # Helmet Opacity
+                96,  # Restore Defaults
+                131,  # HUD Lag
+                # 209, # Hint System, removed
+                377,  # Visor Opacity
             ),
         ),
     ]
