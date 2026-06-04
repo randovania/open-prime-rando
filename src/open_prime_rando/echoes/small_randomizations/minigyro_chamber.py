@@ -28,19 +28,43 @@ class GyroColor(Enum):
 
     @property
     def color(self) -> str:
-        if self == GyroColor.AMBER:
-            return "#A45600"
-        if self == GyroColor.COBALT:
-            return "#56789D"
-        if self == GyroColor.CRIMSON:
-            return "#FF6562"
-        if self == GyroColor.EMERALD:
-            return "#4E9761"
-        raise ValueError(f"Unknown self: {self}")
+        colors = {
+            GyroColor.AMBER: "#A45600",
+            GyroColor.COBALT: "#56789D",
+            GyroColor.CRIMSON: "#FF6562",
+            GyroColor.EMERALD: "#4E9761",
+        }
+        return colors[self]
+
+    @property
+    def bomb_slot_number(self) -> int:
+        """The order of this color's bomb slot, numbered right to left."""
+        numbers = {
+            GyroColor.EMERALD: 4,
+            GyroColor.AMBER: 3,
+            GyroColor.CRIMSON: 2,
+            GyroColor.COBALT: 1,
+        }
+        return numbers[self]
+
+    @property
+    def gyro_stop_name(self) -> str:
+        return f"[IN/OUT] Stop gyroscope {self.bomb_slot_number}"
+
+    @property
+    def display_id(self) -> str:
+        """Identifies the color with a letter, from left to right."""
+        ids = {
+            GyroColor.EMERALD: "A",
+            GyroColor.AMBER: "B",
+            GyroColor.CRIMSON: "C",
+            GyroColor.COBALT: "D",
+        }
+        return ids[self]
 
     @property
     def text(self) -> str:
-        return f"&push;&main-color={self.color};{self.name}&pop;"
+        return f"&push;&main-color={self.color};({self.display_id}) {self.name}&pop;"
 
 
 GYRO_STATES = [
@@ -74,11 +98,10 @@ def patch_minigyro_chamber_puzzle(editor: PatcherEditor, mlvl: Mlvl, area: Area,
             counter.add_connection(GYRO_STATES[j], message, gate)
 
     # play jingle on the final gyro
-    stop_gyros = [area.get_instance(f"[IN/OUT] Stop gyroscope {i + 1}") for i in range(4)]
     jingle = area.get_instance("StreamedAudio - Event Jingle")
 
-    stop_gyros[3].remove_all_connections_to(jingle)
-    stop_gyros[solution[3].value].add_connection(State.Zero, Message.Play, jingle)
+    area.get_instance(GyroColor.EMERALD.gyro_stop_name).remove_all_connections_to(jingle)
+    area.get_instance(solution[-1].gyro_stop_name).add_connection(State.Zero, Message.Play, jingle)
 
     scan = editor.get_file(0xFBFF349D, Strg)
     solution_text = "\n".join(gyro.text for gyro in solution)
