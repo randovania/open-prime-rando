@@ -5,8 +5,9 @@ from typing import TYPE_CHECKING
 from retro_data_structures.enums.echoes import Message, State
 from retro_data_structures.properties.echoes.archetypes.EditorProperties import EditorProperties
 from retro_data_structures.properties.echoes.archetypes.LayerSwitch import LayerSwitch
+from retro_data_structures.properties.echoes.archetypes.Transform import Transform
+from retro_data_structures.properties.echoes.core.Vector import Vector
 from retro_data_structures.properties.echoes.objects import (
-    MemoryRelay,
     Relay,
     ScriptLayerController,
 )
@@ -40,15 +41,15 @@ def _patch_elevator(editor: PatcherEditor, mlvl: Mlvl, area: Area) -> None:
     default = area.get_layer("Default")
     second_pass = area.get_layer("2nd PAss")  # [sic]
 
-    # edit memory relay to activate immediately
-    with area.get_instance("Remember Central Elevator Active").edit_properties(MemoryRelay) as mem_relay:
-        mem_relay.delayed_action = False
-
     # add layer controller for elevator
     elevator_layer_controller = default.add_instance_with(
         ScriptLayerController(
             editor_properties=EditorProperties(
                 name="Increment - 2nd PAss (Dynamic)",
+                transform=Transform(
+                    position=Vector(-62.5, -185.0, 46.0),
+                    scale=Vector(2.0, 2.0, 2.0),
+                ),
             ),
             layer=LayerSwitch(
                 area_id=torvus_bog.TORVUS_TEMPLE_INTERNAL_ID,
@@ -70,6 +71,10 @@ def _patch_elevator(editor: PatcherEditor, mlvl: Mlvl, area: Area) -> None:
         Relay(
             editor_properties=EditorProperties(
                 name="Check if central elevator is active",
+                transform=Transform(
+                    position=Vector(-158.3, -129.1, 48.1),
+                    scale=Vector(2.0, 2.0, 2.0),
+                ),
                 active=False,
             ),
         )
@@ -77,19 +82,24 @@ def _patch_elevator(editor: PatcherEditor, mlvl: Mlvl, area: Area) -> None:
     area.get_instance("Remember Central Elevator Active").add_connection(
         State.Active, Message.Activate, check_elevator_relay
     )
+    area.get_instance("[IN] Switch Luminoth Hologram To Elevator").add_connection(
+        State.Zero, Message.Activate, check_elevator_relay
+    )
     check_elevator_relay.add_connection(
         State.Zero, Message.Activate, area.get_instance("OcclusionRelay - Enable Elevator")
     )
     elevator_layer_controller.add_connection(State.Arrived, Message.SetToZero, check_elevator_relay)
 
-    # Move waypoints to the Default layer
-    # so that the elevator actually moves
-    waypoints = (
+    # Move waypoints and holograms to the Default layer
+    # so elevator components connect properly
+    instances = (
         second_pass.get_instance("Top"),
         second_pass.get_instance("Bottom"),
+        second_pass.get_instance(0x1B040C),  # Elevator Holo
+        second_pass.get_instance(0x1B03F7),  # Key Beam
     )
-    for waypoint in waypoints:
-        area.move_instance(waypoint, "Default")
+    for instance in instances:
+        area.move_instance(instance, "Default")
 
 
 def _patch_shriekers(editor: PatcherEditor, mlvl: Mlvl, area: Area) -> None:
@@ -111,6 +121,10 @@ def _patch_shriekers(editor: PatcherEditor, mlvl: Mlvl, area: Area) -> None:
         ScriptLayerController(
             editor_properties=EditorProperties(
                 name="Increment - Shriekers",
+                transform=Transform(
+                    position=Vector(-62.5, -183.5, 46.0),
+                    scale=Vector(2.0, 2.0, 2.0),
+                ),
             ),
             layer=LayerSwitch(
                 area_id=torvus_bog.TORVUS_TEMPLE_INTERNAL_ID,
