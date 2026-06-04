@@ -42,8 +42,9 @@ def dynamo_works_dynamic_layer_loading(editor: PatcherEditor, mlvl: Mlvl, area: 
     can always be accessible, separate a huge amount of
     objects to a dedicated layer to be unloaded during the
     fight to save memory, then adjust scripting accordingly
-    to compensate for the changes. Also move Post-Spider
-    Guardian SpiderBallWaypoints to this dedicated layer.
+    to compensate for the changes. Also move the Post-Spider
+    Guardian SpiderBallWaypoints that lead to CATE to this
+    dedicated layer.
     """
     # Add new layer to separate "Default" layer objects from
     dump_during_battle = area.add_layer("Dump During Battle")
