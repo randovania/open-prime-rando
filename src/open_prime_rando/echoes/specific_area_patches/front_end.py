@@ -69,6 +69,24 @@ def edit_front_end(editor: PatcherEditor, mlvl: Mlvl, area: Area, title_screen_t
     with area.get_instance(0x132).edit_properties(SequenceTimer) as sequence_timer:
         sequence_timer.editor_properties.active = False
 
+    # Remove the Multiplayer entry in the main menu
+    area.get_instance("Main").remove_all_connections_to(
+        area.get_instance("Multiplayer"),  # The DataNetwork
+    )
+    area.remove_instance("MultiPlayer")  # The TextPane
+
+    # Remove the Multiplayer entry in the Options menu
+    area.get_instance(0x00000201).remove_all_connections_to(  # DataNetwork WhichOptions
+        area.get_instance(0x0000020B),  # DataNetwork MultiplayerOptions
+    )
+    area.remove_instance(0x000001FB)  # TextPane MultiplayerOptions
+
+    # Remove the options entry for activating the Hint System
+    area.get_instance(0x00000202).remove_all_connections_to(  # DataNetwork VisorOptions
+        area.get_instance(0x000002D5),  # The DataNetwork RHSOption
+    )
+    area.remove_instance(0x000002D1)  # TextPane RHSOption
+
     main_menu_strg_id = 0x98E7E268
     main_menu_strg = editor.get_file(main_menu_strg_id, Strg)
     main_menu_strg.append_string(title_screen_text, name="RandomizerString")
