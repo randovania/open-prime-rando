@@ -55,7 +55,7 @@ def _adjust_color(new_main: Color, old_main: Color, old_other: Color) -> Color:
     ratio = _new_color(main_hsv, other_hsv, lambda main, other: other / main)
 
     new_main_hsv = _to_hsv(new_main)
-    new_other = _new_color(new_main_hsv, ratio, lambda main, other: main * other)
+    new_other = _new_color(new_main_hsv, ratio, lambda main, other: max(0.0, min(1.0, main * other)))
 
     return _from_hsv(new_other, old_other.a)
 
