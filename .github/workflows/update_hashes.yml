@@ -46,6 +46,9 @@ jobs:
     permissions:
       contents: write
       pull-requests: write
+    
+    outputs:
+      changed: ${{ steps.commit.outputs.changed }}
 
     steps:
       - name: Checkout
@@ -105,3 +108,8 @@ jobs:
               issue_number: context.issue.number,
               body: `Failed to update hashes. Check the [workflow run](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}) for details.`,
             });
+
+  run-python-workflow:
+    needs: update-hashes
+    if: ${{ needs.update-hashes.outputs.changed }}
+    uses: ./.github/workflows/python.yml
