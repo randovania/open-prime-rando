@@ -62,9 +62,6 @@ def apply_dol_patches(version: EchoesDolVersion, cave: CodeCaveTracker, config: 
         ),
     )
 
-    # Mark Massive Damage as a pickup to persist
-    cave.dol_editor.write(version.powerup_should_persist + PlayerItemEnum.AmpDamage.value, b"\x01")
-
     # Adjust the max capacity of Massive Damage
     cave.dol_editor.write(version.powerup_max + PlayerItemEnum.AmpDamage.value * 4, struct.pack(">l", config.max_count))
 

@@ -162,8 +162,48 @@ def get_hierarchy_patches(configuration: RandoConfiguration) -> list[HierarchyPa
             None,
             (
                 10,  # Charge Combos
-                225,  # Beam Weapons
-                337,  # Missile Systems
+                HierarchyPatch(
+                    225,  # Beam Weapons
+                    None,
+                    (
+                        20,  # Light Beam
+                        73,  # Power Beam
+                        155,  # Charge Beam
+                        290,  # Annihilator Beam
+                        351,  # Dark Beam
+                        HierarchyPatch(
+                            NewInventoryEntry(
+                                name_string_name="UnlimitedBeamAmmo",
+                                model_name="UnlimitedBeamAmmo",
+                                scan_text=(
+                                    "The Unlimited Beam Ammo keeps your Dark Ammo "
+                                    "and Light Ammo maximized at all times."
+                                ),
+                                slot_index=InventorySlotEnum(54),
+                                item_index=PlayerItemEnum.UnlimitedBeamAmmo,
+                            ),
+                            "Unlimited Beam Ammo",
+                        ),
+                    ),
+                ),
+                HierarchyPatch(
+                    337,  # Missile Systems
+                    None,
+                    (
+                        94,  # Missile Launcher
+                        239,  # Seeker Missile Launcher
+                        HierarchyPatch(
+                            NewInventoryEntry(
+                                name_string_name="UnlimitedMissiles",
+                                model_name="UnlimitedMissiles",
+                                scan_text=("The Unlimited Missiles keeps your Missiles maximized at all times."),
+                                slot_index=InventorySlotEnum(55),
+                                item_index=PlayerItemEnum.UnlimitedMissiles,
+                            ),
+                            "Unlimited Missiles",
+                        ),
+                    ),
+                ),
                 HierarchyPatch(
                     NewInventoryEntry(
                         name_string_name="MassiveDamage",
