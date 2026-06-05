@@ -43,7 +43,7 @@ def _new_color(
     return typing.cast("tuple[float, float, float]", result)
 
 
-def _adjust_color(new_main: Color, old_main: Color, old_other: Color) -> Color:
+def _adjust_color(old_other: Color, old_main: Color, new_main: Color) -> Color:
     """
     Generates a new Color, relative to the main color.
     Uses the ratio between the old color and the old main color to
@@ -97,7 +97,11 @@ def _update_colors(
 
 class HudColorConfiguration(pydantic.BaseModel):
     main_color: PydanticColor = (0.5372549891471863, 0.8392159938812256, 1.0)
-    """The new main color to base the colors off of."""
+    """
+    The primary color of the HUD's color scheme. Various HUD elements use slightly
+    darker versions of this color - those colors get generated automatically based
+    on this color.
+    """
 
     change_text_color: bool = True
     """Whether to change the color of text in HUD memos."""
@@ -142,7 +146,7 @@ def edit_hud_color(editor: PatcherEditor, color_config: HudColorConfiguration) -
             )
 
         color_map = {
-            _frozen_color(color): _adjust_color(main_color, old_main_color, color) for color in colors_to_change
+            _frozen_color(color): _adjust_color(color, old_main_color, main_color) for color in colors_to_change
         }
 
         _update_colors(tweak, color_map, excluded_properties)
