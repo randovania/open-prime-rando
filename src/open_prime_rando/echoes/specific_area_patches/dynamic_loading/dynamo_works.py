@@ -314,6 +314,7 @@ def dynamo_works_dynamic_layer_loading(editor: PatcherEditor, mlvl: Mlvl, area: 
 
     # Layers Increment counter once finished loading
     tunnel_hints_controller.add_connection(State.Arrived, Message.Increment, sg_layer_loading_counter)
+    tunnel_out_entrance.add_connection(State.Exited, Message.Decrement, sg_layer_loading_counter)
     spider_guardian_controller1.add_connection(State.Arrived, Message.Increment, sg_layer_loading_counter)
     spider_guardian_controller2.add_connection(State.Arrived, Message.Increment, sg_layer_loading_counter)
 
