@@ -6,7 +6,7 @@ from typing import TYPE_CHECKING, Annotated, Literal, NamedTuple
 
 import pydantic
 from retro_data_structures.enums.echoes import Message, State
-from retro_data_structures.formats.script_object import Connection, ScriptInstance
+from retro_data_structures.formats.script_object import Connection, ScriptInstance, resolve_instance_id
 from retro_data_structures.properties.echoes.archetypes.EditorProperties import EditorProperties
 from retro_data_structures.properties.echoes.archetypes.SurroundPan import SurroundPan
 from retro_data_structures.properties.echoes.archetypes.Transform import Transform
@@ -47,6 +47,7 @@ class PickupInstances:
         Create copies of any instances that change between pickup stages,
         set up their connections, and return a new PickupInstances with the new instances.
         """
+        area = layer._parent_area
 
         def copy_inst(instance: ScriptInstance) -> ScriptInstance:
             new_inst = layer.add_instance_with(instance.get_properties())
@@ -60,6 +61,20 @@ class PickupInstances:
             # reset to original transform so that changes don't stack between stages
             pickup_props.editor_properties.transform = original_pickup.editor_properties.transform
             pickup_props.collision_offset = original_pickup.collision_offset
+
+        # copy any object following SFs, to make sure subsequent stages are in the right position
+        object_follow_functions = {Function.ObjectFollowLocator, Function.ObjectFollowObject}
+        for inst in area.all_instances:
+            if inst.script_type != SpecialFunction:
+                continue
+
+            if inst.get_properties_as(SpecialFunction).function not in object_follow_functions:
+                continue
+
+            if any(resolve_instance_id(conn.target) == self.pickup.id for conn in inst.connections):
+                object_follow = layer.add_instance_with(inst.get_properties())
+                object_follow.connections = inst.connections
+                object_follow.replace_connections_to(self.pickup, pickup)
 
         stage = PickupInstances(
             pickup=pickup,
