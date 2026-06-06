@@ -26,6 +26,8 @@ from open_prime_rando.echoes.pickups.model_database import PickupModelByName
 from open_prime_rando.echoes.pydantic_models import PydanticConnection, PydanticInstanceId, PydanticVector
 
 if TYPE_CHECKING:
+    from collections.abc import Iterable
+
     from retro_data_structures.formats.mlvl import Area
     from retro_data_structures.formats.script_layer import ScriptLayer
 
@@ -106,6 +108,19 @@ class PickupInstances:
         self.memory_relay.add_connection(State.Active, Message.Deactivate, self.pickup)
         self.pickup.add_connection(State.Arrived, Message.SetToZero, self.post_pickup_relay)
         self.post_pickup_relay.add_connection(State.Zero, Message.Decrement, self.mappable_object)
+
+    def deactivated_by_conditional(self) -> Iterable[ScriptInstance]:
+        """
+        Which instances should get deactivated by the next stage's conditional
+        relay, for progressive pickups.
+        """
+        yield self.pickup
+        yield self.hud_memo
+        yield self.streamed_audio
+        yield self.sound
+        yield self.audio_fade
+        yield self.fade_timer
+        yield self.post_pickup_relay
 
 
 class CutsceneModel(NamedTuple):

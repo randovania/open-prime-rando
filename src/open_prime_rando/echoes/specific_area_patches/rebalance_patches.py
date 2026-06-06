@@ -68,6 +68,7 @@ def register_all(area_patcher: AreaPatcher) -> None:
         hive_chamber_a_dmt_active,
         agon_temple_dmt_layer,
         dark_oasis_ing_cache,
+        security_station_b_activate_gates,
     ]:
         area_patcher.add_function(func)
 
@@ -515,3 +516,13 @@ def dark_oasis_ing_cache(editor: PatcherEditor, mlvl: Mlvl, area: Area) -> None:
     Activate 2nd Pass layer by default.
     """
     area.get_layer("2nd pass").active = True
+
+
+@decorate_patcher(AGON_WASTES_MLVL, agon_wastes.SECURITY_STATION_B_MREA)
+def security_station_b_activate_gates(editor: PatcherEditor, mlvl: Mlvl, area: Area) -> None:
+    """
+    Deactivate 1st Pass and activate 2nd Pass layer by default.
+    This removes the Dark Samus cutscene and makes the gates always active.
+    """
+    area.get_layer("1st Pass").active = False
+    area.get_layer("2nd Pass").active = True
