@@ -31,6 +31,7 @@ from open_prime_rando.echoes import (
     damage_changes,
     dock_lock_rando,
     general_changes,
+    hud_color,
     inverted,
     logbook,
     pickups,
@@ -265,8 +266,10 @@ def _apply_patches(
 
     specific_area_patches.version_differences.register_all(area_patcher, dol_version.echoes_version)
 
+    # cosmetics
     add_pickup_map_icon(editor)
     suit_cosmetics.apply_custom_suits(editor, configuration.suit_replacement)
+    hud_color.edit_hud_color(editor, configuration.hud_color)
 
     # edit frontend
     area_patcher.add_frontend_function(

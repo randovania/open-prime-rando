@@ -5,6 +5,7 @@ from pathlib import Path
 
 import pytest
 from retro_data_structures.file_provider import IsoFileProvider
+from retro_data_structures.formats.ntwk import Ntwk
 from retro_data_structures.game_check import Game
 
 from open_prime_rando.patcher_editor import IsoFileWriter, PatcherEditor
@@ -139,6 +140,8 @@ def prime2_editor(raw_prime2_editor: PatcherEditor):
     editor._pak_strategy = {pak_name: editor._pak_strategy_factory(editor, pak_name) for pak_name in editor.all_paks}
     editor._custom_asset_ids = {}
     editor._modified_resources = {}
+    with editor.provider.open_binary("Standard.ntwk") as f:
+        editor.tweaks = Ntwk.parse(f.read(), Game.ECHOES)
 
 
 def pytest_addoption(parser) -> None:

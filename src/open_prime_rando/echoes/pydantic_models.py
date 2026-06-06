@@ -77,3 +77,8 @@ PydanticVector = typing.Annotated[
         }
     ),
 ]
+
+
+ColorComponent = typing.Annotated[float, pydantic.Field(ge=0.0, le=1.0)]
+PydanticColor = tuple[ColorComponent, ColorComponent, ColorComponent]
+PydanticColorWithAlpha = tuple[ColorComponent, ColorComponent, ColorComponent, ColorComponent]

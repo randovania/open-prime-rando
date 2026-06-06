@@ -4996,5 +4996,10 @@
             "damage_increase_multiplier": 1.0,
             "max_count": 5
         }
+    },
+    "hud_color": {
+        "main_color": [0.929, 0.580, 0.831],
+        "change_text_color": false,
+        "change_beam_visor_select_color": false
     }
 }

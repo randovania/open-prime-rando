@@ -12,6 +12,7 @@ from open_prime_rando.echoes.asset_ids.world import TEMPLE_GROUNDS_MLVL
 from open_prime_rando.echoes.custom_items import CustomItemsConfig
 from open_prime_rando.echoes.damage_changes import DamageChanges
 from open_prime_rando.echoes.dock_lock_rando import DockTypeChange
+from open_prime_rando.echoes.hud_color import HudColorConfiguration
 from open_prime_rando.echoes.pickups.schema import PickupModification
 from open_prime_rando.echoes.starting_items import StartingItemConfig
 from open_prime_rando.echoes.suit_cosmetics import SuitMapping
@@ -126,3 +127,6 @@ class RandoConfiguration(BaseModel):
 
     custom_items: CustomItemsConfig = Field(default_factory=CustomItemsConfig)
     """Configure how the custom items work."""
+
+    hud_color: HudColorConfiguration = Field(default_factory=HudColorConfiguration)
+    """Configure the custom HUD colors."""
