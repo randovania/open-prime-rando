@@ -467,7 +467,9 @@ def patch_complex_pickup(
             )
         )
 
-        conditional.add_connection(State.Open, Message.Deactivate, previous_instances.pickup)
+        for instance in previous_instances.deactivated_by_conditional():
+            conditional.add_connection(State.Open, Message.Deactivate, instance)
+
         conditional.add_connection(State.Open, Message.Activate, instances.pickup)
         conditional.add_connection(State.Open, Message.Deactivate, looping_timer)
 
