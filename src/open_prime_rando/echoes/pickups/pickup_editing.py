@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import copy
 import typing
 from typing import TYPE_CHECKING
 
@@ -188,6 +189,7 @@ def _patch_single_pickup_stage_appearance(
     with instances.pickup.edit_properties(RDSPickup) as pickup_e:
         pickup: RDSPickup = pickup_e
         assert isinstance(pickup, RDSPickup)
+
         # basics
         pickup.model = editor.resolve_asset_id(model_data.model)
         pickup.auto_spin = model_data.auto_spin
@@ -195,8 +197,8 @@ def _patch_single_pickup_stage_appearance(
         # transform
         old_pos = location.original_model.get_position(editor)
         new_pos = stage.appearance.model_data.get_position(editor)
-
         offset = old_pos - new_pos
+
         pickup.editor_properties.transform.position += offset
         pickup.collision_offset -= offset
 
@@ -427,11 +429,13 @@ def patch_complex_pickup(
     area: Area,
     disable_hud_popup: bool,
 ) -> None:
-    # patch the first stage, as well as stage-agnostic changes like the map icon
-    patch_simple_pickup(modification, editor, mlvl, area, disable_hud_popup)
-
     instances = modification.location.prepare_instances(area)
     original_instances = instances
+
+    original_pickup = copy.deepcopy(original_instances.pickup.get_properties_as(RDSPickup))
+
+    # patch the first stage, as well as stage-agnostic changes like the map icon
+    patch_simple_pickup(modification, editor, mlvl, area, disable_hud_popup)
 
     pickup_starts_active = original_instances.pickup.get_properties_as(RDSPickup).editor_properties.active
 
@@ -442,7 +446,7 @@ def patch_complex_pickup(
     for i, stage in enumerate(modification.progressive_stages):
         # create new instances for this stage
         previous_instances = instances
-        instances = original_instances.new_stage(layer, i + 1)
+        instances = original_instances.new_stage(layer, i + 1, original_pickup)
 
         # create the ConditionalRelay and looping Timer used to update to the correct stage
         conditional = add_conditional_relay(

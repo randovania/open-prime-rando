@@ -1119,23 +1119,44 @@
                             "primary_stage": {
                                 "resources": [
                                     {
-                                        "item": 31,
-                                        "amount": 1
+                                        "item": 71,
+                                        "amount": 5
                                     }
                                 ],
                                 "appearance": {
-                                    "model_data": "SkyTempleKey",
-                                    "sound": 1075,
+                                    "model_data": "MissileExpansion",
+                                    "sound": 10057,
                                     "jingle": {
-                                        "file_name": "/audio/skytenkey-jin-short32.dsp",
-                                        "volume": 110
+                                        "file_name": "/audio/itm_x_short_00.dsp",
+                                        "volume": 55
                                     },
-                                    "hud_text": "Sky Temple Key 3 acquired!",
-                                    "scan": "Sky Temple Key 3."
+                                    "hud_text": "Missile Expansion acquired, but the Missile Launcher is required to use it.",
+                                    "scan": "Missile Expansion. Provides 5 Missiles and 1 Item Percentage."
                                 },
                                 "conversion": []
                             },
-                            "progressive_stages": []
+                            "progressive_stages": [
+                                {
+                                    "resources": [
+                                        {
+                                            "item": 44,
+                                            "amount": 5
+                                        }
+                                    ],
+                                    "appearance": {
+                                        "model_data": "MissileExpansion",
+                                        "sound": 10057,
+                                        "jingle": {
+                                            "file_name": "/audio/itm_x_short_00.dsp",
+                                            "volume": 55
+                                        },
+                                        "hud_text": "Missile Expansion acquired!",
+                                        "scan": "Missile Expansion. Provides 5 Missiles and 1 Item Percentage."
+                                    },
+                                    "conversion": [],
+                                    "required_item": 44
+                                }
+                            ]
                         }
                     ],
                     "door_locks": [
