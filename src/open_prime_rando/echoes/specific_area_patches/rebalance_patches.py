@@ -74,6 +74,7 @@ def register_all(area_patcher: AreaPatcher) -> None:
         security_station_b_activate_gates,
         dynamo_chamber_non_dangerous,
         trooper_security_station_non_dangerous,
+        sacred_bridge_non_dangerous,
     ]:
         area_patcher.add_function(func)
 
@@ -659,3 +660,59 @@ def trooper_security_station_non_dangerous(editor: PatcherEditor, mlvl: Mlvl, ar
 
     # delete second pass gate, since second pass now activates on destruction
     area.remove_instance("Gate Down - Locked")
+
+
+@decorate_patcher(TEMPLE_GROUNDS_MLVL, temple_grounds.SACRED_BRIDGE_MREA)
+def sacred_bridge_non_dangerous(editor: PatcherEditor, mlvl: Mlvl, area: Area) -> None:
+    """
+    Open the gate in Sacred Bridge if you reach the other side after entering from GFMC.
+    """
+    platform_up = area.get_layer("Platform Up")
+
+    # add a trigger at the other side of the room to lower the bridge
+    show_samus_trigger = area.get_instance("Show Samus")
+    show_samus_props = show_samus_trigger.get_properties_as(Trigger)
+    # this trigger aligns perfectly with where we want the new one to be
+    lower_bridge_trigger = platform_up.add_instance_with(show_samus_props)
+    with lower_bridge_trigger.edit_properties(Trigger) as trigger:
+        trigger.editor_properties.name = "Lower Bridge Automatically"
+        trigger.editor_properties.active = False
+
+        trigger.deactivate_on_enter = True
+
+    # only activate the new trigger after entering one at the GFMC door
+    gfmc_door_trigger = area.get_instance(0x310099)
+    prepare_bridge_trigger = platform_up.add_instance_with(gfmc_door_trigger.get_properties())
+    prepare_bridge_trigger.name = "Prepare to lower bridge automatically"
+    prepare_bridge_trigger.add_connection(State.Entered, Message.Activate, lower_bridge_trigger)
+
+    # deactivate new triggers after bridge is lowered
+    bridge_relay = area.get_instance("Bridge Operation Control")
+    bridge_relay.add_connection(State.Zero, Message.Deactivate, prepare_bridge_trigger)
+    bridge_relay.add_connection(State.Zero, Message.Deactivate, lower_bridge_trigger)
+
+    # make a new sequence timer that doesn't start a cutscene
+    cutscene_sequence = area.get_instance("Bridge Down Control")
+    no_cutscene_sequence = platform_up.add_instance_with(cutscene_sequence.get_properties())
+    no_cutscene_sequence.name = "Bridge Down Control (No cutscene)"
+    no_cutscene_sequence.connections = cutscene_sequence.connections
+
+    connections_to_skip = {
+        0,  # decrement cinematic bars
+        1,  # increment cinematic bars
+        2,  # reposition
+        3,  # activate cinematic
+        4,  # deactivate cinematic
+        9,  # force combat visor
+        11,  # show samus relay
+        12,  # show samus trigger
+    }
+    with no_cutscene_sequence.edit_properties(SequenceTimer) as sequence:
+        sequence.sequence_connections = [
+            connection
+            for connection in sequence.sequence_connections
+            if connection.connection_index not in connections_to_skip
+        ]
+
+    # start the new sequence timer when entering the new trigger
+    lower_bridge_trigger.add_connection(State.Entered, Message.Start, no_cutscene_sequence)
