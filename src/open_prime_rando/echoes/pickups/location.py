@@ -42,7 +42,7 @@ class PickupInstances:
     mappable_object: Annotated[ScriptInstance, SpecialFunction]
     memory_relay: Annotated[ScriptInstance, MemoryRelay]
 
-    def new_stage(self, layer: ScriptLayer, number: int) -> PickupInstances:
+    def new_stage(self, layer: ScriptLayer, number: int, original_pickup: Pickup) -> PickupInstances:
         """
         Create copies of any instances that change between pickup stages,
         set up their connections, and return a new PickupInstances with the new instances.
@@ -56,6 +56,10 @@ class PickupInstances:
         pickup = copy_inst(self.pickup)
         with pickup.edit_properties(Pickup) as pickup_props:
             pickup_props.editor_properties.active = False
+
+            # reset to original transform so that changes don't stack between stages
+            pickup_props.editor_properties.transform = original_pickup.editor_properties.transform
+            pickup_props.collision_offset = original_pickup.collision_offset
 
         stage = PickupInstances(
             pickup=pickup,
