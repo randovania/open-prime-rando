@@ -48,6 +48,7 @@ class PickupInstances:
         set up their connections, and return a new PickupInstances with the new instances.
         """
         area = layer._parent_area
+        assert area is not None
 
         def copy_inst(instance: ScriptInstance) -> ScriptInstance:
             new_inst = layer.add_instance_with(instance.get_properties())
