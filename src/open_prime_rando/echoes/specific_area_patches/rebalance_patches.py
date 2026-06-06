@@ -15,6 +15,7 @@ from retro_data_structures.properties.echoes.objects import (
     Actor,
     Platform,
     ScriptLayerController,
+    SequenceTimer,
     Sound,
     SpawnPoint,
     Timer,
@@ -69,6 +70,7 @@ def register_all(area_patcher: AreaPatcher) -> None:
         agon_temple_dmt_layer,
         dark_oasis_ing_cache,
         security_station_b_activate_gates,
+        dynamo_chamber_non_dangerous,
     ]:
         area_patcher.add_function(func)
 
@@ -526,3 +528,62 @@ def security_station_b_activate_gates(editor: PatcherEditor, mlvl: Mlvl, area: A
     """
     area.get_layer("1st Pass").active = False
     area.get_layer("2nd Pass").active = True
+
+
+@decorate_patcher(TEMPLE_GROUNDS_MLVL, temple_grounds.DYNAMO_CHAMBER_MREA)
+def dynamo_chamber_non_dangerous(editor: PatcherEditor, mlvl: Mlvl, area: Area) -> None:
+    """
+    Make the tunnel gates in Dynamo Chamber not close when the door gate opens.
+    """
+    first_pass = area.get_layer("1st Pass Scripting")
+
+    # don't move the tunnel gates during the cutscene
+    gate_sequence = area.get_instance("Gate Switch Sequence")
+    gates_to_leave_up = [
+        first_pass.get_instance("Platform_Gate 2"),
+        first_pass.get_instance("Platform_Gate 3"),
+    ]
+
+    connections_to_skip = {
+        i
+        for i, conn in enumerate(gate_sequence.connections)
+        if any(conn.target.matches(gate.id) for gate in gates_to_leave_up)
+    }
+
+    with gate_sequence.edit_properties(SequenceTimer) as sequence:
+        sequence.sequence_connections = [
+            connection
+            for connection in sequence.sequence_connections
+            if connection.connection_index not in connections_to_skip
+        ]
+
+    # move the door gate to dedicated layers
+    gate_closed = area.add_layer("Door Gate Closed", active=True)
+    gate_open = area.add_layer("Door Gate Open", active=False)
+
+    move_to_gate_closed = [
+        "Platform_Gate 1",
+        "Gate 1 DOWN",
+        "Gate 1 UP",
+        "Gate 1 Stop Event Control",
+        "Closed Gate Scan",
+        "Gate Stop",
+        "Sound_Open",
+    ]
+    move_to_gate_open = [
+        0x1F00DE,  # Platform_Gate
+    ]
+
+    for inst in move_to_gate_closed:
+        area.move_instance(inst, gate_closed.name)
+    for inst in move_to_gate_open:
+        area.move_instance(inst, gate_open.name)
+
+    # change the layer controllers to (de)activate the new layers
+    decrement_1st_pass = area.get_instance("1st pass_Decrement")
+    increment_2nd_pass = area.get_instance("2nd pass_Increment")
+
+    with decrement_1st_pass.edit_properties(ScriptLayerController) as layer_controller:
+        layer_controller.layer.layer_number = gate_closed.index
+    with increment_2nd_pass.edit_properties(ScriptLayerController) as layer_controller:
+        layer_controller.layer.layer_number = gate_open.index
