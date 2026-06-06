@@ -1,7 +1,26 @@
 # Open Prime Rando
 Open Source randomizer patcher for Prime 2 and eventually 3.
 
+## Running the patcher standalone
 
+After cloning the repository, install the project and its extras:
+
+```sh
+uv sync --all-groups --all-extras
+```
+
+The command line entrypoint is `open-prime-rando`. The currently supported game is `echoes`, and the
+`randomizer` subcommand expects a configuration JSON plus input and output ISO paths:
+
+```sh
+uv run open-prime-rando echoes \
+  --input-iso /path/to/prime2.iso \
+  --output-iso /path/to/output.iso \
+  randomizer \
+  --input-json /path/to/config.json
+```
+
+Use `uv run open-prime-rando echoes --help` to see the available arguments for the Echoes patcher.
 
 # Updating hash files
 
@@ -34,4 +53,4 @@ Anyone with write access to the repository can comment `/update-hashes` on a pul
 
 # Echoes
 
-Banner image created by rekameohs. 
+Banner image created by rekameohs.
