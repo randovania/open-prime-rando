@@ -66,6 +66,7 @@ def register_all(area_patcher: AreaPatcher) -> None:
         sacrificial_chamber_persist_pickup,
         undertemple_persist_pickup,
         temple_sanctuary_persist_pickup,
+        agon_temple_move_pickup,
     ]:
         area_patcher.add_function(func)
 
@@ -503,3 +504,35 @@ def dynamo_works_sg_pb_response(editor: PatcherEditor, mlvl: Mlvl, area: Area) -
         custom_rule = editor.get_custom_asset("custom_knockback.RULE")
         assert custom_rule is not None
         spider.patterned.knockback_rules = custom_rule
+
+
+@decorate_patcher(AGON_WASTES_MLVL, agon_wastes.AGON_TEMPLE_MREA)
+def agon_temple_move_pickup(editor: PatcherEditor, mlvl: Mlvl, area: Area) -> None:
+    """
+    Move the Bomb Guardian pickup off of the generated objects layer.
+    Being on this layer causes unpredictable behavior when patching the pickup.
+    """
+    first_pass = area.get_layer("1st pass enemy_Bomb Boss")
+
+    # we have to move it to Default first, to change the layer ID.
+    # instances on SCGN have the same ID as they would if they were on
+    # another layer, and in this case that's the layer we're moving to.
+    # without this extra move, the instance doesn't actually get moved
+    area.move_instance("Morph Ball Bomb", "Default")
+    area.move_instance("Morph Ball Bomb", first_pass.name)
+
+    pickup = area.get_instance("Morph Ball Bomb")
+
+    relay = first_pass.add_instance_with(
+        Relay(
+            editor_properties=EditorProperties(name="Activate Bomb Pickup"),
+            one_shot=False,
+        )
+    )
+    relay.add_connection(State.Zero, Message.Activate, pickup)
+
+    generator = area.get_instance("Generate Bomb Pickup")
+    unswarm_effects = area.get_instance("Unswarm Effects")
+
+    unswarm_effects.replace_connections_to(generator, relay)
+    area.remove_instance(generator)
