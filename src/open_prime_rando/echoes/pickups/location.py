@@ -226,6 +226,7 @@ class CustomPickupLocation(BasePickupLocation):
                 ),
                 collision_offset=self.collision_offset,
                 collision_size=self.collision_size,
+                pickup_effect=0x0DEB9456,  # AfterPick.PART
             )
         )
 
