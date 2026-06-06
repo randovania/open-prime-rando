@@ -13,12 +13,14 @@ from retro_data_structures.properties.echoes.archetypes.Transform import Transfo
 from retro_data_structures.properties.echoes.core.Vector import Vector
 from retro_data_structures.properties.echoes.objects import (
     Actor,
+    MemoryRelay,
     Platform,
     ScriptLayerController,
     SequenceTimer,
     Sound,
     SpawnPoint,
     Timer,
+    Trigger,
     TriggerEllipsoid,
 )
 
@@ -71,6 +73,7 @@ def register_all(area_patcher: AreaPatcher) -> None:
         dark_oasis_ing_cache,
         security_station_b_activate_gates,
         dynamo_chamber_non_dangerous,
+        trooper_security_station_non_dangerous,
     ]:
         area_patcher.add_function(func)
 
@@ -587,3 +590,72 @@ def dynamo_chamber_non_dangerous(editor: PatcherEditor, mlvl: Mlvl, area: Area) 
         layer_controller.layer.layer_number = gate_closed.index
     with increment_2nd_pass.edit_properties(ScriptLayerController) as layer_controller:
         layer_controller.layer.layer_number = gate_open.index
+
+
+@decorate_patcher(TEMPLE_GROUNDS_MLVL, temple_grounds.TROOPER_SECURITY_STATION_MREA)
+def trooper_security_station_non_dangerous(editor: PatcherEditor, mlvl: Mlvl, area: Area) -> None:
+    """
+    Make the gate in Trooper Security Station no longer close permanently after going through it.
+    Also makes it destructible on the 1st Pass layer.
+    """
+    first_pass = area.get_layer("1st Pass")
+    second_pass = area.get_layer("2nd Pass")
+
+    # move gate destruction objects to first pass
+    move_to_first_pass = [
+        "turn off Gate for good",
+        "Camera Shaker_Harsh_Short",
+        "Blow up grating",
+        "Broken Gate Scan",
+        "Generator 003",
+        "Sound 002",
+    ]
+    for inst in move_to_first_pass:
+        area.move_instance(second_pass.get_instance(inst), first_pass.name)
+
+    area.move_instance(second_pass.get_instance("Gate Destroyed (Switch Scan Hints)"), "Default")
+
+    # edit 1st pass gate to be destructible
+    main_gate = area.get_instance("Gate")
+    main_gate.add_connection(State.Dead, Message.Action, area.get_instance("Camera Shaker_Harsh_Short"))
+    main_gate.add_connection(State.Dead, Message.SetToZero, area.get_instance("Blow up grating"))
+    main_gate.add_connection(State.Dead, Message.Activate, area.get_instance("Gate Destroyed (Switch Scan Hints)"))
+    main_gate.add_connection(State.Dead, Message.Deactivate, main_gate)
+
+    with main_gate.edit_properties(Platform) as gate:
+        gate.vulnerability = area.get_instance("Gate Down - Locked").get_properties_as(Actor).vulnerability
+
+    gate_destroyed_mem_relay = area.get_instance("turn off Gate for good")
+    gate_destroyed_mem_relay.add_connection(State.Active, Message.Deactivate, main_gate)
+
+    # keep the gate movement active after first time scanning it
+    puzzle_active_mem_relay = first_pass.add_instance_with(
+        MemoryRelay(
+            editor_properties=EditorProperties(
+                name="Keep Puzzle Active",
+                active=False,
+            ),
+            delayed_action=True,
+        )
+    )
+    gate_scan_poi = area.get_instance("Gate Control Panel Scan (1st Pass)")
+    start_puzzle_relay = area.get_instance("Begin Puzzle")
+
+    # activate memory relay when scan post is scanned
+    gate_scan_poi.add_connection(State.ScanDone, Message.Activate, puzzle_active_mem_relay)
+    # deactivate memory relay when gate is destroyed
+    main_gate.add_connection(State.Dead, Message.Deactivate, puzzle_active_mem_relay)
+
+    puzzle_active_mem_relay.add_connection(State.Active, Message.SetToZero, start_puzzle_relay)
+
+    # change the layers when the gate is destroyed,
+    # rather than when the puzzle is solved
+    puzzle_solve_trigger = area.get_instance("Lower Gate for good")
+    with puzzle_solve_trigger.edit_properties(Trigger) as trigger:
+        trigger.editor_properties.active = False
+
+    main_gate.add_connection(State.Dead, Message.Decrement, area.get_instance("Decrement 1st Pass"))
+    main_gate.add_connection(State.Dead, Message.Increment, area.get_instance("Increment 2nd Pass"))
+
+    # delete second pass gate, since second pass now activates on destruction
+    area.remove_instance("Gate Down - Locked")
