@@ -10,9 +10,13 @@ from retro_data_structures.properties.base_property import BaseObjectType
 from retro_data_structures.properties.echoes.archetypes.EditorProperties import EditorProperties
 from retro_data_structures.properties.echoes.archetypes.LayerSwitch import LayerSwitch
 from retro_data_structures.properties.echoes.archetypes.Transform import Transform
+from retro_data_structures.properties.echoes.core.Color import Color
 from retro_data_structures.properties.echoes.core.Vector import Vector
 from retro_data_structures.properties.echoes.objects import (
     Actor,
+    DamageableTrigger,
+    DamageableTriggerOrientated,
+    DynamicLight,
     Platform,
     ScriptLayerController,
     Sound,
@@ -69,6 +73,7 @@ def register_all(area_patcher: AreaPatcher) -> None:
         agon_temple_dmt_layer,
         dark_oasis_ing_cache,
         security_station_b_activate_gates,
+        transport_c_access_crystal,
     ]:
         area_patcher.add_function(func)
 
@@ -526,3 +531,93 @@ def security_station_b_activate_gates(editor: PatcherEditor, mlvl: Mlvl, area: A
     """
     area.get_layer("1st Pass").active = False
     area.get_layer("2nd Pass").active = True
+
+
+@decorate_patcher(GREAT_TEMPLE_MLVL, great_temple.TRANSPORT_C_ACCESS_MREA)
+def transport_c_access_crystal(editor: PatcherEditor, mlvl: Mlvl, area: Area) -> None:
+    """
+    Make the Dark Crystal platform in
+    Transport C Access be movable in both sides.
+    """
+    default = area.get_layer("Default")
+
+    # Add objects
+    light_crystal = default.add_instance_with(
+        Actor(
+            editor_properties=EditorProperties(
+                name="[LIGHT] Crystal",
+                transform=Transform(
+                    position=Vector(-92.548386, -62.062748, -18.448999),
+                    rotation=Vector(90.0, 0.0, -45.0),
+                    scale=Vector(2.501, 2.501, 2.501),
+                ),
+                active=False,
+            ),
+            model=0xD03EAF48,
+            is_solid=False,
+        )
+    )
+
+    dark_crystal = default.add_instance_with(
+        Actor(
+            editor_properties=EditorProperties(
+                name="[DARK] Crystal",
+                transform=Transform(
+                    position=Vector(-92.548386, -62.062748, -18.448999),
+                    rotation=Vector(90.0, 0.0, -45.0),
+                    scale=Vector(2.5, 2.5, 2.5),
+                ),
+            ),
+            model=0xACB98F54,
+            is_solid=False,
+        )
+    )
+
+    new_dtrigger = default.add_instance_with(
+        DamageableTriggerOrientated(
+            editor_properties=EditorProperties(
+                name="DamageableTriggerOrientated",
+                transform=Transform(
+                    position=Vector(-93.116074, -62.668762, -18.448999),
+                    rotation=Vector(0.0, 0.0, -45.0),
+                    scale=Vector(2.0, 1.349, 2.0),
+                ),
+            ),
+        )
+    )
+
+    # Add a light to spotlight the crystal
+    light_copy_source_room = editor.get_area(SANCTUARY_FORTRESS_MLVL, sanctuary_fortress.DYNAMO_WORKS_MREA)
+    dynamic_light = default.add_instance_with(
+        light_copy_source_room.get_instance("Luminoth Light Support").get_properties()
+    )
+    with dynamic_light.edit_properties(DynamicLight) as light:
+        light.editor_properties.transform.position = Vector(-98.0, -61.7, -18.0)
+        light.color = Color(0.858824, 0.729412, 0.584314, 0.0)
+
+    # Add og trigger connections and vulnerabilities to new one
+    og_dtrigger = area.get_instance("DamageableTrigger 001")
+    new_dtrigger.connections = og_dtrigger.connections
+    with new_dtrigger.edit_properties(DamageableTriggerOrientated) as dtrigger:
+        dtrigger.vulnerability = og_dtrigger.get_properties_as(DamageableTrigger).vulnerability
+        dtrigger.orbitable = True
+
+    # Define objects
+    platform = area.get_instance("Red Eye Statue Initial Position")
+    memory_relay = area.get_instance("Keep Statue in Last Position")
+
+    # Add new connections
+    dynamic_light.add_connection(State.Play, Message.Activate, platform)
+    dynamic_light.add_connection(State.Play, Message.Activate, light_crystal)
+    dynamic_light.add_connection(State.Play, Message.Activate, dark_crystal)
+    platform.add_connection(State.Play, Message.Activate, light_crystal)
+    platform.add_connection(State.Play, Message.Activate, dark_crystal)
+    platform.add_connection(State.Play, Message.Activate, dynamic_light)
+    new_dtrigger.add_connection(State.Dead, Message.Deactivate, og_dtrigger)
+    og_dtrigger.add_connection(State.Dead, Message.Deactivate, new_dtrigger)
+    new_dtrigger.add_connection(State.Dead, Message.Increment, light_crystal)
+    og_dtrigger.add_connection(State.Dead, Message.Increment, light_crystal)
+    memory_relay.add_connection(State.Active, Message.Deactivate, light_crystal)
+    memory_relay.add_connection(State.Active, Message.Deactivate, dark_crystal)
+    memory_relay.add_connection(State.Active, Message.Deactivate, new_dtrigger)
+    memory_relay.add_connection(State.Active, Message.Deactivate, dynamic_light)
