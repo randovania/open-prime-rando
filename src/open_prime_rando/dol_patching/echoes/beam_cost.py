@@ -48,6 +48,8 @@ if TYPE_CHECKING:
 
     from ppc_asm.dol_file import DolEditor
 
+    from open_prime_rando.dol_patching.code_cave_tracker import CodeCaveTracker
+
 
 @dataclasses.dataclass(frozen=True)
 class BeamCostAddresses:
@@ -59,6 +61,18 @@ class BeamCostAddresses:
     is_out_of_ammo_to_shoot: int
     gun_get_player: int
     get_item_amount: int
+
+    def register_symbols_to(self, cave: CodeCaveTracker) -> None:
+        symbols = cave.dol_editor.symbols
+        symbols["g_ChargeComboMissileCosts"] = self.charge_combo_missile_cost
+        symbols["BeamIdToUnchargedShotAmmoCost"] = self.uncharged_cost
+        symbols["BeamIdToChargedShotAmmoCost"] = self.charged_cost
+        symbols["BeamIdToChargeComboAmmoCost"] = self.charge_combo_ammo_cost
+
+        symbols["CPlayerGun::GetPlayer"] = self.gun_get_player
+        symbols["CPlayerGun::IsOutOfAmmoToShoot"] = self.is_out_of_ammo_to_shoot
+        symbols["CPlayerState::GetItemAmount"] = self.get_item_amount
+        symbols["CSamusGun::GetBeamAmmoTypeAndCosts"] = self.get_beam_ammo_type_and_costs
 
 
 def _get_ammo_index(item: PlayerItemEnum | None) -> int:
@@ -246,16 +260,6 @@ def apply_patch(
         # jump to the code for getting the charged/combo costs and then check if has ammo
         # The address in question is at 0x801ccd64 for NTSC
     ]
-
-    # FIXME: depend on version
-    dol_editor.symbols["BeamIdToUnchargedShotAmmoCost"] = patch_addresses.uncharged_cost
-    dol_editor.symbols["BeamIdToChargedShotAmmoCost"] = patch_addresses.charged_cost
-    dol_editor.symbols["BeamIdToChargeComboAmmoCost"] = patch_addresses.charge_combo_ammo_cost
-    dol_editor.symbols["g_ChargeComboMissileCosts"] = patch_addresses.charge_combo_missile_cost
-    dol_editor.symbols["CPlayerGun::IsOutOfAmmoToShoot"] = patch_addresses.is_out_of_ammo_to_shoot
-    dol_editor.symbols["CPlayerGun::GetPlayer"] = patch_addresses.gun_get_player
-    dol_editor.symbols["CPlayerState::GetItemAmount"] = patch_addresses.get_item_amount
-    dol_editor.symbols["CSamusGun::GetBeamAmmoTypeAndCosts"] = patch_addresses.get_beam_ammo_type_and_costs
 
     uncharged_costs_patch = struct.pack(">llll", *uncharged_costs)
     charged_costs_patch = struct.pack(">llll", *charged_costs)

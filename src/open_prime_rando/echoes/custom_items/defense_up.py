@@ -63,9 +63,6 @@ def _convert_int_to_float_using_stack(
 
 def apply_dol_patches(version: EchoesDolVersion, editor: PatcherEditor, config: DefenseUpConfig) -> None:
     cave = editor.code_cave
-    cave.dol_editor.symbols["CPlayerState::GetItemAmount"] = version.beam_cost_addresses.get_item_amount
-    cave.dol_editor.symbols["CTweakPlayer::GetVariaSuitDamageReduction"] = 0x80217D48
-    cave.dol_editor.symbols["CPlayer::GetTweakPlayer"] = 0x8000BF94
 
     with editor.edit_tweak(TweakPlayer) as tweak:
         tweak.suit_damage_reduction.varia = config.damage_reduction_multiplier

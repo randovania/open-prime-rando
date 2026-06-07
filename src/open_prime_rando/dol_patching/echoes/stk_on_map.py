@@ -14,6 +14,8 @@ from retro_data_structures.enums.echoes import PlayerItemEnum
 if TYPE_CHECKING:
     from ppc_asm.dol_file import DolEditor
 
+    from open_prime_rando.dol_patching.code_cave_tracker import CodeCaveTracker
+
 
 @dataclasses.dataclass(frozen=True)
 class StkMapIconSymbols:
@@ -23,7 +25,6 @@ class StkMapIconSymbols:
     temple_key_found_icon: int
     temple_key_not_found_icon: int
 
-    get_item_amount: int
     get_string_with_name: int
 
     wstring_append: int
@@ -32,6 +33,15 @@ class StkMapIconSymbols:
 
     increment_lut_entry: int
     check_lut_finished: int
+
+    def register_symbols_to(self, cave: CodeCaveTracker) -> None:
+        symbols = cave.dol_editor.symbols
+        symbols["gpStringTable"] = self.string_table
+
+        symbols["CAutoMapper::kTempleKeyFoundIcon"] = self.temple_key_found_icon
+        symbols["CAutoMapper::kTempleKeyNotFoundIcon"] = self.temple_key_not_found_icon
+        symbols["CStringTable::GetStringWithName"] = self.get_string_with_name
+        symbols["wstring::append"] = self.wstring_append
 
 
 def apply_stk_on_map(stk_symbols: StkMapIconSymbols, dol_editor: DolEditor) -> None:
@@ -90,15 +100,6 @@ def _apply_for_loop_change(stk_symbols: StkMapIconSymbols, dol_editor: DolEditor
     """
     dol_editor.symbols["CAutoMapper::UpdateTempleKeys::CheckEntry"] = stk_symbols.check_entry
     dol_editor.symbols["CAutoMapper::UpdateTempleKeys::IncrementLUTEntry"] = stk_symbols.increment_lut_entry
-
-    dol_editor.symbols["CAutoMapper::kTempleKeyNotFoundIcon"] = stk_symbols.temple_key_not_found_icon
-    dol_editor.symbols["CAutoMapper::kTempleKeyFoundIcon"] = stk_symbols.temple_key_found_icon
-
-    dol_editor.symbols["CPlayerState::GetItemAmount"] = stk_symbols.get_item_amount
-    dol_editor.symbols["CStringTable::GetStringWithName"] = stk_symbols.get_string_with_name
-    dol_editor.symbols["wstring::append"] = stk_symbols.wstring_append
-
-    dol_editor.symbols["gpStringTable"] = stk_symbols.string_table
 
     # semantic names for the registers being used
     entry_world_id = r0

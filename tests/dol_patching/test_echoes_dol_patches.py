@@ -5,7 +5,7 @@ from retro_data_structures.enums.echoes import PlayerItemEnum
 from open_prime_rando.dol_patching.code_cave_tracker import CodeCaveTracker
 from open_prime_rando.dol_patching.echoes import beam_cost, dol_patches, dol_versions, game_options, stk_on_map
 from open_prime_rando.dol_patching.echoes.beam_cost import BeamAmmoConfiguration, BeamConfiguration
-from open_prime_rando.dol_patching.echoes.dol_patches import StartingBeamVisorAddresses
+from open_prime_rando.dol_patching.echoes.dol_patches import EchoesDolVersion, StartingBeamVisorAddresses
 from open_prime_rando.dol_patching.echoes.game_options import GameOptionsDefaults
 
 DOLS = [
@@ -151,6 +151,9 @@ def test_apply_beam_cost_patch(dol_file):
             combo_ammo_cost=30,
         ),
     )
+
+    cave = CodeCaveTracker(dol_file)
+    patch_addresses.register_symbols_to(cave)
 
     # Run
     dol_file.set_editable(True)
@@ -316,11 +319,14 @@ def test_apply_stk_on_map(dol_file):
         map_key_lut=0x2040,
         temple_key_found_icon=0x3000,
         temple_key_not_found_icon=0x3010,
-        get_item_amount=0x4000,
         get_string_with_name=0x4010,
         wstring_append=0x4020,
         string_table=0x5000,
     )
+
+    cave = CodeCaveTracker(dol_file)
+    addresses.register_symbols_to(cave)
+    cave.dol_editor.symbols["CPlayerState::GetItemAmount"] = 0x4000
 
     # Run
     dol_file.set_editable(True)
@@ -364,9 +370,10 @@ def test_apply_stk_on_map(dol_file):
 
 
 @pytest.mark.parametrize(("header", "version"), DOLS)
-def test_apply_fixes(dol_file: DolFile, header, version):
+def test_apply_fixes(dol_file: DolFile, header, version: EchoesDolVersion):
     dol_file.header = header
     cave = CodeCaveTracker(dol_file)
+    version.register_symbols_to(cave)
 
     # Run
     dol_file.set_editable(True)
@@ -378,6 +385,8 @@ def test_apply_fixes(dol_file: DolFile, header, version):
 @pytest.mark.parametrize("enabled", [False, True])
 def test_apply_unvisited_room_names(dol_file, header, version, enabled):
     dol_file.header = header
+    cave = CodeCaveTracker(dol_file)
+    version.register_symbols_to(cave)
 
     # Run
     dol_file.set_editable(True)
@@ -389,6 +398,8 @@ def test_apply_unvisited_room_names(dol_file, header, version, enabled):
 @pytest.mark.parametrize("enabled", [False, True])
 def test_apply_teleporter_sounds(dol_file, header, version, enabled):
     dol_file.header = header
+    cave = CodeCaveTracker(dol_file)
+    version.register_symbols_to(cave)
 
     # Run
     dol_file.set_editable(True)
