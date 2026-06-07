@@ -600,7 +600,6 @@ def transport_c_access_crystal(editor: PatcherEditor, mlvl: Mlvl, area: Area) ->
     new_dtrigger.connections = og_dtrigger.connections
     with new_dtrigger.edit_properties(DamageableTriggerOrientated) as dtrigger:
         dtrigger.vulnerability = og_dtrigger.get_properties_as(DamageableTrigger).vulnerability
-        dtrigger.orbitable = True
 
     # Define objects
     platform = area.get_instance("Red Eye Statue Initial Position")
