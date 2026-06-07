@@ -153,6 +153,9 @@ class EchoesDolVersion(BasePrimeDolVersion):
     stk_map_icon: StkMapIconSymbols
     apply_double_damage_address: int
     apply_double_damage_float: int
+    apply_local_damage_address: int
+    get_tweak_player_address: int
+    get_varia_suit_damage_reduction_address: int
 
     def register_symbols_to(self, cave: CodeCaveTracker) -> None:
         symbols = cave.dol_editor.symbols
@@ -166,10 +169,11 @@ class EchoesDolVersion(BasePrimeDolVersion):
             end=self.anything_set_end_address,
         )
         symbols["CDamageInfo::ApplyDoubleDamage"] = self.apply_double_damage_address
-        symbols["CPlayer::GetTweakPlayer"] = 0x8000BF94
+        symbols["CPlayer::GetTweakPlayer"] = self.get_tweak_player_address
         symbols["CTweakAutoMapper::GetDoorColor"] = self.map_door_types.get_door_color
-        symbols["CTweakPlayer::GetVariaSuitDamageReduction"] = 0x80217D48
+        symbols["CTweakPlayer::GetVariaSuitDamageReduction"] = self.get_varia_suit_damage_reduction_address
         symbols["CWorldTransManager::SfxStart"] = self.cworldtransmanager_sfxstart
+        symbols["CStateManager::ApplyLocalDamage"] = self.apply_local_damage_address
 
 
 def _all_worlds_visible(version: EchoesDolVersion, cave: CodeCaveTracker) -> None:

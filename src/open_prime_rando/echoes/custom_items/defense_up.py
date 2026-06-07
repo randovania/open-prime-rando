@@ -70,12 +70,11 @@ def apply_dol_patches(version: EchoesDolVersion, editor: PatcherEditor, config: 
     # Adjust the max capacity of Massive Damage
     cave.dol_editor.write(version.powerup_max + PlayerItemEnum.VariaSuit.value * 4, struct.pack(">l", config.max_count))
 
-    start = 0x8003DA14
-    end = 0x8003DB4C
-    instruction_count = (end - start) // 4
+    start_offset = 476
+    instruction_count = 312
 
     cave.replace_instructions(
-        address=start,
+        address=cave.dol_editor.symbols["CDamageInfo::ApplyDoubleDamage"] + start_offset,
         instruction_count=instruction_count,
         instructions=[
             mr(r3, r26),  # put the CPlayer pointer in r3
