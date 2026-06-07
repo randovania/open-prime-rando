@@ -13,11 +13,14 @@ from retro_data_structures.properties.echoes.archetypes.Transform import Transfo
 from retro_data_structures.properties.echoes.core.Vector import Vector
 from retro_data_structures.properties.echoes.objects import (
     Actor,
+    MemoryRelay,
     Platform,
     ScriptLayerController,
+    SequenceTimer,
     Sound,
     SpawnPoint,
     Timer,
+    Trigger,
     TriggerEllipsoid,
 )
 
@@ -69,6 +72,9 @@ def register_all(area_patcher: AreaPatcher) -> None:
         agon_temple_dmt_layer,
         dark_oasis_ing_cache,
         security_station_b_activate_gates,
+        dynamo_chamber_non_dangerous,
+        trooper_security_station_non_dangerous,
+        sacred_bridge_non_dangerous,
     ]:
         area_patcher.add_function(func)
 
@@ -526,3 +532,187 @@ def security_station_b_activate_gates(editor: PatcherEditor, mlvl: Mlvl, area: A
     """
     area.get_layer("1st Pass").active = False
     area.get_layer("2nd Pass").active = True
+
+
+@decorate_patcher(TEMPLE_GROUNDS_MLVL, temple_grounds.DYNAMO_CHAMBER_MREA)
+def dynamo_chamber_non_dangerous(editor: PatcherEditor, mlvl: Mlvl, area: Area) -> None:
+    """
+    Make the tunnel gates in Dynamo Chamber not close when the door gate opens.
+    """
+    first_pass = area.get_layer("1st Pass Scripting")
+
+    # don't move the tunnel gates during the cutscene
+    gate_sequence = area.get_instance("Gate Switch Sequence")
+    gates_to_leave_up = [
+        first_pass.get_instance("Platform_Gate 2"),
+        first_pass.get_instance("Platform_Gate 3"),
+    ]
+
+    connections_to_skip = {
+        i
+        for i, conn in enumerate(gate_sequence.connections)
+        if any(conn.target.matches(gate.id) for gate in gates_to_leave_up)
+    }
+
+    with gate_sequence.edit_properties(SequenceTimer) as sequence:
+        sequence.sequence_connections = [
+            connection
+            for connection in sequence.sequence_connections
+            if connection.connection_index not in connections_to_skip
+        ]
+
+    # move the door gate to dedicated layers
+    gate_closed = area.add_layer("Door Gate Closed", active=True)
+    gate_open = area.add_layer("Door Gate Open", active=False)
+
+    move_to_gate_closed = [
+        "Platform_Gate 1",
+        "Gate 1 DOWN",
+        "Gate 1 UP",
+        "Gate 1 Stop Event Control",
+        "Closed Gate Scan",
+        "Gate Stop",
+        "Sound_Open",
+    ]
+    move_to_gate_open = [
+        0x1F00DE,  # Platform_Gate
+    ]
+
+    for inst in move_to_gate_closed:
+        area.move_instance(inst, gate_closed.name)
+    for inst in move_to_gate_open:
+        area.move_instance(inst, gate_open.name)
+
+    # change the layer controllers to (de)activate the new layers
+    decrement_1st_pass = area.get_instance("1st pass_Decrement")
+    increment_2nd_pass = area.get_instance("2nd pass_Increment")
+
+    with decrement_1st_pass.edit_properties(ScriptLayerController) as layer_controller:
+        layer_controller.layer.layer_number = gate_closed.index
+    with increment_2nd_pass.edit_properties(ScriptLayerController) as layer_controller:
+        layer_controller.layer.layer_number = gate_open.index
+
+
+@decorate_patcher(TEMPLE_GROUNDS_MLVL, temple_grounds.TROOPER_SECURITY_STATION_MREA)
+def trooper_security_station_non_dangerous(editor: PatcherEditor, mlvl: Mlvl, area: Area) -> None:
+    """
+    Make the gate in Trooper Security Station no longer close permanently after going through it.
+    Also makes it destructible on the 1st Pass layer.
+    """
+    first_pass = area.get_layer("1st Pass")
+    second_pass = area.get_layer("2nd Pass")
+
+    # move gate destruction objects to first pass
+    move_to_first_pass = [
+        "turn off Gate for good",
+        "Camera Shaker_Harsh_Short",
+        "Blow up grating",
+        "Broken Gate Scan",
+        "Generator 003",
+        "Sound 002",
+    ]
+    for inst in move_to_first_pass:
+        area.move_instance(second_pass.get_instance(inst), first_pass.name)
+
+    area.move_instance(second_pass.get_instance("Gate Destroyed (Switch Scan Hints)"), "Default")
+
+    # edit 1st pass gate to be destructible
+    main_gate = area.get_instance("Gate")
+    main_gate.add_connection(State.Dead, Message.Action, area.get_instance("Camera Shaker_Harsh_Short"))
+    main_gate.add_connection(State.Dead, Message.SetToZero, area.get_instance("Blow up grating"))
+    main_gate.add_connection(State.Dead, Message.Activate, area.get_instance("Gate Destroyed (Switch Scan Hints)"))
+    main_gate.add_connection(State.Dead, Message.Deactivate, main_gate)
+
+    with main_gate.edit_properties(Platform) as gate:
+        gate.vulnerability = area.get_instance("Gate Down - Locked").get_properties_as(Actor).vulnerability
+
+    gate_destroyed_mem_relay = area.get_instance("turn off Gate for good")
+    gate_destroyed_mem_relay.add_connection(State.Active, Message.Deactivate, main_gate)
+
+    # keep the gate movement active after first time scanning it
+    puzzle_active_mem_relay = first_pass.add_instance_with(
+        MemoryRelay(
+            editor_properties=EditorProperties(
+                name="Keep Puzzle Active",
+                active=False,
+            ),
+            delayed_action=True,
+        )
+    )
+    gate_scan_poi = area.get_instance("Gate Control Panel Scan (1st Pass)")
+    start_puzzle_relay = area.get_instance("Begin Puzzle")
+
+    # activate memory relay when scan post is scanned
+    gate_scan_poi.add_connection(State.ScanDone, Message.Activate, puzzle_active_mem_relay)
+    # deactivate memory relay when gate is destroyed
+    main_gate.add_connection(State.Dead, Message.Deactivate, puzzle_active_mem_relay)
+
+    puzzle_active_mem_relay.add_connection(State.Active, Message.SetToZero, start_puzzle_relay)
+
+    # change the layers when the gate is destroyed,
+    # rather than when the puzzle is solved
+    puzzle_solve_trigger = area.get_instance("Lower Gate for good")
+    with puzzle_solve_trigger.edit_properties(Trigger) as trigger:
+        trigger.editor_properties.active = False
+
+    main_gate.add_connection(State.Dead, Message.Decrement, area.get_instance("Decrement 1st Pass"))
+    main_gate.add_connection(State.Dead, Message.Increment, area.get_instance("Increment 2nd Pass"))
+
+    # delete second pass gate, since second pass now activates on destruction
+    area.remove_instance("Gate Down - Locked")
+
+
+@decorate_patcher(TEMPLE_GROUNDS_MLVL, temple_grounds.SACRED_BRIDGE_MREA)
+def sacred_bridge_non_dangerous(editor: PatcherEditor, mlvl: Mlvl, area: Area) -> None:
+    """
+    Open the gate in Sacred Bridge if you reach the other side after entering from GFMC.
+    """
+    platform_up = area.get_layer("Platform Up")
+
+    # add a trigger at the other side of the room to lower the bridge
+    show_samus_trigger = area.get_instance("Show Samus")
+    show_samus_props = show_samus_trigger.get_properties_as(Trigger)
+    # this trigger aligns perfectly with where we want the new one to be
+    lower_bridge_trigger = platform_up.add_instance_with(show_samus_props)
+    with lower_bridge_trigger.edit_properties(Trigger) as trigger:
+        trigger.editor_properties.name = "Lower Bridge Automatically"
+        trigger.editor_properties.active = False
+
+        trigger.deactivate_on_enter = True
+
+    # only activate the new trigger after entering one at the GFMC door
+    gfmc_door_trigger = area.get_instance(0x310099)
+    prepare_bridge_trigger = platform_up.add_instance_with(gfmc_door_trigger.get_properties())
+    prepare_bridge_trigger.name = "Prepare to lower bridge automatically"
+    prepare_bridge_trigger.add_connection(State.Entered, Message.Activate, lower_bridge_trigger)
+
+    # deactivate new triggers after bridge is lowered
+    bridge_relay = area.get_instance("Bridge Operation Control")
+    bridge_relay.add_connection(State.Zero, Message.Deactivate, prepare_bridge_trigger)
+    bridge_relay.add_connection(State.Zero, Message.Deactivate, lower_bridge_trigger)
+
+    # make a new sequence timer that doesn't start a cutscene
+    cutscene_sequence = area.get_instance("Bridge Down Control")
+    no_cutscene_sequence = platform_up.add_instance_with(cutscene_sequence.get_properties())
+    no_cutscene_sequence.name = "Bridge Down Control (No cutscene)"
+    no_cutscene_sequence.connections = cutscene_sequence.connections
+
+    connections_to_skip = {
+        0,  # decrement cinematic bars
+        1,  # increment cinematic bars
+        2,  # reposition
+        3,  # activate cinematic
+        4,  # deactivate cinematic
+        9,  # force combat visor
+        11,  # show samus relay
+        12,  # show samus trigger
+    }
+    with no_cutscene_sequence.edit_properties(SequenceTimer) as sequence:
+        sequence.sequence_connections = [
+            connection
+            for connection in sequence.sequence_connections
+            if connection.connection_index not in connections_to_skip
+        ]
+
+    # start the new sequence timer when entering the new trigger
+    lower_bridge_trigger.add_connection(State.Entered, Message.Start, no_cutscene_sequence)
