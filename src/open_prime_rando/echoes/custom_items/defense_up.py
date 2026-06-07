@@ -35,7 +35,7 @@ from open_prime_rando.patcher_editor import PatcherEditor
 
 
 class DefenseUpConfig(pydantic.BaseModel):
-    """Control how strong Massive Damage is and how many copies you can have."""
+    """Control how strong Defense Up is and how many copies you can have."""
 
     damage_reduction_multiplier: float = 0.0
     """By how much damage reduction each copy of the item gives."""
@@ -61,7 +61,12 @@ def _convert_int_to_float_using_stack(
     ]
 
 
-def apply_dol_patches(version: EchoesDolVersion, editor: PatcherEditor, config: DefenseUpConfig) -> None:
+def apply_patches(version: EchoesDolVersion, editor: PatcherEditor, config: DefenseUpConfig) -> None:
+    """
+    Applies the necessary Dol and Tweak patches for DefenseUp to work.
+
+    Logbook patches are applied in logbook.patch_logbook
+    """
     cave = editor.code_cave
 
     with editor.edit_tweak(TweakPlayer) as tweak:

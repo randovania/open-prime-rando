@@ -33,7 +33,7 @@ def apply_changes(version: EchoesDolVersion, editor: PatcherEditor, config: Cust
     Makes the necessary changes for our custom items to work.
     """
     massive_damage.apply_dol_patches(version, editor.code_cave, config.massive_damage_config)
-    defense_up.apply_dol_patches(version, editor, config.defense_up_config)
+    defense_up.apply_patches(version, editor, config.defense_up_config)
 
     _persist_inventory_items(
         version,
