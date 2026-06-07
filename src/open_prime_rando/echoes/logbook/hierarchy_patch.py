@@ -76,7 +76,7 @@ def get_hierarchy_patches(configuration: RandoConfiguration) -> list[HierarchyPa
 
     defense_up_config = configuration.custom_items.defense_up_config
     defense_up_scan_text = (
-        f"The Defense Up reduces the damage takes by {defense_up_config.damage_reduction_multiplier * 100:.0f}% "
+        f"The Defense Up reduces the damage taken by {defense_up_config.damage_reduction_multiplier * 100:.0f}% "
         f"for every copy you find, up to {defense_up_config.max_count}"
     )
     if defense_up_config.max_count == 1:
