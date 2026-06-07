@@ -74,6 +74,16 @@ def get_hierarchy_patches(configuration: RandoConfiguration) -> list[HierarchyPa
     else:
         massive_damage_scan_text += " times."
 
+    defense_up_config = configuration.custom_items.defense_up_config
+    defense_up_scan_text = (
+        f"The Defense Up reduces the damage takes by {defense_up_config.damage_reduction_multiplier * 100:.0f}% "
+        f"for every copy you find, up to {defense_up_config.max_count}"
+    )
+    if defense_up_config.max_count == 1:
+        defense_up_scan_text += " time."
+    else:
+        defense_up_scan_text += " times."
+
     return [
         # # For reference
         # HierarchyPatch(
@@ -98,12 +108,22 @@ def get_hierarchy_patches(configuration: RandoConfiguration) -> list[HierarchyPa
         #     ),
         # ),
         HierarchyPatch(
-            25,  # Inventory -> Miscellaneous -> Dark Temple Keys -> Sky Temple Keys
-            None,
-            (
-                HierarchyPatch(81, "Keys 1, 2, 3", (148, 151, 156)),
-                HierarchyPatch(166, "Keys 4, 5, 6", (45, 303, 317)),
-                HierarchyPatch(195, "Keys 7, 8, 9", (159, 221, 231)),
+            135,  # Inventory - > Armor
+            rename=None,
+            connections=(
+                65,  # Light Suit
+                165,  # Varia Suit
+                363,  # Dark Suit
+                HierarchyPatch(
+                    NewInventoryEntry(
+                        name_string_name="DefenseUp",
+                        model_name="VariaSuit",
+                        scan_text=defense_up_scan_text,
+                        slot_index=InventorySlotEnum.VariaSuit,
+                        item_index=PlayerItemEnum.VariaSuit,
+                    ),
+                    "Defense Up",
+                ),
             ),
         ),
         HierarchyPatch(
@@ -223,6 +243,15 @@ def get_hierarchy_patches(configuration: RandoConfiguration) -> list[HierarchyPa
                     ),
                     "Massive Damage",
                 ),
+            ),
+        ),
+        HierarchyPatch(
+            25,  # Inventory -> Miscellaneous -> Dark Temple Keys -> Sky Temple Keys
+            None,
+            (
+                HierarchyPatch(81, "Keys 1, 2, 3", (148, 151, 156)),
+                HierarchyPatch(166, "Keys 4, 5, 6", (45, 303, 317)),
+                HierarchyPatch(195, "Keys 7, 8, 9", (159, 221, 231)),
             ),
         ),
         HierarchyPatch(

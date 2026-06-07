@@ -247,7 +247,7 @@ def _apply_patches(
         _fix_dumb_broken_strg(editor)
 
     apply_dol_patches(editor, configuration, dol_version)
-    custom_items.apply_changes(dol_version, editor.code_cave, configuration.custom_items)
+    custom_items.apply_changes(dol_version, editor, configuration.custom_items)
 
     apply_stk_on_map(editor, dol_version)
 
