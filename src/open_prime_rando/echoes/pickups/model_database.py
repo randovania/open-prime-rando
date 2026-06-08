@@ -143,6 +143,17 @@ PICKUP_MODELS = {
             ambient_color=Color(1.0, 0.0, 0.0, 1.0),
         ),
     ),
+    "DefenseUp": PickupModel(
+        model=0xCD995C16,
+        transform=ModelTransform(
+            scale=Vector(3.0, 3.0, 3.0),
+        ),
+        auto_spin=True,
+        lighting=ModelLighting(
+            unk_bool=False,
+            ambient_color=Color(0.0, 0.0, 1.0, 1.0),
+        ),
+    ),
     "MorphBall": PickupModel(
         model=0xED3FCD53,
         animation=ModelAnim(

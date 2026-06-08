@@ -80,6 +80,10 @@ def patch_logbook(editor: PatcherEditor, version: EchoesDolVersion, configuratio
 
     _patch_inventory_slots(editor, tree)
 
+    # Change the entry for Varia Suit to check for Power Beam, as we're reusing the item for Defense Up
+    with tree.get_node_by_id(165).edit_properties(ScanTreeInventory) as tree_inventory:
+        tree_inventory.inventory_slot = InventorySlotEnum.PowerBeam
+
     _patch_dark_temple_key_scans(editor)
 
     for patch in get_hierarchy_patches(configuration):
