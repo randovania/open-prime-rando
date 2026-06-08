@@ -940,7 +940,7 @@
                                     }
                                 ],
                                 "appearance": {
-                                    "model_data": "VariaSuit",
+                                    "model_data": "DefenseUp",
                                     "sound": 10057,
                                     "jingle": {
                                         "file_name": "/audio/itm_x_long_00.dsp",

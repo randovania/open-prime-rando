@@ -61,28 +61,35 @@ class HierarchyPatch:
         return node
 
 
+def _format_string_for_upgrade(
+    fmt_string: str,
+    multiplier: float,
+    max_count: int,
+) -> str:
+    if max_count == 1:
+        count_text = "1 time"
+    else:
+        count_text = f"{max_count} times"
+
+    return fmt_string.format(percentage=f"{multiplier * 100:.0f}%", count=count_text)
+
+
 def get_hierarchy_patches(configuration: RandoConfiguration) -> list[HierarchyPatch]:
     """Get the list of HierarchyPatch objects to apply, adjusted to the given configuration."""
 
     massive_damage_config = configuration.custom_items.massive_damage_config
-    massive_damage_scan_text = (
-        f"The Massive Damage increases your damage by {massive_damage_config.damage_increase_multiplier * 100:.0f}% "
-        f"for every copy you find, up to {massive_damage_config.max_count}"
+    massive_damage_scan_text = _format_string_for_upgrade(
+        "The Massive Damage increases your damage by {percentage} for every copy you find, up to {count}.",
+        multiplier=massive_damage_config.damage_increase_multiplier,
+        max_count=massive_damage_config.max_count,
     )
-    if massive_damage_config.max_count == 1:
-        massive_damage_scan_text += " time."
-    else:
-        massive_damage_scan_text += " times."
 
     defense_up_config = configuration.custom_items.defense_up_config
-    defense_up_scan_text = (
-        f"The Defense Up reduces the damage taken by {defense_up_config.damage_reduction_multiplier * 100:.0f}% "
-        f"for every copy you find, up to {defense_up_config.max_count}"
+    defense_up_scan_text = _format_string_for_upgrade(
+        "The Defense Up reduces the damage taken by {percentage} for every copy you find, up to {count}.",
+        multiplier=defense_up_config.damage_reduction_multiplier,
+        max_count=defense_up_config.max_count,
     )
-    if defense_up_config.max_count == 1:
-        defense_up_scan_text += " time."
-    else:
-        defense_up_scan_text += " times."
 
     return [
         # # For reference
