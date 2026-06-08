@@ -11,19 +11,21 @@ from open_prime_rando.patcher_editor import PatcherEditor
 
 if typing.TYPE_CHECKING:
     from open_prime_rando.echoes.patcher import StatusUpdate
-    from open_prime_rando.echoes.rando_configuration import AssetId
+    from open_prime_rando.echoes.pydantic_models import PydanticAssetId
 
 type RawPatcherFunction = typing.Callable[[PatcherEditor, Mlvl, Area], None]
 
 
 class AreaPatcherFunction(typing.Protocol):
-    mlvl_id: AssetId
-    mrea_id: AssetId
+    mlvl_id: PydanticAssetId
+    mrea_id: PydanticAssetId
 
     def __call__(self, editor: PatcherEditor, mlvl: Mlvl, area: Area) -> None: ...
 
 
-def decorate_patcher(mlvl_id: AssetId, mrea_id: AssetId) -> typing.Callable[[RawPatcherFunction], AreaPatcherFunction]:
+def decorate_patcher(
+    mlvl_id: PydanticAssetId, mrea_id: PydanticAssetId
+) -> typing.Callable[[RawPatcherFunction], AreaPatcherFunction]:
     """
     Annotates a function with the mlvl_id/mrea_id
     :param mlvl_id:
@@ -41,10 +43,10 @@ def decorate_patcher(mlvl_id: AssetId, mrea_id: AssetId) -> typing.Callable[[Raw
 
 
 class AreaPatcher:
-    _patcher_functions: dict[AssetId, dict[AssetId, list[RawPatcherFunction]]]
+    _patcher_functions: dict[PydanticAssetId, dict[PydanticAssetId, list[RawPatcherFunction]]]
     _frontend_functions: list[RawPatcherFunction]
 
-    def __init__(self, editor: PatcherEditor, mlvl_list: list[AssetId], *, rebuild_savw: bool = True):
+    def __init__(self, editor: PatcherEditor, mlvl_list: list[PydanticAssetId], *, rebuild_savw: bool = True):
         self.editor = editor
         self.mlvl_list = mlvl_list
         self.rebuild_savw = rebuild_savw
@@ -65,7 +67,7 @@ class AreaPatcher:
         """
         self._frontend_functions.append(func)
 
-    def add_raw_function(self, mlvl_id: AssetId, mrea_id: AssetId, func: RawPatcherFunction) -> None:
+    def add_raw_function(self, mlvl_id: PydanticAssetId, mrea_id: PydanticAssetId, func: RawPatcherFunction) -> None:
         """
         Adds a new function that is used to patch an area with the given ids.
         """
