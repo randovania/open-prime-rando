@@ -48,7 +48,6 @@ def apply_dol_patches(version: EchoesDolVersion, cave: CodeCaveTracker, config: 
     """
 
     # it's the 15th instruction
-    cave.dol_editor.symbols["CDamageInfo::ApplyDoubleDamage"] = version.apply_double_damage_address
     load_float_offset = 0x8018A0CC - 0x8018A098
 
     return_address = version.apply_double_damage_address + load_float_offset + 4
