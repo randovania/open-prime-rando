@@ -23,7 +23,7 @@ if TYPE_CHECKING:
     from retro_data_structures.formats.mlvl import Mlvl
     from retro_data_structures.formats.mrea import Area
 
-    from open_prime_rando.echoes.rando_configuration import AreaReference
+    from open_prime_rando.echoes.pydantic_models import AreaReference
     from open_prime_rando.patcher_editor import PatcherEditor
 
 

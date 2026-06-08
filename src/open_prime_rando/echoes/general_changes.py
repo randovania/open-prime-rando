@@ -130,3 +130,19 @@ def change_map_visibility(editor: PatcherEditor, mlvl: Mlvl, area: Area, map_vis
         mapa.visibility_mode = AreaVisibility.Always
     else:
         mapa.visibility_mode = AreaVisibility.VisitOrMapStation
+
+
+def change_area_name(editor: PatcherEditor, mlvl: Mlvl, area: Area, name: str) -> None:
+    """
+    Changes the name of an Area.
+    """
+    # duplicate the STRG in case it was used elsewhere and breaks things
+    area._raw.area_name_id = editor.duplicate_asset(
+        area._raw.area_name_id, f"custom_name_for_{area.internal_name}.STRG"
+    )
+
+    # clear the cached STRG so that the name setter works correctly
+    area._strg = None
+
+    # set the new name
+    area.strg.set_single_string(0, name)  # FIXME: area.name is broken in RDS

@@ -1003,6 +1003,7 @@
                 },
                 {
                     "mrea_id": 1660916974,
+                    "new_name": "Transport to Undertemple Access",
                     "pickups": [
                         {
                             "location": {
@@ -1044,6 +1045,17 @@
                                 "conversion": []
                             },
                             "progressive_stages": []
+                        }
+                    ],
+                    "elevators": [
+                        {
+                            "elevator_id": 1572998,
+                            "target": {
+                                "mlvl_id": 1039999561,
+                                "mrea_id": 700027128
+                            },
+                            "scan_strg": 1177189496,
+                            "target_name": "Undertemple Access"
                         }
                     ]
                 },
