@@ -258,12 +258,13 @@ def _apply_patches(
     dock_lock_rando.add_custom_models(editor)
 
     dol_version: EchoesDolVersion = find_version_for_dol(editor.dol, dol_versions.ALL_VERSIONS)
+    dol_version.register_symbols_to(editor.code_cave)
 
     if dol_version.echoes_version == EchoesVersion.NTSC_U:
         _fix_dumb_broken_strg(editor)
 
     apply_dol_patches(editor, configuration, dol_version)
-    custom_items.apply_changes(dol_version, editor.code_cave, configuration.custom_items)
+    custom_items.apply_changes(dol_version, editor, configuration.custom_items)
 
     apply_stk_on_map(editor, dol_version)
 

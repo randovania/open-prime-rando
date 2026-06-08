@@ -8,6 +8,7 @@ from collections.abc import Callable, Iterable, Sequence
 from typing import TYPE_CHECKING, overload
 
 from ppc_asm import assembler
+from ppc_asm.assembler import ppc
 
 if TYPE_CHECKING:
     from ppc_asm.dol_file import DolEditor
@@ -105,6 +106,29 @@ class CodeCaveTracker:
 
         self.add_empty_space(address + len(data), length=length - len(data))
         self.dol_editor.write(address, data)
+
+    def replace_instructions(
+        self,
+        address: MemoryAddress,
+        instruction_count: int,
+        *,
+        instructions: Sequence[assembler.BaseInstruction],
+        add_jump_at_end: bool,
+    ) -> None:
+        """
+        Places the given instructions at the given address. Then marks the remaining space as empty.
+
+        :param address: The address of the memory block to replace.
+        :param instruction_count: How many instructions the block has. Not how many instructions it'll be.
+        :param instructions:
+        :param add_jump_at_end: If true, at the end of the given instructions add a jump
+        """
+        if add_jump_at_end:
+            instructions = list(instructions)
+            instructions.append(ppc.b(address + instruction_count * 4))
+
+        assembled = bytes(assembler.assemble_instructions(address, instructions, symbols=self.dol_editor.symbols))
+        self.replace_address(address, instruction_count * 4, assembled)
 
     def replace_symbol(self, symbol: str, instructions: Sequence[assembler.BaseInstruction]) -> None:
         """Replaces the code at the given symbol with the given instructions, marking the remaining space as empty."""

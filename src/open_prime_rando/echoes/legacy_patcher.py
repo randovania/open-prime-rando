@@ -200,6 +200,13 @@ def patch_paks(
     status_update("Finished", 1.0)
 
 
+POWERUP_TO_INDEX = {
+    "Double Damage": 58,
+    "Unlimited Missiles": 81,
+    "Unlimited Beam Ammo": 82,
+}
+
+
 def patch_dol(dol_editor: DolEditor, patches_data: DolPatchesData) -> None:
     version = dol_version.find_version_for_dol(dol_editor, dol_versions.ALL_VERSIONS)
     assert isinstance(version, dol_patches.EchoesDolVersion)
@@ -207,9 +214,9 @@ def patch_dol(dol_editor: DolEditor, patches_data: DolPatchesData) -> None:
     cave = CodeCaveTracker(dol_editor)
 
     dol_patches.apply_mandatory_fixes(version, cave)
-    dol_patches.change_powerup_should_persist(
-        version, dol_editor, ["Double Damage", "Unlimited Missiles", "Unlimited Beam Ammo"]
-    )
+
+    for index in POWERUP_TO_INDEX.values():
+        dol_editor.write(version.powerup_should_persist + index, b"\x01")
 
     all_prime_dol_patches.apply_build_info_patch(version, dol_editor, patches_data.world_uuid)
     all_prime_dol_patches.apply_remote_execution_patch(version.game, version.string_display, dol_editor)
