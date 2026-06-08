@@ -157,6 +157,7 @@ class EchoesDolVersion(BasePrimeDolVersion):
     get_tweak_player_address: int
     get_varia_suit_damage_reduction_address: int
     cautomapper_update_address: int
+    cpausescreen_render_address: int
 
     def register_symbols_to(self, cave: CodeCaveTracker) -> None:
         symbols = cave.dol_editor.symbols
@@ -171,6 +172,7 @@ class EchoesDolVersion(BasePrimeDolVersion):
         )
         symbols["CAutoMapper::Update"] = self.cautomapper_update_address
         symbols["CDamageInfo::ApplyDoubleDamage"] = self.apply_double_damage_address
+        symbols["CPauseScreen::Render"] = self.cpausescreen_render_address
         symbols["CPlayer::GetTweakPlayer"] = self.get_tweak_player_address
         symbols["CTweakAutoMapper::GetDoorColor"] = self.map_door_types.get_door_color
         symbols["CTweakPlayer::GetVariaSuitDamageReduction"] = self.get_varia_suit_damage_reduction_address

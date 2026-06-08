@@ -114,6 +114,7 @@ ALL_VERSIONS = [
         get_tweak_player_address=0x8000BF94,
         get_varia_suit_damage_reduction_address=0x80217D48,
         cautomapper_update_address=0x8008940C,
+        cpausescreen_render_address=0x8020B0B8,
     ),
     EchoesDolVersion(
         game=Game.ECHOES,
@@ -210,5 +211,6 @@ ALL_VERSIONS = [
         get_tweak_player_address=0x8000BFD8,
         get_varia_suit_damage_reduction_address=0x80218080,
         cautomapper_update_address=0x80089548,
+        cpausescreen_render_address=0x8020B398,
     ),
 ]
