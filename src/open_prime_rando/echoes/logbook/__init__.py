@@ -49,6 +49,8 @@ def _patch_inventory_slots(editor: PatcherEditor, tree: Tree) -> None:
     inventory_entries_to_change = {
         # Change the entry for charge combos to check for Supers instead
         141: InventorySlotEnum.SuperMissile,
+        # Change the entry for Varia Suit to check for Power Beam, as we're reusing the item for Defense Up
+        165: InventorySlotEnum.PowerBeam,  # TODO: some item we can guarantee is always present
     }
 
     for entry_id, slot in inventory_entries_to_change.items():
@@ -79,11 +81,6 @@ def patch_logbook(editor: PatcherEditor, version: EchoesDolVersion, configuratio
     hierarchy_entries = list(hierarchy.entries)
 
     _patch_inventory_slots(editor, tree)
-
-    # Change the entry for Varia Suit to check for Power Beam, as we're reusing the item for Defense Up
-    with tree.get_node_by_id(165).edit_properties(ScanTreeInventory) as tree_inventory:
-        tree_inventory.inventory_slot = InventorySlotEnum.PowerBeam
-
     _patch_dark_temple_key_scans(editor)
 
     for patch in get_hierarchy_patches(configuration):
