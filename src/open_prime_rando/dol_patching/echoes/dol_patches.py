@@ -156,6 +156,7 @@ class EchoesDolVersion(BasePrimeDolVersion):
     apply_local_damage_address: int
     get_tweak_player_address: int
     get_varia_suit_damage_reduction_address: int
+    cautomapper_update_address: int
 
     def register_symbols_to(self, cave: CodeCaveTracker) -> None:
         symbols = cave.dol_editor.symbols
@@ -168,6 +169,7 @@ class EchoesDolVersion(BasePrimeDolVersion):
             self.anything_set_start_address,
             end=self.anything_set_end_address,
         )
+        symbols["CAutoMapper::Update"] = self.cautomapper_update_address
         symbols["CDamageInfo::ApplyDoubleDamage"] = self.apply_double_damage_address
         symbols["CPlayer::GetTweakPlayer"] = self.get_tweak_player_address
         symbols["CTweakAutoMapper::GetDoorColor"] = self.map_door_types.get_door_color
@@ -308,3 +310,20 @@ def apply_map_door_changes(door_symbols: MapDoorTypeAddresses, dol_editor: DolEd
 
     dol_editor.symbols["CTweakAutoMapper::GetDoorColor::DoorColorArray"] = door_color_array
     dol_editor.write("CTweakAutoMapper::GetDoorColor::DoorColorArray", DoorMapIcon.get_surface_colors_as_bytes())
+
+
+def apply_always_show_map_legend(version: EchoesDolVersion, cave: CodeCaveTracker) -> None:
+    """Patches CAutoMapper::Update to not care about the inventory state for the map legend."""
+    # NTSC branch to patch at 0x80089e94
+    offset = 0x0A88
+
+    # Code Cave opportunities:
+    # 7 instructions in the abandoned if block
+    # 5 instructions for calling CPlayerState::GetItemCapacity and comparing the result
+
+    cave.dol_editor.write_instructions(
+        ("CAutoMapper::Update", offset),
+        [
+            nop(),
+        ],
+    )
