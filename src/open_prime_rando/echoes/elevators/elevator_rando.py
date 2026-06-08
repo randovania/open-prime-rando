@@ -49,7 +49,8 @@ def register_elevator_patch(
     area_patcher: AreaPatcher, mlvl_id: AssetId, mrea_id: AssetId, change: ElevatorChange
 ) -> None:
     """
-    Registers an elevator change into the AreaPatcher, as well as any needed special handling for specific edge cases.
+    Registers an elevator change into the AreaPatcher, as well
+    as any needed special handling for specific edge cases.
     """
 
     area_patcher.add_raw_function(
@@ -62,3 +63,4 @@ def register_elevator_patch(
     )
 
     # TODO: register handlers for special cases such as Aerie
+    # TODO: if the destination is not an elevator room, patch it so it stops the elevator sound
