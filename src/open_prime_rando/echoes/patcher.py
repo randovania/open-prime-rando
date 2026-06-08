@@ -187,6 +187,7 @@ def apply_dol_patches(editor: PatcherEditor, configuration: RandoConfiguration, 
     all_prime_dol_patches.apply_build_info_patch(dol_version, editor.dol, configuration.world_uuid)
     dol_patches.apply_map_door_changes(dol_version.map_door_types, editor.dol)
     dol_patches.apply_unvisited_room_names(dol_version, editor.dol, configuration.map_visibility.unvisited_room_names)
+    dol_patches.apply_always_show_map_legend(dol_version, editor.code_cave)
     beam_cost.apply_patch(dol_version.beam_cost_addresses, editor.dol, configuration.beam_configuration)
     game_options.apply_patch(
         dol_version.game_options_constructor_address, editor.dol, configuration.game_options_defaults
