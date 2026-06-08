@@ -71,6 +71,7 @@ def register_all(area_patcher: AreaPatcher) -> None:
         agon_temple_move_pickup,
         agon_temple_persist_pickup,
         main_hydrochamber_persist_boss,
+        hive_temple_persist_boss,
     ]:
         area_patcher.add_function(func)
 
@@ -857,3 +858,91 @@ def main_hydrochamber_persist_boss(editor: PatcherEditor, mlvl: Mlvl, area: Area
         controller.is_dynamic = False
     blogg_intro_end.add_connection(State.Zero, Message.Increment, non_dynamic_blogg_controller)
     blogg_dead.add_connection(State.Zero, Message.Decrement, non_dynamic_blogg_controller)
+
+
+@decorate_patcher(SANCTUARY_FORTRESS_MLVL, sanctuary_fortress.HIVE_TEMPLE_MREA)
+def hive_temple_persist_boss(editor: PatcherEditor, mlvl: Mlvl, area: Area) -> None:
+    """
+    Makes the boss fight trigger persistent until boss is defeated.
+    """
+    # Define objects
+    default = area.get_layer("Default")
+    trigger_memory_relay = area.get_instance("Remember Boss Has Been Triggered")
+    boss_trigger = area.get_instance("Start Boss Encounter")
+    boss_intro_end_relay = area.get_instance("Intro cinema end")
+    boss_intro_actors_dynamic_controller = area.get_instance("DYNAMIC Dump Intro Cinematic Actors")
+    boss_stage_2_splitters_dynamic_controller = area.get_instance("Load Boss Stage 2 Splitters")
+    boss_cripple_body_cinema_dynamic_controller = area.get_instance("Load Boss Cripple Body Cinema (Stage 2 Cinematic)")
+    boss_death_dynamic_controller = area.get_instance("Load Death Cinematic")
+    digital_guardian_body_dynamic_controller = area.get_instance("Dump Digital Guardian body")
+    stage_3_relay = area.get_instance("Transition To stage 3")
+    quadraxis = area.get_instance("DigitalGuardianHead 001")
+    spiderball_platform_end_relay = area.get_instance("[OUT] End Spiderball Platform Activation")
+
+    # Don't activate memory relay immediately
+    boss_trigger.remove_connection(boss_trigger.connections[4])
+
+    # Change layers non-dynamically back to start
+    boss_intro_actors_controller = default.add_instance_with(boss_intro_actors_dynamic_controller.get_properties())
+    with boss_intro_actors_controller.edit_properties(ScriptLayerController) as intro_actors_controller:
+        intro_actors_controller.editor_properties.name = "INCREMENT Intro Cinematic Actors"
+        intro_actors_controller.editor_properties.transform.position.y -= 1.0
+        intro_actors_controller.is_dynamic = False
+
+    boss_cripple_body_cinema_controller = default.add_instance_with(
+        boss_cripple_body_cinema_dynamic_controller.get_properties()
+    )
+    with boss_cripple_body_cinema_controller.edit_properties(ScriptLayerController) as body_cripple_controller:
+        body_cripple_controller.editor_properties.name = "DECREMENT Boss Cripple Body Cinema"
+        body_cripple_controller.editor_properties.transform.position.y -= 1.0
+        body_cripple_controller.is_dynamic = False
+
+    boss_stage_2_splitters_controller = default.add_instance_with(
+        boss_stage_2_splitters_dynamic_controller.get_properties()
+    )
+    with boss_stage_2_splitters_controller.edit_properties(ScriptLayerController) as stage_2_splitters_controller:
+        stage_2_splitters_controller.editor_properties.name = "DECREMENT Boss Stage 2 Splitters"
+        stage_2_splitters_controller.editor_properties.transform.position.y -= 1.0
+        stage_2_splitters_controller.is_dynamic = False
+
+    boss_death_controller = default.add_instance_with(boss_death_dynamic_controller.get_properties())
+    with boss_death_controller.edit_properties(ScriptLayerController) as death_controller:
+        death_controller.editor_properties.name = "DECREMENT Death Cinematic"
+        death_controller.editor_properties.transform.position.y -= 1.0
+        death_controller.is_dynamic = False
+
+    digital_guardian_body_controller = default.add_instance_with(
+        digital_guardian_body_dynamic_controller.get_properties()
+    )
+    with digital_guardian_body_controller.edit_properties(ScriptLayerController) as guardian_body_controller:
+        guardian_body_controller.editor_properties.name = "INCREMENT/DECREMENT CliffsideBoss Body"
+        guardian_body_controller.editor_properties.transform.position.y -= 1.0
+        guardian_body_controller.is_dynamic = False
+
+    boss_intro_end_relay.add_connection(State.Zero, Message.Increment, boss_intro_actors_controller)
+    boss_cripple_body_cinema_dynamic_controller.add_connection(
+        State.Arrived, Message.Decrement, boss_cripple_body_cinema_controller
+    )
+    boss_stage_2_splitters_dynamic_controller.add_connection(
+        State.Arrived, Message.Decrement, boss_stage_2_splitters_controller
+    )
+    boss_death_dynamic_controller.add_connection(State.Arrived, Message.Decrement, boss_death_controller)
+    stage_3_relay.add_connection(State.Zero, Message.Increment, digital_guardian_body_controller)
+
+    # Layer changes happen after pickup instead of boss death
+    quadraxis_connections = list(quadraxis.connections)
+    quadraxis.remove_connection(quadraxis_connections[2])
+    quadraxis.remove_connection(quadraxis_connections[4])
+    quadraxis.remove_connection(quadraxis_connections[11])
+    spiderball_platform_end_relay.add_connection(State.Zero, Message.Activate, trigger_memory_relay)
+    spiderball_platform_end_relay.add_connection(State.Zero, Message.Decrement, boss_intro_actors_controller)
+    spiderball_platform_end_relay.add_connection(State.Zero, Message.Decrement, digital_guardian_body_controller)
+    spiderball_platform_end_relay.add_connection(
+        State.Zero, Message.SetToZero, area.get_instance("Luminoth Dialogue Layer Loading Control")
+    )
+    spiderball_platform_end_relay.add_connection(
+        State.Zero, Message.Increment, area.get_instance("Increment - Post Boss Music")
+    )
+    spiderball_platform_end_relay.add_connection(
+        State.Zero, Message.Decrement, area.get_instance("Decrement - Boss Music")
+    )
