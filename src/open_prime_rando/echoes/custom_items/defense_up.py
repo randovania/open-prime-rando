@@ -79,7 +79,7 @@ def apply_patches(version: EchoesDolVersion, editor: PatcherEditor, config: Defe
     instruction_count = 312
 
     cave.replace_instructions(
-        address=cave.dol_editor.symbols["CDamageInfo::ApplyDoubleDamage"] + start_offset,
+        address=cave.dol_editor.symbols["CStateManager::ApplyLocalDamage"] + start_offset,
         instruction_count=instruction_count,
         instructions=[
             mr(r3, r26),  # put the CPlayer pointer in r3

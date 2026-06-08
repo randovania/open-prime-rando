@@ -7,7 +7,7 @@ from typing import TYPE_CHECKING
 
 import open_prime_rando_practice_mod
 from PIL import Image
-from ppc_asm.assembler import ppc
+from ppc_asm.assembler import custom_ppc, ppc
 from retro_data_structures.formats.banner import Banner
 from retro_data_structures.formats.frme import Frme
 from retro_data_structures.formats.strg import Strg
@@ -179,6 +179,61 @@ def apply_stk_on_map(editor: PatcherEditor, dol_version: EchoesDolVersion) -> No
         editor.ensure_present(pak, "stk_icon_found.TXTR")
 
 
+def apply_item_percentage_as_locations(
+    editor: PatcherEditor,
+    dol_version: EchoesDolVersion,
+    configuration: RandoConfiguration,
+) -> None:
+
+    pickup_count = 0
+    for world_change in configuration.world_changes:
+        for area_change in world_change.area_changes:
+            pickup_count += len(area_change.pickups)
+
+    def with_format_str(address: int) -> None:
+        if dol_version.echoes_version == EchoesVersion.NTSC_U:
+            instruction_offset = 0x011C
+            output_offset = 0x80
+        elif dol_version.echoes_version == EchoesVersion.PAL:
+            instruction_offset = 0x0148
+            output_offset = 0xA0
+
+            # In PAL, the `%` is not part of the format string and is instead another entry in the STRG
+            # We can't set this string to an empty one because it's used by the Scan counter.
+
+            # Remove the extra append of `Percentage`
+            editor.dol.write_instructions(
+                ("CPauseScreen::Render", 0x1A8),
+                [ppc.nop()] * 9
+                + [
+                    ppc.lwz(ppc.r3, 0x230, ppc.r30),
+                    ppc.addi(ppc.r4, ppc.r1, 0x30),
+                ],
+            )
+            # Split write_instructions to leave the call to SetText untouched
+            # remove the ~wstring call for the wstring removed above
+            editor.dol.write_instructions(0x8020B57C, [ppc.nop()])
+        else:
+            raise NotImplementedError(f"Unsupported EchoesVersion: {dol_version.echoes_version}")
+
+        editor.dol.write_instructions(
+            ("CPauseScreen::Render", instruction_offset),
+            [
+                # r4 = address of the new format string
+                custom_ppc.load_address(ppc.r4, address),
+                # The following lines are identical as before, but reordered
+                # r5 = item count
+                ppc.or_(ppc.r5, ppc.r3, ppc.r3),
+                # r3 = output string
+                ppc.addi(ppc.r3, ppc.r1, output_offset),
+                ppc.nop(),
+            ],
+        )
+
+    editor.code_cave.request_data_cave(f"%d/{pickup_count}".encode("ascii") + b"\x00", 1, with_format_str)
+    editor.get_file(0xB4590AC3, Strg).set_single_string_by_name("ItemsPercentage", "Locations: ")
+
+
 def apply_dol_patches(editor: PatcherEditor, configuration: RandoConfiguration, dol_version: EchoesDolVersion) -> None:
     """Applies all the dol patches that aren't specific to some other place."""
 
@@ -268,6 +323,7 @@ def _apply_patches(
     custom_items.apply_changes(dol_version, editor, configuration.custom_items)
 
     apply_stk_on_map(editor, dol_version)
+    apply_item_percentage_as_locations(editor, dol_version, configuration)
 
     damage_changes.apply_damage_changes(editor, configuration.damage_changes, dol_version)
 
