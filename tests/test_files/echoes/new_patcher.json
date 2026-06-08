@@ -4013,7 +4013,7 @@
                         {
                             "location": {
                                 "type": "standard",
-                                "exclude_memo_from_removal": true,
+                                "exclude_memo_from_removal": false,
                                 "original_model": "GrappleBeam",
                                 "connections": [
                                     {
@@ -4025,11 +4025,23 @@
                                         "state": "ZERO",
                                         "message": "ZERO",
                                         "target": 205193759
+                                    },
+                                    {
+                                        "state": "ZERO",
+                                        "message": "ZERO",
+                                        "target": 205193338
+                                    },
+                                    {
+                                        "state": "ZERO",
+                                        "message": "ZERO",
+                                        "target": 272302550
                                     }
                                 ],
                                 "removals": [
                                     205193765,
-                                    272302343
+                                    272302343,
+                                    272302365
+
                                 ],
                                 "collision_offset": {
                                     "x": 0.0,
@@ -4045,19 +4057,19 @@
                             "primary_stage": {
                                 "resources": [
                                     {
-                                        "item": 42,
+                                        "item": 23,
                                         "amount": 1
                                     }
                                 ],
                                 "appearance": {
-                                    "model_data": "EnergyTank",
+                                    "model_data": "GrappleBeam",
                                     "sound": 10057,
                                     "jingle": {
                                         "file_name": "/audio/itm_x_long_00.dsp",
                                         "volume": 71
                                     },
-                                    "hud_text": "Energy Tank acquired!",
-                                    "scan": "Energy Tank."
+                                    "hud_text": "Grapple Beam acquired!",
+                                    "scan": "Grapple Beam"
                                 },
                                 "conversion": []
                             },
