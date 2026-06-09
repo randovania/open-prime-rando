@@ -110,6 +110,9 @@ class RandoConfiguration(BaseModel):
     auto_enabled_elevators: bool = False
     """Makes the elevators to different areas to be pre-scanned."""
 
+    two_way_portals: bool = False
+    """Makes all portals two-way by adding new portals."""
+
     inverted_mode: bool = False
     """Whether or not to use inverted mode, where Light and Dark Aether is inverted."""
 
