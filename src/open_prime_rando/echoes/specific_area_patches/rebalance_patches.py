@@ -542,6 +542,9 @@ def transport_c_access_crystal(editor: PatcherEditor, mlvl: Mlvl, area: Area) ->
     default = area.get_layer("Default")
 
     # Add objects
+
+    # Ever so slightly bigger than dark crystal
+    # for fade effect to avoid Z-Fighting
     light_crystal = default.add_instance_with(
         Actor(
             editor_properties=EditorProperties(
@@ -606,16 +609,25 @@ def transport_c_access_crystal(editor: PatcherEditor, mlvl: Mlvl, area: Area) ->
     memory_relay = area.get_instance("Keep Statue in Last Position")
 
     # Add new connections
+
+    # Dynamic Light
     dynamic_light.add_connection(State.Play, Message.Activate, platform)
     dynamic_light.add_connection(State.Play, Message.Activate, light_crystal)
     dynamic_light.add_connection(State.Play, Message.Activate, dark_crystal)
+
+    # Platform connections to Crystals and Light
     platform.add_connection(State.Play, Message.Activate, light_crystal)
     platform.add_connection(State.Play, Message.Activate, dark_crystal)
     platform.add_connection(State.Play, Message.Activate, dynamic_light)
+
+    # Make it so shooting either dtrigger deactivates the other one, and
+    # make the og dtrigger fade the crystal on the other side
     new_dtrigger.add_connection(State.Dead, Message.Deactivate, og_dtrigger)
     og_dtrigger.add_connection(State.Dead, Message.Deactivate, new_dtrigger)
     new_dtrigger.add_connection(State.Dead, Message.Increment, light_crystal)
     og_dtrigger.add_connection(State.Dead, Message.Increment, light_crystal)
+
+    # New memory relay connections
     memory_relay.add_connection(State.Active, Message.Deactivate, light_crystal)
     memory_relay.add_connection(State.Active, Message.Deactivate, dark_crystal)
     memory_relay.add_connection(State.Active, Message.Deactivate, new_dtrigger)
