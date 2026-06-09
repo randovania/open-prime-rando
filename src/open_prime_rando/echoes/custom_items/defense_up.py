@@ -76,7 +76,7 @@ def apply_patches(version: EchoesDolVersion, editor: PatcherEditor, config: Defe
     cave.dol_editor.write(version.powerup_max + PlayerItemEnum.VariaSuit.value * 4, struct.pack(">l", config.max_count))
 
     start_offset = 476
-    instruction_count = 312
+    instruction_count = 78
 
     cave.replace_instructions(
         address=cave.dol_editor.symbols["CStateManager::ApplyLocalDamage"] + start_offset,
