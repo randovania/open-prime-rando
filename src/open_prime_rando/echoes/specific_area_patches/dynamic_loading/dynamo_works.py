@@ -359,7 +359,6 @@ def dynamo_works_dynamic_layer_loading(editor: PatcherEditor, mlvl: Mlvl, area: 
 _MOVE_TO_DUMP_DURING_BATTLE = [
     "Magnet (Left)",
     "Magnet (Right)",
-    "Magnet (Right)",
     "Does Player Have Spiderball?",
     "Inactive Spiderball Track",
     "Active Spiderball Track",

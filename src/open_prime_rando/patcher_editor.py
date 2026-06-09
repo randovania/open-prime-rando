@@ -5,7 +5,6 @@ import fnmatch
 import io
 import os
 import typing
-from concurrent.futures import ThreadPoolExecutor, as_completed
 
 import typing_extensions
 from retro_data_structures.asset_manager import AssetManager, FileWriter
@@ -213,63 +212,8 @@ class PatcherEditor(AssetManager):
         return self.get_mlvl(mlvl).get_area(mrea)
 
     def build_modified_files(self, status_update: StatusUpdate | None = None) -> None:
-        # FIXME: do this upstream in AssetManager
-
-        if status_update is None:
-
-            def status_update(s: str, p: float) -> None:
-                pass
-
-        _last_percent = None
-
-        def _write_callback(files_built: int, total_files: int) -> None:
-            nonlocal _last_percent
-            percent = int(100 * (files_built / total_files))
-            if percent != _last_percent:
-                status_update(f"Building modified files: {percent}%", files_built / total_files)
-                _last_percent = percent
-
-        # flush dependencies before building to prevent inaccuracy
-        self._cached_dependencies.clear()
-        self._cached_ancs_per_char_dependencies.clear()
-
-        status_update("Building modified files", 0.0)
-        total_files = len(self._memory_files)
-
-        with ThreadPoolExecutor() as executor:
-            futures = []
-
-            for name, resource in self._memory_files.items():
-                future = executor.submit(self.replace_asset, name, resource, keep_in_memory=False)
-                futures.append(future)
-
-            for i, _ in enumerate(as_completed(futures)):
-                _write_callback(i, total_files)
-
-        status_update("Finalizing modification", 1.0)
-
-        self._memory_files.clear()
+        super().build_modified_files(status_update)
         self.pooled_scans.clear()
-
-    def _export_paks(self, output: FileWriter) -> None:
-        strategies = {name: strategy for name, strategy in self._pak_strategy.items() if strategy.should_export()}
-        num_strategies = len(strategies)
-
-        for i, (name, strategy) in enumerate(strategies.items()):
-            self._pak_status_update(f"Building {name}", i / num_strategies)
-            strategy.export(output)
-        self._pak_status_update("Built PAKs", 1.0)
-
-    def save_modifications(self, output: FileWriter, status_update: StatusUpdate | None = None) -> None:
-        # FIXME: do this upstream in AssetManager
-
-        if status_update is None:
-
-            def status_update(s: str, p: float) -> None:
-                pass
-
-        self._pak_status_update: StatusUpdate = status_update
-        return super().save_modifications(output)
 
     def create_strg(
         self,

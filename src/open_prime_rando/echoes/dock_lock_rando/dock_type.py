@@ -132,11 +132,8 @@ class DoorType:
     ) -> BlastShieldActors | None:
         """Changes the door into this door type."""
 
-        mapa_id = mlvl.mapw.get_mapa_id(area.index)
-        mapa = editor.get_file(mapa_id, Mapa)
-
         door = self.get_door_from_dock_name(area, dock_name)
-        self.patch_map_icon(mapa, door)
+        self.patch_map_icon(area.mapa, door)
 
         shell_model = editor.resolve_asset_id(self.shell_model)
 

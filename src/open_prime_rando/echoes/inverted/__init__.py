@@ -1,4 +1,4 @@
-from retro_data_structures.formats import Mapa, Mlvl
+from retro_data_structures.formats import Mlvl
 from retro_data_structures.formats.mrea import Area
 from retro_data_structures.formats.script_layer import ScriptLayer
 from retro_data_structures.formats.script_object import InstanceId, ScriptInstance
@@ -45,9 +45,7 @@ def _swap_dark_world(editor: PatcherEditor) -> None:
                             print(area.name, is_dark_world, "found", prop.dark_world)
                         prop.dark_world = not is_dark_world
 
-            mapa_id = world.mapw.get_mapa_id(area.index)
-            mapa = editor.get_file(mapa_id, Mapa)
-            mapa.is_dark_world = not is_dark_world
+            area.mapa.is_dark_world = not is_dark_world
 
 
 def _copy_safe_zones(

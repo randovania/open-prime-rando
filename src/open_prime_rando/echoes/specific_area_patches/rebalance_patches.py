@@ -2,11 +2,10 @@ from __future__ import annotations
 
 import collections
 import functools
-import typing
 from typing import TYPE_CHECKING
 
 from retro_data_structures.enums.echoes import Message, PlayerItemEnum, State
-from retro_data_structures.properties.base_property import BaseObjectType
+from retro_data_structures.properties.base_property import BaseObjectType, ObjectWithEditorProperties
 from retro_data_structures.properties.echoes.archetypes.EditorProperties import EditorProperties
 from retro_data_structures.properties.echoes.archetypes.LayerSwitch import LayerSwitch
 from retro_data_structures.properties.echoes.archetypes.Transform import Transform
@@ -171,12 +170,6 @@ def landing_site_remove_intro(editor: PatcherEditor, mlvl: Mlvl, area: Area) -> 
         timer.add_connection(State.Zero, Message.Activate, area.get_instance(inst))
 
 
-# TODO: handle this stuff in RDS
-@typing.runtime_checkable
-class ObjectWithEditorProperties(typing.Protocol):
-    editor_properties: EditorProperties
-
-
 def get_all_ids_related_to(area: Area, target: InstanceId) -> set[InstanceId]:
     """
     Gets all object ids that send a message to, or receives a message from the target object, or any object involved.
@@ -221,9 +214,10 @@ def hive_access_tunnel_translator_gate(editor: PatcherEditor, mlvl: Mlvl, area: 
     delta = target_position - root_transform.position
 
     for obj_id in get_all_ids_related_to(area, gate.id):
-        with area.get_instance(obj_id).edit_properties(BaseObjectType) as props:
-            assert isinstance(props, ObjectWithEditorProperties)
+        instance = area.get_instance(obj_id)
 
+        with instance.edit_properties(BaseObjectType) as props:
+            assert isinstance(props, ObjectWithEditorProperties)
             if obj_id != gate.id:
                 props.editor_properties.transform.position = (
                     props.editor_properties.transform.position.rotate(rotation, root_transform.position) + delta
@@ -296,8 +290,8 @@ def temple_sanctuary_emerald_gate(editor: PatcherEditor, mlvl: Mlvl, area: Area)
         0x200FB,  # Glow For Holo 1
     ]
 
-    for instances in instances_to_activate:
-        with area.get_instance(instances).edit_properties(BaseObjectType) as props:
+    for instance_id in instances_to_activate:
+        with area.get_instance(instance_id).edit_properties(BaseObjectType) as props:
             assert isinstance(props, ObjectWithEditorProperties)
             props.editor_properties.active = True
 
