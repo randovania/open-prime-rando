@@ -61,18 +61,35 @@ class HierarchyPatch:
         return node
 
 
+def _format_string_for_upgrade(
+    fmt_string: str,
+    multiplier: float,
+    max_count: int,
+) -> str:
+    if max_count == 1:
+        count_text = "1 time"
+    else:
+        count_text = f"{max_count} times"
+
+    return fmt_string.format(percentage=f"{multiplier * 100:.0f}%", count=count_text)
+
+
 def get_hierarchy_patches(configuration: RandoConfiguration) -> list[HierarchyPatch]:
     """Get the list of HierarchyPatch objects to apply, adjusted to the given configuration."""
 
     massive_damage_config = configuration.custom_items.massive_damage_config
-    massive_damage_scan_text = (
-        f"The Massive Damage increases your damage by {massive_damage_config.damage_increase_multiplier * 100:.0f}% "
-        f"for every copy you find, up to {massive_damage_config.max_count}"
+    massive_damage_scan_text = _format_string_for_upgrade(
+        "The Massive Damage increases your damage by {percentage} for every copy you find, up to {count}.",
+        multiplier=massive_damage_config.damage_increase_multiplier,
+        max_count=massive_damage_config.max_count,
     )
-    if massive_damage_config.max_count == 1:
-        massive_damage_scan_text += " time."
-    else:
-        massive_damage_scan_text += " times."
+
+    defense_up_config = configuration.custom_items.defense_up_config
+    defense_up_scan_text = _format_string_for_upgrade(
+        "The Defense Up reduces the damage taken by {percentage} for every copy you find, up to {count}.",
+        multiplier=defense_up_config.damage_reduction_multiplier,
+        max_count=defense_up_config.max_count,
+    )
 
     return [
         # # For reference
@@ -98,12 +115,22 @@ def get_hierarchy_patches(configuration: RandoConfiguration) -> list[HierarchyPa
         #     ),
         # ),
         HierarchyPatch(
-            25,  # Inventory -> Miscellaneous -> Dark Temple Keys -> Sky Temple Keys
-            None,
-            (
-                HierarchyPatch(81, "Keys 1, 2, 3", (148, 151, 156)),
-                HierarchyPatch(166, "Keys 4, 5, 6", (45, 303, 317)),
-                HierarchyPatch(195, "Keys 7, 8, 9", (159, 221, 231)),
+            135,  # Inventory - > Armor
+            rename=None,
+            connections=(
+                65,  # Light Suit
+                165,  # Varia Suit
+                363,  # Dark Suit
+                HierarchyPatch(
+                    NewInventoryEntry(
+                        name_string_name="DefenseUp",
+                        model_name="VariaSuit",
+                        scan_text=defense_up_scan_text,
+                        slot_index=InventorySlotEnum.VariaSuit,
+                        item_index=PlayerItemEnum.VariaSuit,
+                    ),
+                    "Defense Up",
+                ),
             ),
         ),
         HierarchyPatch(
@@ -223,6 +250,15 @@ def get_hierarchy_patches(configuration: RandoConfiguration) -> list[HierarchyPa
                     ),
                     "Massive Damage",
                 ),
+            ),
+        ),
+        HierarchyPatch(
+            25,  # Inventory -> Miscellaneous -> Dark Temple Keys -> Sky Temple Keys
+            None,
+            (
+                HierarchyPatch(81, "Keys 1, 2, 3", (148, 151, 156)),
+                HierarchyPatch(166, "Keys 4, 5, 6", (45, 303, 317)),
+                HierarchyPatch(195, "Keys 7, 8, 9", (159, 221, 231)),
             ),
         ),
         HierarchyPatch(

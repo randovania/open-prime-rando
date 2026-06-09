@@ -1,7 +1,6 @@
 import uuid
 from typing import Annotated
 
-from annotated_types import Interval
 from open_prime_rando_practice_mod import PracticeModMode
 from pydantic import BaseModel, Field, StringConstraints
 
@@ -12,25 +11,23 @@ from open_prime_rando.echoes.asset_ids.world import TEMPLE_GROUNDS_MLVL
 from open_prime_rando.echoes.custom_items import CustomItemsConfig
 from open_prime_rando.echoes.damage_changes import DamageChanges
 from open_prime_rando.echoes.dock_lock_rando import DockTypeChange
+from open_prime_rando.echoes.elevators.elevator_rando import ElevatorChange
 from open_prime_rando.echoes.hud_color import HudColorConfiguration
 from open_prime_rando.echoes.pickups.schema import PickupModification
+from open_prime_rando.echoes.pydantic_models import AreaReference, PydanticAssetId
 from open_prime_rando.echoes.starting_items import StartingItemConfig
 from open_prime_rando.echoes.suit_cosmetics import SuitMapping
 from open_prime_rando.echoes.translator_gates import TranslatorGateModification
-
-AssetId = Annotated[int, Interval(ge=0, le=0xFFFFFFFF)]
-
-
-class AreaReference(BaseModel):
-    mlvl_id: AssetId
-    mrea_id: AssetId
 
 
 class AreaChange(BaseModel):
     """Contains changes for a given MREA."""
 
-    mrea_id: AssetId
+    mrea_id: PydanticAssetId
     """The asset id of the MREA for this change."""
+
+    new_name: str | None = None
+    """A new name for this area, as displayed on the map screen."""
 
     pickups: list[PickupModification] = Field(default_factory=list)
     """Either a modification for an existing pickup in this area, or a new pickup to add."""
@@ -41,11 +38,14 @@ class AreaChange(BaseModel):
     door_locks: list[DockTypeChange] = Field(default_factory=list)
     """A modification for a door lock in this area."""
 
+    elevators: list[ElevatorChange] = Field(default_factory=list)
+    """A modification for an elevator in this area."""
+
 
 class WorldChange(BaseModel):
     """Contains changes for a given MLVL."""
 
-    mlvl_id: AssetId
+    mlvl_id: PydanticAssetId
     """The asset id of the MLVL for this change."""
 
     area_changes: list[AreaChange]
@@ -58,7 +58,7 @@ class MapVisibility(BaseModel):
     reveal_map_at_start: bool = False
     """Whether or not the map will be revealed at the start of the game."""
 
-    areas_to_never_reveal: list[AssetId] = Field(default_factory=list)
+    areas_to_never_reveal: list[PydanticAssetId] = Field(default_factory=list)
     """Which areas are not revealed, even when `reveal_map_at_start` is True."""
 
     unvisited_room_names: bool = True
@@ -68,7 +68,7 @@ class MapVisibility(BaseModel):
 class StringChange(BaseModel):
     """Contains a new list of strings to use for a given STRG."""
 
-    strg_id: AssetId
+    strg_id: PydanticAssetId
     strings: list[str]
 
 

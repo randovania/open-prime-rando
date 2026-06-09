@@ -7,14 +7,14 @@ from typing import TYPE_CHECKING
 
 import open_prime_rando_practice_mod
 from PIL import Image
-from ppc_asm.assembler import ppc
+from ppc_asm.assembler import custom_ppc, ppc
 from retro_data_structures.formats.banner import Banner
 from retro_data_structures.formats.frme import Frme
 from retro_data_structures.formats.strg import Strg
 from retro_data_structures.game_check import Game
 
 from open_prime_rando import practice_mod
-from open_prime_rando.area_patcher import AreaPatcher
+from open_prime_rando.area_patcher import AreaPatcher, RawPatcherFunction
 from open_prime_rando.dol_patching import all_prime_dol_patches, ppc_helper
 from open_prime_rando.dol_patching.dol_version import find_version_for_dol
 from open_prime_rando.dol_patching.echoes import (
@@ -43,6 +43,7 @@ from open_prime_rando.echoes import (
 )
 from open_prime_rando.echoes.asset_ids import world
 from open_prime_rando.echoes.elevators import auto_enabled_elevator_patches
+from open_prime_rando.echoes.elevators.elevator_rando import register_elevator_patch
 from open_prime_rando.echoes.specific_area_patches import front_end
 from open_prime_rando.echoes.version import EchoesVersion
 from open_prime_rando.patcher_editor import IsoFileProvider, IsoFileWriter, PatcherEditor
@@ -52,7 +53,8 @@ if TYPE_CHECKING:
     from pathlib import Path
 
     from open_prime_rando.dol_patching.echoes.dol_patches import EchoesDolVersion
-    from open_prime_rando.echoes.rando_configuration import AreaReference, RandoConfiguration, StringChange, WorldChange
+    from open_prime_rando.echoes.pydantic_models import AreaReference
+    from open_prime_rando.echoes.rando_configuration import RandoConfiguration, StringChange, WorldChange
 
 LOG = logging.getLogger("echoes_patcher")
 
@@ -177,6 +179,61 @@ def apply_stk_on_map(editor: PatcherEditor, dol_version: EchoesDolVersion) -> No
         editor.ensure_present(pak, "stk_icon_found.TXTR")
 
 
+def apply_item_percentage_as_locations(
+    editor: PatcherEditor,
+    dol_version: EchoesDolVersion,
+    configuration: RandoConfiguration,
+) -> None:
+
+    pickup_count = 0
+    for world_change in configuration.world_changes:
+        for area_change in world_change.area_changes:
+            pickup_count += len(area_change.pickups)
+
+    def with_format_str(address: int) -> None:
+        if dol_version.echoes_version == EchoesVersion.NTSC_U:
+            instruction_offset = 0x011C
+            output_offset = 0x80
+        elif dol_version.echoes_version == EchoesVersion.PAL:
+            instruction_offset = 0x0148
+            output_offset = 0xA0
+
+            # In PAL, the `%` is not part of the format string and is instead another entry in the STRG
+            # We can't set this string to an empty one because it's used by the Scan counter.
+
+            # Remove the extra append of `Percentage`
+            editor.dol.write_instructions(
+                ("CPauseScreen::Render", 0x1A8),
+                [ppc.nop()] * 9
+                + [
+                    ppc.lwz(ppc.r3, 0x230, ppc.r30),
+                    ppc.addi(ppc.r4, ppc.r1, 0x30),
+                ],
+            )
+            # Split write_instructions to leave the call to SetText untouched
+            # remove the ~wstring call for the wstring removed above
+            editor.dol.write_instructions(0x8020B57C, [ppc.nop()])
+        else:
+            raise NotImplementedError(f"Unsupported EchoesVersion: {dol_version.echoes_version}")
+
+        editor.dol.write_instructions(
+            ("CPauseScreen::Render", instruction_offset),
+            [
+                # r4 = address of the new format string
+                custom_ppc.load_address(ppc.r4, address),
+                # The following lines are identical as before, but reordered
+                # r5 = item count
+                ppc.or_(ppc.r5, ppc.r3, ppc.r3),
+                # r3 = output string
+                ppc.addi(ppc.r3, ppc.r1, output_offset),
+                ppc.nop(),
+            ],
+        )
+
+    editor.code_cave.request_data_cave(f"%d/{pickup_count}".encode("ascii") + b"\x00", 1, with_format_str)
+    editor.get_file(0xB4590AC3, Strg).set_single_string_by_name("ItemsPercentage", "Locations: ")
+
+
 def apply_dol_patches(editor: PatcherEditor, configuration: RandoConfiguration, dol_version: EchoesDolVersion) -> None:
     """Applies all the dol patches that aren't specific to some other place."""
 
@@ -185,6 +242,7 @@ def apply_dol_patches(editor: PatcherEditor, configuration: RandoConfiguration, 
     all_prime_dol_patches.apply_build_info_patch(dol_version, editor.dol, configuration.world_uuid)
     dol_patches.apply_map_door_changes(dol_version.map_door_types, editor.dol)
     dol_patches.apply_unvisited_room_names(dol_version, editor.dol, configuration.map_visibility.unvisited_room_names)
+    dol_patches.apply_always_show_map_legend(dol_version, editor.code_cave)
     beam_cost.apply_patch(dol_version.beam_cost_addresses, editor.dol, configuration.beam_configuration)
     game_options.apply_patch(
         dol_version.game_options_constructor_address, editor.dol, configuration.game_options_defaults
@@ -198,21 +256,34 @@ def register_world_changes(area_patcher: AreaPatcher, world_changes: list[WorldC
     disable_hud_popup = True
     for world_change in world_changes:
         for area_change in world_change.area_changes:
-            for pickup_change in area_change.pickups:
+
+            def _register(func: RawPatcherFunction) -> None:
+                """Register a change for this specific Area to the AreaPatcher."""
                 area_patcher.add_raw_function(
                     world_change.mlvl_id,
                     area_change.mrea_id,
+                    func,
+                )
+
+            if area_change.new_name is not None:
+                _register(
+                    functools.partial(
+                        general_changes.change_area_name,
+                        name=area_change.new_name,
+                    )
+                )
+
+            for pickup_change in area_change.pickups:
+                _register(
                     functools.partial(
                         pickups.patch_pickup,
                         modification=pickup_change,
                         disable_hud_popup=disable_hud_popup,
-                    ),
+                    )
                 )
 
             for translator_gate_change in area_change.translator_gates:
-                area_patcher.add_raw_function(
-                    world_change.mlvl_id,
-                    area_change.mrea_id,
+                _register(
                     functools.partial(
                         translator_gates.patch_translator_gate,
                         modification=translator_gate_change,
@@ -220,14 +291,15 @@ def register_world_changes(area_patcher: AreaPatcher, world_changes: list[WorldC
                 )
 
             for dock_type_change in area_change.door_locks:
-                area_patcher.add_raw_function(
-                    world_change.mlvl_id,
-                    area_change.mrea_id,
+                _register(
                     functools.partial(
                         dock_lock_rando.apply_door_rando,
                         change=dock_type_change,
                     ),
                 )
+
+            for elevator_change in area_change.elevators:
+                register_elevator_patch(area_patcher, world_change.mlvl_id, area_change.mrea_id, elevator_change)
 
 
 def _apply_patches(
@@ -242,14 +314,16 @@ def _apply_patches(
     dock_lock_rando.add_custom_models(editor)
 
     dol_version: EchoesDolVersion = find_version_for_dol(editor.dol, dol_versions.ALL_VERSIONS)
+    dol_version.register_symbols_to(editor.code_cave)
 
     if dol_version.echoes_version == EchoesVersion.NTSC_U:
         _fix_dumb_broken_strg(editor)
 
     apply_dol_patches(editor, configuration, dol_version)
-    custom_items.apply_changes(dol_version, editor.code_cave, configuration.custom_items)
+    custom_items.apply_changes(dol_version, editor, configuration.custom_items)
 
     apply_stk_on_map(editor, dol_version)
+    apply_item_percentage_as_locations(editor, dol_version, configuration)
 
     damage_changes.apply_damage_changes(editor, configuration.damage_changes, dol_version)
 
