@@ -218,6 +218,7 @@ def hive_access_tunnel_translator_gate(editor: PatcherEditor, mlvl: Mlvl, area: 
 
         with instance.edit_properties(BaseObjectType) as props:
             assert isinstance(props, ObjectWithEditorProperties)
+            assert isinstance(props.editor_properties, EditorProperties)
             if obj_id != gate.id:
                 props.editor_properties.transform.position = (
                     props.editor_properties.transform.position.rotate(rotation, root_transform.position) + delta
