@@ -3,7 +3,6 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Final
 
 from retro_data_structures.enums.echoes import Message, PlayerItemEnum, State
-from retro_data_structures.formats import Mapa
 from retro_data_structures.formats.mapa import AreaVisibility
 from retro_data_structures.formats.strg import Strg
 from retro_data_structures.properties.echoes.archetypes.EditorProperties import EditorProperties
@@ -117,19 +116,17 @@ def change_map_visibility(editor: PatcherEditor, mlvl: Mlvl, area: Area, map_vis
     """
     Changes the visibility mode of the map for the given area to be always visible or require a visit.
     """
-    mapa_id = mlvl.mapw.get_mapa_id(area.index)
-    mapa = editor.get_file(mapa_id, Mapa)
 
-    if mapa.visibility_mode == AreaVisibility.Never:
+    if area.mapa.visibility_mode == AreaVisibility.Never:
         return
 
     always_visible = area.mrea_asset_id in _AREAS_THAT_ALWAYS_VISIBLE
     never_visible = area.mrea_asset_id in map_visibility.areas_to_never_reveal
 
     if (always_visible or map_visibility.reveal_map_at_start) and not never_visible:
-        mapa.visibility_mode = AreaVisibility.Always
+        area.mapa.visibility_mode = AreaVisibility.Always
     else:
-        mapa.visibility_mode = AreaVisibility.VisitOrMapStation
+        area.mapa.visibility_mode = AreaVisibility.VisitOrMapStation
 
 
 def change_area_name(editor: PatcherEditor, mlvl: Mlvl, area: Area, name: str) -> None:
@@ -137,12 +134,6 @@ def change_area_name(editor: PatcherEditor, mlvl: Mlvl, area: Area, name: str) -
     Changes the name of an Area.
     """
     # duplicate the STRG in case it was used elsewhere and breaks things
-    area._raw.area_name_id = editor.duplicate_asset(
-        area._raw.area_name_id, f"custom_name_for_{area.internal_name}.STRG"
-    )
+    area.name_strg_id = editor.duplicate_asset(area._raw.area_name_id, f"custom_name_for_{area.internal_name}.STRG")
 
-    # clear the cached STRG so that the name setter works correctly
-    area._strg = None
-
-    # set the new name
-    area.strg.set_single_string(0, name)  # FIXME: area.name is broken in RDS
+    area.name = name

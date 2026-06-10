@@ -5,7 +5,7 @@ import typing
 from typing import TYPE_CHECKING
 
 from retro_data_structures.enums.echoes import Message, PlayerItemEnum, State
-from retro_data_structures.formats.mapa import Mapa, MappableObject, ObjectVisibility
+from retro_data_structures.formats.mapa import MappableObject, ObjectVisibility
 from retro_data_structures.properties.echoes.archetypes.ConditionalTest import (
     AmountOrCapacity,
     Boolean,
@@ -27,6 +27,7 @@ from retro_data_structures.properties.echoes.objects import (
 )
 from retro_data_structures.properties.echoes.objects.Pickup import Pickup as RDSPickup
 from retro_data_structures.properties.echoes.objects.SpecialFunction import Function
+from retro_data_structures.transform import Transform
 
 from open_prime_rando.echoes.pickups.models import ETM_MODEL
 
@@ -374,32 +375,20 @@ def _patch_single_pickup_stage(
 
 
 def _add_map_icon(editor: PatcherEditor, mlvl: Mlvl, area: Area, instances: PickupInstances) -> None:
-    mapa_id = mlvl.mapw.get_mapa_id(area.index)
-    mapa = editor.get_file(mapa_id, Mapa)
-
     mappable_id = instances.mappable_object.id
     with instances.pickup.edit_properties(RDSPickup) as pickup:
         pos = pickup.editor_properties.transform.position
 
-    mapa.mappable_objects.append(
+    area.mapa.mappable_objects.append(
         MappableObject.create(
             object_type=0x12,  # custom icon type for pickups
             visibility_mode=ObjectVisibility.AreaVisitOrMapStation,
             editor_id=mappable_id,
-            transform=[
-                1.0,
-                0.0,
-                0.0,
-                pos.x,
-                0.0,
-                1.0,
-                0.0,
-                pos.y,
-                0.0,
-                0.0,
-                1.0,
-                pos.z,
-            ],
+            transform=Transform.from_vectors(
+                position=pos,
+                rotation=Vector(),
+                scale=Vector(1.0, 1.0, 1.0),
+            ),
         )
     )
 
