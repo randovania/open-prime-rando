@@ -1089,18 +1089,11 @@ def amorbis_fight_prevent_wrong_room(editor: PatcherEditor, mlvl: Mlvl, area: Ar
     Force player into room if triggered fight
     from out of bounds, to prevent crashing.
     """
-    area_loading_controller = area.get_instance("Area Loading Controller")
     boss_intro_relay = area.get_instance("Begin Boss Intro Cinematic Loading (Load Layer)")
     spawn_point = area.get_instance("Spawn point 001")
 
-    # Remove area loading connection at the end
-    boss_intro_relay.remove_connection(boss_intro_relay.connections[6])
-
     # Move player into room
     boss_intro_relay.add_connection(State.Zero, Message.SetToZero, spawn_point)
-
-    # And THEN stop area loading
-    boss_intro_relay.add_connection(State.Zero, Message.Stop, area_loading_controller)
 
 
 @decorate_patcher(SANCTUARY_FORTRESS_MLVL, sanctuary_fortress.DYNAMO_WORKS_MREA)
