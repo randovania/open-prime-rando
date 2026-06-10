@@ -23,7 +23,7 @@ if TYPE_CHECKING:
     from retro_data_structures.formats.mlvl import Mlvl
     from retro_data_structures.formats.mrea import Area
 
-    from open_prime_rando.echoes.rando_configuration import AreaReference
+    from open_prime_rando.echoes.pydantic_models import AreaReference
     from open_prime_rando.patcher_editor import PatcherEditor
 
 
@@ -48,22 +48,15 @@ def edit_front_end(editor: PatcherEditor, mlvl: Mlvl, area: Area, title_screen_t
             auto_start=True,
         )
     )
-    normal_mode_func = layer.add_instance_with(
-        SpecialFunction(
-            editor_properties=EditorProperties(name="Unlock NormalModeCompleted"),
-            function=Function.GameStateSysVar,
-            string_parm="NormalModeCompleted",
+    for env_var in ["NormalModeCompleted", "SeenIntroText"]:
+        sys_var_func = layer.add_instance_with(
+            SpecialFunction(
+                editor_properties=EditorProperties(name=f"Unlock {env_var}"),
+                function=Function.GameStateSysVar,
+                string_parm=env_var,
+            )
         )
-    )
-    seen_intro_func = layer.add_instance_with(
-        SpecialFunction(
-            editor_properties=EditorProperties(name="Unlock SeenIntroText"),
-            function=Function.GameStateSysVar,
-            string_parm="SeenIntroText",
-        )
-    )
-    sys_vars_timer.add_connection(State.Zero, Message.Increment, normal_mode_func)
-    sys_vars_timer.add_connection(State.Zero, Message.Increment, seen_intro_func)
+        sys_vars_timer.add_connection(State.Zero, Message.Increment, sys_var_func)
 
     # Timeout to next attract movie
     with area.get_instance(0x132).edit_properties(SequenceTimer) as sequence_timer:

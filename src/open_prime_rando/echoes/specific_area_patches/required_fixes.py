@@ -642,6 +642,10 @@ def hive_chamber_b_remove_item_loss(editor: PatcherEditor, mlvl: Mlvl, area: Are
     area.get_layer("Pickup").active = True
     area.get_layer("Post Dark Samus Music").active = True
 
+    # Removing this object will cause the env var to be removed from the SAVW, which causes
+    # CPersistentOptions::FindEnvironmentVariable to return NULL, which is handled by the game as show the button.
+    area.remove_instance("Enable Darkworld Automapper button")
+
 
 @decorate_patcher(TORVUS_BOG_MLVL, torvus_bog.TORVUS_TEMPLE_MREA)
 def torvus_temple_remove_effects(editor: PatcherEditor, mlvl: Mlvl, area: Area) -> None:

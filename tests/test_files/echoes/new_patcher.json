@@ -935,19 +935,19 @@
                             "primary_stage": {
                                 "resources": [
                                     {
-                                        "item": 42,
+                                        "item": 12,
                                         "amount": 1
                                     }
                                 ],
                                 "appearance": {
-                                    "model_data": "EnergyTank",
+                                    "model_data": "DefenseUp",
                                     "sound": 10057,
                                     "jingle": {
                                         "file_name": "/audio/itm_x_long_00.dsp",
                                         "volume": 71
                                     },
-                                    "hud_text": "Energy Tank acquired!",
-                                    "scan": "Energy Tank."
+                                    "hud_text": "Defense Up acquired!",
+                                    "scan": "Defense Up."
                                 },
                                 "conversion": []
                             },
@@ -1003,6 +1003,7 @@
                 },
                 {
                     "mrea_id": 1660916974,
+                    "new_name": "Transport to Undertemple Access",
                     "pickups": [
                         {
                             "location": {
@@ -1044,6 +1045,17 @@
                                 "conversion": []
                             },
                             "progressive_stages": []
+                        }
+                    ],
+                    "elevators": [
+                        {
+                            "elevator_id": 1572998,
+                            "target": {
+                                "mlvl_id": 1039999561,
+                                "mrea_id": 700027128
+                            },
+                            "scan_strg": 1177189496,
+                            "target_name": "Undertemple Access"
                         }
                     ]
                 },
@@ -4947,10 +4959,6 @@
             "capacity": 1
         },
         {
-            "item": 12,
-            "capacity": 1
-        },
-        {
             "item": 13,
             "capacity": 1
         },
@@ -5028,10 +5036,18 @@
         "massive_damage_config": {
             "damage_increase_multiplier": 1.0,
             "max_count": 5
+        },
+        "defense_up_config": {
+            "damage_reduction_multiplier": 1.0,
+            "max_count": 5
         }
     },
     "hud_color": {
-        "main_color": [0.929, 0.580, 0.831],
+        "main_color": [
+            0.929,
+            0.580,
+            0.831
+        ],
         "change_text_color": false,
         "change_beam_visor_select_color": false
     }

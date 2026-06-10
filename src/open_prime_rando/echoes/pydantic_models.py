@@ -1,6 +1,7 @@
 import typing
 
 import pydantic
+from annotated_types import Interval
 from retro_data_structures.enums.echoes import Message, State
 from retro_data_structures.formats.script_object import Connection, InstanceId
 from retro_data_structures.properties.echoes.core.Vector import Vector
@@ -82,3 +83,10 @@ PydanticVector = typing.Annotated[
 ColorComponent = typing.Annotated[float, pydantic.Field(ge=0.0, le=1.0)]
 PydanticColor = tuple[ColorComponent, ColorComponent, ColorComponent]
 PydanticColorWithAlpha = tuple[ColorComponent, ColorComponent, ColorComponent, ColorComponent]
+
+PydanticAssetId = typing.Annotated[int, Interval(ge=0, le=0xFFFFFFFF)]
+
+
+class AreaReference(pydantic.BaseModel):
+    mlvl_id: PydanticAssetId
+    mrea_id: PydanticAssetId

@@ -11,7 +11,6 @@ import pydantic
 from ppc_asm.dol_file import DolEditor
 from retro_data_structures.asset_manager import PathFileWriter
 from retro_data_structures.file_provider import FileProvider
-from retro_data_structures.formats.strg import Strg
 from retro_data_structures.game_check import Game
 
 from open_prime_rando.area_patcher import AreaPatcher
@@ -21,6 +20,7 @@ from open_prime_rando.dol_patching.echoes import beam_cost, dol_patches, dol_ver
 from open_prime_rando.echoes import (
     asset_ids,
     dock_lock_rando,
+    general_changes,
     legacy_dynamic_schema,
 )
 from open_prime_rando.echoes.asset_ids.world import (
@@ -29,8 +29,9 @@ from open_prime_rando.echoes.asset_ids.world import (
     TEMPLE_GROUNDS_MLVL,
     TORVUS_BOG_MLVL,
 )
-from open_prime_rando.echoes.elevators.elevator_rando import patch_elevator
+from open_prime_rando.echoes.elevators.elevator_rando import ElevatorChange, patch_elevator
 from open_prime_rando.echoes.general_changes import apply_corrupted_memory_card_change
+from open_prime_rando.echoes.pydantic_models import AreaReference
 from open_prime_rando.echoes.small_randomizations import register_small_randomizations
 from open_prime_rando.echoes.specific_area_patches import required_fixes
 from open_prime_rando.echoes.suit_cosmetics import SuitMapping, SuitSkin, apply_custom_suits
@@ -103,20 +104,21 @@ def apply_area_modifications(
             for elevator in area_config["elevators"]:
                 patch_elevator(
                     editor,
+                    mlvl,
                     area,
-                    elevator["instance_id"],
-                    elevator["target_assets"]["world_asset_id"],
-                    elevator["target_assets"]["area_asset_id"],
-                    elevator["target_strg"],
-                    elevator["target_name"],
+                    ElevatorChange(
+                        elevator_id=elevator["instance_id"],
+                        target=AreaReference(
+                            mlvl_id=elevator["target_assets"]["world_asset_id"],
+                            mrea_id=elevator["target_assets"]["area_asset_id"],
+                        ),
+                        scan_strg=elevator["target_strg"],
+                        target_name=elevator["target_name"],
+                    ),
                 )
 
             if area_config["new_name"] is not None:
-                old_strg = area._raw.area_name_id
-                new_strg_id = editor.duplicate_asset(old_strg, f"custom_name_for_{area.internal_name}.STRG")
-                strg = editor.get_file(new_strg_id, Strg)
-                strg.set_single_string(0, area_config["new_name"])
-                area._raw.area_name_id = new_strg_id
+                general_changes.change_area_name(editor, mlvl, area, area_config["new_name"])
 
             area.update_all_dependencies(only_modified=True)
 
@@ -198,6 +200,13 @@ def patch_paks(
     status_update("Finished", 1.0)
 
 
+POWERUP_TO_INDEX = {
+    "Double Damage": 58,
+    "Unlimited Missiles": 81,
+    "Unlimited Beam Ammo": 82,
+}
+
+
 def patch_dol(dol_editor: DolEditor, patches_data: DolPatchesData) -> None:
     version = dol_version.find_version_for_dol(dol_editor, dol_versions.ALL_VERSIONS)
     assert isinstance(version, dol_patches.EchoesDolVersion)
@@ -205,9 +214,9 @@ def patch_dol(dol_editor: DolEditor, patches_data: DolPatchesData) -> None:
     cave = CodeCaveTracker(dol_editor)
 
     dol_patches.apply_mandatory_fixes(version, cave)
-    dol_patches.change_powerup_should_persist(
-        version, dol_editor, ["Double Damage", "Unlimited Missiles", "Unlimited Beam Ammo"]
-    )
+
+    for index in POWERUP_TO_INDEX.values():
+        dol_editor.write(version.powerup_should_persist + index, b"\x01")
 
     all_prime_dol_patches.apply_build_info_patch(version, dol_editor, patches_data.world_uuid)
     all_prime_dol_patches.apply_remote_execution_patch(version.game, version.string_display, dol_editor)

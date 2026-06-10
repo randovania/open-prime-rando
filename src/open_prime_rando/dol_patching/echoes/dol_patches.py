@@ -25,12 +25,6 @@ if TYPE_CHECKING:
 
     from open_prime_rando.dol_patching.code_cave_tracker import CodeCaveTracker
 
-POWERUP_TO_INDEX = {
-    "Double Damage": 58,
-    "Unlimited Missiles": 81,
-    "Unlimited Beam Ammo": 82,
-}
-
 
 class IsDoorAddr(NamedTuple):
     low: int
@@ -159,16 +153,36 @@ class EchoesDolVersion(BasePrimeDolVersion):
     stk_map_icon: StkMapIconSymbols
     apply_double_damage_address: int
     apply_double_damage_float: int
+    apply_local_damage_address: int
+    get_tweak_player_address: int
+    get_varia_suit_damage_reduction_address: int
+    cautomapper_update_address: int
+    cpausescreen_render_address: int
+
+    def register_symbols_to(self, cave: CodeCaveTracker) -> None:
+        symbols = cave.dol_editor.symbols
+
+        self.beam_cost_addresses.register_symbols_to(cave)
+        self.stk_map_icon.register_symbols_to(cave)
+
+        cave.register_symbol(
+            "CMapWorldInfo::IsAnythingSet",
+            self.anything_set_start_address,
+            end=self.anything_set_end_address,
+        )
+        symbols["CAutoMapper::Update"] = self.cautomapper_update_address
+        symbols["CDamageInfo::ApplyDoubleDamage"] = self.apply_double_damage_address
+        symbols["CPauseScreen::Render"] = self.cpausescreen_render_address
+        symbols["CPlayer::GetTweakPlayer"] = self.get_tweak_player_address
+        symbols["CTweakAutoMapper::GetDoorColor"] = self.map_door_types.get_door_color
+        symbols["CTweakPlayer::GetVariaSuitDamageReduction"] = self.get_varia_suit_damage_reduction_address
+        symbols["CWorldTransManager::SfxStart"] = self.cworldtransmanager_sfxstart
+        symbols["CStateManager::ApplyLocalDamage"] = self.apply_local_damage_address
 
 
 def _all_worlds_visible(version: EchoesDolVersion, cave: CodeCaveTracker) -> None:
     """Makes it so that all worlds are always visible, even if you haven't visited them."""
 
-    cave.register_symbol(
-        "CMapWorldInfo::IsAnythingSet",
-        version.anything_set_start_address,
-        end=version.anything_set_end_address,
-    )
     cave.replace_symbol(
         "CMapWorldInfo::IsAnythingSet",
         [
@@ -222,12 +236,6 @@ def apply_mandatory_fixes(version: EchoesDolVersion, cave: CodeCaveTracker) -> N
     _remove_massive_damage_vfx(version, cave.dol_editor)
 
 
-def change_powerup_should_persist(version: EchoesDolVersion, dol_editor: DolEditor, powerups: list[str]) -> None:
-    for item in powerups:
-        index = POWERUP_TO_INDEX[item]
-        dol_editor.write(version.powerup_should_persist + index, b"\x01")
-
-
 def apply_unvisited_room_names(version: EchoesDolVersion, dol_editor: DolEditor, enabled: bool) -> None:
     # In CAutoMapper::Update, the function checks for `mwInfo.IsMapped` then `mwInfo.IsAreaVisited` and if both are
     # false, sets a variable to false. This variable indicates if the room name is displayed used.
@@ -240,8 +248,6 @@ def apply_unvisited_room_names(version: EchoesDolVersion, dol_editor: DolEditor,
 
 
 def apply_teleporter_sounds(version: EchoesDolVersion, dol_editor: DolEditor, enabled: bool) -> None:
-    dol_editor.symbols["CWorldTransManager::SfxStart"] = version.cworldtransmanager_sfxstart
-
     if enabled:
         inst = stwu(r1, -0x20, r1)
     else:
@@ -286,7 +292,6 @@ def apply_map_door_changes(door_symbols: MapDoorTypeAddresses, dol_editor: DolEd
         dol_editor.write_instructions(symbol.high, [cmpwi(symbol.register, door_max)])
 
     # TODO: add colors to GetDoorColor
-    dol_editor.symbols["CTweakAutoMapper::GetDoorColor"] = door_symbols.get_door_color
     door_color_array = door_symbols.get_door_color + 32
 
     _colors = r6
@@ -307,3 +312,20 @@ def apply_map_door_changes(door_symbols: MapDoorTypeAddresses, dol_editor: DolEd
 
     dol_editor.symbols["CTweakAutoMapper::GetDoorColor::DoorColorArray"] = door_color_array
     dol_editor.write("CTweakAutoMapper::GetDoorColor::DoorColorArray", DoorMapIcon.get_surface_colors_as_bytes())
+
+
+def apply_always_show_map_legend(version: EchoesDolVersion, cave: CodeCaveTracker) -> None:
+    """Patches CAutoMapper::Update to not care about the inventory state for the map legend."""
+    # NTSC branch to patch at 0x80089e94
+    offset = 0x0A88
+
+    # Code Cave opportunities:
+    # 7 instructions in the abandoned if block
+    # 5 instructions for calling CPlayerState::GetItemCapacity and comparing the result
+
+    cave.dol_editor.write_instructions(
+        ("CAutoMapper::Update", offset),
+        [
+            nop(),
+        ],
+    )
