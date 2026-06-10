@@ -819,6 +819,7 @@ def transport_c_access_crystal(editor: PatcherEditor, mlvl: Mlvl, area: Area) ->
     memory_relay.add_connection(State.Active, Message.Deactivate, new_dtrigger)
     memory_relay.add_connection(State.Active, Message.Deactivate, dynamic_light)
 
+
 @decorate_patcher(SANCTUARY_FORTRESS_MLVL, sanctuary_fortress.GRAND_ABYSS_MREA)
 def grand_abyss_robots(editor: PatcherEditor, mlvl: Mlvl, area: Area) -> None:
     """
