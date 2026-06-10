@@ -19,10 +19,12 @@ from retro_data_structures.properties.echoes.objects import (
     ScriptLayerController,
     SequenceTimer,
     SpawnPoint,
+    SpecialFunction,
     Splinter,
     Switch,
     Timer,
 )
+from retro_data_structures.properties.echoes.objects.SpecialFunction import Function
 
 from open_prime_rando.area_patcher import AreaPatcher, decorate_patcher
 from open_prime_rando.echoes.asset_ids import agon_wastes, great_temple, sanctuary_fortress, temple_grounds, torvus_bog
@@ -67,6 +69,8 @@ def register_all(area_patcher: AreaPatcher) -> None:
         undertemple_persist_pickup,
         temple_sanctuary_persist_pickup,
         agon_temple_move_pickup,
+        underground_tunnel_disable_autoloads,
+        torvus_temple_allow_underground_tunnel_autoloads,
     ]:
         area_patcher.add_function(func)
 
@@ -540,3 +544,49 @@ def agon_temple_move_pickup(editor: PatcherEditor, mlvl: Mlvl, area: Area) -> No
 
     unswarm_effects.replace_connections_to(generator, relay)
     area.remove_instance(generator)
+
+
+@decorate_patcher(TORVUS_BOG_MLVL, torvus_bog.UNDERGROUND_TUNNEL_MREA)
+def underground_tunnel_disable_autoloads(editor: PatcherEditor, mlvl: Mlvl, area: Area) -> None:
+    """
+    Disable automatic loading in Underground Tunnel. This helps prevent out-of-memory crashes.
+    """
+    # add a new layer for this controller, so that it can be disabled after the torvus temple fight
+    disable_load_layer = area.add_layer("Disable Automatic Loads")
+
+    autoload_controller = disable_load_layer.add_instance_with(
+        SpecialFunction(
+            editor_properties=EditorProperties(
+                name="AreaAutoLoadController",
+            ),
+            function=Function.AreaAutoLoadController,
+        )
+    )
+
+    # unload other areas and disable auto-loading as soon as either door closes
+    for door_id in (0x1E003B, 0x1E009F):
+        door = area.get_instance(door_id)
+        door.add_connection(State.Closed, Message.Stop, autoload_controller)
+
+
+@decorate_patcher(TORVUS_BOG_MLVL, torvus_bog.TORVUS_TEMPLE_MREA)
+def torvus_temple_allow_underground_tunnel_autoloads(editor: PatcherEditor, mlvl: Mlvl, area: Area) -> None:
+    """
+    Deactivate the AreaAutoLoadController in Underground Tunnel after the fight is done,
+    since we no longer have the memory concerns at this point.
+    """
+
+    layer_controller = area.get_layer("Default").add_instance_with(
+        ScriptLayerController(
+            editor_properties=EditorProperties(
+                name="Decrement - 0g_swamp_hall - Disable Automatic Loads",
+            ),
+            layer=LayerSwitch(
+                area_id=torvus_bog.UNDERGROUND_TUNNEL_INTERNAL_ID,
+                layer_number=4,  # Disable Automatic Loads
+            ),
+        )
+    )
+
+    timer = area.get_instance("Delay Barriers Off Cinematic")
+    timer.add_connection(State.Zero, Message.Decrement, layer_controller)
