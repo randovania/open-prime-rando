@@ -67,6 +67,7 @@ def register_all(area_patcher: AreaPatcher) -> None:
         undertemple_persist_pickup,
         temple_sanctuary_persist_pickup,
         agon_temple_move_pickup,
+        agon_temple_persist_pickup,
     ]:
         area_patcher.add_function(func)
 
@@ -540,3 +541,85 @@ def agon_temple_move_pickup(editor: PatcherEditor, mlvl: Mlvl, area: Area) -> No
 
     unswarm_effects.replace_connections_to(generator, relay)
     area.remove_instance(generator)
+
+
+@decorate_patcher(AGON_WASTES_MLVL, agon_wastes.AGON_TEMPLE_MREA)
+def agon_temple_persist_pickup(editor: PatcherEditor, mlvl: Mlvl, area: Area) -> None:
+    """
+    Makes the pickup persistent, even if you exit the area and reload.
+    """
+    # Define objects
+    first_pass = area.get_layer("1st pass enemy_Bomb Boss")
+    default = area.get_layer("Default")
+    pickup = area.get_instance("Morph Ball Bomb")
+    fight_trigger = area.get_instance("activate battle")
+    post_pickup = area.get_instance(0x1A006B)
+    fade_in_music = area.get_instance(0x1A0071)
+
+    pickup_active = first_pass.add_instance_with(
+        MemoryRelay(
+            editor_properties=EditorProperties(
+                active=False,
+                name="Keep Pickup Active",
+                transform=Transform(
+                    position=Vector(-64.8, 110.3, -1.4),
+                    scale=Vector(2.0, 2.0, 2.0),
+                ),
+            ),
+            delayed_action=True,
+        )
+    )
+
+    # Connections to/from Memory Relay
+    worm = area.get_instance("Bomb Boss")
+    worm.add_connection(State.Dead, Message.Activate, pickup_active)
+    pickup_active.add_connection(State.Active, Message.Activate, pickup)
+    pickup_active.add_connection(State.Active, Message.Deactivate, fight_trigger)
+    post_pickup.add_connection(State.Zero, Message.Deactivate, pickup_active)
+
+    # Make bomb guardian layer switch happen
+    # through post pickup instead of fade in timer
+    decrement_delay = default.add_instance_with(
+        Timer(
+            editor_properties=EditorProperties(
+                name="Decrement Delay",
+                transform=Transform(
+                    position=Vector(-65.8, 110.3, -3.4),
+                    scale=Vector(2.0, 2.0, 2.0),
+                ),
+            ),
+            time=1.0,
+        )
+    )
+    decrement_delay.connections = fade_in_music.connections
+    decrement_delay.remove_connection(decrement_delay.connections[0])
+    post_pickup.add_connection(State.Zero, Message.ResetAndStart, decrement_delay)
+
+    # Remove layer switch connections from fade in timer
+    fade_in_timer_connections = list(fade_in_music.connections)
+    fade_in_music.remove_connection(fade_in_timer_connections[1])
+    fade_in_music.remove_connection(fade_in_timer_connections[2])
+    fade_in_music.remove_connection(fade_in_timer_connections[3])
+
+    # Keep Boss Go music if player hasn't collected Pickup
+    music_player = area.get_instance("Music Player For Area")
+    agon_music = area.get_instance("Sand World Ambient")
+    boss_go_music = area.get_instance("Boss Go")
+    music_status = area.get_layer("Default").add_instance_with(
+        Switch(
+            editor_properties=EditorProperties(
+                name="CLOSED: Sand World Ambient / OPEN: Boss Go",
+                transform=Transform(
+                    position=Vector(-70.0, 22.0, 5.2),
+                    scale=Vector(2.0, 2.0, 2.0),
+                ),
+            ),
+        )
+    )
+    worm.add_connection(State.Dead, Message.Open, music_status)
+    pickup_active.add_connection(State.Active, Message.Open, music_status)
+    post_pickup.add_connection(State.Zero, Message.Close, music_status)
+    music_player.remove_connection(music_player.connections[0])
+    music_player.add_connection(State.Entered, Message.SetToZero, music_status)
+    music_status.add_connection(State.Closed, Message.Play, agon_music)
+    music_status.add_connection(State.Open, Message.Play, boss_go_music)
