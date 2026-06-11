@@ -48,6 +48,9 @@ class WorldChange(BaseModel):
     mlvl_id: PydanticAssetId
     """The asset id of the MLVL for this change."""
 
+    other_world_to_copy_in_mapu: PydanticAssetId | None = None
+    """The asset id of another MLVL, used to determine the position of this world in the MAPU."""
+
     area_changes: list[AreaChange]
     """The changes to apply to a MREA that belongs to this MLVL."""
 
