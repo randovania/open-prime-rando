@@ -69,6 +69,7 @@ def register_all(area_patcher: AreaPatcher) -> None:
         agon_temple_move_pickup,
         agon_temple_persist_pickup,
         dark_agon_temple_persist_pickup,
+        amorbis_fight_prevent_wrong_room,
     ]:
         area_patcher.add_function(func)
 
@@ -676,3 +677,16 @@ def dark_agon_temple_persist_pickup(editor: PatcherEditor, mlvl: Mlvl, area: Are
     music_player.add_connection(State.Entered, Message.SetToZero, music_status)
     music_status.add_connection(State.Closed, Message.Play, dark_agon)
     music_status.add_connection(State.Open, Message.Play, boss_go_music)
+
+
+@decorate_patcher(AGON_WASTES_MLVL, agon_wastes.DARK_AGON_TEMPLE_MREA)
+def amorbis_fight_prevent_wrong_room(editor: PatcherEditor, mlvl: Mlvl, area: Area) -> None:
+    """
+    Force player into room if triggered fight
+    from out of bounds, to prevent crashing.
+    """
+    boss_intro_relay = area.get_instance("Begin Boss Intro Cinematic Loading (Load Layer)")
+    spawn_point = area.get_instance("Spawn point 001")
+
+    # Move player into room
+    boss_intro_relay.add_connection(State.Zero, Message.SetToZero, spawn_point)
