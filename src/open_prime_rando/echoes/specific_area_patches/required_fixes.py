@@ -686,6 +686,7 @@ def agon_temple_prevent_pickup_interrupt(editor: PatcherEditor, mlvl: Mlvl, area
     """
     Move player out of the way if standing where the pickup spawns.
     """
+    # Adjust Sequence Connection to reposition player the same frame the cutscene starts
     with area.get_instance("Unswarm Effects").edit_properties(SequenceTimer) as sequence_timer:
         sequence_timer.sequence_connections[3].activation_times = [4.5]
 
@@ -695,6 +696,7 @@ def dark_torvus_arena_prevent_pickup_interrupt(editor: PatcherEditor, mlvl: Mlvl
     """
     Move player out of the way if standing where the pickup spawns.
     """
+    # Adjust Sequence Connection to reposition player the same frame the cutscene starts
     with area.get_instance("Unswarm Effects").edit_properties(SequenceTimer) as sequence_timer:
         sequence_timer.sequence_connections[3].activation_times = [7.5]
 
@@ -704,5 +706,6 @@ def sacrificial_chamber_prevent_pickup_interrupt(editor: PatcherEditor, mlvl: Ml
     """
     Move player out of the way if standing where the pickup spawns.
     """
+    # Adjust Sequence Connection to reposition player the same frame the cutscene starts
     with area.get_instance("Unswarm Effects").edit_properties(SequenceTimer) as sequence_timer:
         sequence_timer.sequence_connections[4].activation_times = [3.5]
