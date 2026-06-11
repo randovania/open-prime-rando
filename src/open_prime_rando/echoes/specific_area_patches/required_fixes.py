@@ -67,6 +67,7 @@ def register_all(area_patcher: AreaPatcher) -> None:
         undertemple_persist_pickup,
         temple_sanctuary_persist_pickup,
         agon_temple_move_pickup,
+        dark_agon_temple_persist_pickup,
     ]:
         area_patcher.add_function(func)
 
@@ -540,3 +541,55 @@ def agon_temple_move_pickup(editor: PatcherEditor, mlvl: Mlvl, area: Area) -> No
 
     unswarm_effects.replace_connections_to(generator, relay)
     area.remove_instance(generator)
+
+
+@decorate_patcher(AGON_WASTES_MLVL, agon_wastes.DARK_AGON_TEMPLE_MREA)
+def dark_agon_temple_persist_pickup(editor: PatcherEditor, mlvl: Mlvl, area: Area) -> None:
+    """
+    Makes the pickup persistent, even if you exit the area and reload.
+    """
+    pickup_active = area.get_layer("Default").add_instance_with(
+        MemoryRelay(
+            editor_properties=EditorProperties(
+                active=False,
+                name="Keep Pickup Active",
+                transform=Transform(
+                    position=Vector(-64.6, 113.3, -1.4),
+                    scale=Vector(2.0, 2.0, 2.0),
+                ),
+            ),
+            delayed_action=True,
+        )
+    )
+    pickup = area.get_instance("Dark Suit Pickup")
+    boss_dead_relay = area.get_instance("Relay Begin Death Cinematic")
+    post_pickup_relay = area.get_instance(0x24025D)
+    pickup_safe_zone = area.get_instance(0x240071)
+
+    boss_dead_relay.add_connection(State.Zero, Message.Activate, pickup_active)
+    pickup_active.add_connection(State.Active, Message.Activate, pickup)
+    pickup_active.add_connection(State.Active, Message.Activate, pickup_safe_zone)
+    post_pickup_relay.add_connection(State.Active, Message.Deactivate, pickup_active)
+
+    # Keep Boss Go music if player hasn't collected Pickup
+    music_player = area.get_instance("Music Player For Area")
+    dark_agon = area.get_instance("Dark World Sand Theme")
+    boss_go_music = area.get_instance("Boss Go")
+    music_status = area.get_layer("Default").add_instance_with(
+        Switch(
+            editor_properties=EditorProperties(
+                name="CLOSED: Dark World Sand / OPEN: Boss Go",
+                transform=Transform(
+                    position=Vector(-59.4, 12.7, 5.2),
+                    scale=Vector(2.0, 2.0, 2.0),
+                ),
+            ),
+        )
+    )
+    boss_dead_relay.add_connection(State.Zero, Message.Open, music_status)
+    pickup_active.add_connection(State.Active, Message.Open, music_status)
+    post_pickup_relay.add_connection(State.Zero, Message.Close, music_status)
+    music_player.remove_connection(music_player.connections[0])
+    music_player.add_connection(State.Entered, Message.SetToZero, music_status)
+    music_status.add_connection(State.Closed, Message.Play, dark_agon)
+    music_status.add_connection(State.Open, Message.Play, boss_go_music)
