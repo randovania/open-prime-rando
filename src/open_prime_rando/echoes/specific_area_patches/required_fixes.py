@@ -70,6 +70,7 @@ def register_all(area_patcher: AreaPatcher) -> None:
         temple_sanctuary_persist_pickup,
         agon_temple_move_pickup,
         underground_tunnel_disable_autoloads,
+        torvus_temple_disable_autoloads,
         torvus_temple_allow_underground_tunnel_autoloads,
     ]:
         area_patcher.add_function(func)
@@ -567,6 +568,24 @@ def underground_tunnel_disable_autoloads(editor: PatcherEditor, mlvl: Mlvl, area
     for door_id in (0x1E003B, 0x1E009F):
         door = area.get_instance(door_id)
         door.add_connection(State.Closed, Message.Stop, autoload_controller)
+
+
+@decorate_patcher(TORVUS_BOG_MLVL, torvus_bog.TORVUS_TEMPLE_MREA)
+def torvus_temple_disable_autoloads(editor: PatcherEditor, mlvl: Mlvl, area: Area) -> None:
+    """
+    Disable automatic loading in lower Torvus Temple until the fight is completed.
+    """
+
+    autoload_controller = area.get_instance("AreaAutoLoadController")
+
+    # unload other areas and disable auto-loading as soon as any lower-level door closes
+    for door_id in (0x1B0012, 0x1B000D, 0x1B0227, 0x1B029C):
+        door = area.get_instance(door_id)
+        door.add_connection(State.Closed, Message.Stop, autoload_controller)
+
+    # re-enable autoloads after the fight is complete
+    post_fight_memory_relay = area.get_instance("Remember Beams Off")
+    post_fight_memory_relay.add_connection(State.Active, Message.Deactivate, autoload_controller)
 
 
 @decorate_patcher(TORVUS_BOG_MLVL, torvus_bog.TORVUS_TEMPLE_MREA)
