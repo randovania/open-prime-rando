@@ -156,7 +156,7 @@ def main_reactor_flashbang(editor: PatcherEditor, mlvl: Mlvl, area: Area) -> Non
 def sacrificial_chamber_changes(editor: PatcherEditor, mlvl: Mlvl, area: Area) -> None:
     """
     Makes the pickup persistent through room reloads, remove
-    remove fake Grapple Guardian and prevent floor from lowering.
+    fake Grapple Guardian and prevent floor from lowering.
     """
     # Define objects
     pickup_active = area.get_layer("1st Pass").add_instance_with(
