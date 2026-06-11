@@ -67,6 +67,7 @@ def register_all(area_patcher: AreaPatcher) -> None:
         undertemple_persist_pickup,
         temple_sanctuary_persist_pickup,
         agon_temple_move_pickup,
+        amorbis_fight_prevent_wrong_room,
     ]:
         area_patcher.add_function(func)
 
@@ -540,3 +541,16 @@ def agon_temple_move_pickup(editor: PatcherEditor, mlvl: Mlvl, area: Area) -> No
 
     unswarm_effects.replace_connections_to(generator, relay)
     area.remove_instance(generator)
+
+
+@decorate_patcher(AGON_WASTES_MLVL, agon_wastes.DARK_AGON_TEMPLE_MREA)
+def amorbis_fight_prevent_wrong_room(editor: PatcherEditor, mlvl: Mlvl, area: Area) -> None:
+    """
+    Force player into room if triggered fight
+    from out of bounds, to prevent crashing.
+    """
+    boss_intro_relay = area.get_instance("Begin Boss Intro Cinematic Loading (Load Layer)")
+    spawn_point = area.get_instance("Spawn point 001")
+
+    # Move player into room
+    boss_intro_relay.add_connection(State.Zero, Message.SetToZero, spawn_point)
