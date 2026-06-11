@@ -704,7 +704,8 @@ def dynamo_works_persist_pickup(editor: PatcherEditor, mlvl: Mlvl, area: Area) -
     post_pickup_relay = area.get_instance(0x1402A9)
 
     # Activate Post-Pickup Permanent non-dynamically
-    # so the player can return via Spider Tracks
+    # so if the player leaves via Portal, they are able
+    # to return from main path to collect the pickup.
     post_pickup_permanent_dynamic_controller = area.get_instance("Increment Post-Pickup Permanent")
     post_pickup_permanent_controller = default.add_instance_with(
         post_pickup_permanent_dynamic_controller.get_properties()
@@ -719,15 +720,13 @@ def dynamo_works_persist_pickup(editor: PatcherEditor, mlvl: Mlvl, area: Area) -
     )
     spider_guardian_decrement = default.add_instance_with(spider_guardian_dynamic_unload_controller.get_properties())
     with spider_guardian_decrement.edit_properties(ScriptLayerController) as spider_guardian_controller:
-        spider_guardian_controller.editor_properties.name = (
-            "Decrement Spiderball Guardian (Dynamic Unload) (non-dynamic)"
-        )
+        spider_guardian_controller.editor_properties.name = "Decrement Spiderball Guardian (non-dynamic)"
         spider_guardian_controller.editor_properties.transform.position.y += 1.0
         spider_guardian_controller.is_dynamic = False
-
-    # Activate Pickup
     boss_dead_relay.add_connection(State.Zero, Message.Decrement, spider_guardian_decrement)
     boss_dead_relay.add_connection(State.Zero, Message.Increment, post_pickup_permanent_controller)
+
+    # Activate Pickup
     boss_dead_relay.add_connection(State.Zero, Message.Activate, pickup_active)
     pickup_active.add_connection(State.Active, Message.Activate, pickup)
     post_pickup_relay.add_connection(State.Zero, Message.Deactivate, pickup_active)
