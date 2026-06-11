@@ -67,6 +67,9 @@ def register_all(area_patcher: AreaPatcher) -> None:
         undertemple_persist_pickup,
         temple_sanctuary_persist_pickup,
         agon_temple_move_pickup,
+        agon_temple_prevent_pickup_interrupt,
+        dark_torvus_arena_prevent_pickup_interrupt,
+        sacrificial_chamber_prevent_pickup_interrupt,
     ]:
         area_patcher.add_function(func)
 
@@ -540,3 +543,30 @@ def agon_temple_move_pickup(editor: PatcherEditor, mlvl: Mlvl, area: Area) -> No
 
     unswarm_effects.replace_connections_to(generator, relay)
     area.remove_instance(generator)
+
+
+@decorate_patcher(AGON_WASTES_MLVL, agon_wastes.AGON_TEMPLE_MREA)
+def agon_temple_prevent_pickup_interrupt(editor: PatcherEditor, mlvl: Mlvl, area: Area) -> None:
+    """
+    Move player out of the way if standing where the pickup spawns.
+    """
+    with area.get_instance("Unswarm Effects").edit_properties(SequenceTimer) as sequence_timer:
+        sequence_timer.sequence_connections[3].activation_times = [4.5]
+
+
+@decorate_patcher(TORVUS_BOG_MLVL, torvus_bog.DARK_TORVUS_ARENA_MREA)
+def dark_torvus_arena_prevent_pickup_interrupt(editor: PatcherEditor, mlvl: Mlvl, area: Area) -> None:
+    """
+    Move player out of the way if standing where the pickup spawns.
+    """
+    with area.get_instance("Unswarm Effects").edit_properties(SequenceTimer) as sequence_timer:
+        sequence_timer.sequence_connections[3].activation_times = [7.5]
+
+
+@decorate_patcher(TORVUS_BOG_MLVL, torvus_bog.SACRIFICIAL_CHAMBER_MREA)
+def sacrificial_chamber_prevent_pickup_interrupt(editor: PatcherEditor, mlvl: Mlvl, area: Area) -> None:
+    """
+    Move player out of the way if standing where the pickup spawns.
+    """
+    with area.get_instance("Unswarm Effects").edit_properties(SequenceTimer) as sequence_timer:
+        sequence_timer.sequence_connections[4].activation_times = [3.5]
