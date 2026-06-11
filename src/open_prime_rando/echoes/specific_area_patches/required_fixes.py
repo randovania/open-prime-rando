@@ -706,7 +706,7 @@ def main_hydrochamber_persist_boss(editor: PatcherEditor, mlvl: Mlvl, area: Area
     blogg_controller = area.get_instance("Decrement - 11_Swamp - 2nd Pass Mega Blogg Intro (Dynamic)")
     non_dynamic_blogg_controller = default.add_instance_with(blogg_controller.get_properties())
     with non_dynamic_blogg_controller.edit_properties(ScriptLayerController) as controller:
-        controller.editor_properties.name = "Decrement - 11_Swamp - 2nd Pass Mega Blogg Intro"
+        controller.editor_properties.name = "Increment/Decrement - 11_Swamp - 2nd Pass Mega Blogg Intro"
         controller.editor_properties.transform.position.x += 1.0
         controller.is_dynamic = False
     blogg_intro_end.add_connection(State.Zero, Message.Increment, non_dynamic_blogg_controller)
