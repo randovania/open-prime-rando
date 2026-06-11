@@ -67,6 +67,7 @@ def register_all(area_patcher: AreaPatcher) -> None:
         undertemple_persist_pickup,
         temple_sanctuary_persist_pickup,
         agon_temple_move_pickup,
+        main_hydrochamber_persist_boss,
     ]:
         area_patcher.add_function(func)
 
@@ -540,3 +541,23 @@ def agon_temple_move_pickup(editor: PatcherEditor, mlvl: Mlvl, area: Area) -> No
 
     unswarm_effects.replace_connections_to(generator, relay)
     area.remove_instance(generator)
+
+
+@decorate_patcher(TORVUS_BOG_MLVL, torvus_bog.MAIN_HYDROCHAMBER_MREA)
+def main_hydrochamber_persist_boss(editor: PatcherEditor, mlvl: Mlvl, area: Area) -> None:
+    """
+    Makes the boss fight trigger persistent until boss is defeated.
+    """
+    # Define objects
+    default = area.get_layer("Default")
+    blogg_intro_end = area.get_instance("[OUT] End Big Blogg Intro sequence")
+    blogg_dead = area.get_instance("Blogg defeated")
+
+    blogg_controller = area.get_instance("Decrement - 11_Swamp - 2nd Pass Mega Blogg Intro (Dynamic)")
+    non_dynamic_blogg_controller = default.add_instance_with(blogg_controller.get_properties())
+    with non_dynamic_blogg_controller.edit_properties(ScriptLayerController) as controller:
+        controller.editor_properties.name = "Decrement - 11_Swamp - 2nd Pass Mega Blogg Intro"
+        controller.editor_properties.transform.position.x += 1.0
+        controller.is_dynamic = False
+    blogg_intro_end.add_connection(State.Zero, Message.Increment, non_dynamic_blogg_controller)
+    blogg_dead.add_connection(State.Zero, Message.Decrement, non_dynamic_blogg_controller)
