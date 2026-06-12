@@ -705,6 +705,7 @@ def hive_temple_persist_pickup_and_boss(editor: PatcherEditor, mlvl: Mlvl, area:
     trigger_memory_relay = area.get_instance("Remember Boss Has Been Triggered")
     boss_trigger = area.get_instance("Start Boss Encounter")
     boss_intro_end_relay = area.get_instance("Intro cinema end")
+    boss_intro_cinematic_dynamic_controller = area.get_instance("DYNAMIC Dump Intro Cinematic")
     boss_intro_actors_dynamic_controller = area.get_instance("DYNAMIC Dump Intro Cinematic Actors")
     boss_stage_2_splitters_dynamic_controller = area.get_instance("Load Boss Stage 2 Splitters")
     boss_cripple_body_cinema_dynamic_controller = area.get_instance("Load Boss Cripple Body Cinema (Stage 2 Cinematic)")
@@ -730,6 +731,7 @@ def hive_temple_persist_pickup_and_boss(editor: PatcherEditor, mlvl: Mlvl, area:
             controller.is_dynamic = False
         return new_controller
 
+    boss_intro_controller = static_controller(boss_intro_cinematic_dynamic_controller, "INCREMENT Intro Cinematic")
     boss_intro_actors_controller = static_controller(
         boss_intro_actors_dynamic_controller, "INCREMENT Intro Cinematic Actors"
     )
@@ -745,6 +747,7 @@ def hive_temple_persist_pickup_and_boss(editor: PatcherEditor, mlvl: Mlvl, area:
     )
 
     # Increment/Decrement layers non-dynamically right after they're loaded/unloaded
+    boss_intro_end_relay.add_connection(State.Zero, Message.Decrement, boss_intro_controller)
     boss_intro_end_relay.add_connection(State.Zero, Message.Increment, boss_intro_actors_controller)
     boss_cripple_body_cinema_dynamic_controller.add_connection(
         State.Arrived, Message.Decrement, boss_cripple_body_cinema_controller
@@ -760,9 +763,6 @@ def hive_temple_persist_pickup_and_boss(editor: PatcherEditor, mlvl: Mlvl, area:
     quadraxis.remove_connection(quadraxis_connections[2])
     quadraxis.remove_connection(quadraxis_connections[4])
     quadraxis.remove_connection(quadraxis_connections[11])
-    spiderball_platform_end_relay.add_connection(State.Zero, Message.Activate, trigger_memory_relay)
-    spiderball_platform_end_relay.add_connection(State.Zero, Message.Decrement, boss_intro_actors_controller)
-    spiderball_platform_end_relay.add_connection(State.Zero, Message.Decrement, digital_guardian_body_controller)
     spiderball_platform_end_relay.add_connection(
         State.Zero, Message.SetToZero, area.get_instance("Luminoth Dialogue Layer Loading Control")
     )
@@ -801,9 +801,9 @@ def hive_temple_persist_pickup_and_boss(editor: PatcherEditor, mlvl: Mlvl, area:
 
     # Set Boss State to defeated for pickup active
     quadraxis.add_connection(State.Dead, Message.Increment, boss_death_controller)
-    quadraxis.add_connection(State.Dead, Message.Increment, boss_music_decrement_controller)
-    quadraxis.add_connection(State.Dead, Message.Decrement, area.get_instance("Dump Digital Guardian body"))
-    quadraxis.add_connection(State.Dead, Message.Decrement, area.get_instance("DYNAMIC Dump Intro Cinematic Actors"))
+    quadraxis.add_connection(State.Dead, Message.Activate, trigger_memory_relay)
+    quadraxis.add_connection(State.Dead, Message.Decrement, digital_guardian_body_dynamic_controller)
+    quadraxis.add_connection(State.Dead, Message.Decrement, boss_intro_actors_dynamic_controller)
     quadraxis.add_connection(
         State.Dead, Message.Decrement, area.get_instance("Decrement - 09_Cliff - CliffsideBoss (Dynamic)")
     )
@@ -823,13 +823,10 @@ def hive_temple_persist_pickup_and_boss(editor: PatcherEditor, mlvl: Mlvl, area:
         )
     )
     quadraxis.add_connection(State.Dead, Message.Activate, pickup_active)
-    pickup_active.add_connection(State.Active, Message.Lock, area.get_instance(0x35000C))
+    pickup_active.add_connection(State.Active, Message.Lock, area.get_instance(0x35000C))  # Door
     pickup_active.add_connection(State.Active, Message.Activate, pickup)
     pickup_active.add_connection(State.Active, Message.Activate, area.get_instance("Crippled Body"))
-    pickup_active.add_connection(State.Active, Message.Deactivate, boss_trigger)
     post_pickup.add_connection(State.Zero, Message.Deactivate, pickup_active)
-    post_pickup.add_connection(State.Zero, Message.Decrement, boss_music_decrement_controller)
-    post_pickup.add_connection(State.Zero, Message.Increment, boss_music_increment_controller)
 
     # Keep Boss Go music if player hasn't collected Pickup
     music_player = area.get_instance(0x350254)
