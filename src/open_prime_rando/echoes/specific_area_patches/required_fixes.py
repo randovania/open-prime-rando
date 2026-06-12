@@ -744,7 +744,7 @@ def hive_temple_persist_pickup_and_boss(editor: PatcherEditor, mlvl: Mlvl, area:
         digital_guardian_body_dynamic_controller, "INCREMENT/DECREMENT CliffsideBoss Body"
     )
 
-    # Decrement layers non-dynamically
+    # Increment/Decrement layers non-dynamically right after they're loaded/unloaded
     boss_intro_end_relay.add_connection(State.Zero, Message.Increment, boss_intro_actors_controller)
     boss_cripple_body_cinema_dynamic_controller.add_connection(
         State.Arrived, Message.Decrement, boss_cripple_body_cinema_controller
