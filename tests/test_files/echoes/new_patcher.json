@@ -4953,6 +4953,7 @@
             ]
         }
     ],
+    "two_way_portals": true,
     "starting_items": [
         {
             "item": 8,
