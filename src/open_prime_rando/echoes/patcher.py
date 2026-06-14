@@ -45,6 +45,7 @@ from open_prime_rando.echoes import (
 from open_prime_rando.echoes.asset_ids import world
 from open_prime_rando.echoes.elevators import auto_enabled_elevator_patches
 from open_prime_rando.echoes.elevators.elevator_rando import register_elevator_patch
+from open_prime_rando.echoes.elevators.move_worlds import get_original_mapu_transforms, move_world_in_mapu
 from open_prime_rando.echoes.specific_area_patches import front_end
 from open_prime_rando.echoes.version import EchoesVersion
 from open_prime_rando.patcher_editor import IsoFileProvider, IsoFileWriter, PatcherEditor
@@ -53,9 +54,12 @@ if TYPE_CHECKING:
     from collections.abc import Callable
     from pathlib import Path
 
+    from retro_data_structures.base_resource import AssetId
+    from retro_data_structures.transform import Transform
+
     from open_prime_rando.dol_patching.echoes.dol_patches import EchoesDolVersion
     from open_prime_rando.echoes.pydantic_models import AreaReference
-    from open_prime_rando.echoes.rando_configuration import RandoConfiguration, StringChange, WorldChange
+    from open_prime_rando.echoes.rando_configuration import AreaChange, RandoConfiguration, StringChange, WorldChange
 
 LOG = logging.getLogger("echoes_patcher")
 
@@ -251,56 +255,76 @@ def apply_dol_patches(editor: PatcherEditor, configuration: RandoConfiguration, 
     inventory_slot.setup_inventory_slot_to_item(dol_version, editor)
 
 
+def _register_area_changes(area_patcher: AreaPatcher, mlvl_id: AssetId, area_changes: list[AreaChange]) -> None:
+    disable_hud_popup = True
+
+    for area_change in area_changes:
+
+        def _register(func: RawPatcherFunction) -> None:
+            """Register a change for this specific Area to the AreaPatcher."""
+            area_patcher.add_raw_function(
+                mlvl_id,
+                area_change.mrea_id,
+                func,
+            )
+
+        if area_change.new_name is not None:
+            _register(
+                functools.partial(
+                    general_changes.change_area_name,
+                    name=area_change.new_name,
+                )
+            )
+
+        for pickup_change in area_change.pickups:
+            _register(
+                functools.partial(
+                    pickups.patch_pickup,
+                    modification=pickup_change,
+                    disable_hud_popup=disable_hud_popup,
+                )
+            )
+
+        for translator_gate_change in area_change.translator_gates:
+            _register(
+                functools.partial(
+                    translator_gates.patch_translator_gate,
+                    modification=translator_gate_change,
+                ),
+            )
+
+        for dock_type_change in area_change.door_locks:
+            _register(
+                functools.partial(
+                    dock_lock_rando.apply_door_rando,
+                    change=dock_type_change,
+                ),
+            )
+
+        for elevator_change in area_change.elevators:
+            register_elevator_patch(area_patcher, mlvl_id, area_change.mrea_id, elevator_change)
+
+
 def register_world_changes(area_patcher: AreaPatcher, world_changes: list[WorldChange]) -> None:
     """Register all WorldChanges in the AreaPatcher."""
 
-    disable_hud_popup = True
+    mapu_transforms: dict[AssetId, Transform] | None = None
+
     for world_change in world_changes:
-        for area_change in world_change.area_changes:
+        if world_change.other_world_to_copy_in_mapu is not None:
+            if mapu_transforms is None:
+                mapu_transforms = get_original_mapu_transforms(area_patcher.editor)
 
-            def _register(func: RawPatcherFunction) -> None:
-                """Register a change for this specific Area to the AreaPatcher."""
-                area_patcher.add_raw_function(
-                    world_change.mlvl_id,
-                    area_change.mrea_id,
-                    func,
-                )
+            area_patcher.add_world_function(
+                world_change.mlvl_id,
+                functools.partial(
+                    move_world_in_mapu,
+                    world_to_copy=world_change.other_world_to_copy_in_mapu,
+                    original_transforms=mapu_transforms,
+                ),
+            )
 
-            if area_change.new_name is not None:
-                _register(
-                    functools.partial(
-                        general_changes.change_area_name,
-                        name=area_change.new_name,
-                    )
-                )
-
-            for pickup_change in area_change.pickups:
-                _register(
-                    functools.partial(
-                        pickups.patch_pickup,
-                        modification=pickup_change,
-                        disable_hud_popup=disable_hud_popup,
-                    )
-                )
-
-            for translator_gate_change in area_change.translator_gates:
-                _register(
-                    functools.partial(
-                        translator_gates.patch_translator_gate,
-                        modification=translator_gate_change,
-                    ),
-                )
-
-            for dock_type_change in area_change.door_locks:
-                _register(
-                    functools.partial(
-                        dock_lock_rando.apply_door_rando,
-                        change=dock_type_change,
-                    ),
-                )
-
-            for elevator_change in area_change.elevators:
-                register_elevator_patch(area_patcher, world_change.mlvl_id, area_change.mrea_id, elevator_change)
+        _register_area_changes(area_patcher, world_change.mlvl_id, world_change.area_changes)
 
 
 def _apply_patches(
