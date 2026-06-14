@@ -1,12 +1,12 @@
+from __future__ import annotations
+
 import dataclasses
 import functools
-from collections.abc import Iterable
+from typing import TYPE_CHECKING
 
+import pydantic
 from retro_data_structures.enums.echoes import Message, State
 from retro_data_structures.formats.mapa import MappableObject, ObjectTypeMP2, ObjectVisibility
-from retro_data_structures.formats.mlvl import Mlvl
-from retro_data_structures.formats.mrea import Area
-from retro_data_structures.formats.script_object import InstanceId, ScriptInstance
 from retro_data_structures.properties.echoes.archetypes import EditorProperties, Transform
 from retro_data_structures.properties.echoes.core import Vector
 from retro_data_structures.properties.echoes.objects import Dock
@@ -17,9 +17,34 @@ from open_prime_rando import area_utils
 from open_prime_rando.area_patcher import AreaPatcher, decorate_patcher
 from open_prime_rando.echoes.asset_ids import agon_wastes, sanctuary_fortress, temple_grounds, world
 from open_prime_rando.echoes.pydantic_models import PydanticAssetId
-from open_prime_rando.echoes.rando_configuration import MapVisibility
 from open_prime_rando.echoes.specific_area_patches.rebalance_patches import ObjectWithEditorProperties
-from open_prime_rando.patcher_editor import PatcherEditor
+
+if TYPE_CHECKING:
+    from collections.abc import Iterable
+
+    from retro_data_structures.formats.mlvl import Mlvl
+    from retro_data_structures.formats.mrea import Area
+    from retro_data_structures.formats.script_object import InstanceId, ScriptInstance
+
+    from open_prime_rando.echoes.rando_configuration import MapVisibility
+    from open_prime_rando.patcher_editor import PatcherEditor
+
+
+class PortalChange(pydantic.BaseModel):
+    """
+    Changes a portal to connect to a different one.
+
+    All portals must connect to a portal that connects back.
+    """
+
+    source_dock_name: str
+    """Name of the script object of type Dock associated with the portal to change."""
+
+    target_mrea_id: PydanticAssetId
+    """The ID of the area to connect to. Must belong to the same world."""
+
+    target_dock_name: str
+    """Similar to source_dock_name, but in the target area."""
 
 
 @dataclasses.dataclass(frozen=True)
@@ -209,3 +234,29 @@ def register_make_portals_two_way(area_patcher: AreaPatcher, map_visibility: Map
                 else ObjectVisibility.AreaVisitOrMapStation2,
             ),
         )
+
+
+def _find_dock_named(area: Area, name: str) -> Dock:
+    for instance in area.all_instances:
+        if instance.script_type == Dock and instance.name == name:
+            return instance.get_properties_as(Dock)
+    raise KeyError(name)
+
+
+def apply_portal_change(
+    editor: PatcherEditor,
+    mlvl: Mlvl,
+    area: Area,
+    change: PortalChange,
+) -> None:
+    """Change the portal the given portal is connected to."""
+
+    source_dock = _find_dock_named(area, change.source_dock_name)
+    target_area = area.parent_mlvl.get_area(change.target_mrea_id)
+    target_dock = _find_dock_named(target_area, change.target_dock_name)
+
+    area._raw_connect_to(
+        source_dock.dock_number,
+        target_area,
+        target_dock.dock_number,
+    )

@@ -14,6 +14,7 @@ from open_prime_rando.echoes.dock_lock_rando import DockTypeChange
 from open_prime_rando.echoes.elevators.elevator_rando import ElevatorChange
 from open_prime_rando.echoes.hud_color import HudColorConfiguration
 from open_prime_rando.echoes.pickups.schema import PickupModification
+from open_prime_rando.echoes.portal import PortalChange
 from open_prime_rando.echoes.pydantic_models import AreaReference, PydanticAssetId
 from open_prime_rando.echoes.starting_items import StartingItemConfig
 from open_prime_rando.echoes.suit_cosmetics import SuitMapping
@@ -40,6 +41,9 @@ class AreaChange(BaseModel):
 
     elevators: list[ElevatorChange] = Field(default_factory=list)
     """A modification for an elevator in this area."""
+
+    portals: list[PortalChange] = Field(default_factory=list)
+    """A modification for a portal in this area."""
 
 
 class WorldChange(BaseModel):

@@ -1104,6 +1104,13 @@
                             },
                             "progressive_stages": []
                         }
+                    ],
+                    "portals": [
+                        {
+                            "source_dock_name": "VirtualNorth",
+                            "target_mrea_id": 3455003633,
+                            "target_dock_name": "VirtualNorth1"
+                        }
                     ]
                 },
                 {
@@ -1223,6 +1230,13 @@
                                 "conversion": []
                             },
                             "progressive_stages": []
+                        }
+                    ],
+                    "portals": [
+                        {
+                            "source_dock_name": "VirtualNorth",
+                            "target_mrea_id": 2909835645,
+                            "target_dock_name": "VirtualNorth1"
                         }
                     ]
                 },
@@ -1477,6 +1491,26 @@
                                 "conversion": []
                             },
                             "progressive_stages": []
+                        }
+                    ]
+                },
+                {
+                    "mrea_id": 2909835645,
+                    "portals": [
+                        {
+                            "source_dock_name": "VirtualNorth1",
+                            "target_mrea_id": 67496868,
+                            "target_dock_name": "VirtualNorth"
+                        }
+                    ]
+                },
+                {
+                    "mrea_id": 3455003633,
+                    "portals": [
+                        {
+                            "source_dock_name": "VirtualNorth1",
+                            "target_mrea_id": 1263425809,
+                            "target_dock_name": "VirtualNorth"
                         }
                     ]
                 }
