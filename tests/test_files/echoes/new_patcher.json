@@ -3284,6 +3284,11 @@
                             "new_door_type": "EchoVisor"
                         },
                         {
+                            "dock_name": "EastTop",
+                            "old_door_type": "Dark",
+                            "new_door_type": "ScrewAttack"
+                        },
+                        {
                             "dock_name": "West",
                             "old_door_type": "SuperMissile",
                             "new_door_type": "DarkVisor"
