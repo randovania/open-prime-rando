@@ -12,9 +12,6 @@ if TYPE_CHECKING:
     from open_prime_rando.patcher_editor import PatcherEditor
 
 
-_ORIGINAL_MAPU_TRANSFORMS: dict[AssetId, Transform] | None = None
-
-
 def get_original_mapu_transforms(editor: PatcherEditor) -> dict[AssetId, Transform]:
     mapu = editor.get_file(0xA2D85F5B, Mapu)
     return {world.mlvl: world.transform for world in mapu.worlds}
