@@ -19,10 +19,13 @@ from retro_data_structures.properties.echoes.objects import (
     ScriptLayerController,
     SequenceTimer,
     SpawnPoint,
+    SpecialFunction,
     Splinter,
     Switch,
     Timer,
+    Trigger,
 )
+from retro_data_structures.properties.echoes.objects.SpecialFunction import Function
 
 from open_prime_rando.area_patcher import AreaPatcher, decorate_patcher
 from open_prime_rando.echoes.asset_ids import agon_wastes, great_temple, sanctuary_fortress, temple_grounds, torvus_bog
@@ -59,7 +62,6 @@ def register_all(area_patcher: AreaPatcher) -> None:
         aerie_echo_gate,
         main_research_echo_gate,
         hive_chamber_b_remove_item_loss,
-        torvus_temple_remove_effects,
         command_center_door,
         alpha_splinter_pb_response,
         dynamo_works_sg_pb_response,
@@ -70,6 +72,8 @@ def register_all(area_patcher: AreaPatcher) -> None:
         agon_temple_persist_pickup,
         dark_agon_temple_persist_pickup,
         amorbis_fight_prevent_wrong_room,
+        torvus_temple_memory_optimizations,
+        underground_tunnel_grenchler_layer,
     ]:
         area_patcher.add_function(func)
 
@@ -690,3 +694,159 @@ def amorbis_fight_prevent_wrong_room(editor: PatcherEditor, mlvl: Mlvl, area: Ar
 
     # Move player into room
     boss_intro_relay.add_connection(State.Zero, Message.SetToZero, spawn_point)
+
+
+@decorate_patcher(TORVUS_BOG_MLVL, torvus_bog.UNDERGROUND_TUNNEL_MREA)
+def underground_tunnel_grenchler_layer(editor: PatcherEditor, mlvl: Mlvl, area: Area) -> None:
+    """
+    Turn off Grenchler layer and separate
+    Sporbs to a dedicated layer
+    """
+    area.get_layer("1st Pass").active = False
+
+
+@decorate_patcher(TORVUS_BOG_MLVL, torvus_bog.TORVUS_TEMPLE_MREA)
+def torvus_temple_memory_optimizations(editor: PatcherEditor, mlvl: Mlvl, area: Area) -> None:
+    """
+    Separate the Aerotroopers into a dedicated layer
+    then stop room loading after touching fight trigger
+    to save memory. Activate Grenchler layer in
+    Underground Tunnel after the pirate fight
+    """
+    # Define objects
+    default = area.get_layer("Default")
+    first_pass = area.get_layer("1st Pass")
+    spawnpoint = area.get_instance("_Initial Swamp")
+    aerotroopers_layer = area.add_layer("Aerotroopers", False)
+    pirates_trigger = area.get_instance("Trigger Skiff Flyby")
+    resume_area_loading_relay = area.get_instance("re-enable scripted loading")
+    stop_area_loading_relay = area.get_instance("Unload all adjacent areas, disable scripted loading")
+    layer_handling_sequence_timer = area.get_instance(
+        "Layer Handling - 1st Pass / Load After First Pass / Supermissile Cinematic"
+    )
+    underground_tunnel = editor.get_area(TORVUS_BOG_MLVL, torvus_bog.UNDERGROUND_TUNNEL_MREA)
+    layer_controller = area.get_instance("Increment - 04_Swamp - Supermissile Cinematic (Dynamic)")
+
+    # Grenchler Layer toggle
+    grenchler_layer_controler = area.get_layer("Default").add_instance_with(
+        underground_tunnel.get_instance("Decrement 1st Pass").get_properties()
+    )
+    with grenchler_layer_controler.edit_properties(ScriptLayerController) as layer_props:
+        layer_props.editor_properties.name = "Increment - 0G_Swamp - 1st Pass"
+        layer_props.editor_properties.transform.position = Vector(-57.0, -190.0, 46.0)
+    layer_controller.add_connection(State.Arrived, Message.Increment, grenchler_layer_controler)
+
+    # Aerotrooper layer Controller
+    aerotroopers_controller = default.add_instance_with(
+        ScriptLayerController(
+            editor_properties=EditorProperties(
+                name="Increment/Decrement Aerotroopers (Dynamic)",
+                transform=Transform(position=Vector(-57.0, -188.9, 46.0), scale=Vector(2.0, 2.0, 2.0)),
+            ),
+            layer=LayerSwitch(
+                area_id=torvus_bog.TORVUS_TEMPLE_INTERNAL_ID,
+                layer_number=aerotroopers_layer.index,
+            ),
+            is_dynamic=True,
+        )
+    )
+
+    player_in_area_sf = first_pass.add_instance_with(
+        SpecialFunction(
+            editor_properties=EditorProperties(
+                name="Activate Trigger when Player is in room",
+                transform=Transform(
+                    position=Vector(-110.0, -125.0, 47.0),
+                    scale=Vector(2.0, 2.0, 2.0),
+                ),
+            ),
+            function=Function.PlayerInAreaRelay,
+        )
+    )
+
+    # Trigger placed perfectly in between
+    # door collision and dock scale boundary
+    player_detection = first_pass.add_instance_with(
+        Trigger(
+            editor_properties=EditorProperties(
+                name="Player in Door Frame",
+                transform=Transform(
+                    position=Vector(-102.512543, -123.717476, 47.624458),
+                    scale=Vector(1.350003, 2.0, 2.5),
+                ),
+                active=False,
+            )
+        )
+    )
+
+    player_reposition_relay = first_pass.add_instance_with(
+        Relay(
+            editor_properties=EditorProperties(
+                name="Move player out of the door frame",
+                transform=Transform(
+                    position=Vector(-105.0, -122.0, 47.0),
+                    scale=Vector(2.0, 2.0, 2.0),
+                ),
+                active=False,
+            )
+        )
+    )
+
+    # Separate Aerotroopers to their own layer
+    aerotroopers = [
+        "FlyingPirate-TOP",
+        "FlyingPirate-Right",
+        "Flying Pirate Team AI",
+        "FP - Top - 0",
+        "FP - Top - 1",
+        "FP - Top - 2",
+        "FP - Top - 3",
+        "FP - Top - 4",
+        "FP - Top - 5",
+        "FP - Right - 0",
+        "FP - Right - 1",
+        "FP - Right - 2",
+        "FP - Right - 3",
+        "FP - Right - 4",
+        "FP - Right 5",
+    ]
+
+    for flying_pirates in aerotroopers:
+        area.move_instance(flying_pirates, "Aerotroopers")
+
+    # Make trigger only active when player is in room
+    with pirates_trigger.edit_properties(Trigger) as trigger_props:
+        trigger_props.editor_properties.active = False
+    player_in_area_sf.add_connection(State.Entered, Message.Activate, pirates_trigger)
+    player_in_area_sf.add_connection(State.Exited, Message.Deactivate, pirates_trigger)
+
+    # Dynamically load aerotroopers when player touches fight trigger, then stop room loading
+    pirates_trigger.add_connection(State.Entered, Message.SetToZero, stop_area_loading_relay)
+    pirates_trigger.add_connection(State.Entered, Message.Increment, aerotroopers_controller)
+    aerotroopers_controller.add_connection(State.Arrived, Message.Play, aerotroopers_controller)
+
+    # Move player if they are in door frame so
+    # they're not out of bounds when room loading stops
+    player_in_area_sf.add_connection(State.Entered, Message.Activate, player_detection)
+    player_in_area_sf.add_connection(State.Exited, Message.Deactivate, player_detection)
+    player_detection.add_connection(State.Entered, Message.Activate, player_reposition_relay)
+    player_detection.add_connection(State.Exited, Message.Deactivate, player_reposition_relay)
+    player_detection.add_connection(State.Inactive, Message.Deactivate, player_reposition_relay)
+    pirates_trigger.add_connection(State.Entered, Message.SetToZero, player_reposition_relay)
+    pirates_trigger.add_connection(State.Entered, Message.Deactivate, player_detection)
+    player_reposition_relay.add_connection(State.Zero, Message.SetToZero, spawnpoint)
+
+    # Unload aerotroopers at the end of battle
+    with layer_handling_sequence_timer.edit_properties(SequenceTimer) as sequence_timer:
+        sequence_timer.sequence_connections.append(
+            SequenceConnection(
+                connection_index=3,
+                activation_times=[0.0],
+            ),
+        )
+    layer_handling_sequence_timer.add_connection(State.Sequence, Message.Decrement, aerotroopers_controller)
+
+    # Resume room loading at the end of battle
+    area.get_instance("Increment - 04_Swamp - Supermissile Cinematic (Dynamic)").add_connection(
+        State.Arrived, Message.SetToZero, resume_area_loading_relay
+    )
