@@ -304,6 +304,14 @@ def _register_area_changes(area_patcher: AreaPatcher, mlvl_id: AssetId, area_cha
         for elevator_change in area_change.elevators:
             register_elevator_patch(area_patcher, mlvl_id, area_change.mrea_id, elevator_change)
 
+        for portal_change in area_change.portals:
+            _register(
+                functools.partial(
+                    portal.apply_portal_change,
+                    change=portal_change,
+                ),
+            )
+
 
 def register_world_changes(area_patcher: AreaPatcher, world_changes: list[WorldChange]) -> None:
     """Register all WorldChanges in the AreaPatcher."""

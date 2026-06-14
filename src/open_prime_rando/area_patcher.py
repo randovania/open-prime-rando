@@ -43,7 +43,31 @@ def decorate_patcher(
     return decorator
 
 
+def _verify_connected_docks(mlvl: Mlvl) -> None:
+    """Checks if all dock connections in the given mlvl are two-way."""
+
+    dock_pairs = {}
+
+    for area in mlvl.areas:
+        for dock_index, dock in enumerate(area._raw.docks):
+            if len(dock.connecting_dock) == 1:
+                # Ignoring docks that connect to nothing. There's no docks with more than 1 connection.
+                dock_pairs[(area.index, dock_index)] = (
+                    dock.connecting_dock[0].area_index,
+                    dock.connecting_dock[0].dock_index,
+                )
+
+    for source_pair, target_pair in dock_pairs.items():
+        reverse_pair = dock_pairs[target_pair]
+        if reverse_pair != source_pair:
+            raise ValueError(
+                f"{source_pair} is connected to {target_pair}, but the reverse is connected to {reverse_pair}"
+            )
+
+
 class AreaPatcher:
+    num_area_changes: int
+    areas_changed: int
     _world_functions: dict[PydanticAssetId, list[RawWorldPatcherFunction]]
     _patcher_functions: dict[PydanticAssetId, dict[PydanticAssetId, list[RawPatcherFunction]]]
     _frontend_functions: list[RawPatcherFunction]
@@ -112,6 +136,8 @@ class AreaPatcher:
             area.update_all_dependencies(only_modified=True)
             self.areas_changed += 1
 
+        _verify_connected_docks(mlvl)
+
         if self.rebuild_savw:
             status_update(f"Rebuilding {mlvl.world_name} save format", self.areas_changed / self.num_area_changes)
             mlvl.rebuild_savw()
@@ -139,4 +165,4 @@ class AreaPatcher:
             status_update("Patching FrontEnd", 1.0)
 
             for func in self._frontend_functions:
-                func(self.editor, area._parent_mlvl, area)
+                func(self.editor, area.parent_mlvl, area)
