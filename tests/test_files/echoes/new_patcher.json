@@ -1484,6 +1484,7 @@
         },
         {
             "mlvl_id": 2252328306,
+            "other_world_to_copy_in_mapu": 1039999561,
             "area_changes": [
                 {
                     "mrea_id": 3885674414,
@@ -1811,6 +1812,7 @@
         },
         {
             "mlvl_id": 1119434212,
+            "other_world_to_copy_in_mapu": 464164546,
             "area_changes": [
                 {
                     "mrea_id": 1979488942,
@@ -3081,6 +3083,7 @@
         },
         {
             "mlvl_id": 1039999561,
+            "other_world_to_copy_in_mapu": 2252328306,
             "area_changes": [
                 {
                     "mrea_id": 3863006870,
@@ -4278,6 +4281,7 @@
         },
         {
             "mlvl_id": 464164546,
+            "other_world_to_copy_in_mapu": 1119434212,
             "area_changes": [
                 {
                     "mrea_id": 1388284403,
