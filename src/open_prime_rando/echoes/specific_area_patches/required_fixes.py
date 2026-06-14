@@ -159,10 +159,126 @@ def main_reactor_flashbang(editor: PatcherEditor, mlvl: Mlvl, area: Area) -> Non
 @decorate_patcher(TORVUS_BOG_MLVL, torvus_bog.SACRIFICIAL_CHAMBER_MREA)
 def sacrificial_chamber_persist_pickup(editor: PatcherEditor, mlvl: Mlvl, area: Area) -> None:
     """
-    Makes the pickup persistent, even if you exit the area and reload.
+    Makes the pickup persistent through room reloads
     """
-    with area.get_instance("If grapple attainment is loaded, then end battle").edit_properties(Switch) as switch:
-        switch.is_open = True
+    # Separate Boss from Pickup so a room
+    # reload doesn't take a long time
+    first_pass = area.get_layer("1st Pass")
+    grapple_guardian_layer = area.add_layer("Grapple Guardian")
+    pickup_obj_names = [
+        "Fade In Music",
+        "FadeIn/Out Long",
+        "Post Pickup",
+        "Play Jingle",
+        "HUD Activation",
+        "Play Short Jingle",
+        "Pickup Acquired",
+        "Small Item Jingle",
+        "Pickup Sound",
+        "Small Item Jingle",
+        "Pickup Object",
+    ]
+    pickup_objects = [first_pass.get_instance(inst) for inst in pickup_obj_names]
+
+    for instance in list(first_pass.instances):
+        if instance in pickup_objects:
+            continue
+        area.move_instance(instance, "Grapple Guardian")
+
+    # Decrement Grapple Guardian after unswarm effects
+    grapple_guardian_controller = area.get_layer("Default").add_instance_with(
+        ScriptLayerController(
+            editor_properties=EditorProperties(
+                name="Decrement Grapple Guardian",
+                transform=Transform(
+                    position=Vector(-205.1, 88.5, -25.0),
+                    scale=Vector(2.0, 2.0, 2.0),
+                ),
+            ),
+            layer=LayerSwitch(
+                area_id=torvus_bog.SACRIFICIAL_CHAMBER_INTERNAL_ID, layer_number=grapple_guardian_layer.index
+            ),
+        )
+    )
+
+    unswarm_effects = area.get_instance("Unswarm Effects")
+    with unswarm_effects.edit_properties(SequenceTimer) as unswarm_effects_timer:
+        unswarm_effects_timer.sequence_connections.append(
+            SequenceConnection(
+                connection_index=19,
+                activation_times=[13.502],
+            ),
+        )
+    unswarm_effects.add_connection(State.Sequence, Message.Decrement, grapple_guardian_controller)
+
+    # Define objects
+    pickup_active = first_pass.add_instance_with(
+        MemoryRelay(
+            editor_properties=EditorProperties(
+                active=False,
+                name="Keep Pickup Active",
+                transform=Transform(
+                    position=Vector(-168.0, 27.0, -29.0),
+                    scale=Vector(2.0, 2.0, 2.0),
+                ),
+            ),
+            delayed_action=True,
+        )
+    )
+    pickup = area.get_instance(0x3B022F)
+    entered_from_top_relay = area.get_instance("Entered from top floor")
+    post_pickup_relay = area.get_instance("Post Pickup")
+    fight_trigger = area.get_instance("Begin battle")
+
+    # Setup stuff for if Player left room then came back
+    music_player = area.get_instance("Music Player For Area")
+    dark_torvus_music = area.get_instance("Swamp Chika Dark")
+    battle_end_relay = area.get_instance("[IN] Do End Battle")
+    dark_torvus_music = area.get_instance("Swamp Chika Dark")
+    boss_go_music = area.get_instance("Boss Go")
+    layer_swap_relay = area.get_instance("Layer Swap")
+    raise_gates_relay = area.get_instance("Raise gates")
+    destroy_sticky_platforms_relay = area.get_instance("Destroy sticky platforms")
+
+    music_status = area.get_layer("Default").add_instance_with(
+        Switch(
+            editor_properties=EditorProperties(
+                name="CLOSED: Swamp Chika Dark / OPEN: Boss Go",
+                transform=Transform(
+                    position=Vector(-172.0, -15.0, -25.0),
+                    scale=Vector(2.0, 2.0, 2.0),
+                ),
+            ),
+        )
+    )
+
+    # Do layer swap after Pickup and not when Boss dead
+    battle_end_relay.remove_connection(battle_end_relay.connections[0])
+    post_pickup_relay.add_connection(State.Zero, Message.SetToZero, layer_swap_relay)
+
+    # Activate Pickup, setup reload stuff
+    battle_end_relay.add_connection(State.Zero, Message.Open, music_status)
+    battle_end_relay.add_connection(State.Zero, Message.Close, music_status)
+    battle_end_relay.add_connection(State.Zero, Message.Activate, pickup_active)
+    pickup_active.add_connection(State.Active, Message.Activate, pickup)
+    pickup_active.add_connection(State.Active, Message.Open, music_status)
+    pickup_active.add_connection(State.Active, Message.Deactivate, raise_gates_relay)
+    pickup_active.add_connection(State.Active, Message.SetToZero, destroy_sticky_platforms_relay)
+    pickup_active.add_connection(State.Active, Message.Deactivate, entered_from_top_relay)
+    pickup_active.add_connection(State.Active, Message.Deactivate, fight_trigger)
+    pickup_active.add_connection(State.Active, Message.Deactivate, area.get_instance("General ball camera").id)
+    pickup_active.add_connection(State.Active, Message.Delete, area.get_instance(0x3B006E))  # energy core_off
+    pickup_active.add_connection(State.Active, Message.Delete, area.get_instance(0x3B006F))  # energy core_off
+
+    # Deactivate once obtained
+    post_pickup_relay.add_connection(State.Zero, Message.Deactivate, pickup_active)
+    post_pickup_relay.add_connection(State.Zero, Message.Close, music_status)
+
+    # Keep Boss Go music if player hasn't collected Pickup
+    music_player.remove_connection(music_player.connections[0])
+    music_player.add_connection(State.Entered, Message.SetToZero, music_status)
+    music_status.add_connection(State.Closed, Message.Play, dark_torvus_music)
+    music_status.add_connection(State.Open, Message.Play, boss_go_music)
 
 
 @decorate_patcher(TORVUS_BOG_MLVL, torvus_bog.UNDERTEMPLE_MREA)

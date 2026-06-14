@@ -4025,7 +4025,7 @@
                         {
                             "location": {
                                 "type": "standard",
-                                "exclude_memo_from_removal": true,
+                                "exclude_memo_from_removal": false,
                                 "original_model": "GrappleBeam",
                                 "connections": [
                                     {
@@ -4037,10 +4037,21 @@
                                         "state": "ZERO",
                                         "message": "ZERO",
                                         "target": 205193759
+                                    },
+                                    {
+                                        "state": "ZERO",
+                                        "message": "ZERO",
+                                        "target": 205193338
+                                    },
+                                    {
+                                        "state": "ZERO",
+                                        "message": "ZERO",
+                                        "target": 272302550
                                     }
                                 ],
                                 "removals": [
                                     205193765,
+                                    272302365,
                                     272302343
                                 ],
                                 "collision_offset": {
@@ -4065,8 +4076,8 @@
                                     "model_data": "EnergyTank",
                                     "sound": 10057,
                                     "jingle": {
-                                        "file_name": "/audio/itm_x_long_00.dsp",
-                                        "volume": 71
+                                        "file_name": "/audio/itm_x_short_00.dsp",
+                                        "volume": 55
                                     },
                                     "hud_text": "Energy Tank acquired!",
                                     "scan": "Energy Tank."
