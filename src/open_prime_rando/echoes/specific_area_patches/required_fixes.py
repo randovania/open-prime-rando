@@ -70,6 +70,7 @@ def register_all(area_patcher: AreaPatcher) -> None:
         agon_temple_persist_pickup,
         dark_agon_temple_persist_pickup,
         amorbis_fight_prevent_wrong_room,
+        dynamo_works_persist_pickup,
     ]:
         area_patcher.add_function(func)
 
@@ -690,3 +691,79 @@ def amorbis_fight_prevent_wrong_room(editor: PatcherEditor, mlvl: Mlvl, area: Ar
 
     # Move player into room
     boss_intro_relay.add_connection(State.Zero, Message.SetToZero, spawn_point)
+
+
+@decorate_patcher(SANCTUARY_FORTRESS_MLVL, sanctuary_fortress.DYNAMO_WORKS_MREA)
+def dynamo_works_persist_pickup(editor: PatcherEditor, mlvl: Mlvl, area: Area) -> None:
+    """
+    Makes the pickup persistent, even if you exit the area and reload.
+    """
+    default = area.get_layer("Default")
+
+    pickup_active = area.get_layer("Default").add_instance_with(
+        MemoryRelay(
+            editor_properties=EditorProperties(
+                active=False,
+                name="Keep Pickup Active",
+                transform=Transform(
+                    position=Vector(303.4, 183.6, -18.0),
+                    scale=Vector(2.0, 2.0, 2.0),
+                ),
+            ),
+            delayed_action=True,
+        )
+    )
+    pickup = area.get_instance(0x1402AE)
+    boss_dead_relay = area.get_instance("Boss Dead")
+    post_pickup_relay = area.get_instance(0x1402A9)
+
+    # Activate Post-Pickup Permanent non-dynamically
+    # so if the player leaves via Portal, they are able
+    # to return from main path to collect the pickup.
+    post_pickup_permanent_dynamic_controller = area.get_instance("Increment Post-Pickup Permanent")
+    post_pickup_permanent_controller = default.add_instance_with(
+        post_pickup_permanent_dynamic_controller.get_properties()
+    )
+    with post_pickup_permanent_controller.edit_properties(ScriptLayerController) as post_pickup_controller:
+        post_pickup_controller.editor_properties.name = "Increment Post-Pickup Permanent (non-dynamic)"
+        post_pickup_controller.editor_properties.transform.position.y -= 1.5
+        post_pickup_controller.is_dynamic = False
+
+    spider_guardian_dynamic_unload_controller = area.get_instance(
+        "06_Cliff - Decrement Spiderball Guardian (Dynamic Unload)"
+    )
+    spider_guardian_decrement = default.add_instance_with(spider_guardian_dynamic_unload_controller.get_properties())
+    with spider_guardian_decrement.edit_properties(ScriptLayerController) as spider_guardian_controller:
+        spider_guardian_controller.editor_properties.name = "Decrement Spiderball Guardian (non-dynamic)"
+        spider_guardian_controller.editor_properties.transform.position.y += 1.0
+        spider_guardian_controller.is_dynamic = False
+    boss_dead_relay.add_connection(State.Zero, Message.Decrement, spider_guardian_decrement)
+    boss_dead_relay.add_connection(State.Zero, Message.Increment, post_pickup_permanent_controller)
+
+    # Activate Pickup
+    boss_dead_relay.add_connection(State.Zero, Message.Activate, pickup_active)
+    pickup_active.add_connection(State.Active, Message.Activate, pickup)
+    post_pickup_relay.add_connection(State.Zero, Message.Deactivate, pickup_active)
+
+    # Keep Boss Go music if player hasn't collected Pickup
+    music_status = default.add_instance_with(
+        Switch(
+            editor_properties=EditorProperties(
+                name="CLOSED: Cliffside Two / OPEN: Boss Go",
+                transform=Transform(
+                    position=Vector(292.4, 231.5, 2.5),
+                    scale=Vector(2.0, 2.0, 2.0),
+                ),
+            ),
+        )
+    )
+    music_player = area.get_instance("Music Player For Area")
+    boss_go_music = area.get_instance("Boss Go")
+    sanc_music = area.get_instance("Cliffside Two")
+    music_player.remove_connection(music_player.connections[0])
+    boss_dead_relay.add_connection(State.Zero, Message.Open, music_status)
+    pickup_active.add_connection(State.Active, Message.Open, music_status)
+    music_player.add_connection(State.Entered, Message.SetToZero, music_status)
+    music_status.add_connection(State.Closed, Message.Play, sanc_music)
+    music_status.add_connection(State.Open, Message.Play, boss_go_music)
+    post_pickup_relay.add_connection(State.Zero, Message.Close, music_status)
