@@ -342,7 +342,7 @@ def _apply_patches(
     specific_area_patches.version_differences.register_all(area_patcher, dol_version.echoes_version)
 
     if configuration.two_way_portals:
-        portal.register_make_portals_two_way(area_patcher)
+        portal.register_make_portals_two_way(area_patcher, configuration.map_visibility)
 
     # cosmetics
     add_pickup_map_icon(editor)

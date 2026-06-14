@@ -3,6 +3,7 @@ import functools
 from collections.abc import Iterable
 
 from retro_data_structures.enums.echoes import Message, State
+from retro_data_structures.formats.mapa import MappableObject, ObjectTypeMP2, ObjectVisibility
 from retro_data_structures.formats.mlvl import Mlvl
 from retro_data_structures.formats.mrea import Area
 from retro_data_structures.formats.script_object import InstanceId, ScriptInstance
@@ -10,11 +11,13 @@ from retro_data_structures.properties.echoes.archetypes import EditorProperties,
 from retro_data_structures.properties.echoes.core import Vector
 from retro_data_structures.properties.echoes.objects import Dock
 from retro_data_structures.properties.echoes.objects.SpawnPoint import SpawnPoint
+from retro_data_structures.transform import Transform as _Transform
 
 from open_prime_rando import area_utils
 from open_prime_rando.area_patcher import AreaPatcher, decorate_patcher
 from open_prime_rando.echoes.asset_ids import agon_wastes, sanctuary_fortress, temple_grounds, world
 from open_prime_rando.echoes.pydantic_models import PydanticAssetId
+from open_prime_rando.echoes.rando_configuration import MapVisibility
 from open_prime_rando.echoes.specific_area_patches.rebalance_patches import ObjectWithEditorProperties
 from open_prime_rando.patcher_editor import PatcherEditor
 
@@ -80,6 +83,7 @@ def add_portal_to(
     mlvl: Mlvl,
     area: Area,
     dock_name: str,
+    map_icon_visibility: ObjectVisibility,
 ) -> None:
 
     source_transform, all_ids = _get_portal(editor, _is_dark_area(area))
@@ -121,6 +125,7 @@ def add_portal_to(
     for source_id, new_obj in old_to_new.items():
         if new_obj.script_type == SpawnPoint:
             continue
+
         new_obj.connections = new_obj.connections + tuple(
             dataclasses.replace(
                 old_connection,
@@ -128,6 +133,20 @@ def add_portal_to(
             )
             for old_connection in all_ids[source_id].connections
         )
+
+        if new_obj.name.strip() == "PORTAL TO RIFT":
+            area.mapa.mappable_objects.append(
+                MappableObject[ObjectTypeMP2].create(
+                    object_type=ObjectTypeMP2.Portal,
+                    visibility_mode=map_icon_visibility,
+                    editor_id=new_obj.id,
+                    transform=_Transform.from_vectors(
+                        position=new_obj.editor_properties.transform.position,
+                        rotation=Vector(),
+                        scale=Vector(1.0, 1.0, 1.0),
+                    ),
+                )
+            )
 
 
 _NEW_PORTALS = [
@@ -170,7 +189,7 @@ def adjust_duelling_range_portal_spawn(editor: PatcherEditor, mlvl: Mlvl, area: 
     area.get_instance("VirtualDock").add_connection(State.MaxReached, Message.Activate, spawn)
 
 
-def register_make_portals_two_way(area_patcher: AreaPatcher) -> None:
+def register_make_portals_two_way(area_patcher: AreaPatcher, map_visibility: MapVisibility) -> None:
     """
     Adds a new portal to every virtual dock that is on the other side of a one-way portal.
     """
@@ -185,5 +204,8 @@ def register_make_portals_two_way(area_patcher: AreaPatcher) -> None:
             functools.partial(
                 add_portal_to,
                 dock_name=portal_def.dock_name,
+                map_icon_visibility=ObjectVisibility.AreaVisitOrMapStation
+                if map_visibility.unvisited_map_icons
+                else ObjectVisibility.AreaVisitOrMapStation2,
             ),
         )
