@@ -64,6 +64,9 @@ class MapVisibility(BaseModel):
     unvisited_room_names: bool = True
     """When true, unvisited rooms in the map show their name."""
 
+    unvisited_map_icons: bool = False
+    """When true, unvisited rooms in the map show any non-door icons."""
+
 
 class StringChange(BaseModel):
     """Contains a new list of strings to use for a given STRG."""
