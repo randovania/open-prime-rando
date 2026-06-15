@@ -3116,6 +3116,28 @@
                             "progressive_stages": []
                         }
                     ]
+                },
+                {
+                    "mrea_id": 734872743,
+                    "portals": [
+                        {
+                            "source_dock_name": "VirtualNorth1",
+                            "target_mrea_id": 3212793644,
+                            "target_dock_name": "VirtualNorth1",
+                            "portal_scan_destination": "Portal Site"
+                        }
+                    ]
+                },
+                {
+                    "mrea_id": 3212793644,
+                    "portals": [
+                        {
+                            "source_dock_name": "VirtualNorth1",
+                            "target_mrea_id": 734872743,
+                            "target_dock_name": "VirtualNorth1",
+                            "portal_scan_destination": "Portal Terminal"
+                        }
+                    ]
                 }
             ]
         },

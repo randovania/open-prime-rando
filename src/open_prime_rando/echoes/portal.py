@@ -18,6 +18,7 @@ from retro_data_structures.transform import Transform as _Transform
 from open_prime_rando import area_utils
 from open_prime_rando.area_patcher import AreaPatcher, decorate_patcher
 from open_prime_rando.echoes.asset_ids import agon_wastes, sanctuary_fortress, temple_grounds, world
+from open_prime_rando.echoes.asset_ids.agon_wastes import PORTAL_TERMINAL_MREA
 from open_prime_rando.echoes.pydantic_models import PydanticAssetId
 from open_prime_rando.echoes.specific_area_patches.rebalance_patches import ObjectWithEditorProperties
 
@@ -248,6 +249,70 @@ def _find_dock_named(area: Area, name: str) -> tuple[ScriptInstance, Dock]:
     raise KeyError(name)
 
 
+def _duplicate_and_edit_scan_string(
+    editor: PatcherEditor,
+    asset_name_base: str,
+    scan_poi: ScriptInstance,
+    string_index: int,
+    new_string_text: str,
+) -> None:
+    with scan_poi.edit_properties(PointOfInterest) as prop:
+        new_scan_id = editor.duplicate_asset(prop.scan_info.scannable_info0, f"{asset_name_base}.SCAN")
+        prop.scan_info.scannable_info0 = new_scan_id
+
+        new_scan = editor.get_file(new_scan_id, Scan)
+        with new_scan.scannable_object_info.edit_properties(ScannableObjectInfo) as info:
+            info.string = editor.duplicate_asset(info.string, f"{asset_name_base}.STRG")
+            editor.get_file(info.string, Strg).set_single_string(string_index, new_string_text)
+
+
+def _adjust_rift_scan(
+    editor: PatcherEditor,
+    area: Area,
+    scan_poi: ScriptInstance,
+    change: PortalChange,
+) -> None:
+    """
+    Edits the scan of the inactive rift to point to the direction.
+
+    Does not work with scan portals.
+    """
+    _duplicate_and_edit_scan_string(
+        editor,
+        f"PortalScan_{area.mrea_asset_id}_{change.source_dock_name}",
+        scan_poi,
+        0,
+        f"This rift portal to &push;&main-color=#FF3333;{change.portal_scan_destination}&pop; is inactive.",
+    )
+
+
+def _adjust_scan_portal_scan(
+    editor: PatcherEditor,
+    area: Area,
+    all_objects: dict[InstanceId, ScriptInstance],
+    change: PortalChange,
+) -> None:
+    color_target = f"&push;&main-color=#FF3333;{change.portal_scan_destination}&pop;"
+
+    _duplicate_and_edit_scan_string(
+        editor,
+        f"PortalScanActive_{area.mrea_asset_id}_{change.source_dock_name}",
+        _find_object_with_name("Portal Activated", all_objects.values()),
+        1,
+        f"Console used to energize and open a portal to {color_target}, currently online.\n\n"
+        "Portal generation system initiated.",
+    )
+
+    _duplicate_and_edit_scan_string(
+        editor,
+        f"PortalScanInactive_{area.mrea_asset_id}_{change.source_dock_name}",
+        _find_object_with_name("Portal Inactive", all_objects.values()),
+        1,
+        f"Console used to energize and open a portal to {color_target}, currently offline.\n\n"
+        "Restore power to the system to enable portal creation.",
+    )
+
+
 def apply_portal_change(
     editor: PatcherEditor,
     mlvl: Mlvl,
@@ -266,21 +331,20 @@ def apply_portal_change(
         target_dock.dock_number,
     )
 
-    scan_name = f"PortalScan_{area.mrea_asset_id}_{change.source_dock_name}"
     all_objs = area_utils.get_all_ids_related_to(
         area,
         dock_instance.id,
     )
-    scan_poi = _find_object_with_name("RIFT Portal Scan", all_objs.values())
-    with scan_poi.edit_properties(PointOfInterest) as prop:
-        new_scan_id = editor.duplicate_asset(prop.scan_info.scannable_info0, f"{scan_name}.SCAN")
-        prop.scan_info.scannable_info0 = new_scan_id
+    try:
+        scan_poi = _find_object_with_name("RIFT Portal Scan", all_objs.values())
+    except KeyError:
+        scan_poi = None
 
-        new_scan = editor.get_file(new_scan_id, Scan)
-        with new_scan.scannable_object_info.edit_properties(ScannableObjectInfo) as info:
-            new_string_id = editor.duplicate_asset(info.string, f"{scan_name}.STRG")
-            new_string = editor.get_file(new_string_id, Strg)
-            new_string.set_single_string(
-                0, f"This rift portal to &push;&main-color=#FF3333;{change.portal_scan_destination}&pop; is inactive."
-            )
-            info.string = new_string_id
+    if area.mrea_asset_id == PORTAL_TERMINAL_MREA:
+        # TODO: deactivate the auto-warp after scanning the portal the first time
+        pass
+
+    if scan_poi is not None:
+        _adjust_rift_scan(editor, area, scan_poi, change)
+    else:
+        _adjust_scan_portal_scan(editor, area, all_objs, change)
