@@ -220,6 +220,22 @@ def adjust_duelling_range_portal_spawn(editor: PatcherEditor, mlvl: Mlvl, area: 
     area.get_instance("VirtualDock").add_connection(State.MaxReached, Message.Activate, spawn)
 
 
+@decorate_patcher(world.AGON_WASTES_MLVL, agon_wastes.DARK_OASIS_MREA)
+def adjust_dark_oasis_portal_spawn(editor: PatcherEditor, mlvl: Mlvl, area: Area) -> None:
+    spawn = area.get_layer("Default").add_instance_with(
+        SpawnPoint(
+            editor_properties=EditorProperties(
+                name="Arrival",
+                transform=Transform(
+                    position=Vector(417.814056, 83, 19.031952),
+                    rotation=Vector(0, 0, 180),
+                ),
+            )
+        )
+    )
+    area.get_instance("VirtualEast").add_connection(State.MaxReached, Message.Activate, spawn)
+
+
 def register_make_portals_two_way(area_patcher: AreaPatcher, map_visibility: MapVisibility) -> None:
     """
     Adds a new portal to every virtual dock that is on the other side of a one-way portal.
@@ -227,6 +243,7 @@ def register_make_portals_two_way(area_patcher: AreaPatcher, map_visibility: Map
 
     area_patcher.add_function(adjust_main_reactor_portal_spawn)
     area_patcher.add_function(adjust_duelling_range_portal_spawn)
+    area_patcher.add_function(adjust_dark_oasis_portal_spawn)
 
     for portal_def in _NEW_PORTALS:
         area_patcher.add_raw_function(
