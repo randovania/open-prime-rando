@@ -19,6 +19,7 @@ from retro_data_structures.properties.echoes.objects import (
     ScriptLayerController,
     SequenceTimer,
     SpawnPoint,
+    SpiderBallWaypoint,
     Splinter,
     Switch,
     Timer,
@@ -39,7 +40,7 @@ if TYPE_CHECKING:
 
     from retro_data_structures.formats.mlvl import Mlvl
     from retro_data_structures.formats.mrea import Area
-    from retro_data_structures.formats.script_object import InstanceIdRef, InstanceRef
+    from retro_data_structures.formats.script_object import InstanceIdRef, InstanceRef, ScriptInstance
 
     from open_prime_rando.patcher_editor import PatcherEditor
 
@@ -69,6 +70,9 @@ def register_all(area_patcher: AreaPatcher) -> None:
         agon_temple_move_pickup,
         agon_temple_persist_pickup,
         dark_agon_temple_persist_pickup,
+        amorbis_fight_prevent_wrong_room,
+        dynamo_works_persist_pickup,
+        hive_temple_persist_pickup_and_boss,
         agon_temple_prevent_pickup_interrupt,
         dark_torvus_arena_prevent_pickup_interrupt,
         sacrificial_chamber_prevent_pickup_interrupt,
@@ -158,10 +162,126 @@ def main_reactor_flashbang(editor: PatcherEditor, mlvl: Mlvl, area: Area) -> Non
 @decorate_patcher(TORVUS_BOG_MLVL, torvus_bog.SACRIFICIAL_CHAMBER_MREA)
 def sacrificial_chamber_persist_pickup(editor: PatcherEditor, mlvl: Mlvl, area: Area) -> None:
     """
-    Makes the pickup persistent, even if you exit the area and reload.
+    Makes the pickup persistent through room reloads
     """
-    with area.get_instance("If grapple attainment is loaded, then end battle").edit_properties(Switch) as switch:
-        switch.is_open = True
+    # Separate Boss from Pickup so a room
+    # reload doesn't take a long time
+    first_pass = area.get_layer("1st Pass")
+    grapple_guardian_layer = area.add_layer("Grapple Guardian")
+    pickup_obj_names = [
+        "Fade In Music",
+        "FadeIn/Out Long",
+        "Post Pickup",
+        "Play Jingle",
+        "HUD Activation",
+        "Play Short Jingle",
+        "Pickup Acquired",
+        "Small Item Jingle",
+        "Pickup Sound",
+        "Small Item Jingle",
+        "Pickup Object",
+    ]
+    pickup_objects = [first_pass.get_instance(inst) for inst in pickup_obj_names]
+
+    for instance in list(first_pass.instances):
+        if instance in pickup_objects:
+            continue
+        area.move_instance(instance, "Grapple Guardian")
+
+    # Decrement Grapple Guardian after unswarm effects
+    grapple_guardian_controller = area.get_layer("Default").add_instance_with(
+        ScriptLayerController(
+            editor_properties=EditorProperties(
+                name="Decrement Grapple Guardian",
+                transform=Transform(
+                    position=Vector(-205.1, 88.5, -25.0),
+                    scale=Vector(2.0, 2.0, 2.0),
+                ),
+            ),
+            layer=LayerSwitch(
+                area_id=torvus_bog.SACRIFICIAL_CHAMBER_INTERNAL_ID, layer_number=grapple_guardian_layer.index
+            ),
+        )
+    )
+
+    unswarm_effects = area.get_instance("Unswarm Effects")
+    with unswarm_effects.edit_properties(SequenceTimer) as unswarm_effects_timer:
+        unswarm_effects_timer.sequence_connections.append(
+            SequenceConnection(
+                connection_index=19,
+                activation_times=[13.502],
+            ),
+        )
+    unswarm_effects.add_connection(State.Sequence, Message.Decrement, grapple_guardian_controller)
+
+    # Define objects
+    pickup_active = first_pass.add_instance_with(
+        MemoryRelay(
+            editor_properties=EditorProperties(
+                active=False,
+                name="Keep Pickup Active",
+                transform=Transform(
+                    position=Vector(-168.0, 27.0, -29.0),
+                    scale=Vector(2.0, 2.0, 2.0),
+                ),
+            ),
+            delayed_action=True,
+        )
+    )
+    pickup = area.get_instance(0x3B022F)
+    entered_from_top_relay = area.get_instance("Entered from top floor")
+    post_pickup_relay = area.get_instance("Post Pickup")
+    fight_trigger = area.get_instance("Begin battle")
+
+    # Setup stuff for if Player left room then came back
+    music_player = area.get_instance("Music Player For Area")
+    dark_torvus_music = area.get_instance("Swamp Chika Dark")
+    battle_end_relay = area.get_instance("[IN] Do End Battle")
+    dark_torvus_music = area.get_instance("Swamp Chika Dark")
+    boss_go_music = area.get_instance("Boss Go")
+    layer_swap_relay = area.get_instance("Layer Swap")
+    raise_gates_relay = area.get_instance("Raise gates")
+    destroy_sticky_platforms_relay = area.get_instance("Destroy sticky platforms")
+
+    music_status = area.get_layer("Default").add_instance_with(
+        Switch(
+            editor_properties=EditorProperties(
+                name="CLOSED: Swamp Chika Dark / OPEN: Boss Go",
+                transform=Transform(
+                    position=Vector(-172.0, -15.0, -25.0),
+                    scale=Vector(2.0, 2.0, 2.0),
+                ),
+            ),
+        )
+    )
+
+    # Do layer swap after Pickup and not when Boss dead
+    battle_end_relay.remove_connection(battle_end_relay.connections[0])
+    post_pickup_relay.add_connection(State.Zero, Message.SetToZero, layer_swap_relay)
+
+    # Activate Pickup, setup reload stuff
+    battle_end_relay.add_connection(State.Zero, Message.Open, music_status)
+    battle_end_relay.add_connection(State.Zero, Message.Close, music_status)
+    battle_end_relay.add_connection(State.Zero, Message.Activate, pickup_active)
+    pickup_active.add_connection(State.Active, Message.Activate, pickup)
+    pickup_active.add_connection(State.Active, Message.Open, music_status)
+    pickup_active.add_connection(State.Active, Message.Deactivate, raise_gates_relay)
+    pickup_active.add_connection(State.Active, Message.SetToZero, destroy_sticky_platforms_relay)
+    pickup_active.add_connection(State.Active, Message.Deactivate, entered_from_top_relay)
+    pickup_active.add_connection(State.Active, Message.Deactivate, fight_trigger)
+    pickup_active.add_connection(State.Active, Message.Deactivate, area.get_instance("General ball camera").id)
+    pickup_active.add_connection(State.Active, Message.Delete, area.get_instance(0x3B006E))  # energy core_off
+    pickup_active.add_connection(State.Active, Message.Delete, area.get_instance(0x3B006F))  # energy core_off
+
+    # Deactivate once obtained
+    post_pickup_relay.add_connection(State.Zero, Message.Deactivate, pickup_active)
+    post_pickup_relay.add_connection(State.Zero, Message.Close, music_status)
+
+    # Keep Boss Go music if player hasn't collected Pickup
+    music_player.remove_connection(music_player.connections[0])
+    music_player.add_connection(State.Entered, Message.SetToZero, music_status)
+    music_status.add_connection(State.Closed, Message.Play, dark_torvus_music)
+    music_status.add_connection(State.Open, Message.Play, boss_go_music)
 
 
 @decorate_patcher(TORVUS_BOG_MLVL, torvus_bog.UNDERTEMPLE_MREA)
@@ -678,6 +798,253 @@ def dark_agon_temple_persist_pickup(editor: PatcherEditor, mlvl: Mlvl, area: Are
     music_player.remove_connection(music_player.connections[0])
     music_player.add_connection(State.Entered, Message.SetToZero, music_status)
     music_status.add_connection(State.Closed, Message.Play, dark_agon)
+    music_status.add_connection(State.Open, Message.Play, boss_go_music)
+
+
+@decorate_patcher(AGON_WASTES_MLVL, agon_wastes.DARK_AGON_TEMPLE_MREA)
+def amorbis_fight_prevent_wrong_room(editor: PatcherEditor, mlvl: Mlvl, area: Area) -> None:
+    """
+    Force player into room if triggered fight
+    from out of bounds, to prevent crashing.
+    """
+    boss_intro_relay = area.get_instance("Begin Boss Intro Cinematic Loading (Load Layer)")
+    spawn_point = area.get_instance("Spawn point 001")
+
+    # Move player into room
+    boss_intro_relay.add_connection(State.Zero, Message.SetToZero, spawn_point)
+
+
+@decorate_patcher(SANCTUARY_FORTRESS_MLVL, sanctuary_fortress.DYNAMO_WORKS_MREA)
+def dynamo_works_persist_pickup(editor: PatcherEditor, mlvl: Mlvl, area: Area) -> None:
+    """
+    Makes the pickup persistent, even if you exit the area and reload.
+    """
+    default = area.get_layer("Default")
+
+    pickup_active = area.get_layer("Default").add_instance_with(
+        MemoryRelay(
+            editor_properties=EditorProperties(
+                active=False,
+                name="Keep Pickup Active",
+                transform=Transform(
+                    position=Vector(303.4, 183.6, -18.0),
+                    scale=Vector(2.0, 2.0, 2.0),
+                ),
+            ),
+            delayed_action=True,
+        )
+    )
+    pickup = area.get_instance(0x1402AE)
+    boss_dead_relay = area.get_instance("Boss Dead")
+    post_pickup_relay = area.get_instance(0x1402A9)
+
+    # Activate Post-Pickup Permanent non-dynamically
+    # so if the player leaves via Portal, they are able
+    # to return from main path to collect the pickup.
+    post_pickup_permanent_dynamic_controller = area.get_instance("Increment Post-Pickup Permanent")
+    post_pickup_permanent_controller = default.add_instance_with(
+        post_pickup_permanent_dynamic_controller.get_properties()
+    )
+    with post_pickup_permanent_controller.edit_properties(ScriptLayerController) as post_pickup_controller:
+        post_pickup_controller.editor_properties.name = "Increment Post-Pickup Permanent (non-dynamic)"
+        post_pickup_controller.editor_properties.transform.position.y -= 1.5
+        post_pickup_controller.is_dynamic = False
+
+    spider_guardian_dynamic_unload_controller = area.get_instance(
+        "06_Cliff - Decrement Spiderball Guardian (Dynamic Unload)"
+    )
+    spider_guardian_decrement = default.add_instance_with(spider_guardian_dynamic_unload_controller.get_properties())
+    with spider_guardian_decrement.edit_properties(ScriptLayerController) as spider_guardian_controller:
+        spider_guardian_controller.editor_properties.name = "Decrement Spiderball Guardian (non-dynamic)"
+        spider_guardian_controller.editor_properties.transform.position.y += 1.0
+        spider_guardian_controller.is_dynamic = False
+    boss_dead_relay.add_connection(State.Zero, Message.Decrement, spider_guardian_decrement)
+    boss_dead_relay.add_connection(State.Zero, Message.Increment, post_pickup_permanent_controller)
+
+    # Activate Pickup
+    boss_dead_relay.add_connection(State.Zero, Message.Activate, pickup_active)
+    pickup_active.add_connection(State.Active, Message.Activate, pickup)
+    post_pickup_relay.add_connection(State.Zero, Message.Deactivate, pickup_active)
+
+    # Keep Boss Go music if player hasn't collected Pickup
+    music_status = default.add_instance_with(
+        Switch(
+            editor_properties=EditorProperties(
+                name="CLOSED: Cliffside Two / OPEN: Boss Go",
+                transform=Transform(
+                    position=Vector(292.4, 231.5, 2.5),
+                    scale=Vector(2.0, 2.0, 2.0),
+                ),
+            ),
+        )
+    )
+    music_player = area.get_instance("Music Player For Area")
+    boss_go_music = area.get_instance("Boss Go")
+    sanc_music = area.get_instance("Cliffside Two")
+    music_player.remove_connection(music_player.connections[0])
+    boss_dead_relay.add_connection(State.Zero, Message.Open, music_status)
+    pickup_active.add_connection(State.Active, Message.Open, music_status)
+    music_player.add_connection(State.Entered, Message.SetToZero, music_status)
+    music_status.add_connection(State.Closed, Message.Play, sanc_music)
+    music_status.add_connection(State.Open, Message.Play, boss_go_music)
+    post_pickup_relay.add_connection(State.Zero, Message.Close, music_status)
+
+
+@decorate_patcher(SANCTUARY_FORTRESS_MLVL, sanctuary_fortress.HIVE_TEMPLE_MREA)
+def hive_temple_persist_pickup_and_boss(editor: PatcherEditor, mlvl: Mlvl, area: Area) -> None:
+    """
+    Makes the pickup persistent, even if you exit the area and reload.
+    Respawn boss if left room mid-fight back to intro state.
+    """
+    # Define objects
+    default = area.get_layer("Default")
+    trigger_memory_relay = area.get_instance("Remember Boss Has Been Triggered")
+    boss_trigger = area.get_instance("Start Boss Encounter")
+    boss_intro_end_relay = area.get_instance("Intro cinema end")
+    boss_intro_cinematic_dynamic_controller = area.get_instance("DYNAMIC Dump Intro Cinematic")
+    boss_intro_actors_dynamic_controller = area.get_instance("DYNAMIC Dump Intro Cinematic Actors")
+    boss_stage_2_splitters_dynamic_controller = area.get_instance("Load Boss Stage 2 Splitters")
+    boss_cripple_body_cinema_dynamic_controller = area.get_instance("Load Boss Cripple Body Cinema (Stage 2 Cinematic)")
+    boss_death_dynamic_controller = area.get_instance("Load Death Cinematic")
+    boss_music_increment_controller = area.get_instance("Increment - Post Boss Music")
+    boss_music_decrement_controller = area.get_instance("Decrement - Boss Music")
+    digital_guardian_body_dynamic_controller = area.get_instance("Dump Digital Guardian body")
+    stage_3_relay = area.get_instance("Transition To stage 3")
+    quadraxis = area.get_instance("DigitalGuardianHead 001")
+    pickup = area.get_instance("Annihilator Beam")
+    post_pickup = area.get_instance("Post Pickup")
+    spiderball_platform_end_relay = area.get_instance("[OUT] End Spiderball Platform Activation")
+
+    # Don't activate memory relay immediately
+    boss_trigger.remove_connection(boss_trigger.connections[4])
+
+    # make non-dynamic versions of these script controllers
+    def static_controller(old_controller: ScriptInstance, new_name: str) -> ScriptInstance:
+        new_controller = default.add_instance_with(old_controller.get_properties())
+        with new_controller.edit_properties(ScriptLayerController) as controller:
+            controller.editor_properties.name = new_name
+            controller.editor_properties.transform.position.y -= 1.0
+            controller.is_dynamic = False
+        return new_controller
+
+    boss_intro_controller = static_controller(boss_intro_cinematic_dynamic_controller, "INCREMENT Intro Cinematic")
+    boss_intro_actors_controller = static_controller(
+        boss_intro_actors_dynamic_controller, "INCREMENT Intro Cinematic Actors"
+    )
+    boss_cripple_body_cinema_controller = static_controller(
+        boss_cripple_body_cinema_dynamic_controller, "DECREMENT Boss Cripple Body Cinema"
+    )
+    boss_stage_2_splitters_controller = static_controller(
+        boss_stage_2_splitters_dynamic_controller, "DECREMENT Boss Stage 2 Splitters"
+    )
+    boss_death_controller = static_controller(boss_death_dynamic_controller, "DECREMENT Death Cinematic")
+    digital_guardian_body_controller = static_controller(
+        digital_guardian_body_dynamic_controller, "INCREMENT/DECREMENT CliffsideBoss Body"
+    )
+
+    # Increment/Decrement layers non-dynamically right after they're loaded/unloaded
+    boss_intro_end_relay.add_connection(State.Zero, Message.Decrement, boss_intro_controller)
+    boss_intro_end_relay.add_connection(State.Zero, Message.Increment, boss_intro_actors_controller)
+    boss_cripple_body_cinema_dynamic_controller.add_connection(
+        State.Arrived, Message.Decrement, boss_cripple_body_cinema_controller
+    )
+    boss_stage_2_splitters_dynamic_controller.add_connection(
+        State.Arrived, Message.Decrement, boss_stage_2_splitters_controller
+    )
+    boss_death_dynamic_controller.add_connection(State.Arrived, Message.Decrement, boss_death_controller)
+    stage_3_relay.add_connection(State.Zero, Message.Increment, digital_guardian_body_controller)
+
+    # Layer changes happen after pickup instead of boss death
+    quadraxis_connections = list(quadraxis.connections)
+    quadraxis.remove_connection(quadraxis_connections[2])
+    quadraxis.remove_connection(quadraxis_connections[4])
+    quadraxis.remove_connection(quadraxis_connections[11])
+    spiderball_platform_end_relay.add_connection(
+        State.Zero, Message.SetToZero, area.get_instance("Luminoth Dialogue Layer Loading Control")
+    )
+    spiderball_platform_end_relay.add_connection(State.Zero, Message.Increment, boss_music_increment_controller)
+    spiderball_platform_end_relay.add_connection(State.Zero, Message.Decrement, boss_music_decrement_controller)
+
+    # Move crippled body actor to a dedicated layer
+    # so there's no need to have everything related
+    # to quad loaded for the pickup to be active
+    # thus making the room load be shorter
+    boss_body_layer = area.add_layer("Boss Body")
+
+    boss_body_controller_dynamic = area.get_layer("Default").add_instance_with(
+        ScriptLayerController(
+            editor_properties=EditorProperties(
+                name="Unload Boss Body",
+                transform=Transform(position=Vector(239.8, 30.6, -32.7), scale=Vector(2.0, 2.0, 2.0)),
+            ),
+            layer=LayerSwitch(
+                area_id=sanctuary_fortress.HIVE_TEMPLE_INTERNAL_ID,
+                layer_number=boss_body_layer.index,
+            ),
+            is_dynamic=True,
+        )
+    )
+    area.move_instance("Crippled Body", "Boss Body")
+
+    # And the SpiderBallWaypoints
+    boss_layer = area.get_layer("CliffsideBoss")
+    for instance in list(boss_layer.instances):
+        if instance.script_type == SpiderBallWaypoint:
+            area.move_instance(instance, "Boss Body")
+
+    # Unload Layer after getting pickup
+    spiderball_platform_end_relay.add_connection(State.Zero, Message.Decrement, boss_body_controller_dynamic)
+
+    # Set Boss State to defeated for pickup active
+    quadraxis.add_connection(State.Dead, Message.Increment, boss_death_controller)
+    quadraxis.add_connection(State.Dead, Message.Activate, trigger_memory_relay)
+    quadraxis.add_connection(State.Dead, Message.Decrement, digital_guardian_body_dynamic_controller)
+    quadraxis.add_connection(State.Dead, Message.Decrement, boss_intro_actors_dynamic_controller)
+    quadraxis.add_connection(
+        State.Dead, Message.Decrement, area.get_instance("Decrement - 09_Cliff - CliffsideBoss (Dynamic)")
+    )
+
+    # Make Pickup persistent
+    pickup_active = area.get_layer("Boss Death").add_instance_with(
+        MemoryRelay(
+            editor_properties=EditorProperties(
+                active=False,
+                name="Keep Pickup Active",
+                transform=Transform(
+                    position=Vector(41.758938, 66.569855, -28.637785),
+                    scale=Vector(2.0, 2.0, 2.0),
+                ),
+            ),
+            delayed_action=True,
+        )
+    )
+    quadraxis.add_connection(State.Dead, Message.Activate, pickup_active)
+    pickup_active.add_connection(State.Active, Message.Lock, area.get_instance(0x35000C))  # Door
+    pickup_active.add_connection(State.Active, Message.Activate, pickup)
+    pickup_active.add_connection(State.Active, Message.Activate, area.get_instance("Crippled Body"))
+    post_pickup.add_connection(State.Zero, Message.Deactivate, pickup_active)
+
+    # Keep Boss Go music if player hasn't collected Pickup
+    music_player = area.get_instance(0x350254)
+    boss_prelude = area.get_instance("Swamp Mae")
+    boss_go_music = area.get_instance("Boss Go")
+    music_status = area.get_layer("Boss Music").add_instance_with(
+        Switch(
+            editor_properties=EditorProperties(
+                name="CLOSED: Swamp Mae / OPEN: Boss Go",
+                transform=Transform(
+                    position=Vector(75.5, 130.2, -6.3),
+                    scale=Vector(2.0, 2.0, 2.0),
+                ),
+            ),
+        )
+    )
+    quadraxis.add_connection(State.Dead, Message.Open, music_status)
+    pickup_active.add_connection(State.Active, Message.Open, music_status)
+    post_pickup.add_connection(State.Zero, Message.Close, music_status)
+    music_player.remove_connection(music_player.connections[0])
+    music_player.add_connection(State.Entered, Message.SetToZero, music_status)
+    music_status.add_connection(State.Closed, Message.Play, boss_prelude)
     music_status.add_connection(State.Open, Message.Play, boss_go_music)
 
 

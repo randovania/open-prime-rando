@@ -1,9 +1,10 @@
 from __future__ import annotations
 
+import typing
 from typing import TYPE_CHECKING, Final
 
 from retro_data_structures.enums.echoes import Message, PlayerItemEnum, State
-from retro_data_structures.formats.mapa import AreaVisibility
+from retro_data_structures.formats.mapa import AreaVisibility, Mapa, ObjectTypeMP2, ObjectVisibility
 from retro_data_structures.formats.strg import Strg
 from retro_data_structures.properties.echoes.archetypes.EditorProperties import EditorProperties
 from retro_data_structures.properties.echoes.objects import Camera, ConditionalRelay, Timer
@@ -117,14 +118,30 @@ def change_map_visibility(editor: PatcherEditor, mlvl: Mlvl, area: Area, map_vis
     Changes the visibility mode of the map for the given area to be always visible or require a visit.
     """
 
-    if area.mapa.visibility_mode == AreaVisibility.Never:
+    mapa = typing.cast("Mapa[ObjectTypeMP2]", area.mapa)
+    if mapa.visibility_mode == AreaVisibility.Never:
         return
 
     always_visible = area.mrea_asset_id in _AREAS_THAT_ALWAYS_VISIBLE
     never_visible = area.mrea_asset_id in map_visibility.areas_to_never_reveal
 
+    objects_to_reveal = {
+        ObjectTypeMP2.Elevator,
+        ObjectTypeMP2.SaveStation,
+        ObjectTypeMP2.Portal,
+        ObjectTypeMP2.LightTeleporter,
+        ObjectTypeMP2.TranslatorGate,
+        ObjectTypeMP2.UpArrow,
+        ObjectTypeMP2.DownArrow,
+    }
+
     if (always_visible or map_visibility.reveal_map_at_start) and not never_visible:
-        area.mapa.visibility_mode = AreaVisibility.Always
+        mapa.visibility_mode = AreaVisibility.Always
+        if map_visibility.unvisited_map_icons:
+            for mappable in mapa.mappable_objects:
+                if mappable.object_type in objects_to_reveal:
+                    mappable.visibility_mode = ObjectVisibility.AreaVisitOrMapStation
+
     else:
         area.mapa.visibility_mode = AreaVisibility.VisitOrMapStation
 

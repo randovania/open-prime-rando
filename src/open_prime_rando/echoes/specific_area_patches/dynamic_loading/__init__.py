@@ -16,6 +16,9 @@ from open_prime_rando.echoes.specific_area_patches.dynamic_loading.main_reactor 
 from open_prime_rando.echoes.specific_area_patches.dynamic_loading.main_research import (
     main_research_dynamic_layer_loading,
 )
+from open_prime_rando.echoes.specific_area_patches.dynamic_loading.sacrificial_chamber import (
+    sacrificial_chamber_static_floor,
+)
 from open_prime_rando.echoes.specific_area_patches.dynamic_loading.sanctuary_entrance import (
     sanctuary_entrance_dynamic_layer_loading,
 )
@@ -42,5 +45,6 @@ def register_all(area_patcher: AreaPatcher) -> None:
         aerie_dynamic_layer_loading,
         central_mining_station_dynamic_layer_loading,
         sanctuary_entrance_dynamic_layer_loading,
+        sacrificial_chamber_static_floor,
     ]:
         area_patcher.add_function(func)

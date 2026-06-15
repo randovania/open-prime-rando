@@ -7,7 +7,8 @@
         "mrea_id": 1655756413
     },
     "map_visibility": {
-        "reveal_map_at_start": true
+        "reveal_map_at_start": true,
+        "unvisited_map_icons": true
     },
     "practice_mod": "full",
     "auto_enabled_elevators": true,
@@ -1103,6 +1104,13 @@
                             },
                             "progressive_stages": []
                         }
+                    ],
+                    "portals": [
+                        {
+                            "source_dock_name": "VirtualNorth",
+                            "target_mrea_id": 3455003633,
+                            "target_dock_name": "VirtualNorth1"
+                        }
                     ]
                 },
                 {
@@ -1222,6 +1230,13 @@
                                 "conversion": []
                             },
                             "progressive_stages": []
+                        }
+                    ],
+                    "portals": [
+                        {
+                            "source_dock_name": "VirtualNorth",
+                            "target_mrea_id": 2909835645,
+                            "target_dock_name": "VirtualNorth1"
                         }
                     ]
                 },
@@ -1478,11 +1493,32 @@
                             "progressive_stages": []
                         }
                     ]
+                },
+                {
+                    "mrea_id": 2909835645,
+                    "portals": [
+                        {
+                            "source_dock_name": "VirtualNorth1",
+                            "target_mrea_id": 67496868,
+                            "target_dock_name": "VirtualNorth"
+                        }
+                    ]
+                },
+                {
+                    "mrea_id": 3455003633,
+                    "portals": [
+                        {
+                            "source_dock_name": "VirtualNorth1",
+                            "target_mrea_id": 1263425809,
+                            "target_dock_name": "VirtualNorth"
+                        }
+                    ]
                 }
             ]
         },
         {
             "mlvl_id": 2252328306,
+            "other_world_to_copy_in_mapu": 1039999561,
             "area_changes": [
                 {
                     "mrea_id": 3885674414,
@@ -1810,6 +1846,7 @@
         },
         {
             "mlvl_id": 1119434212,
+            "other_world_to_copy_in_mapu": 464164546,
             "area_changes": [
                 {
                     "mrea_id": 1979488942,
@@ -3080,6 +3117,7 @@
         },
         {
             "mlvl_id": 1039999561,
+            "other_world_to_copy_in_mapu": 2252328306,
             "area_changes": [
                 {
                     "mrea_id": 3863006870,
@@ -4025,7 +4063,7 @@
                         {
                             "location": {
                                 "type": "standard",
-                                "exclude_memo_from_removal": true,
+                                "exclude_memo_from_removal": false,
                                 "original_model": "GrappleBeam",
                                 "connections": [
                                     {
@@ -4037,10 +4075,21 @@
                                         "state": "ZERO",
                                         "message": "ZERO",
                                         "target": 205193759
+                                    },
+                                    {
+                                        "state": "ZERO",
+                                        "message": "ZERO",
+                                        "target": 205193338
+                                    },
+                                    {
+                                        "state": "ZERO",
+                                        "message": "ZERO",
+                                        "target": 272302550
                                     }
                                 ],
                                 "removals": [
                                     205193765,
+                                    272302365,
                                     272302343
                                 ],
                                 "collision_offset": {
@@ -4065,8 +4114,8 @@
                                     "model_data": "EnergyTank",
                                     "sound": 10057,
                                     "jingle": {
-                                        "file_name": "/audio/itm_x_long_00.dsp",
-                                        "volume": 71
+                                        "file_name": "/audio/itm_x_short_00.dsp",
+                                        "volume": 55
                                     },
                                     "hud_text": "Energy Tank acquired!",
                                     "scan": "Energy Tank."
@@ -4266,6 +4315,7 @@
         },
         {
             "mlvl_id": 464164546,
+            "other_world_to_copy_in_mapu": 1119434212,
             "area_changes": [
                 {
                     "mrea_id": 1388284403,
@@ -4937,6 +4987,7 @@
             ]
         }
     ],
+    "two_way_portals": true,
     "starting_items": [
         {
             "item": 8,

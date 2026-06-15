@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import collections
 import functools
 from typing import TYPE_CHECKING
 
@@ -27,6 +26,7 @@ from retro_data_structures.properties.echoes.objects import (
     TriggerEllipsoid,
 )
 
+from open_prime_rando import area_utils
 from open_prime_rando.area_patcher import AreaPatcher, decorate_patcher
 from open_prime_rando.echoes.asset_ids import agon_wastes, great_temple, sanctuary_fortress, temple_grounds, torvus_bog
 from open_prime_rando.echoes.asset_ids.world import (
@@ -43,7 +43,7 @@ if TYPE_CHECKING:
 
     from retro_data_structures.formats.mlvl import Mlvl
     from retro_data_structures.formats.mrea import Area
-    from retro_data_structures.formats.script_object import InstanceId, InstanceRef
+    from retro_data_structures.formats.script_object import InstanceRef
 
     from open_prime_rando.patcher_editor import PatcherEditor
 
@@ -171,36 +171,6 @@ def landing_site_remove_intro(editor: PatcherEditor, mlvl: Mlvl, area: Area) -> 
         timer.add_connection(State.Zero, Message.Activate, area.get_instance(inst))
 
 
-def get_all_ids_related_to(area: Area, target: InstanceId) -> set[InstanceId]:
-    """
-    Gets all object ids that send a message to, or receives a message from the target object, or any object involved.
-    """
-
-    obj_conn_to: dict[InstanceId, set[InstanceId]] = collections.defaultdict(set)
-
-    for instance in area.all_instances:
-        for conn in instance.connections:
-            obj_conn_to[conn.target].add(instance.id)
-
-    related_objects = set()
-
-    def add_related_objs(t_id: InstanceId) -> None:
-        if t_id in related_objects:
-            return
-
-        related_objects.add(t_id)
-
-        obj = area.get_instance(t_id)
-        for c in obj.connections:
-            add_related_objs(c.target)
-        for c in obj_conn_to[t_id]:
-            add_related_objs(c)
-
-    add_related_objs(target)
-
-    return related_objects
-
-
 @decorate_patcher(TEMPLE_GROUNDS_MLVL, temple_grounds.HIVE_ACCESS_TUNNEL_MREA)
 def hive_access_tunnel_translator_gate(editor: PatcherEditor, mlvl: Mlvl, area: Area) -> None:
     """
@@ -214,7 +184,7 @@ def hive_access_tunnel_translator_gate(editor: PatcherEditor, mlvl: Mlvl, area: 
     root_transform = gate.get_properties_as(Platform).editor_properties.transform
     delta = target_position - root_transform.position
 
-    for obj_id in get_all_ids_related_to(area, gate.id):
+    for obj_id in area_utils.get_all_ids_related_to(area, gate.id):
         instance = area.get_instance(obj_id)
 
         with instance.edit_properties(BaseObjectType) as props:

@@ -14,6 +14,7 @@ from open_prime_rando.echoes.dock_lock_rando import DockTypeChange
 from open_prime_rando.echoes.elevators.elevator_rando import ElevatorChange
 from open_prime_rando.echoes.hud_color import HudColorConfiguration
 from open_prime_rando.echoes.pickups.schema import PickupModification
+from open_prime_rando.echoes.portal import PortalChange
 from open_prime_rando.echoes.pydantic_models import AreaReference, PydanticAssetId
 from open_prime_rando.echoes.starting_items import StartingItemConfig
 from open_prime_rando.echoes.suit_cosmetics import SuitMapping
@@ -41,12 +42,18 @@ class AreaChange(BaseModel):
     elevators: list[ElevatorChange] = Field(default_factory=list)
     """A modification for an elevator in this area."""
 
+    portals: list[PortalChange] = Field(default_factory=list)
+    """A modification for a portal in this area."""
+
 
 class WorldChange(BaseModel):
     """Contains changes for a given MLVL."""
 
     mlvl_id: PydanticAssetId
     """The asset id of the MLVL for this change."""
+
+    other_world_to_copy_in_mapu: PydanticAssetId | None = None
+    """The asset id of another MLVL, used to determine the position of this world in the MAPU."""
 
     area_changes: list[AreaChange]
     """The changes to apply to a MREA that belongs to this MLVL."""
@@ -63,6 +70,9 @@ class MapVisibility(BaseModel):
 
     unvisited_room_names: bool = True
     """When true, unvisited rooms in the map show their name."""
+
+    unvisited_map_icons: bool = False
+    """When true, unvisited rooms in the map show any non-door icons."""
 
 
 class StringChange(BaseModel):
@@ -109,6 +119,9 @@ class RandoConfiguration(BaseModel):
 
     auto_enabled_elevators: bool = False
     """Makes the elevators to different areas to be pre-scanned."""
+
+    two_way_portals: bool = False
+    """Makes all portals two-way by adding new portals."""
 
     inverted_mode: bool = False
     """Whether or not to use inverted mode, where Light and Dark Aether is inverted."""
