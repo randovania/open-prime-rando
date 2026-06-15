@@ -1052,8 +1052,8 @@ def hive_temple_persist_pickup_and_boss(editor: PatcherEditor, mlvl: Mlvl, area:
 @decorate_patcher(TORVUS_BOG_MLVL, torvus_bog.UNDERGROUND_TUNNEL_MREA)
 def underground_tunnel_grenchler_layer(editor: PatcherEditor, mlvl: Mlvl, area: Area) -> None:
     """
-    Turn off Grenchler layer and separate
-    Sporbs to a dedicated layer
+    Turn off Grenchler layer for memory
+    optimization purposes in Torvus Temple.
     """
     area.get_layer("1st Pass").active = False
 
@@ -1077,16 +1077,24 @@ def torvus_temple_memory_optimizations(editor: PatcherEditor, mlvl: Mlvl, area: 
     layer_handling_sequence_timer = area.get_instance(
         "Layer Handling - 1st Pass / Load After First Pass / Supermissile Cinematic"
     )
-    underground_tunnel = editor.get_area(TORVUS_BOG_MLVL, torvus_bog.UNDERGROUND_TUNNEL_MREA)
     layer_controller = area.get_instance("Increment - 04_Swamp - Supermissile Cinematic (Dynamic)")
 
     # Grenchler Layer toggle
-    grenchler_layer_controler = area.get_layer("Default").add_instance_with(
-        underground_tunnel.get_instance("Decrement 1st Pass").get_properties()
+    grenchler_layer_controler = default.add_instance_with(
+        ScriptLayerController(
+            editor_properties=EditorProperties(
+                name="Increment - 0G_Swamp - 1st Pass",
+                transform=Transform(
+                    position=Vector(-57.0, -190.0, 46.0),
+                    scale=Vector(2.0, 2.0, 2.0),
+                ),
+            ),
+            layer=LayerSwitch(
+                area_id=torvus_bog.UNDERGROUND_TUNNEL_INTERNAL_ID,
+                layer_number=2,  # 1st Pass
+            ),
+        )
     )
-    with grenchler_layer_controler.edit_properties(ScriptLayerController) as layer_props:
-        layer_props.editor_properties.name = "Increment - 0G_Swamp - 1st Pass"
-        layer_props.editor_properties.transform.position = Vector(-57.0, -190.0, 46.0)
     layer_controller.add_connection(State.Arrived, Message.Increment, grenchler_layer_controler)
 
     # Aerotrooper layer Controller
