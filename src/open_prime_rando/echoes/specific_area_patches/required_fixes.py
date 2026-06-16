@@ -73,6 +73,9 @@ def register_all(area_patcher: AreaPatcher) -> None:
         amorbis_fight_prevent_wrong_room,
         dynamo_works_persist_pickup,
         hive_temple_persist_pickup_and_boss,
+        agon_temple_prevent_pickup_interrupt,
+        dark_torvus_arena_prevent_pickup_interrupt,
+        sacrificial_chamber_prevent_pickup_interrupt,
     ]:
         area_patcher.add_function(func)
 
@@ -1043,3 +1046,36 @@ def hive_temple_persist_pickup_and_boss(editor: PatcherEditor, mlvl: Mlvl, area:
     music_player.add_connection(State.Entered, Message.SetToZero, music_status)
     music_status.add_connection(State.Closed, Message.Play, boss_prelude)
     music_status.add_connection(State.Open, Message.Play, boss_go_music)
+
+
+@decorate_patcher(AGON_WASTES_MLVL, agon_wastes.AGON_TEMPLE_MREA)
+def agon_temple_prevent_pickup_interrupt(editor: PatcherEditor, mlvl: Mlvl, area: Area) -> None:
+    """
+    Move player out of the way if standing where the pickup spawns.
+    """
+    # Player is repositioned near the end of the cutscene, change it's
+    # sequence connection timing so it happens at the very start instead
+    with area.get_instance("Unswarm Effects").edit_properties(SequenceTimer) as sequence_timer:
+        sequence_timer.sequence_connections[3].activation_times = [4.5]
+
+
+@decorate_patcher(TORVUS_BOG_MLVL, torvus_bog.DARK_TORVUS_ARENA_MREA)
+def dark_torvus_arena_prevent_pickup_interrupt(editor: PatcherEditor, mlvl: Mlvl, area: Area) -> None:
+    """
+    Move player out of the way if standing where the pickup spawns.
+    """
+    # Player is repositioned near the end of the cutscene, change it's
+    # sequence connection timing so it happens at the very start instead
+    with area.get_instance("Unswarm Effects").edit_properties(SequenceTimer) as sequence_timer:
+        sequence_timer.sequence_connections[3].activation_times = [7.5]
+
+
+@decorate_patcher(TORVUS_BOG_MLVL, torvus_bog.SACRIFICIAL_CHAMBER_MREA)
+def sacrificial_chamber_prevent_pickup_interrupt(editor: PatcherEditor, mlvl: Mlvl, area: Area) -> None:
+    """
+    Move player out of the way if standing where the pickup spawns.
+    """
+    # Player is repositioned near the end of the cutscene, change it's
+    # sequence connection timing so it happens at the very start instead
+    with area.get_instance("Unswarm Effects").edit_properties(SequenceTimer) as sequence_timer:
+        sequence_timer.sequence_connections[4].activation_times = [3.5]
