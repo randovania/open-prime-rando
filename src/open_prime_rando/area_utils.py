@@ -18,7 +18,8 @@ def get_all_ids_related_to(
     Gets all object ids that send a message to, or receives a message from the target object, or any object involved.
     """
 
-    stop_at_types = stop_at_types or set()
+    if stop_at_types is None:
+        stop_at_types = set()
     obj_conn_to: dict[InstanceId, set[InstanceId]] = collections.defaultdict(set)
 
     for instance in area.all_instances:
@@ -31,7 +32,11 @@ def get_all_ids_related_to(
         if t_id in related_objects:
             return
 
-        obj = area.get_instance(t_id)
+        try:
+            obj = area.get_instance(t_id)
+        except KeyError:
+            # An object was deleted and left connections behind.
+            return
         related_objects[t_id] = obj
 
         # print("  " * depth + f"({obj.id}) [{obj.script_type.__name__}] {obj.name}")

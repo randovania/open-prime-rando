@@ -54,6 +54,7 @@ if TYPE_CHECKING:
     from collections.abc import Callable
     from pathlib import Path
 
+    from retro_data_structures.asset_manager import FileWriter
     from retro_data_structures.base_resource import AssetId
     from retro_data_structures.transform import Transform
 
@@ -134,7 +135,7 @@ def patch_game_name_and_id(editor: PatcherEditor, output: IsoFileWriter, new_nam
         new_banner.write(banner.build())
 
 
-def remove_attract_videos(editor: PatcherEditor, output: IsoFileWriter) -> None:
+def remove_attract_videos(editor: PatcherEditor, output: FileWriter) -> None:
     """
     Replace all Attract THP files with 0-byte files, as that causes them to not be loaded.
     """
@@ -444,18 +445,16 @@ def patch_iso(
     input_iso: Path,
     output_iso: Path,
     configuration: RandoConfiguration,
+    *,
+    file_format: str = "ISO",
     area_status_update: StatusUpdate | None = None,
     build_files_status_update: StatusUpdate | None = None,
     build_paks_status_update: StatusUpdate | None = None,
     nod_status_update: StatusUpdate | None = None,
 ) -> None:
     """
+    Patches the given input file with the given configuration, writing the results to output as the requested format.
 
-    :param input_iso:
-    :param output_iso:
-    :param configuration:
-    :param status_update:
-    :return:
     """
 
     def default_status_update(text: str, percent: float) -> None:
@@ -492,6 +491,7 @@ def patch_iso(
 
     output.commit(
         output_iso,
+        file_format,
         callback=_write_callback,
     )
 
