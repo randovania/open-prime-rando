@@ -9,6 +9,9 @@ from open_prime_rando.echoes.specific_area_patches.dynamic_loading.central_minin
 from open_prime_rando.echoes.specific_area_patches.dynamic_loading.dynamo_works import (
     dynamo_works_dynamic_layer_loading,
 )
+from open_prime_rando.echoes.specific_area_patches.dynamic_loading.main_gyro_chamber import (
+    main_gyro_chamber_dynamic_layer_loading,
+)
 from open_prime_rando.echoes.specific_area_patches.dynamic_loading.main_reactor import (
     main_reactor_dynamic_layer_loading,
     storage_d_room_reload,
@@ -46,5 +49,6 @@ def register_all(area_patcher: AreaPatcher) -> None:
         central_mining_station_dynamic_layer_loading,
         sanctuary_entrance_dynamic_layer_loading,
         sacrificial_chamber_static_floor,
+        main_gyro_chamber_dynamic_layer_loading,
     ]:
         area_patcher.add_function(func)
