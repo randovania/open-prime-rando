@@ -1109,7 +1109,8 @@
                         {
                             "source_dock_name": "VirtualNorth",
                             "target_mrea_id": 3455003633,
-                            "target_dock_name": "VirtualNorth1"
+                            "target_dock_name": "VirtualNorth1",
+                            "portal_scan_destination": "Ing Windchamber"
                         }
                     ]
                 },
@@ -1236,7 +1237,8 @@
                         {
                             "source_dock_name": "VirtualNorth",
                             "target_mrea_id": 2909835645,
-                            "target_dock_name": "VirtualNorth1"
+                            "target_dock_name": "VirtualNorth1",
+                            "portal_scan_destination": "Grand Windchamber"
                         }
                     ]
                 },
@@ -1500,7 +1502,8 @@
                         {
                             "source_dock_name": "VirtualNorth1",
                             "target_mrea_id": 67496868,
-                            "target_dock_name": "VirtualNorth"
+                            "target_dock_name": "VirtualNorth",
+                            "portal_scan_destination": "Plain of Dark Worship"
                         }
                     ]
                 },
@@ -1510,7 +1513,8 @@
                         {
                             "source_dock_name": "VirtualNorth1",
                             "target_mrea_id": 1263425809,
-                            "target_dock_name": "VirtualNorth"
+                            "target_dock_name": "VirtualNorth",
+                            "portal_scan_destination": "Temple Assembly Site"
                         }
                     ]
                 }
@@ -3110,6 +3114,28 @@
                                 "conversion": []
                             },
                             "progressive_stages": []
+                        }
+                    ]
+                },
+                {
+                    "mrea_id": 734872743,
+                    "portals": [
+                        {
+                            "source_dock_name": "VirtualNorth1",
+                            "target_mrea_id": 3212793644,
+                            "target_dock_name": "VirtualNorth1",
+                            "portal_scan_destination": "Portal Site"
+                        }
+                    ]
+                },
+                {
+                    "mrea_id": 3212793644,
+                    "portals": [
+                        {
+                            "source_dock_name": "VirtualNorth1",
+                            "target_mrea_id": 734872743,
+                            "target_dock_name": "VirtualNorth1",
+                            "portal_scan_destination": "Portal Terminal"
                         }
                     ]
                 }

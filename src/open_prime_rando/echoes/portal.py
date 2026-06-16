@@ -6,16 +6,19 @@ from typing import TYPE_CHECKING
 
 import pydantic
 from retro_data_structures.enums.echoes import Message, State
+from retro_data_structures.formats import Scan, Strg
 from retro_data_structures.formats.mapa import MappableObject, ObjectTypeMP2, ObjectVisibility
 from retro_data_structures.properties.echoes.archetypes import EditorProperties, Transform
 from retro_data_structures.properties.echoes.core import Vector
-from retro_data_structures.properties.echoes.objects import Dock
+from retro_data_structures.properties.echoes.objects import Dock, ScannableObjectInfo
+from retro_data_structures.properties.echoes.objects.PointOfInterest import PointOfInterest
 from retro_data_structures.properties.echoes.objects.SpawnPoint import SpawnPoint
 from retro_data_structures.transform import Transform as _Transform
 
 from open_prime_rando import area_utils
 from open_prime_rando.area_patcher import AreaPatcher, decorate_patcher
 from open_prime_rando.echoes.asset_ids import agon_wastes, sanctuary_fortress, temple_grounds, world
+from open_prime_rando.echoes.asset_ids.agon_wastes import PORTAL_TERMINAL_MREA
 from open_prime_rando.echoes.pydantic_models import PydanticAssetId
 from open_prime_rando.echoes.specific_area_patches.rebalance_patches import ObjectWithEditorProperties
 
@@ -45,6 +48,9 @@ class PortalChange(pydantic.BaseModel):
 
     target_dock_name: str
     """Similar to source_dock_name, but in the target area."""
+
+    portal_scan_destination: str
+    """The name to use as the portal destination in the scan."""
 
 
 @dataclasses.dataclass(frozen=True)
@@ -214,6 +220,22 @@ def adjust_duelling_range_portal_spawn(editor: PatcherEditor, mlvl: Mlvl, area: 
     area.get_instance("VirtualDock").add_connection(State.MaxReached, Message.Activate, spawn)
 
 
+@decorate_patcher(world.AGON_WASTES_MLVL, agon_wastes.DARK_OASIS_MREA)
+def adjust_dark_oasis_portal_spawn(editor: PatcherEditor, mlvl: Mlvl, area: Area) -> None:
+    spawn = area.get_layer("Default").add_instance_with(
+        SpawnPoint(
+            editor_properties=EditorProperties(
+                name="Arrival",
+                transform=Transform(
+                    position=Vector(417.814056, 83, 19.031952),
+                    rotation=Vector(0, 0, 180),
+                ),
+            )
+        )
+    )
+    area.get_instance("VirtualEast").add_connection(State.MaxReached, Message.Activate, spawn)
+
+
 def register_make_portals_two_way(area_patcher: AreaPatcher, map_visibility: MapVisibility) -> None:
     """
     Adds a new portal to every virtual dock that is on the other side of a one-way portal.
@@ -221,6 +243,7 @@ def register_make_portals_two_way(area_patcher: AreaPatcher, map_visibility: Map
 
     area_patcher.add_function(adjust_main_reactor_portal_spawn)
     area_patcher.add_function(adjust_duelling_range_portal_spawn)
+    area_patcher.add_function(adjust_dark_oasis_portal_spawn)
 
     for portal_def in _NEW_PORTALS:
         area_patcher.add_raw_function(
@@ -236,11 +259,75 @@ def register_make_portals_two_way(area_patcher: AreaPatcher, map_visibility: Map
         )
 
 
-def _find_dock_named(area: Area, name: str) -> Dock:
+def _find_dock_named(area: Area, name: str) -> tuple[ScriptInstance, Dock]:
     for instance in area.all_instances:
         if instance.script_type == Dock and instance.name == name:
-            return instance.get_properties_as(Dock)
+            return instance, instance.get_properties_as(Dock)
     raise KeyError(name)
+
+
+def _duplicate_and_edit_scan_string(
+    editor: PatcherEditor,
+    asset_name_base: str,
+    scan_poi: ScriptInstance,
+    string_index: int,
+    new_string_text: str,
+) -> None:
+    with scan_poi.edit_properties(PointOfInterest) as prop:
+        new_scan_id = editor.duplicate_asset(prop.scan_info.scannable_info0, f"{asset_name_base}.SCAN")
+        prop.scan_info.scannable_info0 = new_scan_id
+
+        new_scan = editor.get_file(new_scan_id, Scan)
+        with new_scan.scannable_object_info.edit_properties(ScannableObjectInfo) as info:
+            info.string = editor.duplicate_asset(info.string, f"{asset_name_base}.STRG")
+            editor.get_file(info.string, Strg).set_single_string(string_index, new_string_text)
+
+
+def _adjust_rift_scan(
+    editor: PatcherEditor,
+    area: Area,
+    scan_poi: ScriptInstance,
+    change: PortalChange,
+) -> None:
+    """
+    Edits the scan of the inactive rift to point to the direction.
+
+    Does not work with scan portals.
+    """
+    _duplicate_and_edit_scan_string(
+        editor,
+        f"PortalScan_{area.mrea_asset_id}_{change.source_dock_name}",
+        scan_poi,
+        0,
+        f"This rift portal to &push;&main-color=#FF3333;{change.portal_scan_destination}&pop; is inactive.",
+    )
+
+
+def _adjust_scan_portal_scan(
+    editor: PatcherEditor,
+    area: Area,
+    all_objects: dict[InstanceId, ScriptInstance],
+    change: PortalChange,
+) -> None:
+    color_target = f"&push;&main-color=#FF3333;{change.portal_scan_destination}&pop;"
+
+    _duplicate_and_edit_scan_string(
+        editor,
+        f"PortalScanActive_{area.mrea_asset_id}_{change.source_dock_name}",
+        _find_object_with_name("Portal Activated", all_objects.values()),
+        1,
+        f"Console used to energize and open a portal to {color_target}, currently online.\n\n"
+        "Portal generation system initiated.",
+    )
+
+    _duplicate_and_edit_scan_string(
+        editor,
+        f"PortalScanInactive_{area.mrea_asset_id}_{change.source_dock_name}",
+        _find_object_with_name("Portal Inactive", all_objects.values()),
+        1,
+        f"Console used to energize and open a portal to {color_target}, currently offline.\n\n"
+        "Restore power to the system to enable portal creation.",
+    )
 
 
 def apply_portal_change(
@@ -251,12 +338,30 @@ def apply_portal_change(
 ) -> None:
     """Change the portal the given portal is connected to."""
 
-    source_dock = _find_dock_named(area, change.source_dock_name)
+    dock_instance, source_dock = _find_dock_named(area, change.source_dock_name)
     target_area = area.parent_mlvl.get_area(change.target_mrea_id)
-    target_dock = _find_dock_named(target_area, change.target_dock_name)
+    _, target_dock = _find_dock_named(target_area, change.target_dock_name)
 
     area._raw_connect_to(
         source_dock.dock_number,
         target_area,
         target_dock.dock_number,
     )
+
+    all_objs = area_utils.get_all_ids_related_to(
+        area,
+        dock_instance.id,
+    )
+    try:
+        scan_poi = _find_object_with_name("RIFT Portal Scan", all_objs.values())
+    except KeyError:
+        scan_poi = None
+
+    if area.mrea_asset_id == PORTAL_TERMINAL_MREA:
+        # TODO: deactivate the auto-warp after scanning the portal the first time
+        pass
+
+    if scan_poi is not None:
+        _adjust_rift_scan(editor, area, scan_poi, change)
+    else:
+        _adjust_scan_portal_scan(editor, area, all_objs, change)
