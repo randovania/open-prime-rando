@@ -242,7 +242,7 @@ def _patch_single_pickup_stage_appearance(
         with inst.edit_properties(inst.script_type) as cutscene_model:
             assert isinstance(cutscene_model, ObjectWithModel)
             cutscene_model.model = editor.resolve_asset_id(model_data.model)
-            cutscene_model.animation_information.ancs = model_data.animation.get_animation_parameters(editor).ancs
+            cutscene_model.animation_information = model_data.animation.get_animation_parameters(editor)
 
         if model_data.model == ETM_MODEL:
             layer = area.get_layer(location.cutscene_model.layer)
