@@ -3189,23 +3189,92 @@
                             "primary_stage": {
                                 "resources": [
                                     {
-                                        "item": 4,
-                                        "amount": 1
+                                        "item": 14,
+                                        "amount": 20
                                     }
                                 ],
                                 "appearance": {
-                                    "model_data": "SuperMissile",
+                                    "model_data": "LightSuit",
                                     "sound": 10057,
                                     "jingle": {
-                                        "file_name": "/audio/itm_x_long_00.dsp",
-                                        "volume": 71
+                                        "file_name": "/audio/itm_x_short_00.dsp",
+                                        "volume": 55
                                     },
-                                    "hud_text": "Super Missile acquired!",
-                                    "scan": "Super Missile."
+                                    "hud_text": "Light Suit acquired!",
+                                    "scan": "Light Suit."
                                 },
                                 "conversion": []
                             },
-                            "progressive_stages": []
+                            "progressive_stages": [
+                                {
+                                    "required_item": 14,
+                                    "resources": [
+                                        {
+                                            "item": 1,
+                                            "amount": 1
+                                        },
+                                        {
+                                            "item": 45,
+                                            "amount": 50
+                                        }
+                                    ],
+                                    "appearance": {
+                                        "model_data": "DarkBeam",
+                                        "sound": 10057,
+                                        "jingle": {
+                                            "file_name": "/audio/itm_x_short_00.dsp",
+                                            "volume": 55
+                                        },
+                                        "hud_text": "Dark Beam acquired!",
+                                        "scan": "Dark Beam."
+                                    },
+                                    "conversion": []
+                                },
+                                {
+                                    "required_item": 1,
+                                    "resources": [
+                                        {
+                                            "item": 2,
+                                            "amount": 1
+                                        },
+                                        {
+                                            "item": 46,
+                                            "amount": 50
+                                        }
+                                    ],
+                                    "appearance": {
+                                        "model_data": "LightBeam",
+                                        "sound": 10057,
+                                        "jingle": {
+                                            "file_name": "/audio/itm_x_short_00.dsp",
+                                            "volume": 55
+                                        },
+                                        "hud_text": "Light Beam acquired!",
+                                        "scan": "Light Beam."
+                                    },
+                                    "conversion": []
+                                },
+                                {
+                                    "required_item": 2,
+                                    "resources": [
+                                        {
+                                            "item": 3,
+                                            "amount": 1
+                                        }
+                                    ],
+                                    "appearance": {
+                                        "model_data": "AnnihilatorBeam",
+                                        "sound": 10057,
+                                        "jingle": {
+                                            "file_name": "/audio/itm_x_short_00.dsp",
+                                            "volume": 55
+                                        },
+                                        "hud_text": "Annihilator Beam acquired!",
+                                        "scan": "Annihilator Beam."
+                                    },
+                                    "conversion": []
+                                }
+                            ]
                         }
                     ],
                     "translator_gates": [
@@ -3227,6 +3296,33 @@
                             },
                             "conditional_relay": "Does Player Have Correct Translator?",
                             "translator": "violet"
+                        }
+                    ],
+                    "door_locks": [
+                        {
+                            "dock_name": "WestGenerator",
+                            "old_door_type": "SuperMissile",
+                            "new_door_type": "Sunburst"
+                        },
+                        {
+                            "dock_name": "East",
+                            "old_door_type": "SuperMissile",
+                            "new_door_type": "EchoVisor"
+                        },
+                        {
+                            "dock_name": "EastTop",
+                            "old_door_type": "Dark",
+                            "new_door_type": "ScrewAttack"
+                        },
+                        {
+                            "dock_name": "West",
+                            "old_door_type": "SuperMissile",
+                            "new_door_type": "DarkVisor"
+                        },
+                        {
+                            "dock_name": "NorthDoor",
+                            "old_door_type": "Light",
+                            "new_door_type": "SonicBoom"
                         }
                     ]
                 },
