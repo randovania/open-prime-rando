@@ -5053,9 +5053,9 @@
         }
     ],
     "suit_replacement": {
-        "varia": "player1",
-        "dark": "player2",
-        "light": "player3"
+        "varia": "player4",
+        "dark": "player3",
+        "light": "player2"
     },
     "string_changes": [
         {
