@@ -212,6 +212,7 @@ def patch_dol(dol_editor: DolEditor, patches_data: DolPatchesData) -> None:
     assert isinstance(version, dol_patches.EchoesDolVersion)
 
     cave = CodeCaveTracker(dol_editor)
+    version.register_symbols_to(cave)
 
     dol_patches.apply_mandatory_fixes(version, cave)
 
