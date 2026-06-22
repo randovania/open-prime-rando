@@ -8,13 +8,14 @@ import pydantic
 from retro_data_structures.enums.echoes import Message, State
 from retro_data_structures.formats import Scan, Strg
 from retro_data_structures.formats.mapa import MappableObject, ObjectTypeMP2, ObjectVisibility
-from retro_data_structures.properties.echoes.archetypes import EditorProperties, LayerSwitch, Transform
+from retro_data_structures.properties.echoes.archetypes import EditorProperties, Transform
+from retro_data_structures.properties.echoes.archetypes.Connection import Connection as SequenceConnection
 from retro_data_structures.properties.echoes.core import Vector
 from retro_data_structures.properties.echoes.objects import (
     Dock,
-    MemoryRelay,
     ScannableObjectInfo,
     ScriptLayerController,
+    SequenceTimer,
 )
 from retro_data_structures.properties.echoes.objects.PointOfInterest import PointOfInterest
 from retro_data_structures.properties.echoes.objects.SpawnPoint import SpawnPoint
@@ -23,7 +24,7 @@ from retro_data_structures.transform import Transform as _Transform
 from open_prime_rando import area_utils
 from open_prime_rando.area_patcher import AreaPatcher, decorate_patcher
 from open_prime_rando.echoes.asset_ids import agon_wastes, sanctuary_fortress, temple_grounds, world
-from open_prime_rando.echoes.asset_ids.agon_wastes import PORTAL_TERMINAL_INTERNAL_ID, PORTAL_TERMINAL_MREA
+from open_prime_rando.echoes.asset_ids.agon_wastes import PORTAL_TERMINAL_MREA
 from open_prime_rando.echoes.pydantic_models import PydanticAssetId
 from open_prime_rando.echoes.specific_area_patches.rebalance_patches import ObjectWithEditorProperties
 
@@ -363,31 +364,41 @@ def apply_portal_change(
         scan_poi = None
 
     if area.mrea_asset_id == PORTAL_TERMINAL_MREA:
-        # Don't Increment the Portal Cinematics layer to prevent the auto-warp
-        portal_cinematics = area.get_instance("Increment Portal Cinematics (Dynamic)")
-        layer_loading_relay = area.get_instance("GONE THROUGH PORTAL")
+        portal_cinematics = area.get_layer("Portal Cinematics")
+        portal_2nd_pass = area.get_instance("Increment - 05_PortalPuzzle - Portal 2nd Pass")
         transition_relay = area.get_instance("[IN] Begin Transition")
 
-        with portal_cinematics.edit_properties(ScriptLayerController) as controller_props:
-            controller_props.editor_properties.name = "Increment Portal 2nd Pass (Dynamic)"
-            controller_props.layer = LayerSwitch(
-                area_id=PORTAL_TERMINAL_INTERNAL_ID, layer_number=area.get_layer("Portal 2nd Pass").index
-            )
+        # Delete everything from Portal Cinematics
+        for instance in list(portal_cinematics.instances):
+            area.remove_instance(instance)
 
-        transition_relay.add_connection(State.Zero, Message.SetToZero, layer_loading_relay)
+        # Move layer loading relay to Portal Cinematics
+        area.move_instance("GONE THROUGH PORTAL", "Portal Cinematics")
+        layer_loading_relay = area.get_instance("GONE THROUGH PORTAL")
 
-        # Don't do layer swaps more than once
-        layer_switch_memory_relay = area.get_layer("Default").add_instance_with(
-            MemoryRelay(
-                editor_properties=EditorProperties(
-                    name="Deactivate Layer Swap",
-                    transform=Transform(position=Vector(-56.0, -224.0, -10.0), scale=Vector(2.0, 2.0, 2.0)),
-                    active=False,
-                )
-            )
+        # Turn Portal 2nd Pass layer controller to a Dynamic one
+        with portal_2nd_pass.edit_properties(ScriptLayerController) as controller_props:
+            controller_props.editor_properties.name += " (Dynamic)"
+            controller_props.is_dynamic = True
+        portal_2nd_pass.add_connection(State.Arrived, Message.Play, portal_2nd_pass)
+
+        # Increment Portal 2nd Pass
+        layer_loading_timer = area.get_instance(
+            "Decrement Puzzle Cinematics / Decrement 1st Pass / Increment Portal Cinematics"
         )
-        transition_relay.add_connection(State.Zero, Message.Activate, layer_switch_memory_relay)
-        layer_switch_memory_relay.add_connection(State.Active, Message.Deactivate, layer_loading_relay)
+
+        with layer_loading_timer.edit_properties(SequenceTimer) as sequence_timer:
+            sequence_timer.editor_properties.name += " / Increment Portal 2nd Pass"
+            sequence_timer.sequence_connections.append(
+                SequenceConnection(
+                    connection_index=3,
+                    activation_times=[0.04],
+                ),
+            )
+        layer_loading_timer.add_connection(State.Sequence, Message.Increment, portal_2nd_pass)
+
+        # Change layers on Portal Transition instead of Portal Intro End
+        transition_relay.add_connection(State.Zero, Message.SetToZero, layer_loading_relay)
 
     if scan_poi is not None:
         _adjust_rift_scan(editor, area, scan_poi, change)
