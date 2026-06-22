@@ -1,19 +1,38 @@
 from __future__ import annotations
 
 import json
+import uuid
 from typing import TYPE_CHECKING
 from unittest.mock import ANY, MagicMock
 
+import pytest
+from retro_data_structures.asset_manager import MemoryDol
 from retro_data_structures.game_check import Game
 
-from open_prime_rando.dol_patching.echoes import dol_versions
+from open_prime_rando.dol_patching.echoes import beam_cost, dol_versions, game_options
 from open_prime_rando.echoes import legacy_patcher
+from open_prime_rando.echoes.legacy_patcher import DolPatchesData
 
 if TYPE_CHECKING:
     from pathlib import Path
 
     import pytest_mock
     from conftest import HashUtil
+
+
+@pytest.fixture
+def patches_data() -> DolPatchesData:
+    return DolPatchesData(
+        world_uuid=uuid.UUID("1179c986-758a-4170-9b07-fe4541d78db0"),
+        energy_per_tank=101,
+        beam_configuration=beam_cost.BeamConfiguration(),
+        safe_zone_heal_per_second=2.0,
+        game_options_defaults=game_options.GameOptionsDefaults(),
+        default_items={"visor": "Combat Visor", "beam": "Power Beam"},
+        unvisited_room_names=True,
+        teleporter_sounds=True,
+        dangerous_energy_tank=False,
+    )
 
 
 def hash_all_paks(base_path: Path, hash_util: HashUtil) -> dict:
@@ -128,3 +147,19 @@ def test_patch_dol(mocker: pytest_mock.MockerFixture):
         version_patches, dol_file, patches_data.unvisited_room_names
     )
     mock_apply_teleporter_sounds.assert_called_once_with(version_patches, dol_file, patches_data.teleporter_sounds)
+
+
+def test_patch_dol_no_error_ntsc(
+    prime2_iso_provider,
+    patches_data,
+):
+    dol = MemoryDol(prime2_iso_provider.get_dol())
+    legacy_patcher.patch_dol(dol, patches_data)
+
+
+def test_patch_dol_no_error_pal(
+    prime2_iso_provider,
+    patches_data,
+):
+    dol = MemoryDol(prime2_iso_provider.get_dol())
+    legacy_patcher.patch_dol(dol, patches_data)
