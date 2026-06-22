@@ -131,6 +131,7 @@ class AreaPatcher:
 
             status_update(f"Patching {area.name}", self.areas_changed / self.num_area_changes)
             for func in area_functions:
+                logging.debug("Calling %s", str(func))
                 func(self.editor, mlvl, area)
 
             area.update_all_dependencies(only_modified=True)

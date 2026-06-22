@@ -2,12 +2,10 @@ from __future__ import annotations
 
 import contextlib
 import fnmatch
-import io
 import os
 import typing
 
-import typing_extensions
-from retro_data_structures.asset_manager import AssetManager, FileWriter
+from retro_data_structures.asset_manager import AssetManager, MemoryFileWriter
 from retro_data_structures.base_resource import AssetId, NameOrAssetId
 from retro_data_structures.enums.echoes import InventorySlotEnum, PlayerItemEnum
 from retro_data_structures.file_provider import FileProvider
@@ -106,31 +104,7 @@ try:
         def get_file_list(self) -> list[str]:
             return list(self._all_files)
 
-    class _MemoryStringIo(io.StringIO):
-        _data: str | None = None
-
-        @property
-        def data(self) -> str:
-            assert self._data is not None
-            return self._data
-
-        def __exit__(self, exc_type: type[BaseException] | None, exc_val: BaseException | None, exc_tb: typing.Any):
-            self._data = self.getvalue()
-            return super().__exit__(exc_type, exc_val, exc_tb)
-
-    class _MemoryBytesIo(io.BytesIO):
-        _data: bytes | None = None
-
-        @property
-        def data(self) -> bytes:
-            assert self._data is not None
-            return self._data
-
-        def __exit__(self, exc_type: type[BaseException] | None, exc_val: BaseException | None, exc_tb: typing.Any):
-            self._data = self.getvalue()
-            return super().__exit__(exc_type, exc_val, exc_tb)
-
-    class IsoFileWriter(FileWriter):
+    class IsoFileWriter(MemoryFileWriter):
         """
         A FileWriter that creates a GameCube ISO disc, using an existing IsoFileProvider as reference.
         The ISO is only created when `commit` is called.
@@ -138,44 +112,22 @@ try:
 
         source: IsoFileProvider
         patcher: nod_rs.DiscPatcher
-        _files: dict[str, _MemoryStringIo | _MemoryBytesIo]
-        _dol: bytes | None
 
         def __init__(self, source: IsoFileProvider):
+            super().__init__()
             self.source = source
             self.patcher = nod_rs.DiscPatcher(source.disc_reader)
-            self._files = {}
-            self._dol = None
-
-        @typing_extensions.override
-        def open_text(self, name: str) -> typing.TextIO:
-            file = self._files.setdefault(name, _MemoryStringIo())
-            assert isinstance(file, _MemoryStringIo)
-            return file
-
-        @typing_extensions.override
-        def open_binary(self, name: str) -> typing.BinaryIO:
-            file = self._files.setdefault(name, _MemoryBytesIo())
-            assert isinstance(file, _MemoryBytesIo)
-            return file
-
-        @typing_extensions.override
-        def write_dol(self, data: bytes) -> None:
-            self._dol = data
 
         def commit(
             self,
             output: Path,
-            format: str = "ISO",
+            file_format: str = "ISO",
             callback: typing.Callable[[int, int], None] | None = None,
         ) -> None:
             """Creates the ISO with all the files written so far."""
 
             for name, file in self._files.items():
-                if isinstance(file, _MemoryStringIo):
-                    self.patcher.add_file(name, file.data.encode("utf-8"))
-                else:
-                    self.patcher.add_file(name, file.data)
+                self.patcher.add_file(name, self.get_data(name))
 
             self._files.clear()
 
@@ -184,7 +136,7 @@ try:
 
             writer = nod_rs.DiscWriter(
                 self.patcher.build(),
-                format,
+                file_format,
             )
             writer.process(
                 os.fspath(output),

@@ -774,12 +774,18 @@ def dark_agon_temple_persist_pickup(editor: PatcherEditor, mlvl: Mlvl, area: Are
     pickup = area.get_instance("Dark Suit Pickup")
     boss_dead_relay = area.get_instance("Relay Begin Death Cinematic")
     post_pickup_relay = area.get_instance(0x24025D)
-    pickup_safe_zone = area.get_instance(0x240071)
+    try:
+        pickup_safe_zone = area.get_instance(0x240071)
+    except KeyError:
+        # Safe Zone might be removed due to inverted mode
+        pickup_safe_zone = None
 
     boss_dead_relay.add_connection(State.Zero, Message.Activate, pickup_active)
     pickup_active.add_connection(State.Active, Message.Activate, pickup)
-    pickup_active.add_connection(State.Active, Message.Activate, pickup_safe_zone)
     post_pickup_relay.add_connection(State.Active, Message.Deactivate, pickup_active)
+
+    if pickup_safe_zone is not None:
+        pickup_active.add_connection(State.Active, Message.Activate, pickup_safe_zone)
 
     # Keep Boss Go music if player hasn't collected Pickup
     music_player = area.get_instance("Music Player For Area")

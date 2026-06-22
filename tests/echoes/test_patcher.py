@@ -92,3 +92,26 @@ def test_pal_export(
     else:
         expected_hashes = test_files_dir.read_json("pal_hashes.json")
         assert hashes == expected_hashes
+
+
+def test_all_features_export(
+    prime2_ntsc_iso_path,
+    test_files_dir,
+) -> None:
+    data = test_files_dir.joinpath("echoes", "new_all_features.json").read_text()
+    configuration = RandoConfiguration.model_validate_json(data)
+
+    file_provider = IsoFileProvider(prime2_ntsc_iso_path)
+    editor = PatcherEditor(file_provider, Game.ECHOES)
+    output = IsoFileWriter(file_provider)
+
+    # Run
+    patcher._apply_patches(
+        editor,
+        configuration,
+        output,
+        _no_status_update,
+        _no_status_update,
+        _no_status_update,
+    )
+    assert len(output._files) == 20
