@@ -28,7 +28,7 @@ def patches_data() -> DolPatchesData:
         beam_configuration=beam_cost.BeamConfiguration(),
         safe_zone_heal_per_second=2.0,
         game_options_defaults=game_options.GameOptionsDefaults(),
-        default_items={},
+        default_items={"visor": "Combat Visor", "beam": "Power Beam"},
         unvisited_room_names=True,
         teleporter_sounds=True,
         dangerous_energy_tank=False,
