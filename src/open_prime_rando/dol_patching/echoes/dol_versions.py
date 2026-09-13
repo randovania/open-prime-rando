@@ -15,6 +15,7 @@ from open_prime_rando.dol_patching.echoes.dol_patches import (
     SafeZoneAddresses,
     StartingBeamVisorAddresses,
     StkMapIconSymbols,
+    WarpToStartAddresses,
 )
 from open_prime_rando.echoes.version import EchoesVersion
 
@@ -115,6 +116,10 @@ ALL_VERSIONS = [
         get_varia_suit_damage_reduction_address=0x80217D48,
         cautomapper_update_address=0x8008940C,
         cpausescreen_render_address=0x8020B0B8,
+        warp_to_start=WarpToStartAddresses(
+            decline_broadcast_call=0x80105ABC,
+            send_script_msgs=0x80047FF0,
+        ),
     ),
     EchoesDolVersion(
         game=Game.ECHOES,
@@ -212,5 +217,9 @@ ALL_VERSIONS = [
         get_varia_suit_damage_reduction_address=0x80218080,
         cautomapper_update_address=0x80089548,
         cpausescreen_render_address=0x8020B398,
+        warp_to_start=WarpToStartAddresses(
+            decline_broadcast_call=0x80105C70,
+            send_script_msgs=0x80048160,
+        ),
     ),
 ]

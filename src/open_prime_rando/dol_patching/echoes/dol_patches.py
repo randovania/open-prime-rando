@@ -55,6 +55,24 @@ class SafeZoneAddresses:
 
 
 @dataclasses.dataclass(frozen=True)
+class WarpToStartAddresses:
+    """Addresses the warp-to-start DOL gate needs (``echoes/warp_to_start.py``).
+
+    Both are inside the save-station ``CScriptSpecialFunction``'s tick function,
+    which broadcasts ``State.Zero`` when the player declines the save
+    prompt.
+    """
+
+    decline_broadcast_call: int
+    """The ``bl`` that broadcasts ``Zero``; replaced with a ``bl`` to the gate
+    code cave."""
+
+    send_script_msgs: int
+    """That ``bl``'s original target, the SCLY state-broadcast helper. The
+    cave tail-branches to it so it returns straight to the tick function."""
+
+
+@dataclasses.dataclass(frozen=True)
 class StartingBeamVisorAddresses:
     player_state_constructor_clean: int
     player_state_constructor_decode: int
@@ -158,6 +176,7 @@ class EchoesDolVersion(BasePrimeDolVersion):
     get_varia_suit_damage_reduction_address: int
     cautomapper_update_address: int
     cpausescreen_render_address: int
+    warp_to_start: WarpToStartAddresses
 
     def register_symbols_to(self, cave: CodeCaveTracker) -> None:
         symbols = cave.dol_editor.symbols

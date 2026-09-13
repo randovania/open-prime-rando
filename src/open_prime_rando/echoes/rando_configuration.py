@@ -120,6 +120,10 @@ class RandoConfiguration(BaseModel):
     auto_enabled_elevators: bool = False
     """Makes the elevators to different areas to be pre-scanned."""
 
+    warp_to_start: bool = False
+    """Declining a save while holding L+R warps the player back to
+    ``starting_area``, mirroring randomprime's ``warpToStart`` for Prime 1."""
+
     two_way_portals: bool = False
     """Makes all portals two-way by adding new portals."""
 
