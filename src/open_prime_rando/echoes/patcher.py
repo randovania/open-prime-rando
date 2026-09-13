@@ -41,6 +41,7 @@ from open_prime_rando.echoes import (
     starting_items,
     suit_cosmetics,
     translator_gates,
+    warp_to_start,
 )
 from open_prime_rando.echoes.asset_ids import world
 from open_prime_rando.echoes.elevators import auto_enabled_elevator_patches
@@ -255,6 +256,9 @@ def apply_dol_patches(editor: PatcherEditor, configuration: RandoConfiguration, 
     )
     inventory_slot.setup_inventory_slot_to_item(dol_version, editor)
 
+    if configuration.warp_to_start:
+        warp_to_start.apply_dol_patches(editor.code_cave, dol_version.warp_to_start)
+
 
 def _register_area_changes(area_patcher: AreaPatcher, mlvl_id: AssetId, area_changes: list[AreaChange]) -> None:
     disable_hud_popup = True
@@ -419,6 +423,9 @@ def _apply_patches(
 
     if configuration.auto_enabled_elevators:
         auto_enabled_elevator_patches.register(area_patcher)
+
+    if configuration.warp_to_start:
+        warp_to_start.register(area_patcher, configuration.starting_area)
 
     # area changes
     small_randomizations.register_small_randomizations(area_patcher, rng)
