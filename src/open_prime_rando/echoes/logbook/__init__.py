@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import itertools
 import typing
 
 from retro_data_structures.enums.echoes import InventorySlotEnum, PlayerItemEnum
@@ -17,11 +16,21 @@ if typing.TYPE_CHECKING:
     from open_prime_rando.patcher_editor import PatcherEditor
 
 
+_LOGBOOK_TREE = 0x95B61279
+_LOGBOOK_HIERARCHY = 0xDD79DC2A
+
+
 def _update_deps(editor: PatcherEditor, tree: Tree, hierarchy: Hier) -> None:
-    paks = sorted(set(editor.find_paks(0x95B61279)) | set(editor.find_paks(0xDD79DC2A)))
-    for dep in itertools.chain(tree.dependencies_for(), hierarchy.dependencies_for()):
-        for pak in paks:
-            editor.ensure_present(pak, dep.id)
+    pairs = (
+        (_LOGBOOK_TREE, tree),
+        (_LOGBOOK_HIERARCHY, hierarchy),
+    )
+
+    for asset_id, resource in pairs:
+        paks = list(editor.find_paks(asset_id))
+        for dep in resource.dependencies_for():
+            for pak in paks:
+                editor.ensure_present(pak, dep.id)
 
 
 def _patch_dark_temple_key_scans(editor: PatcherEditor) -> None:
@@ -75,9 +84,9 @@ def patch_logbook(editor: PatcherEditor, version: EchoesDolVersion, configuratio
     - Renames and reorganizes the lore entries for usage as hints
     """
 
-    tree = editor.get_file(0x95B61279, Tree)
+    tree = editor.get_file(_LOGBOOK_TREE, Tree)
 
-    hierarchy = editor.get_file(0xDD79DC2A, Hier)
+    hierarchy = editor.get_file(_LOGBOOK_HIERARCHY, Hier)
     hierarchy_entries = list(hierarchy.entries)
 
     _patch_inventory_slots(editor, tree)
