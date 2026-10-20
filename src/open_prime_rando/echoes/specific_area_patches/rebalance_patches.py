@@ -199,6 +199,18 @@ def hive_access_tunnel_translator_gate(editor: PatcherEditor, mlvl: Mlvl, area: 
                 props.editor_properties.transform.position = target_position
                 props.editor_properties.transform.rotation = rotation
 
+    # Add a light to spotlight the gate
+    light_copy_source_room = editor.get_area(SANCTUARY_FORTRESS_MLVL, sanctuary_fortress.DYNAMO_WORKS_MREA)
+    dynamic_light = area.get_layer("Default").add_instance_with(
+        light_copy_source_room.get_instance("Luminoth Light Support").get_properties()
+    )
+    with dynamic_light.edit_properties(DynamicLight) as light_props:
+        light_props.editor_properties.name = "Gate Light Support"
+        light_props.editor_properties.transform.position = Vector(24.7, -207.2, -41.0)
+        light_props.color = Color(0.980392, 0.952941, 0.870588, 0.0)
+    dynamic_light.add_connection(State.Play, Message.Activate, gate)
+    dynamic_light.add_connection(State.Play, Message.Activate, area.get_instance("Luminoth Gate (Opened)"))
+
 
 @decorate_patcher(AGON_WASTES_MLVL, agon_wastes.BIOENERGY_PRODUCTION_MREA)
 def bionergy_production_pirates_trigger(editor: PatcherEditor, mlvl: Mlvl, area: Area) -> None:
@@ -751,6 +763,7 @@ def transport_c_access_crystal(editor: PatcherEditor, mlvl: Mlvl, area: Area) ->
         light_copy_source_room.get_instance("Luminoth Light Support").get_properties()
     )
     with dynamic_light.edit_properties(DynamicLight) as light:
+        light.editor_properties.name = "Statue Light Support"
         light.editor_properties.transform.position = Vector(-98.0, -61.7, -18.0)
         light.color = Color(0.858824, 0.729412, 0.584314, 0.0)
 
