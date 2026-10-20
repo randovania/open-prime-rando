@@ -80,6 +80,7 @@ def register_all(area_patcher: AreaPatcher) -> None:
         sacrificial_chamber_prevent_pickup_interrupt,
         torvus_temple_memory_optimizations,
         underground_tunnel_grenchler_layer,
+        hive_chamber_b_activate_tunnel_hint,
     ]:
         area_patcher.add_function(func)
 
@@ -554,6 +555,16 @@ def hive_chamber_b_remove_item_loss(editor: PatcherEditor, mlvl: Mlvl, area: Are
     # Removing this object will cause the env var to be removed from the SAVW, which causes
     # CPersistentOptions::FindEnvironmentVariable to return NULL, which is handled by the game as show the button.
     area.remove_instance("Enable Darkworld Automapper button")
+
+
+@decorate_patcher(TEMPLE_GROUNDS_MLVL, temple_grounds.HIVE_CHAMBER_B_MREA)
+def hive_chamber_b_activate_tunnel_hint(editor: PatcherEditor, mlvl: Mlvl, area: Area) -> None:
+    """
+    Make the CameraHint Trigger in the tunnel
+    leading to Hive Chamber C active by default.
+    """
+    with area.get_instance(0x11005F).edit_properties(Trigger) as trigger_props:
+        trigger_props.editor_properties.active = True
 
 
 @decorate_patcher(TORVUS_BOG_MLVL, torvus_bog.TORVUS_TEMPLE_MREA)
