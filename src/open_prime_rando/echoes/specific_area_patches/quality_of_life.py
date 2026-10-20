@@ -3,6 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from retro_data_structures.enums.echoes import Message, State
+from retro_data_structures.properties.echoes.archetypes.Connection import Connection as SequenceConnection
 from retro_data_structures.properties.echoes.archetypes.EditorProperties import EditorProperties
 from retro_data_structures.properties.echoes.archetypes.Transform import Transform
 from retro_data_structures.properties.echoes.archetypes.TriggerInfo import FlagsTrigger
@@ -11,6 +12,7 @@ from retro_data_structures.properties.echoes.objects import (
     CameraFilterKeyframe,
     CameraHint,
     CameraShaker,
+    SequenceTimer,
     SpawnPoint,
     Trigger,
     TriggerOrientated,
@@ -42,6 +44,7 @@ def register_all(area_patcher: AreaPatcher) -> None:
         temple_sanctuary_music,
         minigyro_terminal_fall,
         sacred_bridge_platform_scan,
+        emperor_ing_3_crash_fix,
     ]:
         area_patcher.add_function(func)
 
@@ -341,3 +344,30 @@ def sacred_bridge_platform_scan(editor: PatcherEditor, mlvl: Mlvl, area: Area) -
     tertiary_scan_trigger.add_connection(State.Connect, Message.Attach, primary_scan_trigger)
     reposition_trigger.add_connection(State.Entered, Message.Activate, lower_spawn)
     reposition_trigger.add_connection(State.Exited, Message.Deactivate, lower_spawn)
+
+
+@decorate_patcher(GREAT_TEMPLE_MLVL, great_temple.SANCTUM_MREA)
+def emperor_ing_3_crash_fix(editor: PatcherEditor, mlvl: Mlvl, area: Area) -> None:
+    """
+    Fixes the Emperor Ing 3 crash caused by killing him
+    while the Yellow Laser attack is active.
+    """
+    ei3 = area.get_instance("EmperorIngStage3 001")
+
+    # Prevent Stage 3 from being unloaded immediately after the death cutscene starts
+    ei3_death_occlusion_relay = area.get_instance(0xB002F)
+    ei3_death_occlusion_relay.remove_connection(ei3_death_occlusion_relay.connections[1])
+
+    # Make OcclusionRelay deactivate EI3 since he doesn't get unloaded immediately
+    ei3_death_occlusion_relay.add_connection(State.InternalState01, Message.Deactivate, ei3)
+
+    # Unload Stage 3 after 2.5 seconds instead
+    ei3_death_sequence_timer = area.get_instance("Final Boss Death")
+    with ei3_death_sequence_timer.edit_properties(SequenceTimer) as sequence_timer:
+        sequence_timer.sequence_connections.append(
+            SequenceConnection(
+                connection_index=76,
+                activation_times=[2.5],
+            ),
+        )
+    ei3_death_sequence_timer.add_connection(State.Sequence, Message.Decrement, area.get_instance("Unload Stage 3"))
