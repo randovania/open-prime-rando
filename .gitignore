@@ -139,3 +139,4 @@ src/open_prime_rando/version.py
 /*.json
 
 .vscode/
+.claude/
