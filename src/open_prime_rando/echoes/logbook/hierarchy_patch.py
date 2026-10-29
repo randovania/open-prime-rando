@@ -3,7 +3,7 @@ from __future__ import annotations
 import dataclasses
 import typing
 
-from retro_data_structures.enums.echoes import InventorySlotEnum, Message, PlayerItemEnum, State
+from retro_data_structures.enums.echoes import Message, PlayerItemEnum, State
 from retro_data_structures.formats import Strg
 
 from open_prime_rando.echoes.logbook.new_entry import (
@@ -126,7 +126,6 @@ def get_hierarchy_patches(configuration: RandoConfiguration) -> list[HierarchyPa
                         name_string_name="DefenseUp",
                         model_name="VariaSuit",
                         scan_text=defense_up_scan_text,
-                        slot_index=InventorySlotEnum.VariaSuit,
                         item_index=PlayerItemEnum.VariaSuit,
                     ),
                     "Defense Up",
@@ -151,7 +150,6 @@ def get_hierarchy_patches(configuration: RandoConfiguration) -> list[HierarchyPa
                                 model_name="VioletTranslator",
                                 scan_text="The &push;&main-color=#784784;Violet Translator&pop; allows you to access"
                                 " devices and doors coded with &push;&main-color=#784784;Violet&pop; holograms.",
-                                slot_index=InventorySlotEnum.DarkBomb,
                                 item_index=PlayerItemEnum.VioletTranslator,
                             ),
                             "Violet Translator",
@@ -162,7 +160,6 @@ def get_hierarchy_patches(configuration: RandoConfiguration) -> list[HierarchyPa
                                 model_name="AmberTranslator",
                                 scan_text="The &push;&main-color=#A45600;Amber Translator&pop; allows you to access"
                                 " devices and doors coded with &push;&main-color=#A45600;Amber&pop; holograms.",
-                                slot_index=InventorySlotEnum.LightBomb,
                                 item_index=PlayerItemEnum.AmberTranslator,
                             ),
                             "Amber Translator",
@@ -173,7 +170,6 @@ def get_hierarchy_patches(configuration: RandoConfiguration) -> list[HierarchyPa
                                 model_name="EmeraldTranslator",
                                 scan_text="The &push;&main-color=#4E9761;Emerald Translator&pop; allows you to access"
                                 " devices and doors coded with &push;&main-color=#4E9761;Emerald&pop; holograms.",
-                                slot_index=InventorySlotEnum.AnnihilatorBomb,
                                 item_index=PlayerItemEnum.EmeraldTranslator,
                             ),
                             "Emerald Translator",
@@ -184,7 +180,6 @@ def get_hierarchy_patches(configuration: RandoConfiguration) -> list[HierarchyPa
                                 model_name="CobaltTranslator",
                                 scan_text="The &push;&main-color=#56789D;Cobalt Translator&pop; allows you to access"
                                 " devices and doors coded with &push;&main-color=#56789D;Cobalt&pop; holograms.",
-                                slot_index=InventorySlotEnum.BeamCombo,
                                 item_index=PlayerItemEnum.CobaltTranslator,
                             ),
                             "Cobalt Translator",
@@ -215,7 +210,6 @@ def get_hierarchy_patches(configuration: RandoConfiguration) -> list[HierarchyPa
                                     "The Unlimited Beam Ammo keeps your Dark Ammo "
                                     "and Light Ammo maximized at all times."
                                 ),
-                                slot_index=InventorySlotEnum(54),
                                 item_index=PlayerItemEnum.UnlimitedBeamAmmo,
                             ),
                             "Unlimited Beam Ammo",
@@ -232,8 +226,7 @@ def get_hierarchy_patches(configuration: RandoConfiguration) -> list[HierarchyPa
                             NewInventoryEntry(
                                 name_string_name="UnlimitedMissiles",
                                 model_name="UnlimitedMissiles",
-                                scan_text=("The Unlimited Missiles keeps your Missiles maximized at all times."),
-                                slot_index=InventorySlotEnum(55),
+                                scan_text="The Unlimited Missiles keeps your Missiles maximized at all times.",
                                 item_index=PlayerItemEnum.UnlimitedMissiles,
                             ),
                             "Unlimited Missiles",
@@ -245,7 +238,6 @@ def get_hierarchy_patches(configuration: RandoConfiguration) -> list[HierarchyPa
                         name_string_name="MassiveDamage",
                         model_name="MassiveDamage",
                         scan_text=massive_damage_scan_text,
-                        slot_index=InventorySlotEnum(53),
                         item_index=PlayerItemEnum.AmpDamage,
                     ),
                     "Massive Damage",
