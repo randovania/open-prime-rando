@@ -103,10 +103,13 @@ def _get_connecting_dock(mlvl: Mlvl, dock: Dock) -> tuple[Area, ScriptInstance]:
 
 
 def _find_object_with_name(name: str, instances: Iterable[ScriptInstance]) -> ScriptInstance:
-    for inst in instances:
-        if inst.name == name:
-            return inst
-    raise KeyError(f"No instance with name {name} found")
+    all_inst = [inst for inst in instances if inst.name == name]
+    if len(all_inst) > 1:
+        raise KeyError(f"Multiple instances with name {name} found")
+    if all_inst:
+        return all_inst[0]
+    else:
+        raise KeyError(f"No instance with name {name} found")
 
 
 def add_portal_to(
@@ -129,7 +132,7 @@ def add_portal_to(
     )
 
     connected_area, connected_dock = _get_connecting_dock(area.parent_mlvl, target_dock.get_properties_as(Dock))
-    other_area_objects = area_utils.get_all_ids_related_to(connected_area, connected_dock.id)
+    other_area_objects = area_utils.get_all_ids_related_to(connected_area, connected_dock.id, {SpawnPoint})
     target_transform = _get_transform(_find_object_with_name(_PORTAL_POSITION_REFERENCE, other_area_objects.values()))
 
     delta_position = target_transform.position - source_transform.position
@@ -351,6 +354,7 @@ def apply_portal_change(
     all_objs = area_utils.get_all_ids_related_to(
         area,
         dock_instance.id,
+        {SpawnPoint},
     )
     try:
         scan_poi = _find_object_with_name("RIFT Portal Scan", all_objs.values())
