@@ -879,7 +879,6 @@ def game_end_part4_cinematic_skips(editor: PatcherEditor, mlvl: Mlvl, area: Area
     default = area.get_layer("Default")
     credits = area.get_instance("Credits")
     cinema_start = area.get_instance("Cinema Start")
-    cinema_end = area.get_instance("Cinema End")
     cine_sequence_timer = area.get_instance("End game Space")
 
     # Normally the Credits play in this room at the end of the cutscene, but
@@ -936,10 +935,6 @@ def game_end_part4_cinematic_skips(editor: PatcherEditor, mlvl: Mlvl, area: Area
         # Change room next area move timing to match old credits activation timing
         sequence_timer.sequence_connections[3].activation_times = [11.09]
 
-        # Adjust "GameEnd part 4 SFX" connection to happen a couple of
-        # frames later to cover a frame perfect cutscene skip edge case
-        sequence_timer.sequence_connections[8].activation_times = [0.02]
-
     # Make these cameras skippable
     cameras = [
         "Camera 04",
@@ -954,15 +949,14 @@ def game_end_part4_cinematic_skips(editor: PatcherEditor, mlvl: Mlvl, area: Area
     cinema_start.add_connection(State.Zero, Message.Increment, cinematic_skip)
     cinematic_skip.add_connection(State.Zero, Message.Activate, loading_camera)
     cinematic_skip.add_connection(State.Zero, Message.Stop, loading_camera)
+    cinematic_skip.add_connection(State.Zero, Message.Stop, cine_sequence_timer)
+    cinematic_skip.add_connection(State.Zero, Message.Stop, game_end_part4_music)
     cinematic_skip.add_connection(State.Zero, Message.Deactivate, area.get_instance("Platform SpaceSky"))
     cinematic_skip.add_connection(State.Zero, Message.Deactivate, area.get_instance("Ship_s_4"))
     cinematic_skip.add_connection(State.Zero, Message.Deactivate, area.get_instance("Space_Only"))
     cinematic_skip.add_connection(State.Zero, Message.Deactivate, area.get_instance("Ship_s_5"))
     cinematic_skip.add_connection(State.Zero, Message.Deactivate, area.get_instance("Exit Plume"))
-    cinematic_skip.add_connection(State.Zero, Message.Stop, area.get_instance("GameEnd part 4 SFX"))
-    cinematic_skip.add_connection(State.Zero, Message.Stop, cine_sequence_timer)
-    cinematic_skip.add_connection(State.Zero, Message.Stop, game_end_part4_music)
-    cinematic_skip.add_connection(State.Zero, Message.SetToZero, cinema_end)
+    cinematic_skip.add_connection(State.Zero, Message.Deactivate, area.get_instance("GameEnd part 4 SFX"))
     cinematic_skip.add_connection(State.Zero, Message.SetToZero, area.get_instance("Go To Next Area"))
 
 
