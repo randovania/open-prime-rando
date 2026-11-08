@@ -5,7 +5,6 @@ from typing import TYPE_CHECKING
 from retro_data_structures.enums.echoes import Message, PlayerItemEnum, State
 from retro_data_structures.properties.echoes.archetypes.Connection import Connection as SequenceConnection
 from retro_data_structures.properties.echoes.archetypes.EditorProperties import EditorProperties
-from retro_data_structures.properties.echoes.archetypes.LayerSwitch import LayerSwitch
 from retro_data_structures.properties.echoes.archetypes.Transform import Transform
 from retro_data_structures.properties.echoes.archetypes.TriggerInfo import FlagsTrigger
 from retro_data_structures.properties.echoes.core.Vector import Vector
@@ -14,7 +13,6 @@ from retro_data_structures.properties.echoes.objects import (
     CameraFilterKeyframe,
     CameraHint,
     CameraShaker,
-    ScriptLayerController,
     SequenceTimer,
     SpawnPoint,
     SpecialFunction,
@@ -367,35 +365,16 @@ def sky_temple_gateway_cinematic_skips(editor: PatcherEditor, mlvl: Mlvl, area: 
     Makes the Ending Cutscenes in Sky Temple Gateway
     be skippable and warp to credits room if done so.
     """
-    default = area.get_layer("Default")
-
-    # Add a new layer just for the teleporters, otherwise
-    # room takes a little longer to load into
-    warps_layer = area.add_layer("Ending Teleporters", active=False)
+    escape_music = area.get_layer("Escape Music")
     ds_death_start = area.get_instance("DS Death Cinema Start")
     game_end_part1_end = area.get_instance(0x2A036B)
 
-    # Required Objects
-    teleporters_controller = default.add_instance_with(
-        ScriptLayerController(
-            editor_properties=EditorProperties(
-                name="Load Ending Teleporters",
-                transform=Transform(position=Vector(-9.0, -61.5, -27.2), scale=Vector(2.0, 2.0, 2.0)),
-            ),
-            layer=LayerSwitch(
-                area_id=temple_grounds.SKY_TEMPLE_GATEWAY_INTERNAL_ID,
-                layer_number=warps_layer.index,
-            ),
-            is_dynamic=True,
-        )
-    )
-
     # Using a CinematicSkip Function allows for things to
     # happen only if you skipped a cutscene
-    cinematic_skip = default.add_instance_with(
+    cinematic_skip_1 = escape_music.add_instance_with(
         SpecialFunction(
             editor_properties=EditorProperties(
-                name="CinematicSkipSignal - Warp to Credits",
+                name="Ending Skip 1 - Warp to Credits",
                 transform=Transform(
                     position=Vector(17.30558, 76.674892, -30.408634),
                     scale=Vector(2.0, 2.0, 2.0),
@@ -405,8 +384,21 @@ def sky_temple_gateway_cinematic_skips(editor: PatcherEditor, mlvl: Mlvl, area: 
         )
     )
 
+    cinematic_skip_2 = escape_music.add_instance_with(
+        SpecialFunction(
+            editor_properties=EditorProperties(
+                name="Ending Skip 2/3 - Warp to game_end_part3",
+                transform=Transform(
+                    position=Vector(17.30558, 76.674892, -29.408634),
+                    scale=Vector(2.0, 2.0, 2.0),
+                ),
+            ),
+            function=Function.CinematicSkipSignal,
+        )
+    )
+
     # Less than 75% items check
-    ending_check1 = default.add_instance_with(
+    ending_check1 = escape_music.add_instance_with(
         SpecialFunction(
             editor_properties=EditorProperties(
                 name="Ending 1 Check",
@@ -420,7 +412,7 @@ def sky_temple_gateway_cinematic_skips(editor: PatcherEditor, mlvl: Mlvl, area: 
     )
 
     # Greater than 75% items check
-    ending_check2 = default.add_instance_with(
+    ending_check2 = escape_music.add_instance_with(
         SpecialFunction(
             editor_properties=EditorProperties(
                 name="Ending 2 Check",
@@ -434,8 +426,23 @@ def sky_temple_gateway_cinematic_skips(editor: PatcherEditor, mlvl: Mlvl, area: 
         )
     )
 
+    # 100% items check
+    ending_check3 = escape_music.add_instance_with(
+        SpecialFunction(
+            editor_properties=EditorProperties(
+                name="Ending 3 Check",
+                transform=Transform(
+                    position=Vector(15.0, 68.0, -30.0),
+                    scale=Vector(2.0, 2.0, 2.0),
+                ),
+            ),
+            function=Function.Ending,
+            value_parm=2.0,
+        )
+    )
+
     # If over 75%, take away Dark Suit for ZSS cutscene
-    take_away_dark_suit = default.add_instance_with(
+    take_away_dark_suit = escape_music.add_instance_with(
         SpecialFunction(
             editor_properties=EditorProperties(
                 name="Take Away Dark Suit",
@@ -452,7 +459,7 @@ def sky_temple_gateway_cinematic_skips(editor: PatcherEditor, mlvl: Mlvl, area: 
     )
 
     # If over 75%, take away Light Suit for ZSS cutscene
-    take_away_light_suit = default.add_instance_with(
+    take_away_light_suit = escape_music.add_instance_with(
         SpecialFunction(
             editor_properties=EditorProperties(
                 name="Take Away Light Suit",
@@ -468,7 +475,7 @@ def sky_temple_gateway_cinematic_skips(editor: PatcherEditor, mlvl: Mlvl, area: 
     )
 
     # Teleporter to Credits room
-    credits_warp = warps_layer.add_instance_with(
+    credits_warp = escape_music.add_instance_with(
         WorldTeleporter(
             editor_properties=EditorProperties(
                 name="Warp to game_end_part5",
@@ -484,7 +491,7 @@ def sky_temple_gateway_cinematic_skips(editor: PatcherEditor, mlvl: Mlvl, area: 
     )
 
     # Teleporter to ZSS Cutscene room
-    bad_ending_warp = warps_layer.add_instance_with(
+    bad_ending_warp = escape_music.add_instance_with(
         WorldTeleporter(
             editor_properties=EditorProperties(
                 name="Warp to game_end_part3",
@@ -536,27 +543,25 @@ def sky_temple_gateway_cinematic_skips(editor: PatcherEditor, mlvl: Mlvl, area: 
             camera_props.flags_cinematic_camera &= ~FlagsCinematicCamera.FinishCineSkip
             camera_props.flags_cinematic_camera |= FlagsCinematicCamera.CinematicSkip
 
-    # Load Teleporters layer once death cutscene is done loading
-    area.get_instance("Load Dark Samus 3 Battle Death").add_connection(
-        State.Arrived, Message.Increment, teleporters_controller
-    )
-    area.get_instance("Begin Dark Samus Battle3 Death").add_connection(State.Open, Message.Play, teleporters_controller)
+    # Fire % checks, then Increment the proper cinematic skip
+    ds_death_start.add_connection(State.Zero, Message.Action, ending_check1)
+    ds_death_start.add_connection(State.Zero, Message.Action, ending_check2)
+    ds_death_start.add_connection(State.Zero, Message.Action, ending_check3)
+    ending_check1.add_connection(State.Zero, Message.Increment, cinematic_skip_1)
+    ending_check2.add_connection(State.Zero, Message.Increment, cinematic_skip_2)
+    ending_check3.add_connection(State.Zero, Message.Increment, cinematic_skip_2)
+    game_end_part1_end.add_connection(State.Zero, Message.Decrement, cinematic_skip_1)
+    game_end_part1_end.add_connection(State.Zero, Message.Decrement, cinematic_skip_2)
 
-    # Increment/Decrement Cinematic Skip on cutscene start/end
-    ds_death_start.add_connection(State.Zero, Message.Increment, cinematic_skip)
-    game_end_part1_end.add_connection(State.Zero, Message.Decrement, cinematic_skip)
-
-    # Fire % Checks when skipped cutscenes
-    cinematic_skip.add_connection(State.Zero, Message.Action, ending_check1)
-    cinematic_skip.add_connection(State.Zero, Message.Action, ending_check2)
-
-    # Warp to Credits if below 75% on cutscene skip
-    ending_check1.add_connection(State.Zero, Message.SetToZero, credits_warp)
-
-    # Warp to ZSS Cutscene if or above 75% on cutscene skip
-    ending_check2.add_connection(State.Zero, Message.Action, take_away_dark_suit)
-    ending_check2.add_connection(State.Zero, Message.Action, take_away_light_suit)
-    ending_check2.add_connection(State.Zero, Message.SetToZero, bad_ending_warp)
+    # Unload cinematics then warp when skipped cutscenes
+    cinematic_skip_1.add_connection(State.Zero, Message.Decrement, area.get_instance("Unload Dark Samus Battle3 Death"))
+    cinematic_skip_1.add_connection(State.Zero, Message.Decrement, area.get_instance("Unload Game Ending Part1"))
+    cinematic_skip_1.add_connection(State.Zero, Message.SetToZero, credits_warp)
+    cinematic_skip_2.add_connection(State.Zero, Message.Decrement, area.get_instance("Unload Dark Samus Battle3 Death"))
+    cinematic_skip_2.add_connection(State.Zero, Message.Decrement, area.get_instance("Unload Game Ending Part1"))
+    cinematic_skip_2.add_connection(State.Zero, Message.Action, take_away_dark_suit)
+    cinematic_skip_2.add_connection(State.Zero, Message.Action, take_away_light_suit)
+    cinematic_skip_2.add_connection(State.Zero, Message.SetToZero, bad_ending_warp)
 
 
 @decorate_patcher(TEMPLE_GROUNDS_MLVL, temple_grounds.GAME_END_PART1_MREA)
@@ -568,13 +573,28 @@ def game_end_part1_cinematic_skips(editor: PatcherEditor, mlvl: Mlvl, area: Area
     default = area.get_layer("Default")
     cinema_start = area.get_instance("Cinema Start")
     cinema_end = area.get_instance("Cinema End")
+    dark_suit_remover = area.get_instance(0x2F013B)
+    light_suit_remover = area.get_instance(0x2F013A)
 
-    cinematic_skip = default.add_instance_with(
+    cinematic_skip_1 = default.add_instance_with(
         SpecialFunction(
             editor_properties=EditorProperties(
-                name="CinematicSkipSignal - Warp to Credits",
+                name="Ending Skip 1 - Warp to Credits",
                 transform=Transform(
                     position=Vector(948.0, -350.0, 7.0),
+                    scale=Vector(2.0, 2.0, 2.0),
+                ),
+            ),
+            function=Function.CinematicSkipSignal,
+        )
+    )
+
+    cinematic_skip_2 = default.add_instance_with(
+        SpecialFunction(
+            editor_properties=EditorProperties(
+                name="Ending Skip 2/3 - Warp to game_end_part3",
+                transform=Transform(
+                    position=Vector(949.0, -350.0, 7.0),
                     scale=Vector(2.0, 2.0, 2.0),
                 ),
             ),
@@ -606,6 +626,20 @@ def game_end_part1_cinematic_skips(editor: PatcherEditor, mlvl: Mlvl, area: Area
             ),
             function=Function.Ending,
             value_parm=1.0,
+        )
+    )
+
+    ending_check3 = default.add_instance_with(
+        SpecialFunction(
+            editor_properties=EditorProperties(
+                name="Ending 3 Check",
+                transform=Transform(
+                    position=Vector(950.0, -351.0, 7.0),
+                    scale=Vector(2.0, 2.0, 2.0),
+                ),
+            ),
+            function=Function.Ending,
+            value_parm=2.0,
         )
     )
 
@@ -645,14 +679,18 @@ def game_end_part1_cinematic_skips(editor: PatcherEditor, mlvl: Mlvl, area: Area
         with area.get_instance(camera_ids).edit_properties(Camera) as camera_props:
             camera_props.flags_cinematic_camera |= FlagsCinematicCamera.CinematicSkip
 
-    cinema_start.add_connection(State.Zero, Message.Increment, cinematic_skip)
-    cinema_end.add_connection(State.Zero, Message.Decrement, cinematic_skip)
-    cinematic_skip.add_connection(State.Zero, Message.Action, ending_check1)
-    cinematic_skip.add_connection(State.Zero, Message.Action, ending_check2)
-    ending_check1.add_connection(State.Zero, Message.SetToZero, credits_warp)
-    ending_check2.add_connection(State.Zero, Message.Action, area.get_instance(0x2F013B))
-    ending_check2.add_connection(State.Zero, Message.Action, area.get_instance(0x2F013A))
-    ending_check2.add_connection(State.Zero, Message.SetToZero, bad_ending_warp)
+    cinema_start.add_connection(State.Zero, Message.Action, ending_check1)
+    cinema_start.add_connection(State.Zero, Message.Action, ending_check2)
+    cinema_start.add_connection(State.Zero, Message.Action, ending_check3)
+    ending_check1.add_connection(State.Zero, Message.Increment, cinematic_skip_1)
+    ending_check2.add_connection(State.Zero, Message.Increment, cinematic_skip_2)
+    ending_check3.add_connection(State.Zero, Message.Increment, cinematic_skip_2)
+    cinematic_skip_1.add_connection(State.Zero, Message.SetToZero, credits_warp)
+    cinematic_skip_2.add_connection(State.Zero, Message.Action, dark_suit_remover)
+    cinematic_skip_2.add_connection(State.Zero, Message.Action, light_suit_remover)
+    cinematic_skip_2.add_connection(State.Zero, Message.SetToZero, bad_ending_warp)
+    cinema_end.add_connection(State.Zero, Message.Decrement, cinematic_skip_1)
+    cinema_end.add_connection(State.Zero, Message.Decrement, cinematic_skip_2)
 
 
 @decorate_patcher(TEMPLE_GROUNDS_MLVL, temple_grounds.GAME_END_PART2_MREA)
@@ -665,6 +703,11 @@ def game_end_part2_cinematic_skips(editor: PatcherEditor, mlvl: Mlvl, area: Area
     cinema_start = area.get_instance("Enter Room")
     cinema_end = area.get_instance("Cinema End")
     aether_movie = area.get_instance("StreamedMovie 001")
+    yellow_keyframe = area.get_instance("YellowTint")
+    cutscene_sequence_timer = area.get_instance("Game End Pages9_11")
+    music_audio = area.get_instance("GameEnd 2 Music")
+    sfx_audio = area.get_instance("GameEnd 2 SFX")
+    cine_layer_controller = area.get_instance("Unload Cinema")
 
     cinematic_skip = default.add_instance_with(
         SpecialFunction(
@@ -692,20 +735,6 @@ def game_end_part2_cinematic_skips(editor: PatcherEditor, mlvl: Mlvl, area: Area
         )
     )
 
-    ending_check2 = default.add_instance_with(
-        SpecialFunction(
-            editor_properties=EditorProperties(
-                name="Ending 2 Check",
-                transform=Transform(
-                    position=Vector(1020.0, 156.0, 9.0),
-                    scale=Vector(2.0, 2.0, 2.0),
-                ),
-            ),
-            function=Function.Ending,
-            value_parm=1.0,
-        )
-    )
-
     loading_camera = default.add_instance_with(
         Camera(
             editor_properties=EditorProperties(
@@ -716,6 +745,7 @@ def game_end_part2_cinematic_skips(editor: PatcherEditor, mlvl: Mlvl, area: Area
                     scale=Vector(2.0, 2.0, 2.0),
                 ),
             ),
+            animation_time=512.0,
             flags_cinematic_camera=(FlagsCinematicCamera(176)),
         )
     )
@@ -754,26 +784,20 @@ def game_end_part2_cinematic_skips(editor: PatcherEditor, mlvl: Mlvl, area: Area
             camera_props.flags_cinematic_camera |= FlagsCinematicCamera.CinematicSkip
 
     cinema_start.add_connection(State.Zero, Message.Increment, cinematic_skip)
+    cinema_start.add_connection(State.Zero, Message.SetToZero, area.get_instance("cinema_dock1"))
     cinema_end.add_connection(State.Zero, Message.Decrement, cinematic_skip)
+    cinematic_skip.add_connection(State.Zero, Message.Activate, loading_camera)
+    cinematic_skip.add_connection(State.Zero, Message.Stop, loading_camera)
+    cinematic_skip.add_connection(State.Zero, Message.Stop, music_audio)
+    cinematic_skip.add_connection(State.Zero, Message.Stop, sfx_audio)
+    cinematic_skip.add_connection(State.Zero, Message.Stop, aether_movie)
+    cinematic_skip.add_connection(State.Zero, Message.Stop, cutscene_sequence_timer)
+    cinematic_skip.add_connection(State.Zero, Message.Unload, aether_movie)
+    cinematic_skip.add_connection(State.Zero, Message.SetToZero, yellow_keyframe)
+    cinematic_skip.add_connection(State.Zero, Message.SetToZero, cinema_end)
+    cinematic_skip.add_connection(State.Zero, Message.Decrement, cine_layer_controller)
     cinematic_skip.add_connection(State.Zero, Message.Action, ending_check1)
-    cinematic_skip.add_connection(State.Zero, Message.Action, ending_check2)
     ending_check1.add_connection(State.Zero, Message.SetToZero, credits_warp)
-
-    # Deactivate all the cameras upon skip otherwise music stays playing
-    for cameras_deactivate in cameras:
-        ending_check2.add_connection(State.Zero, Message.Deactivate, area.get_instance(cameras_deactivate))
-
-    # Dump Cinema layer and start loading next room instead of warping if ending 2 passed
-    ending_check2.add_connection(State.Zero, Message.Activate, loading_camera)
-    ending_check2.add_connection(State.Zero, Message.Stop, loading_camera)
-    ending_check2.add_connection(State.Zero, Message.Stop, aether_movie)
-    ending_check2.add_connection(State.Zero, Message.Unload, aether_movie)
-    ending_check2.add_connection(State.Zero, Message.SetToZero, area.get_instance("YellowTint"))
-    ending_check2.add_connection(State.Zero, Message.SetToZero, area.get_instance("Cinema End"))
-    ending_check2.add_connection(State.Zero, Message.Stop, area.get_instance("Game End Pages9_11"))
-    ending_check2.add_connection(State.Zero, Message.Stop, area.get_instance("GameEnd 2 Music"))
-    ending_check2.add_connection(State.Zero, Message.Stop, area.get_instance("GameEnd 2 SFX"))
-    ending_check2.add_connection(State.Zero, Message.Decrement, area.get_instance("Unload Cinema"))
 
 
 @decorate_patcher(TEMPLE_GROUNDS_MLVL, temple_grounds.GAME_END_PART3_MREA)
@@ -784,7 +808,6 @@ def game_end_part3_cinematic_skips(editor: PatcherEditor, mlvl: Mlvl, area: Area
     """
     default = area.get_layer("Default")
     departure_sequence = area.get_instance("Game End_page14")
-    cinema_end = area.get_instance(0x350077)
 
     cinematic_skip = default.add_instance_with(
         SpecialFunction(
@@ -844,7 +867,6 @@ def game_end_part3_cinematic_skips(editor: PatcherEditor, mlvl: Mlvl, area: Area
         )
 
     departure_sequence.add_connection(State.Sequence, Message.Increment, cinematic_skip)
-    cinema_end.add_connection(State.Zero, Message.Decrement, cinematic_skip)
     cinematic_skip.add_connection(State.Zero, Message.SetToZero, credits_warp)
 
 
@@ -861,7 +883,7 @@ def game_end_part4_cinematic_skips(editor: PatcherEditor, mlvl: Mlvl, area: Area
     cine_sequence_timer = area.get_instance("End game Space")
 
     # Normally the Credits play in this room at the end of the cutscene, but
-    # we want Credits to be able to play immediately if warped to this room, so
+    # we want Credits to be able to play immediately if warped to the final room, so
     # Credits is being changed from this cutscene's end to next room's cutscene start.
     with credits.edit_properties(SpecialFunction) as credits:
         credits.editor_properties.active = False
@@ -901,6 +923,7 @@ def game_end_part4_cinematic_skips(editor: PatcherEditor, mlvl: Mlvl, area: Area
                     rotation=Vector(0.0, 0.0, 90.0),
                 ),
             ),
+            animation_time=512.0,
             flags_cinematic_camera=(FlagsCinematicCamera(176)),
         )
     )
@@ -910,17 +933,25 @@ def game_end_part4_cinematic_skips(editor: PatcherEditor, mlvl: Mlvl, area: Area
     with cine_sequence_timer.edit_properties(SequenceTimer) as sequence_timer:
         sequence_timer.sequence_connections[15].activation_times = [0.0]
 
+        # Change room next area move timing to match old credits activation timing
+        sequence_timer.sequence_connections[3].activation_times = [11.09]
+
+        # Adjust "GameEnd part 4 SFX" connection to happen a couple of
+        # frames later to cover a frame perfect cutscene skip edge case
+        sequence_timer.sequence_connections[8].activation_times = [0.02]
+
+    # Make these cameras skippable
     cameras = [
         "Camera 04",
         "Camera 05",
     ]
 
     for camera_ids in cameras:
-        with area.get_instance(camera_ids).edit_properties(Camera) as camera_flags:
-            camera_flags.flags_cinematic_camera |= FlagsCinematicCamera.CinematicSkip
+        with area.get_instance(camera_ids).edit_properties(Camera) as camera_props:
+            camera_props.animation_time = 512.0
+            camera_props.flags_cinematic_camera |= FlagsCinematicCamera.CinematicSkip
 
     cinema_start.add_connection(State.Zero, Message.Increment, cinematic_skip)
-    cinema_end.add_connection(State.Zero, Message.Decrement, cinematic_skip)
     cinematic_skip.add_connection(State.Zero, Message.Activate, loading_camera)
     cinematic_skip.add_connection(State.Zero, Message.Stop, loading_camera)
     cinematic_skip.add_connection(State.Zero, Message.Deactivate, area.get_instance("Platform SpaceSky"))
@@ -929,7 +960,7 @@ def game_end_part4_cinematic_skips(editor: PatcherEditor, mlvl: Mlvl, area: Area
     cinematic_skip.add_connection(State.Zero, Message.Deactivate, area.get_instance("Ship_s_5"))
     cinematic_skip.add_connection(State.Zero, Message.Deactivate, area.get_instance("Exit Plume"))
     cinematic_skip.add_connection(State.Zero, Message.Stop, area.get_instance("GameEnd part 4 SFX"))
-    cinematic_skip.add_connection(State.Zero, Message.Stop, area.get_instance("End game Space"))
+    cinematic_skip.add_connection(State.Zero, Message.Stop, cine_sequence_timer)
     cinematic_skip.add_connection(State.Zero, Message.Stop, game_end_part4_music)
     cinematic_skip.add_connection(State.Zero, Message.SetToZero, cinema_end)
     cinematic_skip.add_connection(State.Zero, Message.SetToZero, area.get_instance("Go To Next Area"))
@@ -961,7 +992,7 @@ def game_end_part5_cinematic_skips(editor: PatcherEditor, mlvl: Mlvl, area: Area
     loading_camera = default.add_instance_with(
         Camera(
             editor_properties=EditorProperties(name="Hold"),
-            animation_time=512,
+            animation_time=512.0,
             flags_cinematic_camera=(FlagsCinematicCamera(176)),
         )
     )
@@ -980,7 +1011,7 @@ def game_end_part5_cinematic_skips(editor: PatcherEditor, mlvl: Mlvl, area: Area
                 [
                     SequenceConnection(
                         connection_index=0,
-                        activation_times=[0.02],
+                        activation_times=[0.01],
                     ),
                     SequenceConnection(
                         connection_index=1,
