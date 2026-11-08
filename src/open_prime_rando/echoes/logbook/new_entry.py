@@ -98,12 +98,33 @@ class NewHierarchyEntry[T: ScanTreeInstance]:
         )
 
 
+_INVENTORY_SLOTS_FOR_ITEM = {
+    PlayerItemEnum.VariaSuit: InventorySlotEnum.VariaSuit,
+    # Stolen
+    PlayerItemEnum.VioletTranslator: InventorySlotEnum.DarkBomb,
+    PlayerItemEnum.AmberTranslator: InventorySlotEnum.LightBomb,
+    PlayerItemEnum.EmeraldTranslator: InventorySlotEnum.AnnihilatorBomb,
+    PlayerItemEnum.CobaltTranslator: InventorySlotEnum.BeamCombo,
+    # Custom Slots
+    PlayerItemEnum.AmpDamage: InventorySlotEnum(53),
+    PlayerItemEnum.UnlimitedBeamAmmo: InventorySlotEnum(54),
+    PlayerItemEnum.UnlimitedMissiles: InventorySlotEnum(55),
+}
+
+
 @dataclasses.dataclass(frozen=True)
 class NewInventoryEntry(NewHierarchyEntry[ScanTreeInventory]):
     model_name: str
     scan_text: str
-    slot_index: InventorySlotEnum
     item_index: PlayerItemEnum
+
+    @property
+    def slot_index(self) -> InventorySlotEnum:
+        return _INVENTORY_SLOTS_FOR_ITEM[self.item_index]
+
+    def __post_init__(self) -> None:
+        if self.item_index not in _INVENTORY_SLOTS_FOR_ITEM:
+            raise ValueError(f"Item {self.item_index} does not have a slot configured")
 
     @typing.override
     def apply(
